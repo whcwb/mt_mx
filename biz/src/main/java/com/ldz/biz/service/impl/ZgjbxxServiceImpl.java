@@ -35,9 +35,7 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
 
     @Autowired
     private ZgAqyQdLogMapper aqyQdLogMapper;
-    @Autowired
-    private ZgTjjlService zgTjjlService;
-    @Autowired
+      @Autowired
     private JgService jgService;
     @Autowired
     private CoachManagementService coachService;
@@ -186,29 +184,6 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
 
         List<String> zdIds = list.stream().map(Zgjbxx::getId).collect(Collectors.toList());
 
-        SimpleCondition condition = new SimpleCondition(ZgTjjl.class);
-        condition.in(ZgTjjl.InnerColumn.zgId,zdIds);
-        condition.gte(ZgTjjl.InnerColumn.cjsj,split[0] + "-01-01 00:00:00");
-        condition.lte(ZgTjjl.InnerColumn.cjsj,split[0] + "-06-30 23:59:59");
-        List<ZgTjjl> sTjjlList = zgTjjlService.findByCondition(condition);
-
-        Map<String,Integer> sZdIdCountMap = list.stream().collect(Collectors.toMap(Zgjbxx::getId,p->0));
-        for (ZgTjjl zgTjjl : sTjjlList) {
-            if (!sZdIdCountMap.containsKey(zgTjjl.getZgId()))continue;
-            sZdIdCountMap.put(zgTjjl.getZgId(),sZdIdCountMap.get(zgTjjl.getZgId()) + 1);
-        }
-
-        condition = new SimpleCondition(ZgTjjl.class);
-        condition.in(ZgTjjl.InnerColumn.zgId,zdIds);
-        condition.gte(ZgTjjl.InnerColumn.cjsj,split[0] + "-07-01 00:00:00");
-        condition.lte(ZgTjjl.InnerColumn.cjsj,split[0] + "-12-30 23:59:59");
-        List<ZgTjjl> xTjjlList = zgTjjlService.findByCondition(condition);
-        Map<String,Integer> xZdIdCountMap = list.stream().collect(Collectors.toMap(Zgjbxx::getId,p->0));
-        for (ZgTjjl zgTjjl : xTjjlList) {
-            if (!xZdIdCountMap.containsKey(zgTjjl.getZgId()))continue;
-            xZdIdCountMap.put(zgTjjl.getZgId(),xZdIdCountMap.get(zgTjjl.getZgId()) + 1);
-        }
-
         for (Zgjbxx zgjbxx : list) {
             if(zgjbxx.getsRs()==null){
                 zgjbxx.setsRs(0);
@@ -216,8 +191,6 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
             if(zgjbxx.getxRs()==null){
                 zgjbxx.setxRs(0);
             }
-            zgjbxx.setsRsed(sZdIdCountMap.get(zgjbxx.getId()));
-            zgjbxx.setxRsed(xZdIdCountMap.get(zgjbxx.getId()));
         }
         // 上半年
 //        for (Zgjbxx zgjbxx : list) {

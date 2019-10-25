@@ -12,14 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ChargeManagementService extends BaseService<ChargeManagement, String> {
-
-
-
-    ApiResponse<String> saveInspect(ChargeManagement entity);
-
     ApiResponse<String> removeEntity(String id);
-
-    ApiResponse<String> saveOtherCharge(ChargeManagement entity);
 
     ApiResponse<String> confirmCharge(Map<String, String> chargeIds);
 
@@ -31,8 +24,6 @@ public interface ChargeManagementService extends BaseService<ChargeManagement, S
     ApiResponse<Map<String, Long>> countInOut();
 
     ApiResponse<Map<String, Long>> countInType();
-
-
 
     ApiResponse<String> getReceiptNo(String[] ids, String num);
 
@@ -48,7 +39,6 @@ public interface ChargeManagementService extends BaseService<ChargeManagement, S
     List<ChargeManagement> getAllIn(List<String> jgdms, String startTime, String endTime);
 
     Long countStaged(String time);
-
 
     void exportExcel(HttpServletRequest request, HttpServletResponse response, ChargeManagement entity) throws IOException;
 
