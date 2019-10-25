@@ -19,6 +19,5 @@ public class AppStartListener implements ApplicationListener<ContextRefreshedEve
         if (null == app.getParent()) { // 当存在父子容器时，此判断很有用
             gnService.initPermission();
         }
-
     }
 }

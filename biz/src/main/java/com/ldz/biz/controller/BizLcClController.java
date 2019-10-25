@@ -26,11 +26,22 @@ public class BizLcClController extends BaseController<BizLcCl, String> {
         return service;
     }
 
+    /**
+     * 保存车辆
+     * @param entity
+     * @return
+     */
     @PostMapping("/save")
     public ApiResponse<String> save(BizLcCl entity){
         return service.saveEntity(entity);
     }
 
+    /**
+     * 获取车辆列表
+     * @param page
+     * @return
+     * @throws ParseException
+     */
     @PostMapping("/getCar")
     public ApiResponse<String> getCar(Page<BizLcCl> page) throws ParseException {
         return service.getCar(page);
