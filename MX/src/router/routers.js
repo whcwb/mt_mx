@@ -163,6 +163,15 @@ export default [
         component: () => import('@/view/lcsf/lcjl')
       },
       {
+        path: 'rebate',
+        name: 'rebate',
+        meta: {
+          icon: '_bear',
+          title: '返点确认'
+        },
+        component: () => import('@/view/charge/rebate')
+      },
+      {
         path: 'lcsf-statistics',
         name: 'lcsf-statistics',
         meta: {
