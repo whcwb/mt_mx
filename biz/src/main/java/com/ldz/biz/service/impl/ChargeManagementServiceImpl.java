@@ -169,42 +169,18 @@ public class ChargeManagementServiceImpl extends BaseServiceImpl<ChargeManagemen
         simpleCondition.eq(ChargeManagement.InnerColumn.inOutType, "00");
         List<ChargeManagement> list = findByCondition(simpleCondition);
         Map<String, Long> collect = list.stream().collect(Collectors.groupingBy(chargeManagement -> chargeManagement.getCjsj().substring(0, 7), summingLong(ChargeManagement::getChargeFee)));
-        if (collect.get(year + "-01") == null) {
-            collect.put(year + "-01", 0L);
-        }
-        if (collect.get(year + "-02") == null) {
-            collect.put(year + "-02", 0L);
-        }
-        if (collect.get(year + "-03") == null) {
-            collect.put(year + "-03", 0L);
-        }
-        if (collect.get(year + "-04") == null) {
-            collect.put(year + "-04", 0L);
-        }
-        if (collect.get(year + "-05") == null) {
-            collect.put(year + "-05", 0L);
-        }
-        if (collect.get(year + "-06") == null) {
-            collect.put(year + "-06", 0L);
-        }
-        if (collect.get(year + "-07") == null) {
-            collect.put(year + "-07", 0L);
-        }
-        if (collect.get(year + "-08") == null) {
-            collect.put(year + "-08", 0L);
-        }
-        if (collect.get(year + "-09") == null) {
-            collect.put(year + "-09", 0L);
-        }
-        if (collect.get(year + "-10") == null) {
-            collect.put(year + "-10", 0L);
-        }
-        if (collect.get(year + "-11") == null) {
-            collect.put(year + "-11", 0L);
-        }
-        if (collect.get(year + "-12") == null) {
-            collect.put(year + "-12", 0L);
-        }
+        collect.putIfAbsent(year + "-01", 0L);
+        collect.putIfAbsent(year + "-02", 0L);
+        collect.putIfAbsent(year + "-03", 0L);
+        collect.putIfAbsent(year + "-04", 0L);
+        collect.putIfAbsent(year + "-05", 0L);
+        collect.putIfAbsent(year + "-06", 0L);
+        collect.putIfAbsent(year + "-07", 0L);
+        collect.putIfAbsent(year + "-08", 0L);
+        collect.putIfAbsent(year + "-09", 0L);
+        collect.putIfAbsent(year + "-10", 0L);
+        collect.putIfAbsent(year + "-11", 0L);
+        collect.putIfAbsent(year + "-12", 0L);
 
         LinkedHashMap<String, Long> stringLongMap = sortMap(collect);
         Long l = 0L;
@@ -228,42 +204,18 @@ public class ChargeManagementServiceImpl extends BaseServiceImpl<ChargeManagemen
         simpleCondition.and().andCondition(" zt != '20' and zt != '30'");
         List<ChargeManagement> list = findByCondition(simpleCondition);
         Map<String, Long> collect = list.stream().collect(Collectors.groupingBy(chargeManagement -> chargeManagement.getCjsj().substring(0, 7), summingLong(ChargeManagement::getChargeFee)));
-        if (collect.get(year + "-01") == null) {
-            collect.put(year + "-01", 0L);
-        }
-        if (collect.get(year + "-02") == null) {
-            collect.put(year + "-02", 0L);
-        }
-        if (collect.get(year + "-03") == null) {
-            collect.put(year + "-03", 0L);
-        }
-        if (collect.get(year + "-04") == null) {
-            collect.put(year + "-04", 0L);
-        }
-        if (collect.get(year + "-05") == null) {
-            collect.put(year + "-05", 0L);
-        }
-        if (collect.get(year + "-06") == null) {
-            collect.put(year + "-06", 0L);
-        }
-        if (collect.get(year + "-07") == null) {
-            collect.put(year + "-07", 0L);
-        }
-        if (collect.get(year + "-08") == null) {
-            collect.put(year + "-08", 0L);
-        }
-        if (collect.get(year + "-09") == null) {
-            collect.put(year + "-09", 0L);
-        }
-        if (collect.get(year + "-10") == null) {
-            collect.put(year + "-10", 0L);
-        }
-        if (collect.get(year + "-11") == null) {
-            collect.put(year + "-11", 0L);
-        }
-        if (collect.get(year + "-12") == null) {
-            collect.put(year + "-12", 0L);
-        }
+        collect.putIfAbsent(year + "-01", 0L);
+        collect.putIfAbsent(year + "-02", 0L);
+        collect.putIfAbsent(year + "-03", 0L);
+        collect.putIfAbsent(year + "-04", 0L);
+        collect.putIfAbsent(year + "-05", 0L);
+        collect.putIfAbsent(year + "-06", 0L);
+        collect.putIfAbsent(year + "-07", 0L);
+        collect.putIfAbsent(year + "-08", 0L);
+        collect.putIfAbsent(year + "-09", 0L);
+        collect.putIfAbsent(year + "-10", 0L);
+        collect.putIfAbsent(year + "-11", 0L);
+        collect.putIfAbsent(year + "-12", 0L);
         LinkedHashMap<String, Long> stringLongMap = sortMap(collect);
         Long l = 0L;
         for (Map.Entry<String, Long> entry : stringLongMap.entrySet()) {
@@ -339,7 +291,7 @@ public class ChargeManagementServiceImpl extends BaseServiceImpl<ChargeManagemen
                 ChargeManagement management = managements.get(0);
                 String yy = management.getPjbh();
                 String[] split = yy.split("-");
-                Integer i = Integer.parseInt(split[1]);
+                int i = Integer.parseInt(split[1]);
                 int j = i + 1;
                 if (j >= 1000) {
                     receiptNo = yyyymmdd + "-" + j;
@@ -403,7 +355,7 @@ public class ChargeManagementServiceImpl extends BaseServiceImpl<ChargeManagemen
         condition.and().andCondition(" zt = '00' or zt = '10'");
         condition.setOrderByClause(" SUBSTR(IFNULL(pjbh,'9999999999'),1,13) asc , charge_time desc ");
         PageInfo<ChargeManagement> info = findPage(page, condition);
-        info.getList().stream().forEach(chargeManagement -> {
+        info.getList().forEach(chargeManagement -> {
             if (StringUtils.isNotBlank(chargeManagement.getTraineeId())) {
                 TraineeInformation information = traineeInformationService.findById(chargeManagement.getTraineeId());
                 SysJg jg = jgService.findByOrgCode(information.getJgdm());
@@ -699,8 +651,8 @@ public class ChargeManagementServiceImpl extends BaseServiceImpl<ChargeManagemen
         if (CollectionUtils.isEmpty(resultInfo.getList())) {
             return;
         }
-        Integer totalFee = 0;
-        Integer outFee = 0;
+        int totalFee = 0;
+        int outFee = 0;
         HttpServletRequest requset = getRequset();
         LimitedCondition queryCondition = getQueryCondition();
         String zt = requset.getParameter("jfzt");
@@ -712,13 +664,13 @@ public class ChargeManagementServiceImpl extends BaseServiceImpl<ChargeManagemen
         }
         List<ChargeManagement> managementList = findByCondition(queryCondition);
         try {
-            totalFee = managementList.stream().filter(chargeManagement -> StringUtils.equals(chargeManagement.getInOutType(), "00")).mapToInt(value -> value.getChargeFee()).reduce((left, right) -> left + right).getAsInt();
-        } catch (NoSuchElementException e) {
+            totalFee = managementList.stream().filter(chargeManagement -> StringUtils.equals(chargeManagement.getInOutType(), "00")).mapToInt(ChargeManagement::getChargeFee).reduce(Integer::sum).getAsInt();
+        } catch (NoSuchElementException ignored) {
 
         }
         try {
-            outFee = managementList.stream().filter(chargeManagement -> StringUtils.equals(chargeManagement.getInOutType(), "10")).mapToInt(value -> value.getChargeFee()).reduce((left, right) -> left + right).getAsInt();
-        } catch (NoSuchElementException e) {
+            outFee = managementList.stream().filter(chargeManagement -> StringUtils.equals(chargeManagement.getInOutType(), "10")).mapToInt(ChargeManagement::getChargeFee).reduce(Integer::sum).getAsInt();
+        } catch (NoSuchElementException ignored) {
 
         }
         List<ChargeManagement> list = resultInfo.getList();
@@ -786,13 +738,13 @@ public class ChargeManagementServiceImpl extends BaseServiceImpl<ChargeManagemen
         }
         List<ChargeManagement> managementList = findByCondition(queryCondition);
         try {
-            totalFee = managementList.stream().filter(chargeManagement -> StringUtils.equals(chargeManagement.getInOutType(), "00")).mapToInt(value -> value.getChargeFee()).reduce((left, right) -> left + right).getAsInt();
-        } catch (NoSuchElementException e) {
+            totalFee = managementList.stream().filter(chargeManagement -> StringUtils.equals(chargeManagement.getInOutType(), "00")).mapToInt(ChargeManagement::getChargeFee).reduce(Integer::sum).getAsInt();
+        } catch (NoSuchElementException ignored) {
 
         }
         try {
-            outFee = managementList.stream().filter(chargeManagement -> StringUtils.equals(chargeManagement.getInOutType(), "10")).mapToInt(value -> value.getChargeFee()).reduce((left, right) -> left + right).getAsInt();
-        } catch (NoSuchElementException e) {
+            outFee = managementList.stream().filter(chargeManagement -> StringUtils.equals(chargeManagement.getInOutType(), "10")).mapToInt(ChargeManagement::getChargeFee).reduce(Integer::sum).getAsInt();
+        } catch (NoSuchElementException ignored) {
 
         }
 

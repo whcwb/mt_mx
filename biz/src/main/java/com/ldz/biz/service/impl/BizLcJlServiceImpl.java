@@ -259,7 +259,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         Date start = dateFormat.parse(kssj);
 
         // 计算实际时长  (所有车辆免费前五分钟)
-        int lcSc = (int) ((end.getTime() - start.getTime()) / (1000 * 60) - 5) < 0 ? 0 : (int) ((end.getTime() - start.getTime()) / (1000 * 60) - 5);
+        int lcSc = Math.max((int) ((end.getTime() - start.getTime()) / (1000 * 60) - 5), 0);
 
         // 计算练车费用
         SimpleCondition condition = new SimpleCondition(SysZdxm.class);
@@ -340,7 +340,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String[] sj = tjsj.split(",");
         String kssj = sj[0];
         String jssj = sj[1];
-        String sql = "SELECT jl_jx,sum(sc) as sc,sum(lc_fy) as fy  from biz_lc_jl where 1=1 ";
+        String sql = "SELECT jl_jx,sum(sc) as sc,sum(lc_fy) as fy  from BIZ_LC_JL where 1=1 ";
         sql += " and kssj >= '" + kssj + "' and jssj <= '" + jssj + "'";
         sql += " and lc_km ='" + lcKm + "'";
         sql += " GROUP BY jl_jx ";
