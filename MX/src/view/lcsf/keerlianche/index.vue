@@ -39,20 +39,27 @@
           <table-area :pager="false" :parent="v"></table-area>
         </Col>
         <Col span="3">
+
+          <Row style="padding: 10px">
+            <Button class="rbutton" size="large"   type="Default"  long  @click="faCar">计时训练</Button>
+          </Row>
+          <Row style="padding: 10px">
+            <Button class="rbutton" size="large"   type="Default"  long  @click="faCar">培优训练</Button>
+          </Row>
+          <Row style="padding: 10px">
+            <Button class="rbutton" size="large"   type="Default"  long  @click="faCar">开放日训练</Button>
+          </Row>
+          <Row style="padding: 10px">
+            <Button class="rbutton" size="large" long type="Default"
+                     @click="giveCar.overCar(v,'2'),printClose=true">
+              还卡
+            </Button>
+          </Row>
           <Row style="padding: 10px">
             <Button class="rbutton" size="large" type="Default" long @click="yyClick">预约</Button>
           </Row>
           <Row style="padding: 10px">
             <Button class="rbutton" size="large" type="Default" long @click="componentName='keyypd'">预约排队:{{yyrs}}</Button>
-          </Row>
-          <Row style="padding: 10px">
-            <Button class="rbutton" size="large"   type="Default"  long  @click="faCar">发车</Button>
-          </Row>
-          <Row style="padding: 10px">
-            <Button class="rbutton" size="large" long type="Default"
-                     @click="giveCar.overCar(v,'2'),printClose=true">
-              还车
-            </Button>
           </Row>
 
         </Col>
