@@ -1,7 +1,7 @@
 <template>
   <div class="header-bar">
-    <sider-trigger :collapsed="collapsed" icon="md-menu" @on-change="handleCollpasedChange"></sider-trigger>
-    <custom-bread-crumb class="crumb" show-icon style="margin-left: 30px;vertical-align: text-top" :list="breadCrumbList"></custom-bread-crumb>
+    <!--<sider-trigger :collapsed="collapsed" icon="md-menu" @on-change="handleCollpasedChange"></sider-trigger>-->
+    <!--<custom-bread-crumb class="crumb" show-icon style="margin-left: 30px;vertical-align: text-top" :list="breadCrumbList"></custom-bread-crumb>-->
     <div class="custom-content-con">
       <slot></slot>
     </div>

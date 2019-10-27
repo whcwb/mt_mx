@@ -155,6 +155,11 @@
           if (res.code == 200){
             this.params.cardNo = num
             this.cardNo = num.substring(0,2)+ '******'
+            v.swal({
+              title:res.message,
+              type:'warning',
+              confirmButtonText: '确认',
+            })
           }else if(res.code == 505){
             this.swal({
               title:res.message,

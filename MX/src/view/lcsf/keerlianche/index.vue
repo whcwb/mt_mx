@@ -15,25 +15,14 @@
       </Col>
       <Col span="8">
         <div class="box_row">
-          <!--<div  style="font-size: 24px;color: #e91b10;line-height: 45px;">-->
-            <!--累计：{{total}} 元-->
-          <!--</div>-->
-          <div @click="compName='keyypd'" style="font-size: 24px;color: #2baee9;line-height: 45px;margin: 0 6px"> 当前排队中</div>
-          <div style="margin: 0 6px">
-            <Button style="font-size: 20px;font-weight: 600" @click="componentName='keyypd'" type="error">{{yyrs}}</Button>
-          </div>
-          <div style="margin: 0 6px">
-            <Button type="success" style="border-radius: 35px;font-size: 20px" @click="yyClick">预</Button>
-          </div>
-          <div style="margin: 0 6px">
-            <Button type="error" style="border-radius: 35px;font-size: 20px" @click="faCar">发</Button>
-          </div>
-          <div style="margin: 0 6px">
-            <Button size="large" style="border-radius: 35px;font-size: 20px" type="warning"
-                    @click="giveCar.overCar(v,'2'),printClose=true">
-              还
-            </Button>
-          </div>
+<!--          <div  style="font-size: 24px;color: #e91b10;line-height: 45px;">-->
+<!--            累计：{{total}} 元-->
+<!--          </div>-->
+<!--          <div @click="compName='keyypd'" style="font-size: 24px;color: #2baee9;line-height: 45px;margin: 0 6px"> 当前排队中</div>-->
+<!--          <div style="margin: 0 6px">-->
+<!--            <Button style="font-size: 20px;font-weight: 600" @click="componentName='keyypd'" type="error">{{yyrs}}</Button>-->
+<!--          </div>-->
+
         </div>
       </Col>
       <Col span="12">
@@ -45,7 +34,30 @@
       </Col>
     </Row>
     <div>
-      <table-area :pager="false" :parent="v"></table-area>
+      <Row>
+        <Col span="21">
+          <table-area :pager="false" :parent="v"></table-area>
+        </Col>
+        <Col span="3">
+          <Row style="padding: 10px">
+            <Button class="rbutton" size="large" type="Default" long @click="yyClick">预约</Button>
+          </Row>
+          <Row style="padding: 10px">
+            <Button class="rbutton" size="large" type="Default" long @click="componentName='keyypd'">预约排队:{{yyrs}}</Button>
+          </Row>
+          <Row style="padding: 10px">
+            <Button class="rbutton" size="large"   type="Default"  long  @click="faCar">发车</Button>
+          </Row>
+          <Row style="padding: 10px">
+            <Button class="rbutton" size="large" long type="Default"
+                     @click="giveCar.overCar(v,'2'),printClose=true">
+              还车
+            </Button>
+          </Row>
+
+        </Col>
+      </Row>
+
     </div>
     <!--<div class="box_col_auto" style="background-color: #f2f2f2">-->
       <!--<div class="box_row_list">-->
@@ -602,6 +614,13 @@
 </script>
 
 <style scoped>
+  .rbutton{
+    height: 80px;
+    background-color: #8a8a8a;
+    color: #F0F0F0;
+    font-size: 20px;
+    font-weight: 600
+  }
   .demo-drawer-footer {
     width: 100%;
     position: absolute;
