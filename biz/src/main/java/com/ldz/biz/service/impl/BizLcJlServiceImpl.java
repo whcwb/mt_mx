@@ -27,6 +27,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -78,14 +79,14 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             return;
         }
         Set<String> jlIds = pageInfo.getList().stream().map(BizLcJl::getJlId).collect(Collectors.toSet());
-        List<BizLcWxjl> coachs = wxjlService.findIn(BizLcWxjl.InnerColumn.id,jlIds);
-        Map<String,BizLcWxjl> coachMap = coachs.stream().collect(Collectors.toMap(BizLcWxjl::getId,p->p));
+        List<BizLcWxjl> coachs = wxjlService.findIn(BizLcWxjl.InnerColumn.id, jlIds);
+        Map<String, BizLcWxjl> coachMap = coachs.stream().collect(Collectors.toMap(BizLcWxjl::getId, p -> p));
         pageInfo.getList().stream().forEach(bizLcJl -> {
             SimpleCondition condition = new SimpleCondition(BizLcJlXy.class);
             condition.eq(BizLcJlXy.InnerColumn.lcJlId, bizLcJl.getId());
             List<BizLcJlXy> xies = xyService.findByCondition(condition);
             bizLcJl.setXyList(xies);
-            if(bizLcJl.getLcLx().equals("10")){
+            if (bizLcJl.getLcLx().equals("10")) {
                 SimpleCondition djcondition = new SimpleCondition(SysZdxm.class);
                 djcondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
                 if (bizLcJl.getLcKm().equals("2")) {
@@ -95,15 +96,15 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     djcondition.eq(SysZdxm.InnerColumn.zddm, "k3" + bizLcJl.getJlCx());
                 }
                 List<SysZdxm> items = zdxmService.findByCondition(djcondition);
-                if(CollectionUtils.isNotEmpty(items)){
+                if (CollectionUtils.isNotEmpty(items)) {
                     SysZdxm management = items.get(0);
                     bizLcJl.setLcDj(Float.parseFloat(StringUtils.isBlank(management.getBy4()) ? "0" : management.getBy4()));
                 }
 
             }
-            if (StringUtils.isNotEmpty(bizLcJl.getJlId())){
+            if (StringUtils.isNotEmpty(bizLcJl.getJlId())) {
                 BizLcWxjl coach = coachMap.get(bizLcJl.getJlId());
-                if (coach != null){
+                if (coach != null) {
                     bizLcJl.setJlDh(coach.getJlLxdh());
                 }
             }
@@ -141,8 +142,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
         }
         RuntimeCheck.ifTrue(lcCl.getClZt().equalsIgnoreCase("01"), lcCl.getClBh() + "号车辆已经在训练中");
-        if(StringUtils.isNotBlank(entity.getKm())){
-            RuntimeCheck.ifFalse(lcCl.getClKm().equalsIgnoreCase(entity.getKm()), "此卡号已绑定科目"+(lcCl.getClKm().equals("2")?"二":"三")+"-" + lcCl.getClBh() + "车,不能在科目"+(entity.getKm().equals("2")?"二":"三")+"窗口发车");
+        if (StringUtils.isNotBlank(entity.getKm())) {
+            RuntimeCheck.ifFalse(lcCl.getClKm().equalsIgnoreCase(entity.getKm()), "此卡号已绑定科目" + (lcCl.getClKm().equals("2") ? "二" : "三") + "-" + lcCl.getClBh() + "车,不能在科目" + (entity.getKm().equals("2") ? "二" : "三") + "窗口发车");
         }
         entity.setLcClId(lcCl.getId());
 
@@ -290,13 +291,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             int v = Math.round(hv + mv);
             lcJl.setLcDj(Float.parseFloat(management.getZdmc()));
             lcJl.setLcFy(v);
-        } else if(StringUtils.equals(lcJl.getLcLx(), "10")){
+        } else if (StringUtils.equals(lcJl.getLcLx(), "10")) {
             lcJl.setLcFy(Integer.parseInt(StringUtils.isBlank(management.getBy4()) ? "0" : management.getBy4()));
             lcJl.setLcDj(Float.parseFloat(StringUtils.isBlank(management.getBy4()) ? "0" : management.getBy4()));
         } else {
             SimpleCondition lmCondition = new SimpleCondition(SysZdxm.class);
-            lmCondition.eq(SysZdxm.InnerColumn.zdlmdm,"ZDCLK1048");
-            lmCondition.eq(SysZdxm.InnerColumn.zddm,lcJl.getLcLx());
+            lmCondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1048");
+            lmCondition.eq(SysZdxm.InnerColumn.zddm, lcJl.getLcLx());
             List<SysZdxm> zdxms = zdxmService.findByCondition(lmCondition);
             RuntimeCheck.ifEmpty(zdxms, "此练车项没有设置练车费用， 请联系管理员设置练车费用");
             String zdmc = zdxms.get(0).getZdmc();
@@ -311,9 +312,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         lcJl.setJssj(s);
         lcJl.setXgr(yh.getZh() + "-" + yh.getXm());
         lcJl.setXgsj(DateUtils.getNowTime());
-        if(StringUtils.equals(lcJl.getLcLx(),"00") && !StringUtils.equals(lcJl.getJlXm(), "自学")){
+        if (StringUtils.equals(lcJl.getLcLx(), "00") && !StringUtils.equals(lcJl.getJlXm(), "自学")) {
             lcJl.setFdZt("00");
-        }else {
+        } else {
             lcJl.setFdZt("40");
         }
         update(lcJl);
@@ -355,7 +356,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 long l = 0;
                 try {
                     l = Long.parseLong(sc);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
                 if (l / 60 == 0) {
                     retMap.put("lcSc", l + "分");
@@ -383,8 +384,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             sql += " and lc_cl_id = '" + clId + "'";
         }
         sql += " and cjsj >= '" + kssj + "' and cjsj <= '" + jssj + "'";
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
-        return list;
+        return jdbcTemplate.queryForList(sql);
     }
 
     @Override
@@ -423,9 +423,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             if (StringUtils.isBlank(cx)) {
                 continue;
             }
-            if (StringUtils.isBlank(num) || StringUtils.equals(num,"null")) {
-                continue;
-            } else {
+            if (!(StringUtils.isBlank(num) || StringUtils.equals(num, "null"))) {
                 int anInt = Integer.parseInt(num);
                 for (int i = 0; i < anInt; i++) {
                     saveAppoint(entity, currentUser, cx, xySl);
@@ -433,7 +431,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             }
         }
         entity.setJlLx("10");
-
         return ApiResponse.success();
     }
 
@@ -527,8 +524,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
         }
         RuntimeCheck.ifTrue(lcCl.getClZt().equalsIgnoreCase("01"), "当前车辆已经在训练中");
-        if(StringUtils.isNotBlank(entity.getKm())){
-            RuntimeCheck.ifFalse(lcCl.getClKm().equalsIgnoreCase(entity.getKm()), "此卡号已绑定科目"+(lcCl.getClKm().equals("2")?"二":"三")+" - " + lcCl.getClBh() + "车,不能在科目"+(entity.getKm().equals("2")?"二":"三")+"窗口发车");
+        if (StringUtils.isNotBlank(entity.getKm())) {
+            RuntimeCheck.ifFalse(lcCl.getClKm().equalsIgnoreCase(entity.getKm()), "此卡号已绑定科目" + (lcCl.getClKm().equals("2") ? "二" : "三") + " - " + lcCl.getClBh() + "车,不能在科目" + (entity.getKm().equals("2") ? "二" : "三") + "窗口发车");
         }
         RuntimeCheck.ifFalse(StringUtils.equals(lcCl.getClCx(), lcJl.getJlCx()), "所选车辆车型与预约车型不一致");
         entity.setClBh(lcCl.getClBh());
@@ -583,7 +580,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
 
     @Override
-    public ApiResponse<String> updateFdZt(String id , int fdJe) {
+    public ApiResponse<String> updateFdZt(String id, int fdJe) {
 
         RuntimeCheck.ifBlank(id, "请选择已返点的记录");
         SysYh user = getCurrentUser();
@@ -650,16 +647,16 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     // 可能存在跑出大于6趟的情况
                     int i = jls1.size() / 6;
                     int k = jls1.size() % 6;
-                    for(int j = 0 ; j <= i ; j++){
+                    for (int j = 0; j <= i; j++) {
                         LcJlModel lcJlModel = new LcJlModel();
                         List<BizLcJl> lcJls = new ArrayList<>();
-                        if(j == i){
-                            if(k == 0){
+                        if (j == i) {
+                            if (k == 0) {
                                 break;
                             }
-                            lcJls.addAll(jls1.subList(j*6 , j * 6 + k));
-                        }else{
-                            lcJls.addAll(jls1.subList(j*6,(j+1)*6));
+                            lcJls.addAll(jls1.subList(j * 6, j * 6 + k));
+                        } else {
+                            lcJls.addAll(jls1.subList(j * 6, (j + 1) * 6));
                         }
                         lcJlModel.setClBh(clBh);
                         lcJlModel.setJls(lcJls);
@@ -780,15 +777,15 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             Map<Integer, String> dataMap = new HashMap<>();
             dataMap.put(0, i + 1 + "");
             dataMap.put(1, jl.getClBh());
-            if(StringUtils.isNotBlank(jl.getKssj())){
-                dataMap.put(2, jl.getKssj().substring(0,jl.getKssj().length()-3));
-            }else{
-                dataMap.put(2," - ");
+            if (StringUtils.isNotBlank(jl.getKssj())) {
+                dataMap.put(2, jl.getKssj().substring(0, jl.getKssj().length() - 3));
+            } else {
+                dataMap.put(2, " - ");
             }
-            if(StringUtils.isNotBlank(jl.getJssj())){
-                dataMap.put(3, jl.getJssj().substring(0,jl.getJssj().length()-3));
-            }else{
-                dataMap.put(3,"-");
+            if (StringUtils.isNotBlank(jl.getJssj())) {
+                dataMap.put(3, jl.getJssj().substring(0, jl.getJssj().length() - 3));
+            } else {
+                dataMap.put(3, "-");
             }
 
             dataMap.put(4, jl.getZgXm());
@@ -817,7 +814,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         response.setContentType("application/msexcel");
         request.setCharacterEncoding("UTF-8");
         response.setHeader("pragma", "no-cache");
-        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1") + ".xls");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xls");
         ServletOutputStream outputStream = response.getOutputStream();
         ExcelUtil.createSheet(outputStream, "明细统计", data);
     }

@@ -28,7 +28,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
@@ -140,34 +139,32 @@ public class DataStaServiceImpl implements DataStaService {
 
                 // 根据每个机构代码计算每个机构的总收入
                 List<ChargeManagement> managementList = collect.get(s);
-                HashMap<String, Integer> map = new LinkedHashMap<>();
                 StudentAllModel allModel = new StudentAllModel();
                 List<StudentAllModel.StuAll> stuAlls = new ArrayList<>();
 
 
-                for (int i = 0; i < monthBetween.size(); i++) {
+                for (String value : monthBetween) {
                     // 根据 1-12月份统计
                     StudentAllModel.StuAll stuAll = new StudentAllModel.StuAll();
 //                    int allCount = 0;
                     int main = 0;
                     int other = 0;
-                    String s1 = monthBetween.get(i);
                     int total = 0;
-                    if (mainMap.containsKey(s1)) {
-                        main = mainMap.get(s1);
+                    if (mainMap.containsKey(value)) {
+                        main = mainMap.get(value);
                     } else {
-                        mainMap.put(s1, main);
+                        mainMap.put(value, main);
                     }
-                    if (otherMap.containsKey(s1)) {
-                        other = otherMap.get(s1);
+                    if (otherMap.containsKey(value)) {
+                        other = otherMap.get(value);
                     } else {
-                        otherMap.put(s1, other);
+                        otherMap.put(value, other);
                     }
 
 
                     for (int j = managementList.size() - 1; j >= 0; j--) {
                         ChargeManagement management = managementList.get(j);
-                        if (StringUtils.startsWith(management.getChargeTime(), s1)) {
+                        if (StringUtils.startsWith(management.getChargeTime(), value)) {
                             if (jgMap.containsKey(management.getJgdm())) {
                                 main += management.getChargeFee();
                                 total += management.getChargeFee();
@@ -177,12 +174,12 @@ public class DataStaServiceImpl implements DataStaService {
                         }
                     }
                     stuAll.setCount(total);
-                    stuAll.setTime(s1);
+                    stuAll.setTime(value);
                     stuAlls.add(stuAll);
 
-                    mainMap.put(s1, main);
-                    otherMap.put(s1, other);
-                    map.put(s1, total);
+                    mainMap.put(value, main);
+                    otherMap.put(value, other);
+//                    map.put(value, total);
 
                 }
 
@@ -349,9 +346,9 @@ public class DataStaServiceImpl implements DataStaService {
                 stuAlls.add(stuAll);
                 model.setStu(stuAlls);
             }
-            long asInt = models.stream().mapToLong(StudentAllModel::getAll).reduce((integer, integer2) -> integer + integer2).getAsLong();
-            long asInt1 = models.stream().mapToLong(StudentAllModel::getDropOut).reduce((integer, integer2) -> integer + integer2).getAsLong();
-            long asInt2 = models.stream().mapToLong(StudentAllModel::getRealAll).reduce((integer, integer2) -> integer + integer2).getAsLong();
+            long asInt = models.stream().mapToLong(StudentAllModel::getAll).reduce(Long::sum).orElse(0);
+            long asInt1 = models.stream().mapToLong(StudentAllModel::getDropOut).reduce(Long::sum).orElse(0);
+            long asInt2 = models.stream().mapToLong(StudentAllModel::getRealAll).reduce(Long::sum).orElse(0);
             model.setAll(asInt);
             model.setDropOut(asInt1);
             model.setRealAll(asInt2);
@@ -399,15 +396,12 @@ public class DataStaServiceImpl implements DataStaService {
         List<TraineeInformation> informationList = informationService.findByCondition(condition);
         Map<String, List<TraineeInformation>> collect = informationList.stream().collect(Collectors.groupingBy(TraineeInformation::getJgdm, TreeMap::new, Collectors.toList()));
         Set<String> set = collect.keySet();
-        HashMap<String, Integer> map = new LinkedHashMap<>();
         for (String s : set) {
-
             List<TraineeInformation> traineeInformatics = collect.get(s);
             Map<String, Long> count1 = traineeInformatics.stream().collect(Collectors.groupingBy(TraineeInformation::getCarType, Collectors.counting()));
             StudentAllModel allModel = new StudentAllModel();
-            long count = traineeInformatics.stream().count();
+            long count = traineeInformatics.size();
             allModel.setAll(count);
-            List<StudentAllModel.StuAll> stuAlls = new ArrayList<>();
             Long a1 = count1.get("A1");
             Long a2 = count1.get("A2");
             Long a3 = count1.get("A3");
@@ -429,13 +423,13 @@ public class DataStaServiceImpl implements DataStaService {
         if (CollectionUtils.isNotEmpty(models)) {
             StudentAllModel allModel = new StudentAllModel();
             allModel.setJgmc("合计");
-            allModel.setA1(models.stream().mapToLong(StudentAllModel::getA1).reduce((left, right) -> left + right).getAsLong());
-            allModel.setA2(models.stream().mapToLong(StudentAllModel::getA2).reduce((left, right) -> left + right).getAsLong());
-            allModel.setA3(models.stream().mapToLong(StudentAllModel::getA3).reduce((left, right) -> left + right).getAsLong());
-            allModel.setB2(models.stream().mapToLong(StudentAllModel::getB2).reduce((left, right) -> left + right).getAsLong());
-            allModel.setC1(models.stream().mapToLong(StudentAllModel::getC1).reduce((left, right) -> left + right).getAsLong());
-            allModel.setC2(models.stream().mapToLong(StudentAllModel::getC2).reduce((left, right) -> left + right).getAsLong());
-            allModel.setAll(models.stream().mapToLong(StudentAllModel::getAll).reduce((left, right) -> left + right).getAsLong());
+            allModel.setA1(models.stream().mapToLong(StudentAllModel::getA1).reduce(Long::sum).orElse(0));
+            allModel.setA2(models.stream().mapToLong(StudentAllModel::getA2).reduce(Long::sum).orElse(0));
+            allModel.setA3(models.stream().mapToLong(StudentAllModel::getA3).reduce(Long::sum).orElse(0));
+            allModel.setB2(models.stream().mapToLong(StudentAllModel::getB2).reduce(Long::sum).orElse(0));
+            allModel.setC1(models.stream().mapToLong(StudentAllModel::getC1).reduce(Long::sum).orElse(0));
+            allModel.setC2(models.stream().mapToLong(StudentAllModel::getC2).reduce(Long::sum).orElse(0));
+            allModel.setAll(models.stream().mapToLong(StudentAllModel::getAll).reduce(Long::sum).orElse(0));
             models.add(allModel);
         }
         return ApiResponse.success(models);
@@ -591,7 +585,7 @@ public class DataStaServiceImpl implements DataStaService {
             List<TraineeInformation> traineeInformatics = collect.get(s);
             Map<String, Long> count1 = traineeInformatics.stream().collect(Collectors.groupingBy(TraineeInformation::getCarType, Collectors.counting()));
             StudentAllModel allModel = new StudentAllModel();
-            long count = traineeInformatics.stream().count();
+            long count = traineeInformatics.size();
             allModel.setAll(count);
             Long a1 = count1.get("A1");
             Long a2 = count1.get("A2");
@@ -614,13 +608,13 @@ public class DataStaServiceImpl implements DataStaService {
         if (CollectionUtils.isNotEmpty(models)) {
             StudentAllModel allModel = new StudentAllModel();
             allModel.setJgmc("合计");
-            allModel.setA1(models.stream().mapToLong(StudentAllModel::getA1).reduce((left, right) -> left + right).getAsLong());
-            allModel.setA2(models.stream().mapToLong(StudentAllModel::getA2).reduce((left, right) -> left + right).getAsLong());
-            allModel.setA3(models.stream().mapToLong(StudentAllModel::getA3).reduce((left, right) -> left + right).getAsLong());
-            allModel.setB2(models.stream().mapToLong(StudentAllModel::getB2).reduce((left, right) -> left + right).getAsLong());
-            allModel.setC1(models.stream().mapToLong(StudentAllModel::getC1).reduce((left, right) -> left + right).getAsLong());
-            allModel.setC2(models.stream().mapToLong(StudentAllModel::getC2).reduce((left, right) -> left + right).getAsLong());
-            allModel.setAll(models.stream().mapToLong(StudentAllModel::getAll).reduce((left, right) -> left + right).getAsLong());
+            allModel.setA1(models.stream().mapToLong(StudentAllModel::getA1).reduce(Long::sum).orElse(0));
+            allModel.setA2(models.stream().mapToLong(StudentAllModel::getA2).reduce(Long::sum).orElse(0));
+            allModel.setA3(models.stream().mapToLong(StudentAllModel::getA3).reduce(Long::sum).orElse(0));
+            allModel.setB2(models.stream().mapToLong(StudentAllModel::getB2).reduce(Long::sum).orElse(0));
+            allModel.setC1(models.stream().mapToLong(StudentAllModel::getC1).reduce(Long::sum).orElse(0));
+            allModel.setC2(models.stream().mapToLong(StudentAllModel::getC2).reduce(Long::sum).orElse(0));
+            allModel.setAll(models.stream().mapToLong(StudentAllModel::getAll).reduce(Long::sum).orElse(0));
             models.add(allModel);
         }
         return ApiResponse.success(models);
@@ -820,7 +814,7 @@ public class DataStaServiceImpl implements DataStaService {
         if (CollectionUtils.isNotEmpty(informations)) {
             Set<String> jgdms = informations.stream().map(TraineeInformation::getJgdm).collect(Collectors.toSet());
             List<SysJg> jgs = jgService.findIn(SysJg.InnerColumn.jgdm, jgdms);
-            Map<String, String> jgMap = jgs.stream().collect(Collectors.toMap(SysJg::getJgdm, p -> p.getJgmc()));
+            Map<String, String> jgMap = jgs.stream().collect(Collectors.toMap(SysJg::getJgdm, SysJg::getJgmc));
 
             List<String> trainIds = informations.stream().map(TraineeInformation::getId).collect(Collectors.toList());
             // 查询学员的 考试支出金额
@@ -874,7 +868,7 @@ public class DataStaServiceImpl implements DataStaService {
         ExcelUtil.createSheet(outputStream, "收支统计", dataList);
     }
 
-    public static double formatValue(double val) {
+    private static double formatValue(double val) {
 
         BigDecimal bg = new BigDecimal(val).setScale(2, RoundingMode.UP);
         return bg.doubleValue();
