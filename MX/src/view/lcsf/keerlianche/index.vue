@@ -47,7 +47,7 @@
             <Button class="rbutton" size="large"   type="Default"  long  @click="faCar">培优训练</Button>
           </Row>
           <Row style="padding: 10px">
-            <Button class="rbutton" size="large"   type="Default"  long  @click="faCar">开放日训练</Button>
+            <Button class="rbutton" size="large"   type="Default"  long  @click="kfCar">开放日训练</Button>
           </Row>
           <Row style="padding: 10px">
             <Button class="rbutton" size="large" long type="Default"
@@ -169,6 +169,7 @@
   import keyypd from '../comp/keyypd'
   import print from '../comp/print'
   import yydrawer from './yydrawer'
+  import kfdrawer from './kfdrawer'
   import yyModel from './yyModel'
   import radioCar from '../comp/RadioCar'
   //还车
@@ -180,7 +181,7 @@
     components: {
       carCard, jlwh, addjl,
       print,radioCar, carStatistics,
-      keyypd,yydrawer,yyModel},
+      keyypd,yydrawer,yyModel,kfdrawer},
     data() {
       return {
         total:0,
@@ -412,6 +413,9 @@
             }
           }})
       },
+        kfcar(){
+
+        },
       faCar(){
         if (!!window.ActiveXObject || "ActiveXObject" in window) {
         } else {

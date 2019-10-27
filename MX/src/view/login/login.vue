@@ -40,21 +40,6 @@
     created(){
       this.num = Math.floor(this.AF.getRandom(1)/2)
       this.$store.commit('setTagNavList',[])
-        //全屏
-
-         var docElm = document.documentElement;
-        // W3C
-
-        if(docElm.requestFullscreen) { docElm.requestFullscreen(); }
-        // FireFox
-
-        else if(docElm.mozRequestFullScreen) { docElm.mozRequestFullScreen(); }
-        // Chrome等
-
-        else if(docElm.webkitRequestFullScreen) { docElm.webkitRequestFullScreen(); }
-        // IE11
-
-        else if(elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
     },
     components: {
       LoginForm
