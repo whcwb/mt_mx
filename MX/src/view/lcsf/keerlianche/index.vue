@@ -1,34 +1,34 @@
 <template>
   <div class="box_col">
     <Row style="margin-bottom: 18px" type="flex" align="bottom">
-      <Col span="4">
+      <Col span="24">
         <pager-tit title="科二模训" style="float: left"></pager-tit>
         <!--<div style="float: left;margin-top: 8px;cursor: pointer">-->
-          <!--<span style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>-->
-          <!--<span style="width: 100px;height: 80px;cursor: pointer;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;"-->
-                <!--@click="formData.clZt = '01',getCarList()">-->
-            <!--在训{{zxNum}}台</span>-->
-          <!--<span style="width: 100px;height: 80px;background-color: #66CD00;color:white;padding:6px;border-radius: 4px;margin-left: 16px;cursor: pointer;"-->
-                <!--@click="formData.clZt = '00',getCarList()"-->
-          <!--&gt;空闲{{xxNum}}台</span>-->
+        <!--<span style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>-->
+        <!--<span style="width: 100px;height: 80px;cursor: pointer;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;"-->
+        <!--@click="formData.clZt = '01',getCarList()">-->
+        <!--在训{{zxNum}}台</span>-->
+        <!--<span style="width: 100px;height: 80px;background-color: #66CD00;color:white;padding:6px;border-radius: 4px;margin-left: 16px;cursor: pointer;"-->
+        <!--@click="formData.clZt = '00',getCarList()"-->
+        <!--&gt;空闲{{xxNum}}台</span>-->
         <!--</div>-->
       </Col>
       <Col span="8">
         <div class="box_row">
-<!--          <div  style="font-size: 24px;color: #e91b10;line-height: 45px;">-->
-<!--            累计：{{total}} 元-->
-<!--          </div>-->
-<!--          <div @click="compName='keyypd'" style="font-size: 24px;color: #2baee9;line-height: 45px;margin: 0 6px"> 当前排队中</div>-->
-<!--          <div style="margin: 0 6px">-->
-<!--            <Button style="font-size: 20px;font-weight: 600" @click="componentName='keyypd'" type="error">{{yyrs}}</Button>-->
-<!--          </div>-->
+          <!--          <div  style="font-size: 24px;color: #e91b10;line-height: 45px;">-->
+          <!--            累计：{{total}} 元-->
+          <!--          </div>-->
+          <!--          <div @click="compName='keyypd'" style="font-size: 24px;color: #2baee9;line-height: 45px;margin: 0 6px"> 当前排队中</div>-->
+          <!--          <div style="margin: 0 6px">-->
+          <!--            <Button style="font-size: 20px;font-weight: 600" @click="componentName='keyypd'" type="error">{{yyrs}}</Button>-->
+          <!--          </div>-->
 
         </div>
       </Col>
       <Col span="12">
-        <Row  type="flex" justify="end" :gutter="16">
+        <Row type="flex" justify="end" :gutter="16">
           <Col span="24">
-            <search-bar :parent="v" :show-create-button="false" ></search-bar>
+            <search-bar :parent="v" :show-create-button="false"></search-bar>
           </Col>
         </Row>
       </Col>
@@ -40,49 +40,51 @@
         </Col>
         <Col span="3">
 
-          <Row style="padding: 10px">
-            <Button class="rbutton" size="large"   type="Default"  long  @click="faCar">计时训练</Button>
+          <Row style="padding: 5px 10px">
+            <Button class="rbutton" size="large" type="Default" long @click="faCar('kk')">开卡训练</Button>
           </Row>
-          <Row style="padding: 10px">
-            <Button class="rbutton" size="large"   type="Default"  long  @click="faCar">培优训练</Button>
+          <Row style="padding: 5px 10px">
+            <Button class="rbutton" size="large" type="Default" long @click="faCar('py')">培优训练</Button>
           </Row>
-          <Row style="padding: 10px">
-            <Button class="rbutton" size="large"   type="Default"  long  @click="kfCar">开放日训练</Button>
+          <Row style="padding: 5px 10px">
+            <Button class="rbutton" size="large" type="Default" long @click="faCar('kf')">开放训练</Button>
           </Row>
-          <Row style="padding: 10px">
-            <Button class="rbutton" size="large" long type="Default"
-                     @click="giveCar.overCar(v,'2'),printClose=true">
-              还卡
-            </Button>
-          </Row>
-          <Row style="padding: 10px">
-            <Button class="rbutton" size="large" type="Default" long @click="yyClick">预约</Button>
-          </Row>
-          <Row style="padding: 10px">
-            <Button class="rbutton" size="large" type="Default" long @click="componentName='keyypd'">预约排队:{{yyrs}}</Button>
-          </Row>
+          <!--<Row style="padding: 5px 10px">-->
+          <!--<Button class="rbutton" size="large" long type="Default"-->
+          <!--@click="giveCar.overCar(v,'2'),printClose=true">-->
+          <!--还卡-->
+          <!--</Button>-->
+          <!--</Row>-->
+          <!--<Row style="padding: 5px 10px">-->
+          <!--<Button class="rbutton" size="large" type="Default" long @click="yyClick">预约</Button>-->
+          <!--</Row>-->
+          <!--<Row style="padding: 5px 10px">-->
+          <!--<Button class="rbutton" size="large" type="Default" long @click="componentName='keyypd'">预约排队:{{yyrs}}</Button>-->
+          <!--</Row>-->
 
         </Col>
       </Row>
 
     </div>
     <!--<div class="box_col_auto" style="background-color: #f2f2f2">-->
-      <!--<div class="box_row_list">-->
-        <!--<div v-for="(it,index) in carList">-->
-          <!--<car-card :carMess="it" @carClick="carClick" @print="print" @his="his(it),printClose=false"></car-card>-->
-        <!--</div>-->
-      <!--</div>-->
+    <!--<div class="box_row_list">-->
+    <!--<div v-for="(it,index) in carList">-->
+    <!--<car-card :carMess="it" @carClick="carClick" @print="print" @his="his(it),printClose=false"></car-card>-->
+    <!--</div>-->
+    <!--</div>-->
     <!--</div>-->
     <Modal
       title="分配车辆"
       v-model="DrawerVal"
       :closable="false"
-      width="720"
+      width="500"
       :mask-closable="true">
       <div slot="header">
         <div class="box_row">
           <div v-if="carMess">
-            <Tag type="border" style="font-size: 24px;font-weight:bold;padding: 5px;height: 36px;" color="error">{{carMess.clBh}}-{{carMess.clCx}}</Tag>
+            <Tag type="border" style="font-size: 24px;font-weight:bold;padding: 5px;height: 36px;" color="error">
+              {{carMess.clCx}}
+            </Tag>
           </div>
           <div style="font-size: 16px;margin-right: 28px;margin-top: 7px">
             <h2>模训发车</h2>
@@ -94,9 +96,9 @@
           <Col span="24"></Col>
         </Row>
         <Row :gutter="24">
-          <Col span="12" >
+          <Col span="17">
             <div style="float: left">
-              <FormItem label="教练员">
+              <FormItem label="教练员" style="width: 250px">
                 <Select v-model="formData.jlId"
                         filterable
                         clearable
@@ -114,43 +116,76 @@
               </Button>
             </div>
           </Col>
+          <Col span="5">
+            <div style="float: left">
+              <FormItem label="车型" style="width: 250px">
+                <RadioGroup v-model="formData.jlCx">
+                  <Radio label="C1">
+                    <span>C1</span>
+                  </Radio>
+                  <Radio label="C2">
+                    <span>C2</span>
+                  </Radio>
+                </RadioGroup>
+              </FormItem>
+            </div>
+          </Col>
         </Row>
-        <radio-car v-if="carMess == null"
-                   clKm="2"
-                   @getCarItemMess="getCarItemMess"
-                   ></radio-car>
+        <!--<radio-car v-if="carMess == null"-->
+                   <!--clKm="2"-->
+                   <!--@getCarItemMess="getCarItemMess"-->
+        <!--&gt;</radio-car>-->
 
-        <component :is="compName" :jxmc="jlJx"
-                   @SaveOk="addjlSaveOk"
-                   @colse="clearYY"
-                   @remove="getCoachList('',true)"
-                   @JLRowClick="JLRowClick"
-                   @jxSeljxSel="(val)=>{getCoachList('',true)}"></component>
+        <!--<component :is="compName" :jxmc="jlJx"-->
+                   <!--@SaveOk="addjlSaveOk"-->
+                   <!--@colse="clearYY"-->
+                   <!--@remove="getCoachList('',true)"-->
+                   <!--@JLRowClick="JLRowClick"-->
+                   <!--@jxSeljxSel="(val)=>{getCoachList('',true)}"></component>-->
 
-        <Row :gutter="32" style="padding-top: 5px">
+        <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='kf'">
           <Col span="12">
             <FormItem label="学员人数" label-position="top">
               <Input v-model="formData.xySl"/>
             </FormItem>
           </Col>
+        </Row>
+
+
+        <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='py'">
           <Col span="12">
-            <FormItem label="预交费" label-position="top">
-              <Input v-model="formData.lcYj"></Input>
+            <FormItem label="姓名" label-position="top">
+              <Input v-model="formData.xyXm"/>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="电话" label-position="top">
+              <Input v-model="formData.xyDh"/>
             </FormItem>
           </Col>
         </Row>
+
+        <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='py'">
+          <Col span="24">
+            <FormItem label="身份证号" label-position="top">
+              <Input v-model="formData.xyZjhm"/>
+            </FormItem>
+          </Col>
+        </Row>
+
         <FormItem label="备注" label-position="top">
           <Input type="textarea" v-model="formData.bz" :rows="4"/>
         </FormItem>
       </Form>
       <div slot='footer'>
-        <Button style="margin-right: 8px" @click="close">取消</Button>
         <Button type="primary" @click="save">发车</Button>
+        <Button type="primary" @click="yy">预约</Button>
+        <Button style="margin-right: 8px" @click="close">取消</Button>
       </div>
     </Modal>
     <yyModel ref="yyModel"
-              @close="close"
-              @getCarList = 'getCarList'
+             @close="close"
+             @getCarList='getCarList'
     ></yyModel>
     <component :is="componentName" :printClose="printClose" :hisPrintMess="hisPrintMess"
                @SaveOk="addjlSaveOk"
@@ -169,24 +204,26 @@
   import keyypd from '../comp/keyypd'
   import print from '../comp/print'
   import yydrawer from './yydrawer'
-  import kfdrawer from './kfdrawer'
   import yyModel from './yyModel'
   import radioCar from '../comp/RadioCar'
   //还车
   import giveCar from '../comp/readCard'
   import {mapMutations} from 'vuex'
   import moment from 'moment'
+
   export default {
     name: "index",
     components: {
       carCard, jlwh, addjl,
-      print,radioCar, carStatistics,
-      keyypd,yydrawer,yyModel,kfdrawer},
+      print, radioCar, carStatistics,
+      keyypd, yydrawer, yyModel
+    },
     data() {
       return {
-        total:0,
-        giveCar:giveCar,
-        v:this,
+        mxlx: '',
+        total: 0,
+        giveCar: giveCar,
+        v: this,
         apiRoot: this.apis.lcjl,
         choosedItem: null,
         tableColumns: [
@@ -196,39 +233,42 @@
             //   return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
             // }
           },
-          {title: '教练姓名', key: 'jlXm',searchKey:'jlXmLike',minWidth:90},
-          {title: '教练电话', key: 'jlDh',minWidth:90},
-          {title: '驾校', key: 'jlJx', minWidth:90},
-          {title: '车辆编号', key: 'clBh',searchKey: 'clBh',minWidth:90,render:(h,p)=>{
-              return h('Button',{
+          {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
+          {title: '教练电话', key: 'jlDh', minWidth: 90},
+          {title: '驾校', key: 'jlJx', minWidth: 90},
+          {
+            title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90, render: (h, p) => {
+              return h('Button', {
                 props: {
                   type: 'error',
                   size: 'small'
                 },
-                style:{
-                  borderRadius:'15px'
+                style: {
+                  borderRadius: '15px'
                 }
-              },p.row.clBh)
-            }},
-          {title: '开始时间', key: 'kssj', searchType: 'daterange',minWidth:140},
+              }, p.row.clBh)
+            }
+          },
+          {title: '开始时间', key: 'kssj', searchType: 'daterange', minWidth: 140},
           // {title: '安全员姓名', key: 'zgXm',minWidth:100},
-          {title: '时长', key: 'sc',minWidth:80,defaul:'0'},
-          {title: '学员数量', key: 'xySl',minWidth:90,defaul:'0'},
-          {title: '练车费用', key: 'showlcFy',minWidth:90,defaul:'0'},
-          {title: '状态', minWidth:120,render:(h,p)=>{
+          {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
+          {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
+          {title: '练车费用', key: 'showlcFy', minWidth: 90, defaul: '0'},
+          {
+            title: '状态', minWidth: 120, render: (h, p) => {
               let s = '';
-              if (!p.row.kssj || p.row.kssj ===''){
+              if (!p.row.kssj || p.row.kssj === '') {
                 s = '预约中'
-              }else if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')){
+              } else if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')) {
                 s = '训练中'
-              }else{
+              } else {
                 s = '已结束'
               }
-              return h('div',s);
+              return h('div', s);
             }
           },
           {
-            title: '操作',fixed:'right',width:80, render: (h, p) => {
+            title: '操作', fixed: 'right', width: 80, render: (h, p) => {
               let buttons = [];
               buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
                 this.hisPrintMess = p.row
@@ -241,47 +281,51 @@
         DrawerVal: false,
         compName: '',
         componentName: '',
-        printClose:false,
+        printClose: false,
         hisPrintMess: '',
         clId: '',
-        showFQfzkp:false,
+        showFQfzkp: false,
         formData: {
-          cardNo:'',
-          clBh:'',
+          cardNo: '',
+          clBh: '',
           lcClId: '',
-          jlJx:'',
-          jlId:""
+          jlJx: '',
+          jlId: "",
+          jlCx: 'C1',
+          xyZjhm: '',
+          xyXm: '',
+          xyDh: ''
         },
         searchCoachList: [],
-        loadingJly:false,
-        yyrs:'0',
+        loadingJly: false,
+        yyrs: '0',
         bxJL: [],//本校
         wxJL: [],//外校
         jlJx: '',
-          zxNum:0,
-          xxNum:0,
+        zxNum: 0,
+        xxNum: 0,
         carList: [],
-          coachList:[],
+        coachList: [],
         param: {
-          notShowLoading:'true',
-          orderBy:'jssj desc',
-          kssjIsNotNull:'1',
+          notShowLoading: 'true',
+          orderBy: 'jssj desc',
+          kssjIsNotNull: '1',
           total: 0,
-          lcKm:2,
-          kssjInRange:'',
+          lcKm: 2,
+          kssjInRange: '',
           zhLike: ''
         },
         pageData: [],
-        specialPageSize:99999999,
+        specialPageSize: 99999999,
         dateRange: {
           kssj: ''
         },
         showCAR: false,
-        carMess:null,
+        carMess: null,
         IntervalKE: setInterval(() => {
           // this.Ch_LcTime()
           this.jump()
-        },  60000)
+        }, 60000)
       }
     },
     watch: {
@@ -290,8 +334,8 @@
         if (n == false) {
           this.compName = ''
           this.formData = {}
-          this.jlJx= ''
-        }else {
+          this.jlJx = ''
+        } else {
           // if (this.formData.lcClId == '') {
           //   this.showCAR = true
           // }
@@ -306,32 +350,34 @@
       this.util.initTable(this);
       this.getCoachList()
       this.getCarList();
-      setTimeout(()=>{this.jump()},1000)
+      setTimeout(() => {
+        this.jump()
+      }, 1000)
       this.getYYdj()
     },
-    beforeDestroy(){
+    beforeDestroy() {
       clearInterval(this.IntervalKE)
     },
     methods: {
-      jump(){
+      jump() {
         this.total = 0;
-        for (let r of this.pageData){
+        for (let r of this.pageData) {
           let startTime = r.kssj;
-          if (r.kssj.length < 19){
+          if (r.kssj.length < 19) {
             startTime += ":00";
           }
           let now = new Date();
-          let duration =  moment(moment(now) - moment(startTime));
+          let duration = moment(moment(now) - moment(startTime));
           // console.log(duration);
-          if((r.kssj && r.kssj.length > 0) && (!r.jssj || r.jssj == '')){
-            let min = parseInt(duration/60000);
+          if ((r.kssj && r.kssj.length > 0) && (!r.jssj || r.jssj == '')) {
+            let min = parseInt(duration / 60000);
             // console.log(min);
-            r.sc = duration.subtract(8,'hour').format("HH时mm分钟");//this.parseTime(min);
-            r.lcFy = Math.round(min*500/60);
+            r.sc = duration.subtract(8, 'hour').format("HH时mm分钟");//this.parseTime(min);
+            r.lcFy = Math.round(min * 500 / 60);
             r.showlcFy = r.lcFy + '元';
           }
           this.total += parseInt(r.lcFy);
-          if (!this.total){
+          if (!this.total) {
             this.total = 0;
           }
           // console.log(r.lcFy);
@@ -345,11 +391,11 @@
         if (h != 0) r += h + '小时';
         return r + m + '分钟'
       },
-      afterPager(list){
-        for (let r of list){
+      afterPager(list) {
+        for (let r of list) {
           r.sc = this.parseTime(r.sc)
-          r.kssj = r.kssj.substring(0,16)
-          r.jssj = r.jssj.substring(0,16)
+          r.kssj = r.kssj.substring(0, 16)
+          r.jssj = r.jssj.substring(0, 16)
         }
       },
       ...mapMutations([
@@ -359,7 +405,7 @@
       getCarItemMess(it, index) {
         this.formData.lcClId = it.id
       },
-      searchJly (query) {
+      searchJly(query) {
         if (query !== '') {
           this.loadingJly = true;
           setTimeout(() => {
@@ -372,22 +418,22 @@
           this.searchCoachList = [];
         }
       },
-      clzt(zt){
+      clzt(zt) {
 
       },
-      clearYY(){
-        this.compName='';
-        this.componentName='';
+      clearYY() {
+        this.compName = '';
+        this.componentName = '';
         this.getYYdj();
         this.getCarList();
         this.searchCoachList = [];
       },
-      JLRowClick(row){
+      JLRowClick(row) {
         this.formData.jlId = row.id
       },
       close() {
         // this.showCAR = false;
-        this.carMess=null;
+        this.carMess = null;
         this.formData = {};
         this.XY = [];
         this.compName = '';
@@ -403,20 +449,25 @@
         this.$refs.yyModel.show();
         this.formData.lcClId = val;
       },
-      getYYdj(){
-        this.$http.get('/api/lcjl/query',{params:{kssjIsNull:'1',orderBy:'cjsj asc',lcKm:'2',notShowLoading:'true'}}).then((res)=>{
-          if(res.code == 200){
-            if(res.result){
+      getYYdj() {
+        this.$http.get('/api/lcjl/query', {
+          params: {
+            kssjIsNull: '1',
+            orderBy: 'cjsj asc',
+            lcKm: '2',
+            notShowLoading: 'true'
+          }
+        }).then((res) => {
+          if (res.code == 200) {
+            if (res.result) {
               this.yyrs = res.result.length
-            }else{
+            } else {
               this.yyrs = 0
             }
-          }})
+          }
+        })
       },
-        kfcar(){
-
-        },
-      faCar(){
+      faCar(name) {
         if (!!window.ActiveXObject || "ActiveXObject" in window) {
         } else {
           this.swal({
@@ -427,13 +478,98 @@
           return
         }
         var v = this
-        this.giveCar.readCard((key,mess)=>{
-          if(!key){
+        this.DrawerVal = true
+        this.mxlx = name
+
+        v.swal({
+          title: mess,
+          type: 'error',
+          confirmButtonText: '发车',
+          cancelButtonText: '取消',
+          showCancelButton: true
+        }).then((res) => {
+          if (res.value) {
+            v.showFQfzkp = false;
+            v.faCar()
+          } else {
+            v.showFQfzkp = false;
+            v.showQfshowFQfzkpzkp = false;
+            v.DrawerVal = false
+            v.mxlx = ''
+          }
+        })
+
+        // this.giveCar.readCard((key,mess)=>{
+        //   this.mxlx=name
+        //   if(!key){
+        //     if (this.DrawerVal) {
+        //       let v = this
+        //       setTimeout(() => {
+        //         if (v.DrawerVal) {
+        //           this.faCar()
+        //         }
+        //       }, 200)
+        //     }
+        //     if (v.showFQfzkp) {
+        //       return;
+        //     }
+        //     v.showFQfzkp = true;
+        //     v.swal({
+        //       title:mess,
+        //       type:'error',
+        //       confirmButtonText: '发车',
+        //       cancelButtonText: '取消',
+        //       showCancelButton: true
+        //     }).then((res) => {
+        //       if (res.value) {
+        //         v.showFQfzkp = false;
+        //         v.faCar()
+        //       } else {
+        //         v.showFQfzkp = false;
+        //         v.showQfshowFQfzkpzkp = false;
+        //         v.DrawerVal = false
+        //         v.mxlx=''
+        //       }
+        //     })
+        //   }else {
+        //     this.AF.carCard('2', mess, (type, res) => {
+        //       console.log('**********', res);
+        //       if (type) {
+        //         if (res.result) {
+        //           //如果车辆已经绑卡   返回车辆信息
+        //           v.carMess = res.result
+        //           this.formData.lcClId = v.carMess.id
+        //         }
+        //         this.DrawerVal = true;
+        //         v.showFQfzkp = false;
+        //         this.formData.cardNo = mess;
+        //       } else {
+        //         this.DrawerVal = false;
+        //         this.mxlx=''
+        //         return
+        //       }
+        //     })
+        //   }
+        // })
+      },
+      readkar(callback) {
+        if (!!window.ActiveXObject || "ActiveXObject" in window) {
+        } else {
+          this.swal({
+            title: '请使用IE10以上的浏览器',
+            type: 'warning',
+            confirmButtonText: '关闭'
+          })
+          return
+        }
+        var v = this
+        this.giveCar.readCard((key, mess) => {
+          if (!key) {
             if (this.DrawerVal) {
               let v = this
               setTimeout(() => {
                 if (v.DrawerVal) {
-                  this.faCar()
+                  this.readkar()
                 }
               }, 200)
             }
@@ -442,83 +578,22 @@
             }
             v.showFQfzkp = true;
             v.swal({
-              title:mess,
-              type:'error',
+              title: mess,
+              type: 'error',
               confirmButtonText: '发车',
               cancelButtonText: '取消',
               showCancelButton: true
             }).then((res) => {
               if (res.value) {
                 v.showFQfzkp = false;
-                v.faCar()
+                v.readkar()
               } else {
-                v.showFQfzkp = false;
                 v.showQfshowFQfzkpzkp = false;
                 v.DrawerVal = false
               }
             })
-          }else {
-            this.AF.carCard('2', mess, (type, res) => {
-              console.log('**********', res);
-              if (type) {
-                if (res.result) {
-                  //如果车辆已经绑卡   返回车辆信息
-                  v.carMess = res.result
-                  this.formData.lcClId = v.carMess.id
-                }
-                this.DrawerVal = true;
-                v.showFQfzkp = false;
-                this.formData.cardNo = mess;
-              } else {
-                this.DrawerVal = false;
-                return
-              }
-            })
-          }
-        })
-      },
-      readkar(callback){
-          if (!!window.ActiveXObject || "ActiveXObject" in window) {
           } else {
-              this.swal({
-                  title: '请使用IE10以上的浏览器',
-                  type: 'warning',
-                  confirmButtonText: '关闭'
-              })
-              return
-          }
-        var v = this
-        this.giveCar.readCard((key,mess)=>{
-          if(!key){
-              if (this.DrawerVal) {
-                  let v = this
-                  setTimeout(() => {
-                      if (v.DrawerVal) {
-                        this.readkar()
-                      }
-                  }, 200)
-              }
-              if (v.showFQfzkp) {
-                  return;
-              }
-              v.showFQfzkp = true;
-            v.swal({
-              title:mess,
-              type:'error',
-              confirmButtonText: '发车',
-              cancelButtonText: '取消',
-              showCancelButton: true
-            }).then((res) => {
-                if (res.value) {
-                    v.showFQfzkp = false;
-                    v.readkar()
-                } else {
-                    v.showQfshowFQfzkpzkp = false;
-                    v.DrawerVal = false
-                }
-            })
-          }else {
-              v.showFQfzkp = false;
+            v.showFQfzkp = false;
             this.formData.cardNo = mess
             callback && callback(true)
             this.save()
@@ -551,64 +626,73 @@
       },
       getCarList() {//获取车辆
         this.param.clBh = this.formData.clBh
-        this.zxNum=0;
-        this.xxNum=0;
-        this.$http.post('/api/lccl/getCar', {notShowLoading:'true',pagerNum:1,pageSize:99999,clKm:"2",clBh:this.formData.clBh,orderBy:'clZt asc,clBh asc,clCx asc',clZt:this.formData.clZt,clCx:this.formData.clCx}).then((res) => {
+        this.zxNum = 0;
+        this.xxNum = 0;
+        this.$http.post('/api/lccl/getCar', {
+          notShowLoading: 'true',
+          pagerNum: 1,
+          pageSize: 99999,
+          clKm: "2",
+          clBh: this.formData.clBh,
+          orderBy: 'clZt asc,clBh asc,clCx asc',
+          clZt: this.formData.clZt,
+          clCx: this.formData.clCx
+        }).then((res) => {
           if (res.code == 200) {
             this.carList = res.page.list
-              for (let r of this.carList){
-                  if (r.clZt === '01'){
-                      this.zxNum ++;
-                  }else if (r.clZt === '00'){
-                      this.xxNum ++;
-                  }
+            for (let r of this.carList) {
+              if (r.clZt === '01') {
+                this.zxNum++;
+              } else if (r.clZt === '00') {
+                this.xxNum++;
               }
+            }
 
-              this.AF.Get_SERVER_Time((res) => {
-                this.set_LcTime(res)
-                this.IntervalKS
-              })
+            this.AF.Get_SERVER_Time((res) => {
+              this.set_LcTime(res)
+              this.IntervalKS
+            })
 
           } else {
             this.$Message.info(res.message);
           }
         })
       },
-        getCoachList(id,clear) {
-          if(clear){
-            this.formData.jlId = '';
+      getCoachList(id, clear) {
+        if (clear) {
+          this.formData.jlId = '';
+        }
+        this.coachList = [];
+        this.$http.get('/api/lcwxjl/query', {params: {notShowLoading: 'true'}}).then((res) => {
+          this.wxJL = res.result
+          if (res.code == 200 && res.result) {
+            for (let r of res.result) {
+              let py = this.util.parsePY(r.jlXm)
+              this.coachList.push({label: r.jlJx + '_' + r.jlXm + ' [' + py + ']' + '_' + r.jlLxdh, value: r.id});
+            }
           }
-          this.coachList = [];
-            this.$http.get('/api/lcwxjl/query',{params:{notShowLoading:'true'}}).then((res) => {
-                this.wxJL = res.result
-                if (res.code == 200 && res.result){
-                    for (let r of res.result) {
-                        let py = this.util.parsePY(r.jlXm)
-                        this.coachList.push({label: r.jlJx + '_' + r.jlXm +' ['+py+']'+'_'+ r.jlLxdh , value: r.id});
-                    }
-                }
-                if(res.code == 200 && res.result && id ){
-                  this.formData.jlId = id
-                }
-            })
-        },
-      save(){//发车
-        if(this.formData.cardNo == null || this.formData.cardNo == ''){
+          if (res.code == 200 && res.result && id) {
+            this.formData.jlId = id
+          }
+        })
+      },
+      save() {//发车
+        if (this.formData.cardNo == null || this.formData.cardNo == '') {
           this.readkar();
-        }else {
-            this.formData.notShowLoading = 'true'
+        } else {
+          this.formData.notShowLoading = 'true'
           this.$http.post('/api/lcjl/save', this.formData).then(res => {
-            if (res.code == 200){
+            if (res.code == 200) {
               this.DrawerVal = false;
               this.formData = {};
               this.getCarList();
               this.util.initTable(this);
               this.swal({
-                title:'发车成功',
-                type:'success',
+                title: '发车成功',
+                type: 'success',
                 confirmButtonText: '确定',
               })
-              this.carMess=null
+              this.carMess = null
             } else {
               this.formData.cardNo = null;
               this.swal({
@@ -619,19 +703,24 @@
           }).catch(err => {
           })
         }
+      },
+      yy() {           //预约练车
+
       }
     },
   }
 </script>
 
 <style scoped>
-  .rbutton{
-    height: 80px;
+  .rbutton {
+    height: 60px;
     background-color: #8a8a8a;
     color: #F0F0F0;
-    font-size: 20px;
-    font-weight: 600
+    font-size: 18px;
+    font-weight: 600;
+    padding: 10px;
   }
+
   .demo-drawer-footer {
     width: 100%;
     position: absolute;

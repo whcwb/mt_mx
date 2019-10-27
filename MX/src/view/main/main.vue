@@ -1,30 +1,30 @@
 <template>
   <Layout style="height: 100%" class="main">
-    <Header>
-      <Menu mode="horizontal" theme="dark" active-name="1">
-        <div class="layout-logo"></div>
-        <div class="layout-nav" style="display: flex;flex-wrap: wrap;justify-content: space-between">
-          <MenuItem :name="item.name" v-for="(item,index) in menuList" @click.native="handleClick(item)">
-            <div style="height: 20px;text-align: center">
-              <Icon :type="item.icon"></Icon>
-            </div>
-            <div>{{ showTitleInside(item) }}</div>
-          </MenuItem>
-        </div>
-      </Menu>
+    <!--<Header>-->
+      <!--<Menu mode="horizontal" theme="dark" active-name="1">-->
+        <!--<div class="layout-logo"></div>-->
+        <!--<div class="layout-nav" style="display: flex;flex-wrap: wrap;justify-content: space-between">-->
+          <!--<MenuItem :name="item.name" v-for="(item,index) in menuList" @click.native="handleClick(item)">-->
+            <!--<div style="height: 20px;text-align: center">-->
+              <!--<Icon :type="item.icon"></Icon>-->
+            <!--</div>-->
+            <!--<div>{{ showTitleInside(item) }}</div>-->
+          <!--</MenuItem>-->
+        <!--</div>-->
+      <!--</Menu>-->
 
       <!--左侧通栏-->
-      <!--<Sider style="overflow: auto" hide-trigger collapsible :width="256" :collapsed-width="64" v-model="collapsed">-->
-        <!--<side-menu accordion :active-name="$route.name" :collapsed="collapsed" @on-select="turnToPage"-->
-                   <!--:menu-list="menuList">-->
-          <!--&lt;!&ndash; 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 &ndash;&gt;-->
-          <!--<div class="logo-con">-->
-            <!--<img v-show="!collapsed" :src="maxLogo" key="max-logo" width="312" height="85"/>-->
-            <!--<img v-show="collapsed" :src="minLogo" key="min-logo"/>-->
-          <!--</div>-->
-        <!--</side-menu>-->
-      <!--</Sider>-->
-    </Header>
+      <Sider style="overflow: auto" hide-trigger collapsible :width="256" :collapsed-width="64" v-model="collapsed">
+        <side-menu accordion :active-name="$route.name" :collapsed="collapsed" @on-select="turnToPage"
+                   :menu-list="menuList">
+          <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
+          <div class="logo-con">
+            <img v-show="!collapsed" :src="maxLogo" key="max-logo" width="312" height="85"/>
+            <img v-show="collapsed" :src="minLogo" key="min-logo"/>
+          </div>
+        </side-menu>
+      </Sider>
+    <!--</Header>-->
 
 
     <Layout class="box_col">
