@@ -38,20 +38,5 @@ public class CoachManagementController extends BaseController<CoachManagement,St
         return service.deleteEntity(id);
     }
 
-    /**
-     * 学员分配
-     * @param trainees 学员列表
-     * @param km        学员要培训的科目  01:科目一 02：科目二 03：科目三 04：科目四
-     * @param coach     教练ID
-     * @return
-     */
-    @PostMapping("/traineefp")
-    public ApiResponse<String> traineeAllocation(@RequestParam(name="trainees", required = false) String trainees,
-                                                 @RequestParam(name="km", required = false) String km,
-                                                 @RequestParam(name="coach", required = false) String coach){
-
-        return service.traineeAllocation(trainees,km,coach);
-    }
-
 
 }

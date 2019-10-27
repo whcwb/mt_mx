@@ -74,30 +74,8 @@ public class BizMainController {
     private DataStaService staService;
 
     @Autowired
-    private BizCkService ckService;
-
-    @Autowired
-    private BizKcService kcService;
-    @Autowired
-    private BizExceptionService exceptionService;
-
-    @Autowired
     private JgService jgService;
 
-    @GetMapping("/test")
-    public ApiResponse<String> test() {
-        ApiResponse<List<BizExceptionConfig>> exps = exceptionService.getAllConfig();
-        if (exps.getCode() == ApiResponse.SUCCESS && exps.getResult().size() > 0) {
-            List<BizExceptionConfig> configs = exps.getResult();
-            for (int i = 0; i < configs.size(); i++) {
-                BizExceptionConfig config = configs.get(i);
-                if (config.getDays() != null) {
-                    exceptionService.expJobSave(config);
-                }
-            }
-        }
-        return ApiResponse.success();
-    }
 
 
     @RequestMapping(value = "/getTime", method = {RequestMethod.GET, RequestMethod.POST})
@@ -1402,74 +1380,7 @@ public class BizMainController {
         ExcelUtil.createSheet(out, "大车情况", data);
     }
 
-    @GetMapping("exportCK")
-    public void exportCK(String kcMc, String kcLx, String lqr, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        List<BizCk> bizCks = new ArrayList<>();
-        List<Map<Integer, String>> data = new ArrayList<>();
-        Map<Integer, String> map = new HashMap<>();
 
-        map.put(0, "物品名称");
-        map.put(1, "物品规格");
-        map.put(2, "领取人");
-        map.put(3, "领取部门");
-        map.put(4, "领取时间");
-        map.put(5, "领取数量");
-        map.put(6, "操作人");
-        data.add(map);
-
-        SimpleCondition condition = new SimpleCondition(BizCk.class);
-        SimpleCondition kcCondition = new SimpleCondition(BizKc.class);
-        condition.setOrderByClause(" cjsj desc ");
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(kcMc)) {
-            kcCondition.like(BizKc.InnerColumn.kcMc, kcMc);
-        }
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(kcLx)) {
-            kcCondition.like(BizKc.InnerColumn.kcLx, kcLx);
-        }
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(lqr)) {
-            condition.like(BizCk.InnerColumn.lqr, lqr);
-        }
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(kcLx) || org.apache.commons.lang3.StringUtils.isNotBlank(kcMc)) {
-            List<BizKc> kcs = kcService.findByCondition(kcCondition);
-            if (CollectionUtils.isNotEmpty(kcs)) {
-                List<String> kcIds = kcs.stream().map(BizKc::getId).collect(Collectors.toList());
-                if (CollectionUtils.isNotEmpty(kcIds)) {
-                    condition.in(BizCk.InnerColumn.kcId, kcIds);
-                    bizCks = ckService.findByCondition(condition);
-                }
-            }
-        } else {
-            bizCks = ckService.findByCondition(condition);
-        }
-        if (CollectionUtils.isNotEmpty(bizCks)) {
-
-            List<String> kcIds = bizCks.stream().map(BizCk::getKcId).collect(Collectors.toList());
-            List<BizKc> kcs = kcService.findByIds(kcIds);
-            if (CollectionUtils.isNotEmpty(kcs)) {
-                Map<String, List<BizKc>> collect = kcs.stream().collect(Collectors.groupingBy(BizKc::getId));
-                bizCks.forEach(bizCk -> {
-                    Map<Integer, String> dataMap = new HashMap<>();
-                    if (collect.containsKey(bizCk.getKcId())) {
-                        bizCk.setKc(collect.get(bizCk.getKcId()).get(0));
-                        dataMap.put(0, bizCk.getKc().getKcMc());
-                        dataMap.put(1, bizCk.getKc().getKcLx());
-                    }
-                    dataMap.put(2, bizCk.getLqr().split("-")[0]);
-                    dataMap.put(3, bizCk.getJgmc());
-                    dataMap.put(4, bizCk.getCjsj().substring(0, 16));
-                    dataMap.put(5, bizCk.getLqSl() + "");
-                    dataMap.put(6, bizCk.getCjr().split("-")[1]);
-                    data.add(dataMap);
-                });
-            }
-        }
-        response.setContentType("application/msexcel");
-        request.setCharacterEncoding("UTF-8");
-        response.setHeader("pragma", "no-cache");
-        response.addHeader("Content-Disposition", "attachment; filename=" + new String("出库流水".getBytes("utf-8"), "ISO8859-1") + ".xls");
-        OutputStream out = response.getOutputStream();
-        ExcelUtil.createSheet(out, "出库流水", data);
-    }
 
     /**
      * 学费报表excel导出

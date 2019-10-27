@@ -34,14 +34,6 @@ public class ChargeManagementController extends BaseController<ChargeManagement,
     }
 
     /**
-     * 体检收费记录新增
-     */
-    @PostMapping("/saveInspect")
-    public ApiResponse<String> saveInspect(ChargeManagement entity){
-        return service.saveInspect(entity);
-    }
-
-    /**
      * 体检费驳回
      * @param id
      * @return
@@ -77,13 +69,6 @@ public class ChargeManagementController extends BaseController<ChargeManagement,
         return service.removeEntity(id);
     }
 
-    /**
-     * 其他收支录入
-     */
-    @PostMapping("/otherCharge")
-    public ApiResponse<String> otherCharge(ChargeManagement entity){
-        return service.saveOtherCharge(entity);
-    }
 
     /**
      * 收费审核确认

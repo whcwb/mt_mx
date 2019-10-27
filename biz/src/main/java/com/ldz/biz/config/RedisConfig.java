@@ -89,13 +89,7 @@ public class RedisConfig {
 		// 订阅过期 topic
 		// 设置监听的Topic
 		SysMessageService sysMessageService = SpringContextUtil.getBean(SysMessageService.class);
-		MessageReceiver messageReceiver = new MessageReceiver(redisTemplateUtil,sysMessageService);
-//
-		container.addMessageListener(messageReceiver, topics);
-
 		PatternTopic channelTopic = new PatternTopic("__keyevent@8__:expired");
-		container.addMessageListener(new ExpireMessageReceiver(redisTemplateUtil,sysMessageService) , channelTopic);
-		//这个container 可以添加多个 messageListener
 		return container;
 	}
 

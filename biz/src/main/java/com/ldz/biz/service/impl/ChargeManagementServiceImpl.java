@@ -49,8 +49,7 @@ public class ChargeManagementServiceImpl extends BaseServiceImpl<ChargeManagemen
 
     @Autowired
     private ChargeManagementMapper baseMapper;
-    @Autowired
-    private ChargeItemManagementService itemManagementService;
+
     @Autowired
     private TraineeInformationService traineeInformationService;
     @Autowired
@@ -61,49 +60,10 @@ public class ChargeManagementServiceImpl extends BaseServiceImpl<ChargeManagemen
     private ZdxmService zdxmService;
     @Autowired
     private ChargePrintlogService printlogService;
-    @Autowired
-    private BizExceptionService exceptionService;
 
     @Override
     protected Mapper<ChargeManagement> getBaseMapper() {
         return baseMapper;
-    }
-
-    @Override
-    public ApiResponse<String> saveInspect(ChargeManagement entity) {
-
-        SysYh currentUser = getCurrentUser();
-
-        RuntimeCheck.ifBlank(entity.getIdCardNo(), "身份证号不能为空");
-        RuntimeCheck.ifBlank(entity.getChargeSource(), "体检收费驾校不能为空");
-        RuntimeCheck.ifBlank(entity.getChargeType(), "收费类型不能为空");
-        RuntimeCheck.ifBlank(entity.getTraineeName(), "学员姓名不能为空");
-        SimpleCondition condition = new SimpleCondition(ChargeManagement.class);
-        condition.eq(ChargeManagement.InnerColumn.chargeCode, FeeType.INSPECT);
-        condition.eq(ChargeManagement.InnerColumn.idCardNo, entity.getIdCardNo());
-        condition.and().andCondition(" zt != '20' and zt != '30'");
-        List<ChargeManagement> managementList = findByCondition(condition);
-        RuntimeCheck.ifTrue(CollectionUtils.isNotEmpty(managementList), "学员已缴费,请勿重复录入");
-        // 查询体检费用
-        ChargeItemManagement itemManagement = new ChargeItemManagement();
-        itemManagement.setChargeCode(FeeType.INSPECT);
-        List<ChargeItemManagement> managements = itemManagementService.findByEntity(itemManagement);
-        ChargeItemManagement management = managements.get(0);
-        entity.setId(genId());
-        entity.setChargeFee(management.getAmount());
-        entity.setChargeName(management.getChargeName());
-        entity.setChargeTime(DateUtils.getNowTime());
-        // 收入
-        entity.setInOutType("00");
-        entity.setReceiver(currentUser.getZh() + "-" + currentUser.getXm());
-        // 外校
-        entity.setTraineeSource("10");
-        entity.setChargeCode(management.getChargeCode());
-        entity.setCjr(currentUser.getZh() + "-" + currentUser.getXm());
-        entity.setCjsj(DateUtils.getNowTime());
-        save(entity);
-
-        return ApiResponse.saveSuccess();
     }
 
     @Override
@@ -125,93 +85,6 @@ public class ChargeManagementServiceImpl extends BaseServiceImpl<ChargeManagemen
             statusService.saveEntity(information, "撤回分期还款", "00", "分期还款撤回");
         }
         remove(id);
-        return ApiResponse.success();
-    }
-
-    @Override
-    public ApiResponse<String> saveOtherCharge(ChargeManagement entity) {
-        SysYh currentUser = getCurrentUser();
-
-        /*RuntimeCheck.ifTrue(entity.getChargeFee() <=0 , "收支金额不能为小于0的整数");*/
-        RuntimeCheck.ifBlank(entity.getChargeType(), "收款方式不能为空");
-        RuntimeCheck.ifBlank(entity.getChargeCode(), "收费代码不能为空");
-        ChargeItemManagement managements = null;
-        if (StringUtils.equals(entity.getChargeCode(), FeeType.STAGING)) {
-
-            RuntimeCheck.ifBlank(entity.getTraineeId(), "学员id不能为空");
-            TraineeInformation traineeInformation = traineeInformationService.findById(entity.getTraineeId());
-            if (!ObjectUtils.isEmpty(traineeInformation)) {
-                if (StringUtils.isNotBlank(entity.getTraineeName()) && !StringUtils.equals(entity.getTraineeName(), traineeInformation.getName())) {
-                    return ApiResponse.fail("学员姓名与当前记录不符");
-                }
-                if (StringUtils.equals(traineeInformation.getStatus(), "99")) {
-                    return ApiResponse.fail("学员尚未确认缴纳学费,不能进行分期还款");
-                }
-                // 欠费金额
-                int oweAmount = traineeInformation.getOweAmount();
-
-                traineeInformation.setOweAmount(0);
-                // 不欠费
-                traineeInformation.setArrearage("00");
-                traineeInformationService.update(traineeInformation);
-                entity.setTraineeName(traineeInformation.getName());
-                entity.setIdCardNo(traineeInformation.getIdCardNo());
-                entity.setChargeFee(oweAmount);
-                entity.setChargeSource(traineeInformation.getJgmc());
-            } else {
-                return ApiResponse.fail("系统中不存在该学员信息");
-            }
-        } else {
-            managements = itemManagementService.findById(entity.getChargeCode());
-            if (ObjectUtils.isEmpty(managements)) {
-                return ApiResponse.fail("不存在该费用项");
-            }
-            if (entity.getChargeFee() == null || entity.getChargeFee() <= 0) {
-                entity.setChargeFee(managements.getAmount());
-            }
-            entity.setChargeCode(managements.getChargeCode());
-        }
-
-        if (StringUtils.isNotBlank(entity.getIdCardNo())) {
-            SimpleCondition condition = new SimpleCondition(TraineeInformation.class);
-            condition.eq(TraineeInformation.InnerColumn.idCardNo, entity.getIdCardNo());
-            condition.setOrderByClause(" registration_time desc ");
-            List<TraineeInformation> traineeInformations = traineeInformationService.findByCondition(condition);
-
-            if (CollectionUtils.isNotEmpty(traineeInformations)) {
-                TraineeInformation traineeInformation = traineeInformations.get(0);
-                if (StringUtils.isNotBlank(entity.getTraineeName()) && !StringUtils.equals(entity.getTraineeName(), traineeInformation.getName())) {
-                    return ApiResponse.fail("学员姓名与当前记录不符");
-                }
-                entity.setTraineeId(traineeInformation.getId());
-                entity.setChargeSource(traineeInformation.getJgmc());
-            }
-        }
-        entity.setReceiver(currentUser.getZh() + "-" + currentUser.getXm());
-        entity.setChargeTime(DateUtils.getNowTime());
-        entity.setCjr(currentUser.getZh() + "-" + currentUser.getXm());
-        entity.setCjsj(DateUtils.getNowTime());
-
-        if (!ObjectUtils.isEmpty(managements)) {
-            entity.setChargeName(managements.getChargeName());
-            entity.setInOutType(managements.getInOutType());
-        } else if (entity.getChargeCode().equals(FeeType.STAGING)) {
-            entity.setChargeName("分期尾款");
-            entity.setInOutType("00");
-        }
-        entity.setId(genId());
-        save(entity);
-        if (entity.getChargeCode().equalsIgnoreCase(FeeType.STAGING)) {
-            TraineeInformation traineeInformation = traineeInformationService.findById(entity.getTraineeId());
-
-            BizException exception = new BizException();
-            exception.setXm(traineeInformation.getName());
-            exception.setSfzmhm(traineeInformation.getIdCardNo());
-            exception.setCode("903");
-            exception.setLsh(traineeInformation.getSerialNum());
-            exceptionService.clearException(exception, exception.getCode());
-            statusService.saveEntity(traineeInformation, "分期尾款收费", "00", "分期尾款收费");
-        }
         return ApiResponse.success();
     }
 
