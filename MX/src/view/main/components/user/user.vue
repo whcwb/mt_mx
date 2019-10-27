@@ -138,8 +138,10 @@
         isqp(){
           if (this.qp){
               this.qitqp()
+              this.qp = false
           }else {
               this.qpqp()
+              this.qp = true
           }
         },
         qpqp(){
