@@ -7,7 +7,6 @@ import com.google.common.collect.Maps;
 import com.ldz.biz.constant.FeeType;
 import com.ldz.biz.constant.Status;
 import com.ldz.biz.mapper.TraineeInformationMapper;
-import com.ldz.biz.mapper.TraineeTestInfoMapper;
 import com.ldz.biz.model.*;
 import com.ldz.biz.service.*;
 import com.ldz.sys.base.BaseServiceImpl;
@@ -61,15 +60,9 @@ public class TraineeInformationServiceImpl extends BaseServiceImpl<TraineeInform
     @Autowired
     private JgService jgService;
 
-    @Autowired
-    private TraineeTestInfoService traineeTestInfoService;
-
-    @Autowired
-    private ChargeManagementService chargeManagementService;
     @Autowired // 学员状态表
     private TraineeStatusService traineeStatusService;
-    @Autowired
-    private TraineeTestInfoMapper testInfoMapper;
+
 
 
     //	学员图片地址  学员图片地址 headImg--头像   elecSign--电子签名  cardFront-身份证正面  cardBack-身份证反面

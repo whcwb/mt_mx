@@ -54,12 +54,12 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
     @Override
     public ApiResponse<String> saveEntity(BizLcCl entity) {
         ApiResponse<String> result = new ApiResponse<>();
-        RuntimeCheck.ifBlank(entity.getClBh(), "车辆编号");
-        RuntimeCheck.ifBlank(entity.getClHm(), "车牌号码");
-        RuntimeCheck.ifBlank(entity.getClKc(), "所属考场");
-        RuntimeCheck.ifBlank(entity.getClKm(), "车辆科目");
+        RuntimeCheck.ifBlank(entity.getClBh(), "车辆编号不能为空");
+        RuntimeCheck.ifBlank(entity.getClHm(), "车牌号码不能为空");
+        RuntimeCheck.ifBlank(entity.getClKc(), "所属考场不能为空");
+        RuntimeCheck.ifBlank(entity.getClKm(), "车辆科目不能为空");
         // RuntimeCheck.ifBlank(entity.getZgId(),"安全员");
-        RuntimeCheck.ifBlank(entity.getClCx(), "车型");
+        RuntimeCheck.ifBlank(entity.getClCx(), "车型不能为空");
 
         SimpleCondition condition = new SimpleCondition(BizLcCl.class);
         condition.eq(BizLcCl.InnerColumn.clBh, entity.getClBh());

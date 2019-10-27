@@ -95,9 +95,8 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     	if (gndm==null) {
     		save(gn);
 		}else {
-			update(gn);
+			gnMapper.updateByPrimaryKey(gn);
 		}
-
         // 更新角色权限缓存
         // 获取具有该权限的角色
         List<String> ids = jsGnMapper.findJsIdsByGndm(gn.getGndm());
@@ -124,7 +123,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
                 List<String> apiQzs = gns.stream().map(SysGn::getApiQz).distinct().collect(Collectors.toList());
                 StringBuilder sb = new StringBuilder();
                 // 拼接api 前缀
-                apiQzs.stream().forEach(s1 -> {
+                apiQzs.forEach(s1 -> {
                     sb.append(s1).append(",");
                 });
                 //   存储 角色功能 api
@@ -185,7 +184,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
             jsGns.add(jsGn);
         }
         jsGnMapper.insertList(jsGns);
-        cachePermission(Arrays.asList(jsdm));
+        cachePermission(Collections.singletonList(jsdm));
         return ApiResponse.success();
     }
 

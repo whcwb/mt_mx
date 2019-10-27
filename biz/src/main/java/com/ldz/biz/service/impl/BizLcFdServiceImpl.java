@@ -33,7 +33,7 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 			return;
 		}
 		List<BizLcFd> lcFds = pageInfo.getList();
-		lcFds.stream().forEach(bizLcFd -> {
+		lcFds.forEach(bizLcFd -> {
 			List<BizLcJl> jlList = jlService.findEq(BizLcJl.InnerColumn.fdId, bizLcFd.getId());
 			bizLcFd.setJlList(jlList);
 		});
@@ -45,7 +45,7 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 			return;
 		}
 
-		result.stream().forEach(bizLcFd -> {
+		result.forEach(bizLcFd -> {
 			List<BizLcJl> jlList = jlService.findEq(BizLcJl.InnerColumn.fdId, bizLcFd.getId());
 			bizLcFd.setJlList(jlList);
 		});
