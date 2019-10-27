@@ -39,18 +39,17 @@
           <table-area :pager="false" :parent="v"></table-area>
         </Col>
         <Col span="3">
-
           <Row style="padding: 10px">
-            <Button size="large" type="Default" long @click="yyClick">预约</Button>
+            <Button class="rbutton" size="large" type="Default" long @click="yyClick">预约</Button>
           </Row>
           <Row style="padding: 10px">
-            <Button size="large" type="Default" long @click="componentName='keyypd'">预约排队:{{yyrs}}</Button>
+            <Button class="rbutton" size="large" type="Default" long @click="componentName='keyypd'">预约排队:{{yyrs}}</Button>
           </Row>
           <Row style="padding: 10px">
-            <Button size="large"   type="Default"  long  @click="faCar">发车</Button>
+            <Button class="rbutton" size="large"   type="Default"  long  @click="faCar">发车</Button>
           </Row>
           <Row style="padding: 10px">
-            <Button  size="large" long type="Default"
+            <Button class="rbutton" size="large" long type="Default"
                      @click="giveCar.overCar(v,'2'),printClose=true">
               还车
             </Button>
@@ -616,10 +615,11 @@
 
 <style scoped>
   .rbutton{
-    height: 55px;
+    height: 80px;
+    background-color: #8a8a8a;
+    color: #F0F0F0;
     font-size: 20px;
-    font-weight: 600;
-    padding: 20px;
+    font-weight: 600
   }
   .demo-drawer-footer {
     width: 100%;
