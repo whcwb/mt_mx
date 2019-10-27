@@ -199,7 +199,6 @@ public class TraineeInformation implements Serializable {
 
     /**
      * 受理状态  00：未受理 10：受理中 20：已受理
-     *
      */
     @Column(name = "accept_status")
     private String acceptStatus;
@@ -342,6 +341,7 @@ public class TraineeInformation implements Serializable {
 
     /**
      * 优惠审核人
+     *
      * @return
      */
     @Column(name = "reduce_verifier")
@@ -447,12 +447,6 @@ public class TraineeInformation implements Serializable {
     private String acceptor;
 
 
-    @Transient
-    private ChargeManagement chargeRecord;
-
-    @Transient
-    private TraineeTestInfo testInfo;
-
     /**
      * 机构电话
      */
@@ -465,11 +459,6 @@ public class TraineeInformation implements Serializable {
     @Transient
     private String jgLx;
 
-    @Transient
-    private List<ChargeManagement> managements;
-
-    @Transient
-    private List<TraineeTestInfo> testInfos;
 
     @Transient
     private List<TraineeStatus> statuses;
@@ -662,13 +651,6 @@ public class TraineeInformation implements Serializable {
         this.jgPhone = jgPhone;
     }
 
-    public List<ChargeManagement> getManagements() {
-        return managements;
-    }
-
-    public void setManagements(List<ChargeManagement> managements) {
-        this.managements = managements;
-    }
 
     public List<TraineeStatus> getStatuses() {
         return statuses;
@@ -678,13 +660,6 @@ public class TraineeInformation implements Serializable {
         this.statuses = statuses;
     }
 
-    public List<TraineeTestInfo> getTestInfos() {
-        return testInfos;
-    }
-
-    public void setTestInfos(List<TraineeTestInfo> testInfos) {
-        this.testInfos = testInfos;
-    }
 
     /**
      * 获取主键
@@ -726,22 +701,6 @@ public class TraineeInformation implements Serializable {
      */
     public void setId(String id) {
         this.id = id;
-    }
-
-    public TraineeTestInfo getTestInfo() {
-        return testInfo;
-    }
-
-    public void setTestInfo(TraineeTestInfo testInfo) {
-        this.testInfo = testInfo;
-    }
-
-    public ChargeManagement getChargeRecord() {
-        return chargeRecord;
-    }
-
-    public void setChargeRecord(ChargeManagement chargeRecord) {
-        this.chargeRecord = chargeRecord;
     }
 
     /**
@@ -1423,6 +1382,7 @@ public class TraineeInformation implements Serializable {
 
     /**
      * 获取科目二状态 00: 培训 10：已约考 20：已缴费 30：不合格 40：合格
+     *
      * @return sec_sub - 科目二状态
      */
     public String getSecSub() {

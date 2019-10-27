@@ -1,7 +1,6 @@
 package com.ldz.biz.mapper;
 
 import com.ldz.biz.model.TraineeInformation;
-import com.ldz.biz.model.TraineeTestInfo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;

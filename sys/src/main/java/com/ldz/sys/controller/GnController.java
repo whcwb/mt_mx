@@ -38,11 +38,10 @@ public class GnController extends BaseController<SysGn, String> {
     @Override
     @RequestMapping(value="/save", method={RequestMethod.POST})
     public ApiResponse<String> save(@Valid SysGn entity) {
-
         return gnService.saveEntity(entity);
     }
 
-    @RequestMapping("initMenu")
+    @RequestMapping("/initMenu")
     public ApiResponse<String> initMenu(String menus){
         List<Menu> menuList = JsonUtil.toList(menus,Menu.class);
         return gnService.initMenu(menuList);
