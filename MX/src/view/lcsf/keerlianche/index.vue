@@ -677,9 +677,9 @@
         })
       },
       save() {//发车
-        if (this.formData.cardNo == null || this.formData.cardNo == '') {
-          this.readkar();
-        } else {
+        // if (this.formData.cardNo == null || this.formData.cardNo == '') {
+          // this.readkar();
+        // } else {
           this.formData.notShowLoading = 'true'
           this.$http.post('/api/lcjl/save', this.formData).then(res => {
             if (res.code == 200) {
@@ -702,7 +702,7 @@
             }
           }).catch(err => {
           })
-        }
+        // }
       },
       yy() {           //预约练车
 
