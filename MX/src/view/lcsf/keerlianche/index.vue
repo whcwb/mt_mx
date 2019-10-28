@@ -309,10 +309,10 @@
         param: {
           notShowLoading: 'true',
           orderBy: 'jssj desc',
-          kssjIsNotNull: '1',
+          // kssjIsNotNull: '1',
           total: 0,
           lcKm: 2,
-          kssjInRange: '',
+          cjsjInRange: '',
           zhLike: ''
         },
         pageData: [],
@@ -346,7 +346,7 @@
     },
     created() {
       this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
-      this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
+      this.param.cjsjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       this.util.initTable(this);
       this.getCoachList()
       this.getCarList();
@@ -468,15 +468,15 @@
         })
       },
       faCar(name) {
-        if (!!window.ActiveXObject || "ActiveXObject" in window) {
-        } else {
-          this.swal({
-            title: '请使用IE10以上的浏览器',
-            type: 'warning',
-            confirmButtonText: '关闭'
-          })
-          return
-        }
+        // if (!!window.ActiveXObject || "ActiveXObject" in window) {
+        // } else {
+        //   this.swal({
+        //     title: '请使用IE10以上的浏览器',
+        //     type: 'warning',
+        //     confirmButtonText: '关闭'
+        //   })
+        //   return
+        // }
         var v = this
         this.DrawerVal = true
         this.mxlx = name
@@ -702,11 +702,38 @@
             }
           }).catch(err => {
           })
+          if (this.mxlx == 'py' || this.mxlx =='kf'){
+              //打印票据
+          }
         // }
       },
-      yy() {           //预约练车
-
-      }
+      yy() {
+          //预约练车
+          let appoint = this.formData.jlCx+','+'1'+','+''
+          this.$http.post('/api/lcjl/saveJl', {jlId:this.formData.jlId,appoint:appoint,lcKm:2}).then((res) => {
+                  if (res.code == 200) {
+                      this.DrawerVal = false;
+                      this.AMess = [{}];
+                      this.formData = {};
+                      this.formData.lcLx = '00';
+                      this.swal({
+                          title: '已成功预约',
+                          type: 'success',
+                          showCancelButton: false,
+                          confirmButtonText: '确定',
+                      })
+                      this.util.initTable(this);
+                  } else {
+                      this.swal({
+                          title: res.message,
+                          type: 'warning',
+                          showCancelButton: false,
+                          confirmButtonText: '确定',
+                      })
+                      this.formData.cardNo = null
+                  }
+              })
+          },
     },
   }
 </script>
