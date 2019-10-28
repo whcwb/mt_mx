@@ -29,13 +29,13 @@
         <!--{{todayTime_N}}-->
       <!--</div>-->
     </Button>
-    <Tooltip content="全屏" style="margin-right: 16px">
-      <Button type="info"
-              size="small"
-              @click="isqp">
-        <Icon type="ios-albums-outline" size="24" color="#fff"/>
-      </Button>
-    </Tooltip>
+<!--    <Tooltip content="全屏" style="margin-right: 16px">-->
+<!--      <Button type="info"-->
+<!--              size="small"-->
+<!--              @click="isqp">-->
+<!--        <Icon type="ios-albums-outline" size="24" color="#fff"/>-->
+<!--      </Button>-->
+<!--    </Tooltip>-->
     <Tooltip content="UKey驱动下载" style="margin-right: 16px">
       <Button type="warning"
               size="small"

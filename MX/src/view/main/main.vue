@@ -32,7 +32,7 @@
         <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange">
           <user :user-avator="userAvator" @on-closeAll="handleCloseTag"/>
           <!--<language @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>-->
-          <!--<fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>-->
+          <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
         </header-bar>
       </div>
       <div class="box_col_100">
