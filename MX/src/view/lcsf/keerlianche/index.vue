@@ -1,7 +1,7 @@
 <template>
   <div class="box_col">
     <Row style="margin-bottom: 18px" type="flex" align="bottom">
-      <Col span="4">
+      <Col span="24">
         <pager-tit title="科二模训" style="float: left"></pager-tit>
         <!--<div style="float: left;margin-top: 8px;cursor: pointer">-->
         <!--<span style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>-->
@@ -134,8 +134,8 @@
           </Col>
         </Row>
         <!--<radio-car v-if="carMess == null"-->
-                   <!--clKm="2"-->
-                   <!--@getCarItemMess="getCarItemMess"-->
+        <!--clKm="2"-->
+        <!--@getCarItemMess="getCarItemMess"-->
         <!--&gt;</radio-car>-->
 
         <component :is="compName" :jxmc="jlJx"
@@ -153,14 +153,14 @@
           </Col>
           <Col span="12">
             <FormItem label="金额" label-position="top">
-<!--              <Select v-model="formData.lcFy"-->
-<!--                      filterable-->
-<!--                      clearable-->
-<!--                      remote-->
-<!--              >-->
-<!--                <Option v-for="(it,index) in fylist" :value="it.by5" :key="index">{{it.by5}}</Option>-->
-<!--              </Select>-->
-                            <Input v-model="formData.lcFy"/>
+              <!--              <Select v-model="formData.lcFy"-->
+              <!--                      filterable-->
+              <!--                      clearable-->
+              <!--                      remote-->
+              <!--              >-->
+              <!--                <Option v-for="(it,index) in fylist" :value="it.by5" :key="index">{{it.by5}}</Option>-->
+              <!--              </Select>-->
+              <Input v-model="formData.lcFy"/>
             </FormItem>
           </Col>
         </Row>
@@ -194,7 +194,7 @@
               >
                 <Option v-for="(it,index) in fylist" :value="it.by5" :key="index">{{it.by5}}</Option>
               </Select>
-<!--              <Input v-model="formData.xyZjhm"/>-->
+              <!--              <Input v-model="formData.xyZjhm"/>-->
             </FormItem>
           </Col>
         </Row>
@@ -296,32 +296,49 @@
           {
             title: '操作', fixed: 'right', width: 80, render: (h, p) => {
               let buttons = [];
-              buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
-                this.hisPrintMess = p.row
-                this.componentName = 'print'
-              }));
+              var v = this
+              if (!p.row.kssj || p.row.kssj === '') {       //预约
+                buttons.push(this.util.buildButton(this, h, 'warning', 'md-card', '制卡', () => {
+                  this.faCar('kk')
+                }));
 
-              var v=this
-              buttons.push(this.util.buildButton(this, h, 'error', 'md-card', '还卡', () => {
-                  if (p.row.lcLx == '20'||p.row.lcLx =='30'){
-                      this.$http.post('/api/lcjl/updateJssj',{id:p.row.id}).then((res)=>{
-                          if (res.code==200){
-                              this.$Message.success(res.message)
-                              this.util.initTable(this);
-                          }
-                      })
-                  }else {
-                      this.giveCar.overCar(v,'2'),printClose=true
+                buttons.push(this.util.buildButton(this, h, 'error', 'md-close', '删除', () => {
+
+                  this.swal({
+                    title: '确定取消该学员的预约？',
+                    type: 'warning',
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    showCancelButton: true
+                  }).then(res => {
+                    if (res.value) {
+                      this.removeYY(p.row.id)
+                    } else {
+
+                    }
+                  })
+                }));
+              }
+              else {
+                buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
+                  this.hisPrintMess = p.row
+                  this.componentName = 'print'
+                }));
+
+                buttons.push(this.util.buildButton(this, h, 'error', 'md-card', '还卡', () => {
+                  if (p.row.lcLx == '20' || p.row.lcLx == '30') {
+                    this.$http.post('/api/lcjl/updateJssj', {id: p.row.id}).then((res) => {
+                      if (res.code == 200) {
+                        this.$Message.success(res.message)
+                        this.util.initTable(this);
+                      }
+                    })
+                  } else {
+                    this.giveCar.overCar(v, '2'), printClose = true
                   }
 
-              }));
-
-                  if (!p.row.kssj || p.row.kssj === '') {
-                      buttons.push(this.util.buildButton(this, h, 'warning', 'md-card', '制卡', () => {
-
-                          this.fa
-                      }));
-                  }
+                }));
+              }
               return h('div', buttons);
             }
           }
@@ -334,9 +351,9 @@
         clId: '',
         showFQfzkp: false,
         formData: {
-            lcKm:2,
-            lcLx:'',
-            lcFy:'900',
+          lcKm: 2,
+          lcLx: '',
+          lcFy: '900',
           cardNo: '',
           clBh: '',
           lcClId: '',
@@ -377,7 +394,7 @@
           // this.Ch_LcTime()
           this.jump()
         }, 60000),
-          fylist:[]
+        fylist: []
       }
     },
     watch: {
@@ -406,18 +423,18 @@
       //   this.jump()
       // }, 1000)
       // this.getYYdj()
-        this.getzdlist()
+      this.getzdlist()
     },
     beforeDestroy() {
       clearInterval(this.IntervalKE)
     },
     methods: {
-        getzdlist(){
-           let a =  sessionStorage.getItem('dictMap')
-            a = JSON.parse(a)
-            this.fylist = a[67].zdxmList
-            console.log(this.fylist);
-        },
+      getzdlist() {
+        let a = sessionStorage.getItem('dictMap')
+        a = JSON.parse(a)
+        this.fylist = a[67].zdxmList
+        console.log(this.fylist);
+      },
       jump() {
         this.total = 0;
         for (let r of this.pageData) {
@@ -527,7 +544,7 @@
         })
       },
       faCar(name) {
-        if(name==='kk') {
+        if (name === 'kk') {
           if (!!window.ActiveXObject || "ActiveXObject" in window) {
           } else {
             this.swal({
@@ -537,80 +554,64 @@
             })
             return
           }
-        var v = this
-
-        this.giveCar.readCard((key,mess)=>{
-          this.mxlx=name
-          if(!key){
-            if (this.DrawerVal) {
-              let v = this
-              setTimeout(() => {
-                if (v.DrawerVal) {
-                  this.faCar()
-                }
-              }, 200)
-            }
-            if (v.showFQfzkp) {
-              return;
-            }
-            v.showFQfzkp = true;
-            v.swal({
-              title:mess,
-              type:'error',
-              confirmButtonText: '发车',
-              cancelButtonText: '取消',
-              showCancelButton: true
-            }).then((res) => {
-              if (res.value) {
-                v.showFQfzkp = false;
-                v.faCar()
-              } else {
-                v.showFQfzkp = false;
-                v.showQfshowFQfzkpzkp = false;
-                v.DrawerVal = false
-                v.mxlx=''
-              }
-            })
-          }else {
-            this.AF.carCard('2', mess, (type, res) => {
-              console.log('**********', res);
-              if (type) {
-                if (res.result) {
-                  //如果车辆已经绑卡   返回车辆信息
-                  v.carMess = res.result
-                  this.formData.lcClId = v.carMess.id
-                }
-                this.DrawerVal = true;
-                v.showFQfzkp = false;
-                this.formData.cardNo = mess;
-              } else {
-                this.DrawerVal = false;
-                this.mxlx=''
-                return
-              }
-            })
-          }
-        })}else {
           var v = this
-          this.mxlx=name
+
+          this.giveCar.readCard((key, mess) => {
+            this.mxlx = name
+            if (!key) {
+              if (this.DrawerVal) {
+                let v = this
+                setTimeout(() => {
+                  if (v.DrawerVal) {
+                    this.faCar()
+                  }
+                }, 200)
+              }
+              if (v.showFQfzkp) {
+                return;
+              }
+              v.showFQfzkp = true;
+              v.swal({
+                title: mess,
+                type: 'error',
+                confirmButtonText: '发车',
+                cancelButtonText: '取消',
+                showCancelButton: true
+              }).then((res) => {
+                if (res.value) {
+                  v.showFQfzkp = false;
+                  v.faCar()
+                } else {
+                  v.showFQfzkp = false;
+                  v.showQfshowFQfzkpzkp = false;
+                  v.DrawerVal = false
+                  v.mxlx = ''
+                }
+              })
+            } else {
+              this.AF.carCard('2', mess, (type, res) => {
+                console.log('**********', res);
+                if (type) {
+                  if (res.result) {
+                    //如果车辆已经绑卡   返回车辆信息
+                    v.carMess = res.result
+                    this.formData.lcClId = v.carMess.id
+                  }
+                  this.DrawerVal = true;
+                  v.showFQfzkp = false;
+                  this.formData.cardNo = mess;
+                } else {
+                  this.DrawerVal = false;
+                  this.mxlx = ''
+                  return
+                }
+              })
+            }
+          })
+        } else {
+          var v = this
+          this.mxlx = name
           this.DrawerVal = true;
-          // v.swal({
-          //   title:mess,
-          //   type:'error',
-          //   confirmButtonText: '发车',
-          //   cancelButtonText: '取消',
-          //   showCancelButton: true
-          // }).then((res) => {
-          //   if (res.value) {
-          //     v.showFQfzkp = false;
-          //     v.faCar()
-          //   } else {
-          //     v.showFQfzkp = false;
-          //     v.showQfshowFQfzkpzkp = false;
-          //     v.DrawerVal = false
-          //     v.mxlx=''
-          //   }
-          // })
         }
       },
       readkar(callback) {
@@ -685,6 +686,23 @@
       addjlSaveOk(id) {
         this.getCoachList(id)
       },
+      removeYY(id){
+        this.$http.post('/api/lcjl/remove/'+id).then((res) => {
+          if (res.code == 200) {
+            this.util.initTable(this);
+            this.swal({
+              title: '取消成功',
+              type: 'success',
+              confirmButtonText: '确定',
+            })
+          } else {
+            this.swal({
+              title: res.message,
+              type: 'warning'
+            })
+          }
+        })
+      },
       getCarList() {//获取车辆
         this.param.clBh = this.formData.clBh
         this.zxNum = 0;
@@ -739,77 +757,77 @@
       },
       save() {//发车
         // if (this.formData.cardNo == null || this.formData.cardNo == '') {
-          // this.readkar();
+        // this.readkar();
         // } else {
         //   this.formData.notShowLoading = 'true'
-          if (this.mxlx == 'kk'){
-              this.formData.lcLx = ''
-              this.formData.lcKm = 2
-          }
-          if(this.mxlx == 'py'){
-              this.formData.lcLx = '20'
+        if (this.mxlx == 'kk') {
+          this.formData.lcLx = ''
+          this.formData.lcKm = 2
+        }
+        if (this.mxlx == 'py') {
+          this.formData.lcLx = '20'
 
-              this.formData.lcKm = 2
-          }
-          if (this.mxlx == 'kf'){
-              this.formData.lcLx = '30'
+          this.formData.lcKm = 2
+        }
+        if (this.mxlx == 'kf') {
+          this.formData.lcLx = '30'
 
-              this.formData.lcKm = 2
-          }
-          this.$http.post('/api/lcjl/save', this.formData).then(res => {
-            if (res.code == 200) {
-              this.DrawerVal = false;
-              this.util.initTable(this);
-              this.swal({
-                title: '发车成功',
-                type: 'success',
-                confirmButtonText: '确定',
-              })
-              this.carMess = null
-                if (this.mxlx == 'py' || this.mxlx =='kf'){
-                    //打印票据
-                    // this.printHc(this.formData)
-                }
-              this.formData.jlCx = 'C1'
-            } else {
-              this.formData.cardNo = null;
-              this.swal({
-                title: res.message,
-                type: 'warning'
-              })
+          this.formData.lcKm = 2
+        }
+        this.$http.post('/api/lcjl/save', this.formData).then(res => {
+          if (res.code == 200) {
+            this.DrawerVal = false;
+            this.util.initTable(this);
+            this.swal({
+              title: '发车成功',
+              type: 'success',
+              confirmButtonText: '确定',
+            })
+            this.carMess = null
+            if (this.mxlx == 'py' || this.mxlx == 'kf') {
+              //打印票据
+              // this.printHc(this.formData)
             }
-          }).catch(err => {
-          })
+            this.formData.jlCx = 'C1'
+          } else {
+            this.formData.cardNo = null;
+            this.swal({
+              title: res.message,
+              type: 'warning'
+            })
+          }
+        }).catch(err => {
+        })
 
         // }
       },
       yy() {
-          //预约练车
-          let appoint = this.formData.jlCx+','+'1'+','+''
-          this.$http.post('/api/lcjl/saveJl', {jlId:this.formData.jlId,appoint:appoint,lcKm:2}).then((res) => {
-                  if (res.code == 200) {
-                      this.DrawerVal = false;
-                      this.AMess = [{}];
-                      this.formData = {};
-                      this.formData.lcLx = '00';
-                      this.swal({
-                          title: '已成功预约',
-                          type: 'success',
-                          showCancelButton: false,
-                          confirmButtonText: '确定',
-                      })
-                      this.util.initTable(this);
-                  } else {
-                      this.swal({
-                          title: res.message,
-                          type: 'warning',
-                          showCancelButton: false,
-                          confirmButtonText: '确定',
-                      })
-                      this.formData.cardNo = null
-                  }
-              })
-          },
+        //预约练车
+        let appoint = this.formData.jlCx + ',' + '1' + ',' + ''
+        this.$http.post('/api/lcjl/saveJl', {jlId: this.formData.jlId, appoint: appoint, lcKm: 2}).then((res) => {
+          if (res.code == 200) {
+            this.DrawerVal = false;
+            this.AMess = [{}];
+            this.formData = {};
+            this.formData.lcLx = '00';
+            this.swal({
+              title: '已成功预约',
+              type: 'success',
+              showCancelButton: false,
+              confirmButtonText: '确定',
+            })
+            this.util.initTable(this);
+          } else {
+            this.swal({
+              title: res.message,
+              type: 'warning',
+              showCancelButton: false,
+              confirmButtonText: '确定',
+            })
+            this.formData.cardNo = null
+          }
+        })
+      },
     },
   }
 </script>
