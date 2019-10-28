@@ -111,7 +111,7 @@
               </FormItem>
             </div>
             <div style="padding-top: 22px;">
-              <Button type="primary" @click="compName ='addjl'">
+              <Button type="primary" @click="compName='addjl'">
                 <Icon type="md-add"/>
               </Button>
             </div>
@@ -136,12 +136,12 @@
                    <!--@getCarItemMess="getCarItemMess"-->
         <!--&gt;</radio-car>-->
 
-        <!--<component :is="compName" :jxmc="jlJx"-->
-                   <!--@SaveOk="addjlSaveOk"-->
-                   <!--@colse="clearYY"-->
-                   <!--@remove="getCoachList('',true)"-->
-                   <!--@JLRowClick="JLRowClick"-->
-                   <!--@jxSeljxSel="(val)=>{getCoachList('',true)}"></component>-->
+        <component :is="compName" :jxmc="jlJx"
+                   @SaveOk="addjlSaveOk"
+                   @colse="clearYY"
+                   @remove="getCoachList('',true)"
+                   @JLRowClick="JLRowClick"
+                   @jxSeljxSel="(val)=>{getCoachList('',true)}"></component>
 
         <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='kf'">
           <Col span="12">
@@ -273,6 +273,11 @@
               buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
                 this.hisPrintMess = p.row
                 this.componentName = 'print'
+              }));
+
+              var v=this
+              buttons.push(this.util.buildButton(this, h, 'success', 'md-key', '还卡', () => {
+                this.giveCar.overCar(v,'2'),printClose=true
               }));
               return h('div', buttons);
             }
@@ -468,89 +473,91 @@
         })
       },
       faCar(name) {
-        // if (!!window.ActiveXObject || "ActiveXObject" in window) {
-        // } else {
-        //   this.swal({
-        //     title: '请使用IE10以上的浏览器',
-        //     type: 'warning',
-        //     confirmButtonText: '关闭'
-        //   })
-        //   return
-        // }
-        var v = this
-        this.DrawerVal = true
-        this.mxlx = name
-
-        v.swal({
-          title: mess,
-          type: 'error',
-          confirmButtonText: '发车',
-          cancelButtonText: '取消',
-          showCancelButton: true
-        }).then((res) => {
-          if (res.value) {
-            v.showFQfzkp = false;
-            v.faCar()
+        if(name==='kk') {
+          if (!!window.ActiveXObject || "ActiveXObject" in window) {
           } else {
-            v.showFQfzkp = false;
-            v.showQfshowFQfzkpzkp = false;
-            v.DrawerVal = false
-            v.mxlx = ''
+            this.swal({
+              title: '请使用IE10以上的浏览器',
+              type: 'warning',
+              confirmButtonText: '关闭'
+            })
+            return
           }
-        })
+        var v = this
 
-        // this.giveCar.readCard((key,mess)=>{
-        //   this.mxlx=name
-        //   if(!key){
-        //     if (this.DrawerVal) {
-        //       let v = this
-        //       setTimeout(() => {
-        //         if (v.DrawerVal) {
-        //           this.faCar()
-        //         }
-        //       }, 200)
-        //     }
-        //     if (v.showFQfzkp) {
-        //       return;
-        //     }
-        //     v.showFQfzkp = true;
-        //     v.swal({
-        //       title:mess,
-        //       type:'error',
-        //       confirmButtonText: '发车',
-        //       cancelButtonText: '取消',
-        //       showCancelButton: true
-        //     }).then((res) => {
-        //       if (res.value) {
-        //         v.showFQfzkp = false;
-        //         v.faCar()
-        //       } else {
-        //         v.showFQfzkp = false;
-        //         v.showQfshowFQfzkpzkp = false;
-        //         v.DrawerVal = false
-        //         v.mxlx=''
-        //       }
-        //     })
-        //   }else {
-        //     this.AF.carCard('2', mess, (type, res) => {
-        //       console.log('**********', res);
-        //       if (type) {
-        //         if (res.result) {
-        //           //如果车辆已经绑卡   返回车辆信息
-        //           v.carMess = res.result
-        //           this.formData.lcClId = v.carMess.id
-        //         }
-        //         this.DrawerVal = true;
-        //         v.showFQfzkp = false;
-        //         this.formData.cardNo = mess;
-        //       } else {
-        //         this.DrawerVal = false;
-        //         this.mxlx=''
-        //         return
-        //       }
-        //     })
-        //   }
-        // })
+        this.giveCar.readCard((key,mess)=>{
+          this.mxlx=name
+          if(!key){
+            if (this.DrawerVal) {
+              let v = this
+              setTimeout(() => {
+                if (v.DrawerVal) {
+                  this.faCar()
+                }
+              }, 200)
+            }
+            if (v.showFQfzkp) {
+              return;
+            }
+            v.showFQfzkp = true;
+            v.swal({
+              title:mess,
+              type:'error',
+              confirmButtonText: '发车',
+              cancelButtonText: '取消',
+              showCancelButton: true
+            }).then((res) => {
+              if (res.value) {
+                v.showFQfzkp = false;
+                v.faCar()
+              } else {
+                v.showFQfzkp = false;
+                v.showQfshowFQfzkpzkp = false;
+                v.DrawerVal = false
+                v.mxlx=''
+              }
+            })
+          }else {
+            this.AF.carCard('2', mess, (type, res) => {
+              console.log('**********', res);
+              if (type) {
+                if (res.result) {
+                  //如果车辆已经绑卡   返回车辆信息
+                  v.carMess = res.result
+                  this.formData.lcClId = v.carMess.id
+                }
+                this.DrawerVal = true;
+                v.showFQfzkp = false;
+                this.formData.cardNo = mess;
+              } else {
+                this.DrawerVal = false;
+                this.mxlx=''
+                return
+              }
+            })
+          }
+        })}else {
+          var v = this
+          this.mxlx=name
+          this.DrawerVal = true;
+          // v.swal({
+          //   title:mess,
+          //   type:'error',
+          //   confirmButtonText: '发车',
+          //   cancelButtonText: '取消',
+          //   showCancelButton: true
+          // }).then((res) => {
+          //   if (res.value) {
+          //     v.showFQfzkp = false;
+          //     v.faCar()
+          //   } else {
+          //     v.showFQfzkp = false;
+          //     v.showQfshowFQfzkpzkp = false;
+          //     v.DrawerVal = false
+          //     v.mxlx=''
+          //   }
+          // })
+        }
       },
       readkar(callback) {
         if (!!window.ActiveXObject || "ActiveXObject" in window) {
