@@ -1,7 +1,7 @@
 <template>
   <div class="box_col">
     <Row style="margin-bottom: 18px" type="flex" align="bottom">
-      <Col span="24">
+      <Col span="4">
         <pager-tit title="科二模训" style="float: left"></pager-tit>
         <!--<div style="float: left;margin-top: 8px;cursor: pointer">-->
         <!--<span style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>-->
