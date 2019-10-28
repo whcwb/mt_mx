@@ -28,6 +28,22 @@
             </Row>
             <Row  style="margin-top: 16px;">
               <Col span="20">
+                <InputNumber  v-model="item.by5" :placeholder="'请填写培优费用...'" style="width: 200px;"></InputNumber>
+                <span> 元(培优1)</span>
+              </Col>
+              <Col span="4">
+              </Col>
+            </Row>
+            <Row  style="margin-top: 16px;">
+              <Col span="20">
+                <InputNumber  v-model="item.by6" :placeholder="'请填写培优费用...'" style="width: 200px;"></InputNumber>
+                <span> 元(培优2)</span>
+              </Col>
+              <Col span="4">
+              </Col>
+            </Row>
+            <Row  style="margin-top: 16px;">
+              <Col span="20">
                 <InputNumber  v-model="item.by4" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
                 <span> 元/次</span>
               </Col>

@@ -87,7 +87,9 @@
             </Tag>
           </div>
           <div style="font-size: 16px;margin-right: 28px;margin-top: 7px">
-            <h2>模训发车</h2>
+            <h2 v-if="mxlx=='kk'">开卡训练</h2>
+            <h2 v-if="mxlx=='py'">培优训练</h2>
+            <h2 v-if="mxlx=='kf'">开放训练</h2>
           </div>
         </div>
       </div>
@@ -149,6 +151,18 @@
               <Input v-model="formData.xySl"/>
             </FormItem>
           </Col>
+          <Col span="12">
+            <FormItem label="金额" label-position="top">
+<!--              <Select v-model="formData.lcFy"-->
+<!--                      filterable-->
+<!--                      clearable-->
+<!--                      remote-->
+<!--              >-->
+<!--                <Option v-for="(it,index) in fylist" :value="it.by5" :key="index">{{it.by5}}</Option>-->
+<!--              </Select>-->
+                            <Input v-model="formData.lcFy"/>
+            </FormItem>
+          </Col>
         </Row>
 
 
@@ -166,9 +180,21 @@
         </Row>
 
         <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='py'">
-          <Col span="24">
+          <Col span="12">
             <FormItem label="身份证号" label-position="top">
               <Input v-model="formData.xyZjhm"/>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="金额" label-position="top">
+              <Select v-model="formData.lcFy"
+                      filterable
+                      clearable
+                      remote
+              >
+                <Option v-for="(it,index) in fylist" :value="it.by5" :key="index">{{it.by5}}</Option>
+              </Select>
+<!--              <Input v-model="formData.xyZjhm"/>-->
             </FormItem>
           </Col>
         </Row>
@@ -179,7 +205,7 @@
       </Form>
       <div slot='footer'>
         <Button type="primary" @click="save">发车</Button>
-        <Button type="primary" @click="yy">预约</Button>
+        <Button type="primary" @click="yy" v-if="mxlx==='kk'">预约</Button>
         <Button style="margin-right: 8px" @click="close">取消</Button>
       </div>
     </Modal>
@@ -237,7 +263,7 @@
           {title: '教练电话', key: 'jlDh', minWidth: 90},
           {title: '驾校', key: 'jlJx', minWidth: 90},
           {
-            title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90, render: (h, p) => {
+            title: '车辆类型', key: 'jlCx', minWidth: 90, render: (h, p) => {
               return h('Button', {
                 props: {
                   type: 'error',
@@ -246,14 +272,14 @@
                 style: {
                   borderRadius: '15px'
                 }
-              }, p.row.clBh)
+              }, p.row.jlCx)
             }
           },
           {title: '开始时间', key: 'kssj', searchType: 'daterange', minWidth: 140},
           // {title: '安全员姓名', key: 'zgXm',minWidth:100},
           {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
           {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
-          {title: '练车费用', key: 'showlcFy', minWidth: 90, defaul: '0'},
+          {title: '练车费用', key: 'lcFy', minWidth: 90, defaul: '0'},
           {
             title: '状态', minWidth: 120, render: (h, p) => {
               let s = '';
@@ -276,9 +302,26 @@
               }));
 
               var v=this
-              buttons.push(this.util.buildButton(this, h, 'success', 'md-key', '还卡', () => {
-                this.giveCar.overCar(v,'2'),printClose=true
+              buttons.push(this.util.buildButton(this, h, 'error', 'md-card', '还卡', () => {
+                  if (p.row.lcLx == '20'||p.row.lcLx =='30'){
+                      this.$http.post('/api/lcjl/updateJssj',{id:p.row.id}).then((res)=>{
+                          if (res.code==200){
+                              this.$Message.success(res.message)
+                              this.util.initTable(this);
+                          }
+                      })
+                  }else {
+                      this.giveCar.overCar(v,'2'),printClose=true
+                  }
+
               }));
+
+                  if (!p.row.kssj || p.row.kssj === '') {
+                      buttons.push(this.util.buildButton(this, h, 'warning', 'md-card', '制卡', () => {
+
+                          this.fa
+                      }));
+                  }
               return h('div', buttons);
             }
           }
@@ -291,6 +334,9 @@
         clId: '',
         showFQfzkp: false,
         formData: {
+            lcKm:2,
+            lcLx:'',
+            lcFy:'900',
           cardNo: '',
           clBh: '',
           lcClId: '',
@@ -330,7 +376,8 @@
         IntervalKE: setInterval(() => {
           // this.Ch_LcTime()
           this.jump()
-        }, 60000)
+        }, 60000),
+          fylist:[]
       }
     },
     watch: {
@@ -355,15 +402,22 @@
       this.util.initTable(this);
       this.getCoachList()
       this.getCarList();
-      setTimeout(() => {
-        this.jump()
-      }, 1000)
-      this.getYYdj()
+      // setTimeout(() => {
+      //   this.jump()
+      // }, 1000)
+      // this.getYYdj()
+        this.getzdlist()
     },
     beforeDestroy() {
       clearInterval(this.IntervalKE)
     },
     methods: {
+        getzdlist(){
+           let a =  sessionStorage.getItem('dictMap')
+            a = JSON.parse(a)
+            this.fylist = a[67].zdxmList
+            console.log(this.fylist);
+        },
       jump() {
         this.total = 0;
         for (let r of this.pageData) {
@@ -675,7 +729,7 @@
           if (res.code == 200 && res.result) {
             for (let r of res.result) {
               let py = this.util.parsePY(r.jlXm)
-              this.coachList.push({label: r.jlJx + '_' + r.jlXm + ' [' + py + ']' + '_' + r.jlLxdh, value: r.id});
+              this.coachList.push({label: r.jlJx + '_' + r.jlXm + '[' + py + ']' + '_' + r.jlLxdh, value: r.id});
             }
           }
           if (res.code == 200 && res.result && id) {
@@ -687,12 +741,24 @@
         // if (this.formData.cardNo == null || this.formData.cardNo == '') {
           // this.readkar();
         // } else {
-          this.formData.notShowLoading = 'true'
+        //   this.formData.notShowLoading = 'true'
+          if (this.mxlx == 'kk'){
+              this.formData.lcLx = ''
+              this.formData.lcKm = 2
+          }
+          if(this.mxlx == 'py'){
+              this.formData.lcLx = '20'
+
+              this.formData.lcKm = 2
+          }
+          if (this.mxlx == 'kf'){
+              this.formData.lcLx = '30'
+
+              this.formData.lcKm = 2
+          }
           this.$http.post('/api/lcjl/save', this.formData).then(res => {
             if (res.code == 200) {
               this.DrawerVal = false;
-              this.formData = {};
-              this.getCarList();
               this.util.initTable(this);
               this.swal({
                 title: '发车成功',
@@ -700,6 +766,11 @@
                 confirmButtonText: '确定',
               })
               this.carMess = null
+                if (this.mxlx == 'py' || this.mxlx =='kf'){
+                    //打印票据
+                    // this.printHc(this.formData)
+                }
+              this.formData.jlCx = 'C1'
             } else {
               this.formData.cardNo = null;
               this.swal({
@@ -709,9 +780,7 @@
             }
           }).catch(err => {
           })
-          if (this.mxlx == 'py' || this.mxlx =='kf'){
-              //打印票据
-          }
+
         // }
       },
       yy() {
