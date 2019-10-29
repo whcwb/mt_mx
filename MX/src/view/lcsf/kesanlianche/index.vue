@@ -9,22 +9,22 @@
               <!--<div  style="font-size: 24px;color: #e91b10;line-height: 45px;">-->
                 <!--累计：{{total}} 元-->
               <!--</div>-->
-              <div @click="showOrderList" style="font-size: 24px;color: #2baee9;line-height: 45px;margin: 0 6px"> 当前排队中</div>
-              <div style="margin: 0 6px">
-                <Button style="font-size: 20px;font-weight: 600" @click="showOrderList" type="error">{{yyrs}}</Button>
-              </div>
-              <div style="margin: 0 6px">
-                <Button type="success" style="border-radius: 35px;font-size: 20px" @click="yyClick">预</Button>
-              </div>
-              <div style="margin: 0 6px">
-                <Button type="error" style="border-radius: 35px;font-size: 20px" @click="faCar">发</Button>
-              </div>
-              <div style="margin: 0 6px">
-                <Button size="large" style="border-radius: 35px;font-size: 20px" type="warning"
-                        @click="giveCar.overCar(v,'3'),printClose=true">
-                  还
-                </Button>
-              </div>
+<!--              <div @click="showOrderList" style="font-size: 24px;color: #2baee9;line-height: 45px;margin: 0 6px"> 当前排队中</div>-->
+<!--              <div style="margin: 0 6px">-->
+<!--                <Button style="font-size: 20px;font-weight: 600" @click="showOrderList" type="error">{{yyrs}}</Button>-->
+<!--              </div>-->
+<!--              <div style="margin: 0 6px">-->
+<!--                <Button type="success" style="border-radius: 35px;font-size: 20px" @click="yyClick">预</Button>-->
+<!--              </div>-->
+<!--              <div style="margin: 0 6px">-->
+<!--                <Button type="error" style="border-radius: 35px;font-size: 20px" @click="faCar">发</Button>-->
+<!--              </div>-->
+<!--              <div style="margin: 0 6px">-->
+<!--                <Button size="large" style="border-radius: 35px;font-size: 20px" type="warning"-->
+<!--                        @click="giveCar.overCar(v,'3'),printClose=true">-->
+<!--                  还-->
+<!--                </Button>-->
+<!--              </div>-->
             </div>
       </Col>
       <Col span="12">
@@ -36,7 +36,21 @@
       </Col>
     </Row>
     <div>
-      <table-area sizeTyp="large"  :pager="false" :parent="v"></table-area>
+      <Col span="21">
+        <table-area sizeTyp="large"  :pager="false" :parent="v"></table-area>
+      </Col>
+
+      <Col span="3">
+        <Row style="padding: 5px 10px">
+          <Button class="rbutton" size="large" type="Default" long @click="faCar('kk')">开卡训练</Button>
+        </Row>
+        <Row style="padding: 5px 10px">
+          <Button class="rbutton" size="large" type="Default" long @click="faCar('py')">培优训练</Button>
+        </Row>
+        <Row style="padding: 5px 10px">
+          <Button class="rbutton" size="large" type="Default" long @click="faCar('kf')">按把训练</Button>
+        </Row>
+      </Col>
     </div>
     <!--<div class="box_col_auto" style="background-color: #f2f2f2">-->
       <!--<div class="box_row_list">-->
@@ -46,7 +60,7 @@
       <!--</div>-->
     <!--</div>-->
     <!--分配车辆-->
-    <fcModel ref="fcModel" @close="close" @getCarList='getCarList'></fcModel>
+    <fcModel ref="fcModel" @mxlx="mxlx" @close="close" @getCarList='getCarList'></fcModel>
     <!--<component :is="compName"  @close="close" @getCarList='getCarList'></component>-->
     <!--分配车辆_end-->
     <yyModel ref="yyModel" @close="close" @getCarList='getCarList'></yyModel>
@@ -77,6 +91,7 @@
     components: {carCard, jlwh, addjl, print, carStatistics, PlLazy, orderList, yyModel, addOrder, fcModel,printSl},
     data() {
       return {
+          mxlx:'',
         v: this,
         apiRoot: this.apis.lcjl,
         choosedItem: null,
@@ -249,7 +264,7 @@
         'set_LcTime',
         'Ch_LcTime'
       ]),
-      readCar() {
+      readCar(name) {
         if (!!window.ActiveXObject || "ActiveXObject" in window) {
         } else {
           this.swal({
@@ -505,6 +520,14 @@
 </script>
 
 <style scoped>
+  .rbutton {
+    height: 60px;
+    background-color: #8a8a8a;
+    color: #F0F0F0;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 10px;
+  }
   .demo-drawer-footer {
     width: 100%;
     position: absolute;

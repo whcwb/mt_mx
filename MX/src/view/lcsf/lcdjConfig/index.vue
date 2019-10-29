@@ -1,7 +1,7 @@
 <template>
   <div class="box_col" style="margin-left: 20px;">
     <pager-tit title="费用修改"></pager-tit>
-    <div class="box_col_auto" style="overflow-x: hidden">
+    <div class="box_col_auto" style="overflow-x: hidden;">
       <Row :gutter="12">
         <Col span="8" v-for="(item,index) in list" :prop="item.zdmc" :key="item.zdId" >
           <Card  style="margin-top: 12px;">
@@ -22,6 +22,22 @@
               <Col span="20">
                 <InputNumber  v-model="item.by3" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
                 <span> 元/分钟</span>
+              </Col>
+              <Col span="4">
+              </Col>
+            </Row>
+            <Row  style="margin-top: 16px;">
+              <Col span="20">
+                <InputNumber  v-model="item.by5" :placeholder="'请填写培优费用...'" style="width: 200px;"></InputNumber>
+                <span> 元(培优1)</span>
+              </Col>
+              <Col span="4">
+              </Col>
+            </Row>
+            <Row  style="margin-top: 16px;">
+              <Col span="20">
+                <InputNumber  v-model="item.by6" :placeholder="'请填写培优费用...'" style="width: 200px;"></InputNumber>
+                <span> 元(培优2)</span>
               </Col>
               <Col span="4">
               </Col>

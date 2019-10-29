@@ -45,13 +45,13 @@
       LoginForm
     },
     methods: {
-      ...mapActions([
-        'handleLogin',
-        'getUserInfo'
-      ]),
-      handleSubmit(mess) {
-        // console.log('', mess);
-      }
+        ...mapActions([
+            'handleLogin',
+            'getUserInfo'
+        ]),
+        handleSubmit(mess) {
+            // console.log('', mess);
+        }
     }
   }
 </script>

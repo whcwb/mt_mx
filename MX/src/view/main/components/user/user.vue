@@ -29,6 +29,13 @@
         <!--{{todayTime_N}}-->
       <!--</div>-->
     </Button>
+<!--    <Tooltip content="全屏" style="margin-right: 16px">-->
+<!--      <Button type="info"-->
+<!--              size="small"-->
+<!--              @click="isqp">-->
+<!--        <Icon type="ios-albums-outline" size="24" color="#fff"/>-->
+<!--      </Button>-->
+<!--    </Tooltip>-->
     <Tooltip content="UKey驱动下载" style="margin-right: 16px">
       <Button type="warning"
               size="small"
@@ -91,7 +98,8 @@
         todayTime:'',
         todayTime_N:'',
         compName: '',
-        usermess:{}
+        usermess:{},
+          qp:false
       }
     },
     props: {
@@ -127,6 +135,42 @@
       ...mapActions([
         'handleLogOut'
       ]),
+        isqp(){
+          if (this.qp){
+              this.qitqp()
+              this.qp = false
+          }else {
+              this.qpqp()
+              this.qp = true
+          }
+        },
+        qpqp(){
+            //全屏
+
+            var docElm = document.documentElement;
+            // W3C
+
+            if(docElm.requestFullscreen) { docElm.requestFullscreen(); }
+            // FireFox
+
+            else if(docElm.mozRequestFullScreen) { docElm.mozRequestFullScreen(); }
+            // Chrome等
+
+            else if(docElm.webkitRequestFullScreen) { docElm.webkitRequestFullScreen(); }
+            // IE11
+
+            else if(elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
+        },
+        qitqp(){
+            //W3C
+            if (document.exitFullscreen) { document.exitFullscreen(); }
+            // FireFox
+            else if (document.mozCancelFullScreen) { document.mozCancelFullScreen(); }
+            // Chrome等
+            else if (document.webkitCancelFullScreen) { document.webkitCancelFullScreen(); }
+            // IE11
+            else if (document.msExitFullscreen) { document.msExitFullscreen(); }
+        },
       get(){
         var a = 24*60*60*1000
         var b = Date.parse(new Date())
