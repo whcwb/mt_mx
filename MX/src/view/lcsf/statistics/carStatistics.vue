@@ -2,8 +2,8 @@
   <div>
     <Modal
       v-model="showModal"
-      height="800"
-      width="1800"
+      height="600"
+      width="1600"
       :closable='false'
       :mask-closable="false"
       class-name="vertical-center-modal"
