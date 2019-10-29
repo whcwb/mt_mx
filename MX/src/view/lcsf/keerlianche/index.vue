@@ -408,6 +408,7 @@
         if (n == false) {
           this.compName = ''
           this.formData = {}
+          this.formData.jlCx='C1'
           this.jlJx = ''
         } else {
           // if (this.formData.lcClId == '') {
@@ -516,6 +517,7 @@
         // this.showCAR = false;
         this.carMess = null;
         this.formData = {};
+        this.formData.jlCx='C1'
         this.XY = [];
         this.compName = '';
         this.DrawerVal = false;

@@ -101,8 +101,11 @@ obj.overCar = (v,KM) => {
             })
             return
           }
+
+          let kmtip=KM=== '2' ?`是否结束(${res.result.jlXm})训练?`:`是否结束${res.result.clBh}号车(${res.result.jlXm})训练?`
+
           swal({
-            title: '是否结束'+res.result.clBh+'号车'+'('+res.result.jlXm+')'+'训练？',
+            title: kmtip,
             type: 'warning',
             confirmButtonText: '还车',
             cancelButtonText: '取消',
