@@ -362,7 +362,12 @@
           jlCx: 'C1',
           xyZjhm: '',
           xyXm: '',
-          xyDh: ''
+          xyDh: '',
+          // yhsc:'5',
+          id:'',
+          jlXm:'',
+          jlDh:'',
+          sc:''
         },
         searchCoachList: [],
         loadingJly: false,
@@ -784,9 +789,15 @@
               confirmButtonText: '确定',
             })
             this.carMess = null
+            console.log(res.message)
             if (this.mxlx == 'py' || this.mxlx == 'kf') {
               //打印票据
-              // this.printHc(this.formData)
+              this.formData.id=JSON.parse(res.message).id
+              this.formData.jlXm=JSON.parse(res.message).jlXm
+              this.formData.jlJx=JSON.parse(res.message).jlJx
+              this.formData.sc='-'
+              this.formData.yhsc='5分钟'
+              this.printHc(this.formData)
             }
             this.formData.jlCx = 'C1'
           } else {

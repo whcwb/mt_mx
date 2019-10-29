@@ -107,7 +107,9 @@
     },
     created() {
       this.info = JSON.parse(JSON.stringify(this.hisPrintMess))
-      this.info.sc = this.parseTime(this.info.sc)
+      console.log(this.info,'fsdf')
+      this.info.sc=this.hisPrintMess.sc=='-'?'-':this.parseTime(this.info.sc)
+      // this.info.sc = this.parseTime(this.info.sc)
       this.info.kssj = this.info.kssj.substr(0, 16)
       this.info.jssj = this.info.jssj.substring(0, 10)
       this.info.yhsc = '5分钟'
