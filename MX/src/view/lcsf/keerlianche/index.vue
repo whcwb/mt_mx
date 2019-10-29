@@ -49,12 +49,12 @@
           <Row style="padding: 5px 10px">
             <Button class="rbutton" size="large" type="Default" long @click="faCar('kf')">开放训练</Button>
           </Row>
-          <!--<Row style="padding: 5px 10px">-->
-          <!--<Button class="rbutton" size="large" long type="Default"-->
-          <!--@click="giveCar.overCar(v,'2'),printClose=true">-->
-          <!--还卡-->
-          <!--</Button>-->
-          <!--</Row>-->
+          <Row style="padding: 5px 10px">
+          <Button class="rbutton" size="large" long type="Default"
+          @click="giveCar.overCar(v,'2'),printClose=true">
+          结束训练
+          </Button>
+          </Row>
           <!--<Row style="padding: 5px 10px">-->
           <!--<Button class="rbutton" size="large" type="Default" long @click="yyClick">预约</Button>-->
           <!--</Row>-->
@@ -445,7 +445,7 @@
           let now = new Date();
           let duration = moment(moment(now) - moment(startTime));
           // console.log(duration);
-          if ((r.kssj && r.kssj.length > 0) && (!r.jssj || r.jssj == '')) {
+          if ((r.kssj && r.kssj.length > 0) && (!r.jssj || r.jssj == '')&&(r.lcLx!='20' ||r.lcLx!='30')) {
             let min = parseInt(duration / 60000);
             // console.log(min);
             r.sc = duration.subtract(8, 'hour').format("HH时mm分钟");//this.parseTime(min);

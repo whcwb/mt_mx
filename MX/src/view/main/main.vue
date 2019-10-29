@@ -1,17 +1,17 @@
 <template>
   <Layout style="height: 100%" class="main">
     <!--<Header>-->
-      <!--<Menu mode="horizontal" theme="dark" active-name="1">-->
-        <!--<div class="layout-logo"></div>-->
-        <!--<div class="layout-nav" style="display: flex;flex-wrap: wrap;justify-content: space-between">-->
-          <!--<MenuItem :name="item.name" v-for="(item,index) in menuList" @click.native="handleClick(item)">-->
-            <!--<div style="height: 20px;text-align: center">-->
-              <!--<Icon :type="item.icon"></Icon>-->
-            <!--</div>-->
-            <!--<div>{{ showTitleInside(item) }}</div>-->
-          <!--</MenuItem>-->
-        <!--</div>-->
-      <!--</Menu>-->
+<!--      <Menu mode="horizontal" theme="dark" active-name="1">-->
+<!--        <div class="layout-logo"></div>-->
+<!--        <div class="layout-nav" style="display: flex;flex-wrap: wrap;justify-content: space-between">-->
+<!--          <MenuItem :name="item.name" v-for="(item,index) in menuList" @click.native="handleClick(item)">-->
+<!--            <div style="height: 20px;text-align: center">-->
+<!--              <Icon :type="item.icon"></Icon>-->
+<!--            </div>-->
+<!--            <div>{{ showTitleInside(item) }}</div>-->
+<!--          </MenuItem>-->
+<!--        </div>-->
+<!--      </Menu>-->
 
       <!--左侧通栏-->
       <Sider style="overflow: auto" hide-trigger collapsible :width="256" :collapsed-width="64" v-model="collapsed">
@@ -31,23 +31,23 @@
       <div class="header-con">
         <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange">
           <user :user-avator="userAvator" @on-closeAll="handleCloseTag"/>
-          <!--<language @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>-->
+<!--          <language @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>-->
           <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
         </header-bar>
       </div>
       <div class="box_col_100">
         <div class="box_col">
-          <!--<div class="tag-nav-wrapper">-->
-            <!--&lt;!&ndash;<tags-nav :value="$route" @input="handleClick" :list="tagNavList" @on-close="handleCloseTag"/>&ndash;&gt;-->
-            <!--<tags-nav :value="$route" @input="handleClick" :list="menuList" @on-close="handleCloseTag"/>-->
-          <!--</div>-->
+<!--          <div class="tag-nav-wrapper">-->
+<!--            <tags-nav :value="$route" @input="handleClick" :list="tagNavList" @on-close="handleCloseTag"/>-->
+<!--            <tags-nav :value="$route" @input="handleClick" :list="menuList" @on-close="handleCloseTag"/>-->
+<!--          </div>-->
           <Content class="box_col_100 content-wrapper2">
             <keep-alive :include="cacheList" style="height: 100%">
-              <!--<Card style="height: 100%" :style="{height:AF.getPageHeight()-68-40-36+'px'}">-->
-                <!--{{textTime}}-->
+<!--              <Card style="height: 100%" :style="{height:AF.getPageHeight()-68-40-36+'px'}">-->
+<!--                {{textTime}}-->
 
                 <router-view/>
-              <!--</Card>-->
+<!--              </Card>-->
             </keep-alive>
           </Content>
         </div>
