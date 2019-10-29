@@ -34,17 +34,7 @@ public class CoachManagementServiceImpl extends BaseServiceImpl<CoachManagement,
 	private CoachManagementMapper baseMapper;
 
 	@Autowired
-	private TraineeInformationMapper traineeMapper;
-
-
-	@Autowired
-	private SysMessageService messageService;//消息下发
-	@Autowired
 	private ZgjbxxService zgjbxxService;
-
-
-	@Autowired
-	private TraineeInformationService traineeInformationService;
 
 	@Autowired
 	private JgService jgService;
