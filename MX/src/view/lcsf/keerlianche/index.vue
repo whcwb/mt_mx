@@ -148,7 +148,7 @@
         <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='kf'">
           <Col span="12">
             <FormItem label="学员人数" label-position="top">
-              <Input v-model="formData.xySl"/>
+              <Input v-model="formData.xySl" type="number"/>
             </FormItem>
           </Col>
           <Col span="12">
@@ -168,12 +168,12 @@
 
         <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='py'">
           <Col span="12">
-            <FormItem label="姓名" label-position="top">
+            <FormItem label="学员姓名" label-position="top">
               <Input v-model="formData.xyXm"/>
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="电话" label-position="top">
+            <FormItem label="学员电话" label-position="top">
               <Input v-model="formData.xyDh"/>
             </FormItem>
           </Col>
@@ -181,24 +181,33 @@
 
         <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='py'">
           <Col span="12">
-            <FormItem label="身份证号" label-position="top">
+            <FormItem label="学员身份证号" label-position="top">
               <Input v-model="formData.xyZjhm"/>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="金额" label-position="top">
-              <Select v-model="formData.lcFy"
-                      filterable
-                      clearable
-                      remote
-              >
-                <Option v-for="(it,index) in fylist" :value="it.by5" :key="index">{{it.by5}}</Option>
-              </Select>
+              <CheckboxGroup v-model="formData.lcFy">
+                <Checkbox label="900"></Checkbox>
+              </CheckboxGroup>
+<!--              <Select v-model="formData.lcFy"-->
+<!--                      filterable-->
+<!--                      clearable-->
+<!--                      remote-->
+<!--              >-->
+<!--                <Option v-for="(it,index) in fylist" :value="it.by5" :key="index">{{it.by5}}</Option>-->
+<!--              </Select>-->
               <!--              <Input v-model="formData.xyZjhm"/>-->
             </FormItem>
           </Col>
         </Row>
-
+        <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='py'">
+          <Col span="12">
+            <FormItem label="安全员姓名" label-position="top">
+              <Input v-model="formData.zgXm"/>
+            </FormItem>
+          </Col>
+        </Row>
         <FormItem label="备注" label-position="top">
           <Input type="textarea" v-model="formData.bz" :rows="4"/>
         </FormItem>
@@ -320,24 +329,26 @@
                 }));
               }
               else {
-                buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
+                buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '打印票据', () => {
                   this.hisPrintMess = p.row
                   this.componentName = 'print'
                 }));
+                if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')){
+                    buttons.push(this.util.buildButton(this, h, 'error', 'md-card', '结束训练', () => {
+                        if (p.row.lcLx == '20' || p.row.lcLx == '30') {
+                            this.$http.post('/api/lcjl/updateJssj', {id: p.row.id}).then((res) => {
+                                if (res.code == 200) {
+                                    this.$Message.success(res.message)
+                                    this.util.initTable(this);
+                                }
+                            })
+                        } else {
+                            this.giveCar.overCar(v, '2'), printClose = true
+                        }
 
-                buttons.push(this.util.buildButton(this, h, 'error', 'md-card', '还卡', () => {
-                  if (p.row.lcLx == '20' || p.row.lcLx == '30') {
-                    this.$http.post('/api/lcjl/updateJssj', {id: p.row.id}).then((res) => {
-                      if (res.code == 200) {
-                        this.$Message.success(res.message)
-                        this.util.initTable(this);
-                      }
-                    })
-                  } else {
-                    this.giveCar.overCar(v, '2'), printClose = true
-                  }
+                    }));
+                }
 
-                }));
               }
               return h('div', buttons);
             }
@@ -351,6 +362,7 @@
         clId: '',
         showFQfzkp: false,
         formData: {
+            zgXm:'',
           lcKm: 2,
           lcLx: '',
           lcFy: '900',
@@ -403,6 +415,9 @@
       }
     },
     watch: {
+        'formData.xySl':function(val, oldVal){//普通的watch监听
+           this.formData.lcFy = val*300
+        },
       DrawerVal: function (n, o) {
         var v = this
         if (n == false) {
@@ -795,13 +810,15 @@
             if (this.mxlx == 'py' || this.mxlx == 'kf') {
               //打印票据
               this.formData.id=JSON.parse(res.message).id
+              this.formData.jssj=JSON.parse(res.message).jssj
               this.formData.jlXm=JSON.parse(res.message).jlXm
               this.formData.jlJx=JSON.parse(res.message).jlJx
               this.formData.sc='-'
               this.formData.yhsc='5分钟'
-              this.printHc(this.formData)
+              this.formData.kc='科目二'
+                this.formData.clBh='-'
+                this.printHc(this.formData)
             }
-            this.formData.jlCx = 'C1'
           } else {
             this.formData.cardNo = null;
             this.swal({
@@ -809,7 +826,28 @@
               type: 'warning'
             })
           }
+
         }).catch(err => {
+            this.formData =  {
+                zgXm:'',
+                    lcKm: 2,
+                    lcLx: '',
+                    lcFy: '900',
+                    cardNo: '',
+                    clBh: '',
+                    lcClId: '',
+                    jlJx: '',
+                    jlId: "",
+                    jlCx: 'C1',
+                    xyZjhm: '',
+                    xyXm: '',
+                    xyDh: '',
+                    // yhsc:'5',
+                    id:'',
+                    jlXm:'',
+                    jlDh:'',
+                    sc:''
+            }
         })
 
         // }
