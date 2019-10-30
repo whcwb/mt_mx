@@ -1,5 +1,6 @@
 package com.ldz.biz.model;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -31,11 +32,73 @@ public class BizLcFd implements Serializable {
      */
     private Integer fdsl;
 
+    private String fdlx;
+
+    @Column(name = "jl_id")
+    private String jlId;
+
+    @Column(name = "jl_xm")
+    private String jlXm;
+
+    private String qrsj;
+
+    private String qrr;
+
+    @Column(name = "lc_id")
+    private String lcId;
+
     @Transient
     private List<BizLcJl> jlList;
 
     private static final long serialVersionUID = 1L;
 
+    public String getFdlx() {
+        return fdlx;
+    }
+
+    public void setFdlx(String fdlx) {
+        this.fdlx = fdlx;
+    }
+
+    public String getJlId() {
+        return jlId;
+    }
+
+    public void setJlId(String jlId) {
+        this.jlId = jlId;
+    }
+
+    public String getJlXm() {
+        return jlXm;
+    }
+
+    public void setJlXm(String jlXm) {
+        this.jlXm = jlXm;
+    }
+
+    public String getQrsj() {
+        return qrsj;
+    }
+
+    public void setQrsj(String qrsj) {
+        this.qrsj = qrsj;
+    }
+
+    public String getQrr() {
+        return qrr;
+    }
+
+    public void setQrr(String qrr) {
+        this.qrr = qrr;
+    }
+
+    public String getLcId() {
+        return lcId;
+    }
+
+    public void setLcId(String lcId) {
+        this.lcId = lcId;
+    }
 
     public List<BizLcJl> getJlList() {
         return jlList;
@@ -136,7 +199,13 @@ public class BizLcFd implements Serializable {
         cjsj("cjsj"),
         cjr("cjr"),
         fdje("fdje"),
-        fdsl("fdsl");
+        fdsl("fdsl"),
+        fdlx("fdlx"),
+        jlId("JL_ID"),
+        jlXm("JL_XM"),
+        qrsj("qrsj"),
+        qrr("qrr"),
+        lcId("LC_ID");
 
         private final String column;
 

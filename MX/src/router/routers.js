@@ -136,11 +136,11 @@ export default [
     ]
   },
   {
-    path: '/lcsf',
-    name: 'lcsf',
+    path: '/baseinfo',
+    name: 'baseinfo',
     meta: {
       icon: 'logo-buffer',
-      title: '练车管理'
+      title: '基础数据'
     },
     component: Main,
     children: [
@@ -153,6 +153,26 @@ export default [
         },
         component: () => import('@/view/lcsf/clgl')
       },
+      {
+        path: 'lcdjConfig',
+        name: 'lcdjConfig',
+        meta: {
+          icon: '_bear',
+          title: '练车费维护'
+        },
+        component: () => import('@/view/lcsf/lcdjConfig')
+      },
+    ]
+  },
+  {
+    path: '/cw',
+    name: 'cw',
+    meta: {
+      icon: 'logo-buffer',
+      title: '财务管理'
+    },
+    component: Main,
+    children: [
       {
         path: 'lcjl',
         name: 'lcjl',
@@ -171,33 +191,17 @@ export default [
         },
         component: () => import('@/view/charge/rebate')
       },
-      {
-        path: 'lcsf-statistics',
-        name: 'lcsf-statistics',
-        meta: {
-          icon: '_bear',
-          title: '模训统计'
-        },
-        component: () => import('@/view/lcsf/statistics')
-      },
-      {
-        path: 'lcdjConfig',
-        name: 'lcdjConfig',
-        meta: {
-          icon: '_bear',
-          title: '练车费维护'
-        },
-        component: () => import('@/view/lcsf/lcdjConfig')
-      },
-      {
-        path: 'keerlianche',
-        name: 'keerlianche',
-        meta: {
-          icon: '_bear',
-          title: '科目二模训'
-        },
-        component: () => import('@/view/lcsf/keerlianche')
-      },
+    ]
+  },
+  {
+    path: '/kemusan',
+    name: 'kemusan',
+    meta: {
+      icon: 'logo-buffer',
+      title: '科目三'
+    },
+    component: Main,
+    children: [
       {
         path: 'kesanlianche',
         name: 'kesanlianche',
@@ -206,6 +210,33 @@ export default [
           title: '科目三模训'
         },
         component: () => import('@/view/lcsf/kesanlianche')
+      },
+      {
+        path: 'k3kfr',
+        name: 'k3kfr',
+        meta: {
+          icon: '_bear',
+          title: '科三开放日'
+        },
+        component: () => import('@/view/lcsf/k3kfr')
+      },
+      {
+        path: 'kmstj',
+        name: 'kmstj',
+        meta: {
+          icon: 'ios-create-outline',
+          title: '科目三统计'
+        },
+        component: () => import('@/view/lcsf/kmstj')
+      },
+      {
+        path: 'kmsqd',
+        name: 'kmsqd',
+        meta: {
+          icon: 'ios-create-outline',
+          title: '安全员签到'
+        },
+        component: () => import('@/view/lcsf/kmsqd')
       },
       {
         path: 'aqygl',
@@ -225,6 +256,48 @@ export default [
         },
         component: () => import('@/view/lcsf/aqytj')
       },
+    ]
+  },
+  {
+    path: '/kemuer',
+    name: 'kemuer',
+    meta: {
+      icon: 'logo-buffer',
+      title: '科目二'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'kfr',
+        name: 'kfr',
+        meta: {
+          icon: '_bear',
+          title: '开放日'
+        },
+        component: () => import('@/view/lcsf/kfr')
+      },
+
+      {
+        path: 'lcsf-statistics',
+        name: 'lcsf-statistics',
+        meta: {
+          icon: '_bear',
+          title: '模训统计'
+        },
+        component: () => import('@/view/lcsf/statistics')
+      },
+
+      {
+        path: 'keerlianche',
+        name: 'keerlianche',
+        meta: {
+          icon: '_bear',
+          title: '科目二模训'
+        },
+        component: () => import('@/view/lcsf/keerlianche')
+      },
+
+
       {
         path: 'jlytj',
         name: 'jlytj',
@@ -252,15 +325,7 @@ export default [
         },
         component: () => import('@/view/lcsf/kmeqd')
       },
-      {
-        path: 'kmsqd',
-        name: 'kmsqd',
-        meta: {
-          icon: 'ios-create-outline',
-          title: '安全员签到'
-        },
-        component: () => import('@/view/lcsf/kmsqd')
-      },
+
       {
         path: 'kmetj',
         name: 'kmetj',
@@ -270,17 +335,10 @@ export default [
         },
         component: () => import('@/view/lcsf/kmetj')
       },
-      {
-        path: 'kmstj',
-        name: 'kmstj',
-        meta: {
-          icon: 'ios-create-outline',
-          title: '科目三统计'
-        },
-        component: () => import('@/view/lcsf/kmstj')
-      }
+
     ]
   },
+
   // {
   //   path: '',
   //   name: 'doc',

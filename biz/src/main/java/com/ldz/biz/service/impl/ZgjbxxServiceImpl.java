@@ -4,8 +4,13 @@ package com.ldz.biz.service.impl;
 import com.github.pagehelper.PageInfo;
 import com.ldz.biz.mapper.ZgAqyQdLogMapper;
 import com.ldz.biz.mapper.ZgjbxxMapper;
-import com.ldz.biz.model.*;
-import com.ldz.biz.service.*;
+import com.ldz.biz.model.BizLcJl;
+import com.ldz.biz.model.CoachManagement;
+import com.ldz.biz.model.ZgAqyQdLog;
+import com.ldz.biz.model.Zgjbxx;
+import com.ldz.biz.service.BizLcJlService;
+import com.ldz.biz.service.CoachManagementService;
+import com.ldz.biz.service.ZgjbxxService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysYh;
@@ -24,7 +29,6 @@ import tk.mybatis.mapper.common.Mapper;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,10 +43,6 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
     private JgService jgService;
     @Autowired
     private CoachManagementService coachService;
-    @Autowired
-    private TraineeInformationService informationService;
-    @Autowired
-    private BizLcClService clService;
 
     @Autowired
     private BizLcJlService jlService;
@@ -179,10 +179,6 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
         }
 
         List<Zgjbxx> list = resultPage.getList();
-        String today = DateUtils.getToday("yyyy-MM");
-        String[] split = today.split("-");
-
-        List<String> zdIds = list.stream().map(Zgjbxx::getId).collect(Collectors.toList());
 
         for (Zgjbxx zgjbxx : list) {
             if(zgjbxx.getsRs()==null){
@@ -301,6 +297,5 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
     public void clearAqyQd(){
         baseMapper.bulkInsertLog();//批量插入日志
         baseMapper.clearSecurityOfficerType();//清除安全员状态
-
     }
 }

@@ -12,7 +12,7 @@
             <Row>
               <Col span="20">
                 <InputNumber  v-model="item.zdmc" :placeholder="'请填写练车单价...'" style="width: 200px;" @on-change="change(item)"></InputNumber>
-                <span> 元/小时</span>
+                <span>元</span>
               </Col>
               <Col span="4">
 
@@ -21,23 +21,9 @@
             <Row  style="margin-top: 16px;">
               <Col span="20">
                 <InputNumber  v-model="item.by3" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
-                <span> 元/分钟</span>
-              </Col>
-              <Col span="4">
-              </Col>
-            </Row>
-            <Row  style="margin-top: 16px;">
-              <Col span="20">
-                <InputNumber  v-model="item.by5" :placeholder="'请填写培优费用...'" style="width: 200px;"></InputNumber>
-                <span> 元(培优1)</span>
-              </Col>
-              <Col span="4">
-              </Col>
-            </Row>
-            <Row  style="margin-top: 16px;">
-              <Col span="20">
-                <InputNumber  v-model="item.by6" :placeholder="'请填写培优费用...'" style="width: 200px;"></InputNumber>
-                <span> 元(培优2)</span>
+                <span v-if="item.zddm =='K2PY'"> 元/人</span>
+                <span v-else-if="item.zddm =='K2KF1'||item.zddm =='K2KF2'||item.zddm =='K2KF3'"> 元</span>
+                <span v-else> 元/分钟</span>
               </Col>
               <Col span="4">
               </Col>
@@ -45,7 +31,7 @@
             <Row  style="margin-top: 16px;">
               <Col span="20">
                 <InputNumber  v-model="item.by4" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
-                <span> 元/次</span>
+                <span>返点率</span>
               </Col>
               <Col span="4">
                 <Button type="primary" @click="confirm(item)">修改</Button>
@@ -95,6 +81,17 @@
                         r.zdmc = parseInt(r.zdmc)
                         r.by3 = parseFloat(r.by3)
                         r.by4 = parseFloat(r.by4)
+                        if(r.zddm =='k2JS'){
+                            r.by2 = r.by2+'-计时'
+                        } if(r.zddm =='K2PY'){
+                            r.by2 = r.by2+'-培优'
+                        }if(r.zddm =='K2KF1'){
+                            r.by2 = r.by2+'-开放日1'
+                        }if(r.zddm =='K2KF2'){
+                            r.by2 = r.by2+'-开放日2'
+                        }if(r.zddm =='K2KF3'){
+                            r.by2 = r.by2+'-开放日3'
+                        }
                     }
                 }else{
                     this.$Message.error(res.message)

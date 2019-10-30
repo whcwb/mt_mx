@@ -42,4 +42,6 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
     void pagerExcel(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     ApiResponse<String> updateXysl(String id, Integer xySl);
+
+    ApiResponse<BizLcJl> getLatestJl(String id);
 }

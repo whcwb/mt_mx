@@ -2,7 +2,6 @@ package com.ldz.biz.model;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -68,9 +67,6 @@ public class BizLcJl implements Serializable {
      */
     private Integer sc;
 
-
-
-
     /**
      * 练车费用
      */
@@ -109,13 +105,17 @@ public class BizLcJl implements Serializable {
      */
     @Column(name = "jl_id")
     private String jlId;
-
-
-
+    /**
+     * 修改人
+     */
     private String xgr;
-
+    /**
+     * 修改时间
+     */
     private String xgsj;
-
+    /**
+     * 车型
+     */
     @Column(name = "jl_cx")
     private String jlCx;
     /**
@@ -123,44 +123,70 @@ public class BizLcJl implements Serializable {
      */
     @Column(name = "lc_yj")
     private Integer lcYj;
-
+    /**
+     * 备注
+     */
     @Column(name ="bz")
     private String bz;
-
+    /**
+     * 练车单价
+     */
     @Column(name = "lc_dj")
     private float lcDj;
-
+    /**
+     * 卡号
+     */
     @Column(name = "card_no")
     private String cardNo;
-
+    /**
+     * 返点状态  00 未返点   10 已返点  30 预约
+     */
     @Column(name = "fd_zt")
     private String fdZt;
-
+    /**
+     *  00 计时  10 按把 20 培优 30 开放
+     */
     @Column(name = "lc_lx")
     private String lcLx;
-
+    /**
+     * 返点时间
+     */
     private String fdsj;
-
+    /**
+     * 返点人
+     */
     private String fdr;
-
+    /**
+     * 考场
+     */
     private String kc;
-
+    /**
+     * 返点记录id
+     */
     @Column(name = "fd_id")
     private String fdId;
+    /**
+     * 实际应付金额
+     */
+    @Column(name = "yf_je")
+    private int yfJe;
+
+    private String xyXm;
+
+    private String xyZjhm;
+
+    private String xyDh;
 
     @Transient
     private BizLcCl lcCl;
     @Transient
     private String jlDh;
 
-
     @Transient
     private List<BizLcJlXy> xyList;
 
     @Transient
     private String km;
-
-
 
     private static final long serialVersionUID = 1L;
 
@@ -186,7 +212,10 @@ public class BizLcJl implements Serializable {
         fdZt("fd_zt"),jlId("jl_id"),
         fdsj("fdsj"),
         fdr("fdr"),
-        fdId("fd_id");
+        fdId("fd_id"),
+        xyXm("xy_xm"),
+        xyZjhm("xy_zjhm"),
+        xyDh("xy_dh");
 
         private final String column;
 
