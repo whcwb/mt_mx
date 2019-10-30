@@ -132,14 +132,9 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
                         bizLcCl.setDqsc((js.getTime() - ks.getTime()) / (1000) + "");
                         SimpleCondition zjCondition = new SimpleCondition(SysZdxm.class);
                         if (StringUtils.equals(bizLcJl.getLcLx(), "00")) {
-
-                            if (bizLcJl.getLcKm().equals("2")) {
-                                zjCondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-                                zjCondition.eq(SysZdxm.InnerColumn.zddm, "k2" + bizLcJl.getJlCx());
-                            } else {
-                                zjCondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-                                zjCondition.eq(SysZdxm.InnerColumn.zddm, "k3" + bizLcJl.getJlCx());
-                            }
+                            zjCondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+                            zjCondition.eq(SysZdxm.InnerColumn.zddm, bizLcJl.getZddm());
+                            zjCondition.eq(SysZdxm.InnerColumn.by2, bizLcJl.getJlCx());
                             List<SysZdxm> items = zdxmService.findByCondition(zjCondition);
                             if (CollectionUtils.isNotEmpty(items)) {
                                 //bizLcCl.setDj(Float.parseFloat(items.get(0).getZdmc()));

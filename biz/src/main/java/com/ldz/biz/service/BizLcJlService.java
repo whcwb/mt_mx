@@ -47,4 +47,12 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
     ApiResponse<BizLcJl> getLatestJl(String id);
 
     ApiResponse<List<SysZdxm>> getTc(String km, String carType);
+
+    ApiResponse<String> saveCz(String no, int je, int sfje);
+
+    ApiResponse<String> savePay(String id);
+
+    ApiResponse<BizLcJl> getBatchPay(String ids);
+
+    ApiResponse<String> saveBatch(String ids);
 }

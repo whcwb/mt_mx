@@ -190,6 +190,14 @@ public class BizLcJl implements Serializable {
 
     private String zddm;
 
+    private String zfzt;
+
+    private int xjje;
+
+    private int cardje;
+
+    private int kfje;
+
     private static final long serialVersionUID = 1L;
 
     public enum InnerColumn {
@@ -218,7 +226,8 @@ public class BizLcJl implements Serializable {
         xyXm("xy_xm"),
         xyZjhm("xy_zjhm"),
         xyDh("xy_dh"),
-        zddm("zddm");
+        zddm("zddm"),
+        zfzt("zfzt");
 
         private final String column;
 
