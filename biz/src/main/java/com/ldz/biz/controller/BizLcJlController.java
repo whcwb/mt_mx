@@ -6,6 +6,7 @@ import com.ldz.biz.model.LcJlModel;
 import com.ldz.biz.service.BizLcJlService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
+import com.ldz.sys.model.SysZdxm;
 import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +50,7 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      *
      * @return
      */
-    @RequestMapping("statistics")
+    @RequestMapping("/statistics")
     public ApiResponse<List<Map<String,Object>>> statistics(){
         return ApiResponse.success(service.statistics());
     }
@@ -137,5 +138,30 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
     @PostMapping("/getLatestJl")
     public ApiResponse<BizLcJl> getLatestJl(String clId){
         return service.getLatestJl(clId);
+    }
+
+    @PostMapping("/Tc")
+    public ApiResponse<List<SysZdxm>> getTc(String km , String carType){
+        return service.getTc(km,carType);
+    }
+
+    @PostMapping("/cz")
+    public ApiResponse<String> saveCz(String no, int je, int sfje){
+        return service.saveCz(no, je, sfje);
+    }
+
+    @PostMapping("/pay")
+    public ApiResponse<String> savePay(String id){
+        return service.savePay(id);
+    }
+
+    @PostMapping("/getBatchPay")
+    public ApiResponse<BizLcJl> getBatchPay(String ids) {
+        return service.getBatchPay(ids);
+    }
+
+    @PostMapping("/batchPay")
+    public ApiResponse<String> saveBatchPay(String ids){
+        return service.saveBatch(ids);
     }
 }
