@@ -45,6 +45,10 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         return service.updateJssj(id,km);
     }
 
+    /**
+     *
+     * @return
+     */
     @RequestMapping("statistics")
     public ApiResponse<List<Map<String,Object>>> statistics(){
         return ApiResponse.success(service.statistics());
@@ -130,5 +134,8 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         return service.updateXysl(id,xySl);
     }
 
-
+    @PostMapping("/getLatestJl")
+    public ApiResponse<BizLcJl> getLatestJl(String clId){
+        return service.getLatestJl(clId);
+    }
 }

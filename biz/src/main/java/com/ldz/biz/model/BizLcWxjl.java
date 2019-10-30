@@ -29,7 +29,17 @@ public class BizLcWxjl implements Serializable {
     @Column(name = "jl_lxdh")
     private String jlLxdh;
 
+    private int ye;
+
     private static final long serialVersionUID = 1L;
+
+    public int getYe() {
+        return ye;
+    }
+
+    public void setYe(int ye) {
+        this.ye = ye;
+    }
 
     public String getJlLxdh() {
         return jlLxdh;
