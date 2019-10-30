@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.ldz.biz.model.BizLcJl;
 import com.ldz.biz.model.LcJlModel;
 import com.ldz.sys.base.BaseService;
+import com.ldz.sys.model.SysZdxm;
 import com.ldz.util.bean.ApiResponse;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,4 +45,6 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
     ApiResponse<String> updateXysl(String id, Integer xySl);
 
     ApiResponse<BizLcJl> getLatestJl(String id);
+
+    ApiResponse<List<SysZdxm>> getTc(String km, String carType);
 }

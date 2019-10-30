@@ -6,6 +6,7 @@ import com.ldz.biz.model.LcJlModel;
 import com.ldz.biz.service.BizLcJlService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
+import com.ldz.sys.model.SysZdxm;
 import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -137,5 +138,10 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
     @PostMapping("/getLatestJl")
     public ApiResponse<BizLcJl> getLatestJl(String clId){
         return service.getLatestJl(clId);
+    }
+
+    @PostMapping("/Tc")
+    public ApiResponse<List<SysZdxm>> getTc(String km , String carType){
+        return service.getTc(km,carType);
     }
 }
