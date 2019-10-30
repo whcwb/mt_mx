@@ -50,10 +50,10 @@
             <Button class="rbutton" size="large" type="Default" long @click="faCar('kf')">开放训练</Button>
           </Row>
           <Row style="padding: 5px 10px">
-          <Button class="rbutton" size="large" long type="Default"
-          @click="giveCar.overCar(v,'2'),printClose=true">
-          结束训练
-          </Button>
+            <Button class="rbutton" size="large" long type="Default"
+                    @click="giveCar.overCar(v,'2'),printClose=true">
+              结束训练
+            </Button>
           </Row>
           <!--<Row style="padding: 5px 10px">-->
           <!--<Button class="rbutton" size="large" type="Default" long @click="yyClick">预约</Button>-->
@@ -364,10 +364,10 @@
           xyXm: '',
           xyDh: '',
           // yhsc:'5',
-          id:'',
-          jlXm:'',
-          jlDh:'',
-          sc:''
+          id: '',
+          jlXm: '',
+          jlDh: '',
+          sc: ''
         },
         searchCoachList: [],
         loadingJly: false,
@@ -408,7 +408,7 @@
         if (n == false) {
           this.compName = ''
           this.formData = {}
-          this.formData.jlCx='C1'
+          this.formData.jlCx = 'C1'
           this.jlJx = ''
         } else {
           // if (this.formData.lcClId == '') {
@@ -418,6 +418,7 @@
       }
     },
     mounted() {
+
     },
     created() {
       this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
@@ -451,7 +452,7 @@
           let now = new Date();
           let duration = moment(moment(now) - moment(startTime));
           // console.log(duration);
-          if ((r.kssj && r.kssj.length > 0) && (!r.jssj || r.jssj == '')&&(r.lcLx!='20' ||r.lcLx!='30')) {
+          if ((r.kssj && r.kssj.length > 0) && (!r.jssj || r.jssj == '') && (r.lcLx != '20' || r.lcLx != '30')) {
             let min = parseInt(duration / 60000);
             // console.log(min);
             r.sc = duration.subtract(8, 'hour').format("HH时mm分钟");//this.parseTime(min);
@@ -517,7 +518,7 @@
         // this.showCAR = false;
         this.carMess = null;
         this.formData = {};
-        this.formData.jlCx='C1'
+        this.formData.jlCx = 'C1'
         this.XY = [];
         this.compName = '';
         this.DrawerVal = false;
@@ -693,8 +694,8 @@
       addjlSaveOk(id) {
         this.getCoachList(id)
       },
-      removeYY(id){
-        this.$http.post('/api/lcjl/remove/'+id).then((res) => {
+      removeYY(id) {
+        this.$http.post('/api/lcjl/remove/' + id).then((res) => {
           if (res.code == 200) {
             this.util.initTable(this);
             this.swal({
@@ -794,11 +795,11 @@
             console.log(res.message)
             if (this.mxlx == 'py' || this.mxlx == 'kf') {
               //打印票据
-              this.formData.id=JSON.parse(res.message).id
-              this.formData.jlXm=JSON.parse(res.message).jlXm
-              this.formData.jlJx=JSON.parse(res.message).jlJx
-              this.formData.sc='-'
-              this.formData.yhsc='5分钟'
+              this.formData.id = JSON.parse(res.message).id
+              this.formData.jlXm = JSON.parse(res.message).jlXm
+              this.formData.jlJx = JSON.parse(res.message).jlJx
+              this.formData.sc = '-'
+              this.formData.yhsc = '5分钟'
               this.printHc(this.formData)
             }
             this.formData.jlCx = 'C1'
