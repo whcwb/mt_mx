@@ -8,7 +8,7 @@
           <span style="width: 100px;height: 80px;cursor: pointer;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;"
                 @click="formData.clZt = '01',getCarList()">
             在训{{zxNum}}台</span>
-          <span style="width: 100px;height: 80px;background-color: #494949;color:white;padding:6px;border-radius: 4px;margin-left: 16px;cursor: pointer;"
+          <span style="width: 100px;height: 80px;background-color: #19be6b;color:white;padding:6px;border-radius: 4px;margin-left: 16px;cursor: pointer;"
                 @click="formData.clZt = '00',getCarList()"
           >空闲{{xxNum}}台</span>
         </div>
@@ -109,7 +109,7 @@
           <Col span="12">
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
-                <Select v-model="formData.zddm" style="width:200px" @on-change="lcFyChange">
+                <Select v-model="formData.zddm" style="width:200px" placeholder="计时500/小时" @on-change="lcFyChange">
                   <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index">{{it.by9}}</Option>
                 </Select>
                 <!--              <CheckboxGroup v-model="formData.lcFy">-->
@@ -181,6 +181,39 @@
              @close="close"
              @getCarList = 'getCarList'
     ></yyModel>
+    <Modal
+      title="是否立刻支付?"
+      width="700px"
+      v-model="QRmodal"
+      :closable="false"
+      :mask-closable="false"
+      okText="确认支付"
+      cancelText="稍后支付"
+      @on-ok="QRok"
+      @on-cancel="QRcancel"
+    >
+      <div>
+        <Row>
+          <Card>
+            <p slot="title" style="font-size: 20px;font-weight: 600">训练信息</p>
+            <p style="font-size: 18px;font-weight: 500;padding: 10px">教练 : {{QRmess.jlXm}}</p>
+            <p style="font-size: 18px;font-weight: 500;padding: 10px">时长 : {{QRmess.sc}}分钟({{QRmess.kssj}}-{{QRmess.jssj}})</p>
+            <p style="font-size: 18px;font-weight: 500;padding: 10px">费用 : {{QRmess.lcFy}}元</p>
+          </Card>
+        </Row>
+        <Row>
+          <Card>
+            <p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>
+            <p style="font-size: 18px;font-weight: 500;padding: 10px"> <Checkbox disabled v-model="ls.ls3">{{ls.ls6}}</Checkbox>现金支付;</p>
+            <p style="font-size: 18px;font-weight: 500;padding: 10px"><Checkbox disabled v-model="ls.ls2">{{ls.ls6}}</Checkbox>充卡支付(余额:{{QRmess.cardje}}元);</p>
+            <p style="font-size: 18px;font-weight: 500;padding: 10px"><Checkbox disabled v-model="ls.ls1">{{ls.ls6}}</Checkbox>抵扣支付(余额:{{QRmess.kfje}}元)</p>
+          </Card>
+        </Row>
+        <Row style="text-align: right">
+          <p style="font-size: 20px;font-weight: 600;padding: 10px">{{QRmess.bz}} 元</p>
+        </Row>
+      </div>
+    </Modal>
     <component :is="componentName" :printClose="printClose" :hisPrintMess="hisPrintMess"></component>
   </div>
 </template>
@@ -206,6 +239,13 @@
             keyypd,yydrawer,yyModel},
         data() {
             return {
+                ls:{
+                    ls1:false,
+                    ls2:false,
+                    ls3:false,
+                },
+                QRmodal:false,
+                QRmess:{},
                 fylist:[],
                 giveCar:giveCar,
                 v:this,
@@ -231,7 +271,7 @@
                     xySl:'',
                     bz:'',
                     lcFy:'',
-                    zddm:'K2JS'
+                    zddm:'k2JS'
                 },
                 searchCoachList: [],
                 loadingJly:false,
@@ -367,12 +407,13 @@
                                         [
                                             h('Button', {
                                                 props: {
-                                                    type: 'info',
+                                                    type: 'success',
                                                     size: 'small',
                                                 },
                                                 style: {margin: '0 10px 0 0'},
                                                 on: {
                                                     click: () => {
+                                                        this.formData.zddm = 'k2JS';
                                                         this.formData.lcClId = p.row.id
                                                         this.formData.lcKm = '2';
                                                         this.$http.post('/api/lcjl/Tc',{km:'2',carType:p.row.clCx}).then((res)=>{
@@ -414,7 +455,7 @@
                                         [
                                             h('Button', {
                                                 props: {
-                                                    type: 'warning',
+                                                    type: 'error',
                                                     size: 'small',
                                                 },
                                                 style: {margin: '0 10px 0 0'},
@@ -431,7 +472,20 @@
                                                                 this.$http.post('/api/lcjl/updateJssj', {id: p.row.lcJl.id}).then((res) => {
                                                                     if (res.code == 200) {
                                                                         this.$Message.success(res.message)
-                                                                        this.print(res.result)
+                                                                        this.QRmess = res.result
+                                                                        this.QRmess.kssj = this.QRmess.kssj.substring(11,16)
+                                                                        this.QRmess.jssj = this.QRmess.jssj.substring(11,16)
+                                                                        if (this.QRmess.fdr.indexOf('1')!=-1){
+                                                                            this.ls.ls1 = true
+                                                                        }
+                                                                        if (this.QRmess.fdr.indexOf('2')!=-1){
+                                                                            this.ls.ls2 = true
+                                                                        }
+                                                                        if (this.QRmess.fdr.indexOf('3')!=-1){
+                                                                            this.ls.ls3 = true
+                                                                        }
+                                                                        this.QRmodal = true
+                                                                        // this.print(res.result)
                                                                         this.getCarList()
                                                                     }else {
                                                                         this.$Message.error(res.message)
@@ -457,7 +511,7 @@
                                     [
                                         h('Button', {
                                             props: {
-                                                type: 'error',
+                                                type: 'warning',
                                                 size: 'small',
                                             },
                                             style: {margin: '0 10px 0 0'},
@@ -476,7 +530,7 @@
                                     [
                                         h('Button', {
                                             props: {
-                                                type: 'success',
+                                                type: 'info',
                                                 size: 'small',
                                             },
                                             style: {margin: '0 10px 0 0'},
@@ -540,6 +594,16 @@
                 'set_LcTime',
                 'Ch_LcTime'
             ]),
+            QRcancel(){},
+            QRok(){
+                this.$http.post('/api/lcjl/pay',{id:this.QRmess.id}).then((res)=>{
+                    if (res.code == 200){
+                        this.$Message.success(res.message)
+                    }else {
+                        this.$Message.error(res.message)
+                    }
+                })
+            },
             lcFyChange(v){
                 this.formData.zddm = v
                 console.log(this.formData.zddm);

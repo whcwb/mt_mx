@@ -121,7 +121,7 @@
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
                 <Select v-model="formData.zddm" style="width:200px">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index">{{it.by9}}</Option>
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm!='k2JS'&&it.zddm!='K2PY'">{{it.by9}}</Option>
                 </Select>
                 <!--              <CheckboxGroup v-model="formData.lcFy">-->
                 <!--                <Checkbox label="900"></Checkbox>-->
@@ -146,18 +146,6 @@
           <Col span="12">
             <FormItem label="学员人数" label-position="top">
               <Input v-model="formData.xySl" type="number"/>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="金额" label-position="top">
-              <!--              <Select v-model="formData.lcFy"-->
-              <!--                      filterable-->
-              <!--                      clearable-->
-              <!--                      remote-->
-              <!--              >-->
-              <!--                <Option v-for="(it,index) in fylist" :value="it.by5" :key="index">{{it.by5}}</Option>-->
-              <!--              </Select>-->
-              <Input v-model="formData.lcFy"/>
             </FormItem>
           </Col>
         </Row>
@@ -266,19 +254,19 @@
                     {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
                     {title: '教练电话', key: 'jlDh', minWidth: 90},
                     {title: '驾校', key: 'jlJx', minWidth: 90},
-                    {
-                        title: '车辆类型', key: 'jlCx', minWidth: 90, render: (h, p) => {
-                            return h('Button', {
-                                props: {
-                                    type: 'error',
-                                    size: 'small'
-                                },
-                                style: {
-                                    borderRadius: '15px'
-                                }
-                            }, p.row.jlCx)
-                        }
-                    },
+                    // {
+                    //     title: '车辆类型', key: 'jlCx', minWidth: 90, render: (h, p) => {
+                    //         return h('Button', {
+                    //             props: {
+                    //                 type: 'error',
+                    //                 size: 'small'
+                    //             },
+                    //             style: {
+                    //                 borderRadius: '15px'
+                    //             }
+                    //         }, p.row.jlCx)
+                    //     }
+                    // },
                     {title: '开始时间', key: 'kssj', searchType: 'daterange', minWidth: 140},
                     // {title: '安全员姓名', key: 'zgXm',minWidth:100},
                     {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
@@ -361,7 +349,7 @@
                     zgXm:'',
                     lcKm: 2,
                     lcLx: '',
-                    lcFy: '900',
+                    lcFy: '',
                     cardNo: '',
                     clBh: '',
                     lcClId: '',
@@ -447,7 +435,7 @@
         },
         methods: {
             getzdlist() {
-                this.$http.post('/api/lcjl/Tc',{km:'2'}).then((res)=>{
+                this.$http.post('/api/lcjl/Tc',{km:'2',by5:'30'}).then((res)=>{
                     if (res.code == 200){
                         this.fylist = res.result
                         for (let r of this.fylist){
