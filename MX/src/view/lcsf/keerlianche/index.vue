@@ -4,7 +4,7 @@
       <Col span="6">
         <pager-tit title="科二模训" style="float: left"></pager-tit>
         <div style="float: left;margin-top: 8px;cursor: pointer">
-          <span style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>
+          <span style="width: 100px;height: 80px;background-color: #223580;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>
           <span style="width: 100px;height: 80px;cursor: pointer;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;"
                 @click="formData.clZt = '01',getCarList()">
             在训{{zxNum}}台</span>
@@ -81,48 +81,15 @@
       </div>
       <Form :model="formData" label-position="top">
         <Row :gutter="32">
-          <Col span="12">
-            <div style="float: left">
-              <FormItem label="练车类型" style="width: 250px">
-                <RadioGroup v-model="formData.lcLx">
-                  <Radio label="00">
-                    <span>计时</span>
-                  </Radio>
-                  <Radio label="20">
-                    <span>培优</span>
-                  </Radio>
-                </RadioGroup>
-              </FormItem>
-            </div>
-          </Col>
-        </Row>
-        <Row :gutter="32" style="padding-top: 5px" v-if="formData.lcLx == '20'">
-          <Col span="12">
-            <FormItem label="计费套餐" label-position="top">
-              <Select v-model="formData.lcFy" style="width:200px">
-                <Option v-for="(it,index) in fylist" :value="it.by5" :key="index" v-if="it.by5!=''">{{it.by5}}</Option>
-              </Select>
-<!--              <CheckboxGroup v-model="formData.lcFy">-->
-<!--                <Checkbox label="900"></Checkbox>-->
-<!--              </CheckboxGroup>-->
-            </FormItem>
-          </Col>
-        </Row>
-        <Row :gutter="32" style="padding-top: 5px">
-          <Col span="12">
-            <FormItem label="安全员" label-position="top">
-              <Input v-model="formData.zgXm"/>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row :gutter="32">
           <Col span="12" >
             <div style="float: left">
-              <FormItem label="教练员">
+              <FormItem label="教练员" style="width: 280px">
                 <Select v-model="formData.jlId"
                         filterable
                         clearable
                         remote
+                        loading
+                        loading-text="请输入关键字搜索"
                         @on-query-change="searchJly"
                         ref="jlySelect"
                 >
@@ -138,6 +105,39 @@
           </Col>
 
         </Row>
+        <Row :gutter="32">
+          <Col span="12">
+            <div style="float: left">
+              <FormItem label="计费套餐" label-position="top">
+                <Select v-model="formData.zddm" style="width:200px" @on-change="lcFyChange">
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index">{{it.by9}}</Option>
+                </Select>
+                <!--              <CheckboxGroup v-model="formData.lcFy">-->
+                <!--                <Checkbox label="900"></Checkbox>-->
+                <!--              </CheckboxGroup>-->
+              </FormItem>
+            </div>
+          </Col>
+        </Row>
+<!--        <Row :gutter="32" style="padding-top: 5px" v-if="formData.lcLx == '20'">-->
+<!--          <Col span="12">-->
+<!--            <FormItem label="计费套餐" label-position="top">-->
+<!--              <Select v-model="formData.lcFy" style="width:200px">-->
+<!--                <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm!=''">{{it.zddm}}</Option>-->
+<!--              </Select>-->
+<!--              <CheckboxGroup v-model="formData.lcFy">-->
+<!--                <Checkbox label="900"></Checkbox>-->
+<!--              </CheckboxGroup>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--        </Row>-->
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2PY'">
+          <Col span="12">
+            <FormItem label="安全员" label-position="top">
+              <Input v-model="formData.zgXm"/>
+            </FormItem>
+          </Col>
+        </Row>
 
 <!--        <radio-car v-if="carMess == null"-->
 <!--                   clKm="2"-->
@@ -151,10 +151,20 @@
                    @JLRowClick="JLRowClick"
                    @jxSeljxSel="(val)=>{getCoachList('',true)}"></component>
 
-        <Row :gutter="32" style="padding-top: 5px">
-          <Col span="12">
-            <FormItem label="学员人数" label-position="top">
-              <Input v-model="formData.xySl"/>
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2PY'">
+          <Col span="8">
+            <FormItem label="学员姓名" label-position="top">
+              <Input v-model="formData.xyXm"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem label="学员电话" label-position="top">
+              <Input v-model="formData.xyDh"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem label="学员身份证号码" label-position="top">
+              <Input v-model="formData.xyZjhm"/>
             </FormItem>
           </Col>
         </Row>
@@ -207,6 +217,9 @@
                 clId: '',
                 showFQfzkp:false,
                 formData: {
+                    xyZjhm: '',
+                    xyXm: '',
+                    xyDh: '',
                     lcKm:'2',
                     lcLx:'00',
                     cardNo:'',
@@ -217,7 +230,8 @@
                     zgXm:'',
                     xySl:'',
                     bz:'',
-                    lcFy:''
+                    lcFy:'',
+                    zddm:'K2JS'
                 },
                 searchCoachList: [],
                 loadingJly:false,
@@ -253,12 +267,13 @@
                         key: 'clHm',
                         align:'center',
                         width:120
-                    },{
-                        title: '所属考场',
-                        key: 'clKc',
-                        align:'center',
-                        width:120
                     },
+                    // {
+                    //     title: '所属考场',
+                    //     key: 'clKc',
+                    //     align:'center',
+                    //     width:120
+                    // },
                     {
                         title: '车型',
                         key: 'clCx',
@@ -278,15 +293,15 @@
                             }
                         }
                     },
-                    {
-                        title: '安全员',
-                        key: 'zgXm',
-                        width:120,
-                        align:'center',
-                        render:(h,p)=>{
-                                return h('div',p.row.lcJl.zgXm)
-                        }
-                    },
+                    // {
+                    //     title: '安全员',
+                    //     key: 'zgXm',
+                    //     width:120,
+                    //     align:'center',
+                    //     render:(h,p)=>{
+                    //             return h('div',p.row.lcJl.zgXm)
+                    //     }
+                    // },
                     {
                         title: '用车人',
                         key: 'jlXm',
@@ -359,7 +374,30 @@
                                                 on: {
                                                     click: () => {
                                                         this.formData.lcClId = p.row.id
-                                                        this.formData.lcKm = '2'
+                                                        this.formData.lcKm = '2';
+                                                        this.$http.post('/api/lcjl/Tc',{km:'2',carType:p.row.clCx}).then((res)=>{
+                                                            if (res.code == 200){
+                                                                this.fylist = res.result
+                                                                for (let r of this.fylist){
+                                                                    r.editMode = false
+                                                                    r.zdmc = parseInt(r.zdmc)
+                                                                    r.by3 = parseFloat(r.by3)
+                                                                    r.by4 = parseFloat(r.by4)
+                                                                    if(r.zddm =='k2JS'){
+                                                                        r.by9 ='计时' + r.zdmc+'元/小时'
+                                                                    } if(r.zddm =='K2PY'){
+                                                                        r.by9 = '培优'+ r.zdmc+'元/人'
+                                                                    }if(r.zddm =='K2KF1'){
+                                                                        r.by9 = '开放日1套餐'+ r.zdmc+'元'
+                                                                    }if(r.zddm =='K2KF2'){
+                                                                        r.by9 = '开放日2套餐'+ r.zdmc+'元'
+                                                                    }if(r.zddm =='K2KF3'){
+                                                                        r.by9 = '开放日3套餐'+ r.zdmc+'元'
+                                                                    }
+                                                                }
+
+                                                            }
+                                                        })
                                                         this.DrawerVal = true;
                                                         this.showFQfzkp = false;
                                                     }
@@ -502,6 +540,10 @@
                 'set_LcTime',
                 'Ch_LcTime'
             ]),
+            lcFyChange(v){
+                this.formData.zddm = v
+                console.log(this.formData.zddm);
+            },
             getzdlist() {
                 let a = sessionStorage.getItem('dictMap')
                 a = JSON.parse(a)
@@ -727,7 +769,7 @@
                     if (res.code == 200 && res.result) {
                         for (let r of res.result) {
                             let py = this.util.parsePY(r.jlXm)
-                            this.coachList.push({label: r.jlJx + '_' + r.jlXm +' ['+py+']' , value: r.id});
+                            this.coachList.push({label: r.jlJx + '_' + r.jlXm +' ['+py+']'+ '_' + r.jlLxdh , value: r.id});
                         }
                     }
                     if(res.code == 200 && res.result && id ){
