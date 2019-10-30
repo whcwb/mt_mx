@@ -68,7 +68,7 @@
       v-model="DrawerVal"
       :closable="false"
       width="720"
-      :mask-closable="true">
+      :mask-closable="false">
       <div slot="header">
         <div class="box_row">
           <div v-if="carMess">

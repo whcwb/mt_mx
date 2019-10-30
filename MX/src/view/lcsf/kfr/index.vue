@@ -2,7 +2,7 @@
   <div class="box_col">
     <Row style="margin-bottom: 18px" type="flex" align="bottom">
       <Col span="4">
-        <pager-tit title="科二模训" style="float: left"></pager-tit>
+        <pager-tit title="开放日训练" style="float: left"></pager-tit>
         <!--<div style="float: left;margin-top: 8px;cursor: pointer">-->
         <!--<span style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>-->
         <!--<span style="width: 100px;height: 80px;cursor: pointer;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;"-->
@@ -39,21 +39,21 @@
           <table-area :pager="false" :parent="v"></table-area>
         </Col>
         <Col span="3">
-          <Row style="padding: 5px 10px">
-            <Button class="rbutton" size="large" type="Default" long @click="faCar('kk')">开卡训练</Button>
-          </Row>
-          <Row style="padding: 5px 10px">
-            <Button class="rbutton" size="large" type="Default" long @click="faCar('py')">培优训练</Button>
-          </Row>
+<!--          <Row style="padding: 5px 10px">-->
+<!--            <Button class="rbutton" size="large" type="Default" long @click="faCar('kk')">开卡训练</Button>-->
+<!--          </Row>-->
+<!--          <Row style="padding: 5px 10px">-->
+<!--            <Button class="rbutton" size="large" type="Default" long @click="faCar('py')">培优训练</Button>-->
+<!--          </Row>-->
           <Row style="padding: 5px 10px">
             <Button class="rbutton" size="large" type="Default" long @click="faCar('kf')">开放训练</Button>
           </Row>
-          <Row style="padding: 5px 10px">
-            <Button class="rbutton" size="large" long type="Default"
-                    @click="giveCar.overCar(v,'2'),printClose=true">
-              结束训练
-            </Button>
-          </Row>
+<!--          <Row style="padding: 5px 10px">-->
+<!--            <Button class="rbutton" size="large" long type="Default"-->
+<!--                    @click="giveCar.overCar(v,'2'),printClose=true">-->
+<!--              结束训练-->
+<!--            </Button>-->
+<!--          </Row>-->
           <!--<Row style="padding: 5px 10px">-->
           <!--<Button class="rbutton" size="large" type="Default" long @click="yyClick">预约</Button>-->
           <!--</Row>-->
@@ -77,7 +77,7 @@
       v-model="DrawerVal"
       :closable="false"
       width="500"
-      :mask-closable="true">
+      :mask-closable="false">
       <div slot="header">
         <div class="box_row">
           <div v-if="carMess">
@@ -86,8 +86,6 @@
             </Tag>
           </div>
           <div style="font-size: 16px;margin-right: 28px;margin-top: 7px">
-            <h2 v-if="mxlx=='kk'">开卡训练</h2>
-            <h2 v-if="mxlx=='py'">培优训练</h2>
             <h2 v-if="mxlx=='kf'">开放训练</h2>
           </div>
         </div>
@@ -117,17 +115,17 @@
               </Button>
             </div>
           </Col>
-          <Col span="5">
+        </Row>
+        <Row :gutter="32">
+          <Col span="12">
             <div style="float: left">
-              <FormItem label="车型" style="width: 250px">
-                <RadioGroup v-model="formData.jlCx">
-                  <Radio label="C1">
-                    <span>C1</span>
-                  </Radio>
-                  <Radio label="C2">
-                    <span>C2</span>
-                  </Radio>
-                </RadioGroup>
+              <FormItem label="计费套餐" label-position="top">
+                <Select v-model="formData.zddm" style="width:200px">
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index">{{it.by9}}</Option>
+                </Select>
+                <!--              <CheckboxGroup v-model="formData.lcFy">-->
+                <!--                <Checkbox label="900"></Checkbox>-->
+                <!--              </CheckboxGroup>-->
               </FormItem>
             </div>
           </Col>
@@ -248,7 +246,7 @@
         components: {
             carCard, jlwh, addjl,
             print, radioCar, carStatistics,
-            keyypd, yydrawer, yyModel
+            keyypd,
         },
         data() {
             return {
@@ -359,6 +357,7 @@
                 clId: '',
                 showFQfzkp: false,
                 formData: {
+                    zddm:'',
                     zgXm:'',
                     lcKm: 2,
                     lcLx: '',
@@ -448,10 +447,29 @@
         },
         methods: {
             getzdlist() {
-                let a = sessionStorage.getItem('dictMap')
-                a = JSON.parse(a)
-                this.fylist = a[67].zdxmList
-                console.log(this.fylist);
+                this.$http.post('/api/lcjl/Tc',{km:'2'}).then((res)=>{
+                    if (res.code == 200){
+                        this.fylist = res.result
+                        for (let r of this.fylist){
+                            r.editMode = false
+                            r.zdmc = parseInt(r.zdmc)
+                            r.by3 = parseFloat(r.by3)
+                            r.by4 = parseFloat(r.by4)
+                            if(r.zddm =='k2JS'){
+                                r.by9 ='计时' + r.zdmc+'元/小时'
+                            } if(r.zddm =='K2PY'){
+                                r.by9 = '培优'+ r.zdmc+'元/人'
+                            }if(r.zddm =='K2KF1'){
+                                r.by9 = '开放日1套餐'+ r.zdmc+'元'
+                            }if(r.zddm =='K2KF2'){
+                                r.by9 = '开放日2套餐'+ r.zdmc+'元'
+                            }if(r.zddm =='K2KF3'){
+                                r.by9 = '开放日3套餐'+ r.zdmc+'元'
+                            }
+                        }
+
+                    }
+                })
             },
             jump() {
                 this.total = 0;
