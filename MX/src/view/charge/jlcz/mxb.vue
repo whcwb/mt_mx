@@ -70,14 +70,52 @@
               switch (p.row.type) {
                 case '00':type='开放日充值'
                       break;
-                case '10':type='充卡'
+                case '10':type='卡片充值'
                   break;
-                case '20':type='卡片余额'
+                case '20':type='卡片消费'
                   break;
                 case '30':type='开放日消费'
                   break;
               }
               return h('div', type);
+            },
+            filters: [
+              {
+                label: '开放日充值',
+                value: '00'
+              },
+              {
+                label: '卡片充值',
+                value: '10'
+              },
+              {
+                label: '卡片消费',
+                value: '20'
+              },
+              {
+                label: '开放日消费',
+                value: '30'
+              }
+            ],
+            filterMultiple: false,
+            filterMethod (value, row) {
+              // if (value === 1) {
+              //   return row.age > 25;
+              // } else if (value === 2) {
+              //   return row.age < 25;
+              // }
+
+              switch (value) {
+                case '00':return row.type=='00'
+                  break;
+                case '10':return row.type=='10'
+                  break;
+                case '20':return row.type=='20'
+                  break;
+                case '30':return row.type=='30'
+                  break;
+              }
+
             }
           },
           {
