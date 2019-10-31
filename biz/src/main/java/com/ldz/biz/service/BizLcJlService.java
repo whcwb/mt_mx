@@ -26,7 +26,7 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
 
     ApiResponse<String> kslc(BizLcJl entity);
 
-    ApiResponse<String> updateFdZt(String id, int fdJe);
+    ApiResponse<String> updateFdZt(String id);
 
     ApiResponse<BizLcJl> getFdZt(String id);
 

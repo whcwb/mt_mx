@@ -111,6 +111,7 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
         ApiResponse<String> result = new ApiResponse<>();
         LimitedCondition queryCondition = getQueryCondition();
         queryCondition.in(BizLcCl.InnerColumn.clZt, Arrays.asList("00", "01"));
+        queryCondition.setOrderByClause(" cl_bh asc ");
         PageInfo<BizLcCl> pageInfo = findPage(page, queryCondition);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
@@ -139,7 +140,7 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
                         if (StringUtils.equals(bizLcJl.getLcLx(), "00")) {
                             zjCondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
                             zjCondition.eq(SysZdxm.InnerColumn.zddm, bizLcJl.getZddm());
-                            zjCondition.eq(SysZdxm.InnerColumn.by2, bizLcJl.getJlCx());
+//                            zjCondition.eq(SysZdxm.InnerColumn.by2, bizLcJl.getJlCx());
                             List<SysZdxm> items = zdxmService.findByCondition(zjCondition);
                             if (CollectionUtils.isNotEmpty(items)) {
                                 //bizLcCl.setDj(Float.parseFloat(items.get(0).getZdmc()));

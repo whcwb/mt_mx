@@ -102,8 +102,8 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * 训练记录返点记录接口
      */
     @PostMapping("/updateFdZt")
-    public ApiResponse<String> updateFdZt(String id,int fdJe){
-        return service.updateFdZt(id, fdJe);
+    public ApiResponse<String> updateFdZt(String id){
+        return service.updateFdZt(id);
     }
 
     /**
