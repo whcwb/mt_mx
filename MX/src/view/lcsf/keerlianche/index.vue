@@ -86,11 +86,26 @@
           <search-bar :parent="v" :show-create-button="false" ></search-bar>
         </Col>
       </Row>
-      <Table :height="750" stripe
+      <Table :height="650" stripe
              size="small"
              @on-select="tabcheck"
              :columns="tableColumns" :data="pageData"></Table>
-<!--      <component :is="componentName"></component>-->
+<!--      <table-area :parent="v"></table-area>-->
+      <Row class="margin-top-10 pageSty">
+        <div style="text-align: right;padding: 6px 0">
+          <Page :total=param.total
+                :current=param.pageNum
+                :page-size=param.pageSize
+                :page-size-opts=[8,10,20,30,40,50]
+                show-total
+                show-elevator
+                show-sizer
+                placement='top'
+                @on-page-size-change='(n)=>{pageSizeChange(n)}'
+                @on-change='(n)=>{pageChange(n)}'>
+          </Page>
+        </div>
+      </Row>
     </div>
 
     <Modal
@@ -326,6 +341,7 @@
                                 buttons.push(this.util.buildButton(this, h, 'error', 'logo-yen', '结算', () => {
                                     this.$http.post('/api/lcjl/getBatchPay',{ids:p.row.id}).then((res)=>{
                                         if (res.code == 200){
+                                            let a = true
                                             this.QRmess = res.result
                                             this.QRmess.kssj = this.QRmess.kssj.substring(11,16)
                                             this.QRmess.jssj = this.QRmess.jssj.substring(11,16)
@@ -338,6 +354,7 @@
                                             if (this.QRmess.fdr.indexOf('3')!=-1){
                                                 this.ls.ls3 = true
                                             }
+                                            this.QRmess.a = a
                                             this.QRmodal = true
                                         }
                                     })
@@ -358,7 +375,7 @@
                     jssjInRange:'',
                     zhLike: '',
                     pageNum: 1,
-                    pageSize: 8
+                    pageSize:8,
                 },
                 dateRange: {
                     kssj: ''
@@ -612,7 +629,12 @@
                                                                         if (this.QRmess.fdr.indexOf('3')!=-1){
                                                                             this.ls.ls3 = true
                                                                         }
-                                                                        this.QRmodal = true
+                                                                        if (p.row.lcJl.lcLx=='00'){
+                                                                            this.QRmodal = true
+                                                                        }else {
+
+                                                                        }
+
                                                                         // this.print(res.result)
                                                                         this.getCarList()
                                                                     }else {
@@ -722,6 +744,18 @@
                 'set_LcTime',
                 'Ch_LcTime'
             ]),
+            pageChange(val){
+                this.param.pageNum = val
+                this.util.getPageData(this)
+            },
+            pageSizeChange(val){
+                console.log(val);
+                this.param.pageSize = val
+                console.log(this.param.pageSize);
+                this.param.pageNum = 1
+                    this.util.getPageData(this)
+
+            },
             plzf(){
                 this.$http.post('/api/lcjl/getBatchPay',{ids:this.qrids}).then((res)=>{
                     if (res.code == 200){
@@ -762,6 +796,8 @@
                 } else if (name == '2') {
                     this.dateRange.jssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
                     this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
+                    this.param.pageSize = 20
+                    console.log(this.param);
                     this.util.initTable(this);
                 } else {
 
@@ -782,23 +818,36 @@
                     r.jssj = r.jssj.substring(0,16)
                 }
             },
-            QRcancel(){},
+            QRcancel(){
+
+            },
             QRok(){
                 let ids = ''
                 if (this.qrids!=''){
                     ids = this.qrids
+                    this.$http.post('/api/lcjl/batchPay',{ids:ids}).then((res)=>{
+                        if (res.code == 200){
+                            this.$Message.success(res.message)
+                            this.print(this.QRmess)
+                            this.qrids=''
+                            this.util.getPageData(this)
+                        }else {
+                            this.$Message.error(res.message)
+                        }
+                    })
                 }else {
                     ids = this.QRmess.id
+                    this.$http.post('/api/lcjl/pay',{id:ids}).then((res)=>{
+                        if (res.code == 200){
+                            this.$Message.success(res.message)
+                            this.qrids=''
+                            this.util.getPageData(this)
+                        }else {
+                            this.$Message.error(res.message)
+                        }
+                    })
                 }
-                this.$http.post('/api/lcjl/batchPay',{ids:ids}).then((res)=>{
-                    if (res.code == 200){
-                        this.$Message.success(res.message)
-                        this.qrids=''
-                        this.util.getPageData(this)
-                    }else {
-                        this.$Message.error(res.message)
-                    }
-                })
+
             },
             lcFyChange(v){
                 this.formData.zddm = v

@@ -181,36 +181,101 @@
     </Modal>
 
     <Modal
-      :title="passwordItem.jlXm+'修改密码'"
-      v-model="password"
+      :title="infoItem.jlXm+'信息修改'"
+      v-model="info"
       :closable="false"
       width="720"
       :mask-closable="false">
 
       <Form :model="formData" label-position="top">
         <Row :gutter="32">
-          <Col span="12">
-            <div style="float: left">
-              <FormItem label="原密码" label-position="top">
-                <Input v-model="passwordItem.old"/>
-              </FormItem>
-              <FormItem label="新密码" label-position="top">
-                <Input v-model="passwordItem.newPwd"/>
-              </FormItem>
-              <FormItem label="确认密码" label-position="top">
-                <Input v-model="passwordItem.newPwd1"/>
-              </FormItem>
-            </div>
+          <Col span="24">
+            <Row style="display: flex;justify-content: space-between">
+              <Col span="11">
+                <FormItem label="教练姓名" label-position="top">
+                  <Input v-model="infoItem.jlXm"/>
+                </FormItem>
+                <!--<span style="margin-right: 20px">持卡人</span>-->
+                <!--<span style="font-size: 15px">{{payItem.jlXm}}</span>-->
+              </Col>
+              <Col span="11">
+                <FormItem label="卡号" label-position="top">
+                  <span style="font-size: 15px">{{infoItem.cardNo}}</span>
+                </FormItem>
+              </Col>
+            </Row>
+            <Row style="display: flex;justify-content: space-between">
+              <Col span="11">
+                <FormItem label="教练驾校" label-position="top">
+<!--                  <Input v-model="infoItem.jlJx"/>-->
+                  <Select v-model="infoItem.jlJx" style="width:200px">
+                    <Option v-for="item in JX" :value="item.val" :key="item.val">{{ item.val }}</Option>
+                  </Select>
+                </FormItem>
+              </Col>
+              <Col span="11">
+                <FormItem label="电话号码" label-position="top">
+                  <Input v-model="infoItem.jlLxdh"/>
+                </FormItem>
+              </Col>
+            </Row>
+
+<!--            <Row style="display: flex;justify-content: space-between">-->
+<!--              <Col span="11">-->
+<!--                <FormItem label="旧密码" label-position="top">-->
+<!--                  <Input v-model="infoItem.old"/>-->
+<!--                </FormItem>-->
+<!--              </Col>-->
+<!--              <Col span="11">-->
+<!--                <FormItem label="电话号码" label-position="top">-->
+<!--                  <Input v-model="infoItem.jlLxdh"/>-->
+<!--                </FormItem>-->
+<!--              </Col>-->
+<!--            </Row>-->
+
           </Col>
 
         </Row>
 
       </Form>
+
       <div slot='footer'>
-        <Button style="margin-right: 8px" @click="closePw">取消</Button>
-        <Button type="primary" @click="updatePw">更改</Button>
+        <Button style="margin-right: 8px" @click="closeInfo">取消</Button>
+        <Button type="primary" @click="updateInfo">更改</Button>
       </div>
     </Modal>
+
+<!--    <Modal-->
+<!--      :title="passwordItem.jlXm+'修改密码'"-->
+<!--      v-model="password"-->
+<!--      :closable="false"-->
+<!--      width="720"-->
+<!--      :mask-closable="false">-->
+
+<!--      <Form :model="formData" label-position="top">-->
+<!--        <Row :gutter="32">-->
+<!--          <Col span="12">-->
+<!--            <div style="float: left">-->
+<!--              <FormItem label="原密码" label-position="top">-->
+<!--                <Input type="password" v-model="passwordItem.old"/>-->
+<!--              </FormItem>-->
+<!--              <FormItem label="新密码" label-position="top">-->
+<!--                <Input type="password" v-model="passwordItem.newPwd"/>-->
+<!--              </FormItem>-->
+<!--              <FormItem label="确认密码" label-position="top">-->
+<!--                <Input  type="password" v-model="passwordItem.newPwd1"/>-->
+<!--              </FormItem>-->
+<!--            </div>-->
+<!--          </Col>-->
+
+<!--        </Row>-->
+
+<!--      </Form>-->
+<!--      <div slot='footer'>-->
+<!--        <Button style="margin-right: 8px" @click="closePw">取消</Button>-->
+<!--        <Button type="primary" @click="updatePw">更改</Button>-->
+<!--      </div>-->
+<!--    </Modal>-->
 
     <mxb :itemObj="jlItem" :isMxb="isMxb" @closemxb="closeMXB"></mxb>
     <component :is="componentName" :printClose="printClose" :hisPrintMess="hisPrintMess"></component>
@@ -242,6 +307,8 @@
         password:false,
         passwordItem:{},
         totalS:0,
+          info:false,
+          infoItem:{},
 
         fylist: [],
         v: this,
@@ -384,23 +451,31 @@
                                 v.pay = true
                               }
                             }
-                          }, '充值'
-                        ),
-                        h('DropdownItem', {
-                          nativeOn: {
-                            click() {
-                              v.password=true;
-                              v.passwordItem=p.row
-                            }
-                          }
-                        }, '修改密码'),
-                        h('DropdownItem', {
-                          nativeOn: {
-                            click(name) {
-                              v.resetPw(p.row)
-                            }
-                          }
-                        }, '重置密码')
+                          }, '继续充值'
+                        ),h('DropdownItem', {
+                              nativeOn: {
+                                  click(name) {
+                                      v.infoItem = p.row
+                                      v.info = true
+                                  }
+                              }
+                          }, '信息修改'
+                      ),
+                        // h('DropdownItem', {
+                        //   nativeOn: {
+                        //     click() {
+                        //       v.password=true;
+                        //       v.passwordItem=p.row
+                        //     }
+                        //   }
+                        // }, '修改密码'),
+                        // h('DropdownItem', {
+                        //   nativeOn: {
+                        //     click(name) {
+                        //       v.resetPw(p.row)
+                        //     }
+                        //   }
+                        // }, '重置密码')
                       ]
                     )
                   ])
@@ -442,6 +517,7 @@
 
           }
         ],
+          JX:[]
       }
     },
     watch: {
@@ -467,6 +543,7 @@
       // this.getYYdj();
 
       this.getData()
+        this.getJX()
       this.getCoachList();
     },
     beforeDestroy() {
@@ -518,6 +595,30 @@
         }).catch(err => {
         })
       },
+        closeInfo(){
+            this.info=false
+            this.infoItem={}
+        },
+        updateInfo(){
+            this.$http.post('/api/lcwxjl/update', this.infoItem).then(res => {
+                if (res.code == 200) {
+                    this.info=false
+                    this.infoItem={}
+                    this.getData();
+                    this.swal({
+                        title: '更改成功',
+                        type: 'success',
+                        confirmButtonText: '确定',
+                    })
+                } else {
+                    this.swal({
+                        title: res.message,
+                        type: 'warning'
+                    })
+                }
+            }).catch(err => {
+            })
+        },
       closePw(){
         this.password=false
         this.passwordItem={}
@@ -705,7 +806,10 @@
         }).catch(err => {
         })
 
-      }
+      },
+        getJX(){
+            this.JX = this.dictUtil.getByCode(this, 'ZDCLK1017');
+        }
     },
   }
 </script>
