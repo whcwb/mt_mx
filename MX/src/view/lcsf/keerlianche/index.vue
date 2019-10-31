@@ -1,8 +1,21 @@
 <template>
-  <div class="box_col">
-    <Row style="margin-bottom: 18px" type="flex" align="bottom">
+  <div class="box_col" style="position: relative">
+    <Menu mode="horizontal" :active-name="activeName" @on-select="MenuClick">
+      <MenuItem name="1">
+        <div style="font-weight: 700;font-size: 16px">
+          科二模训
+        </div>
+      </MenuItem>
+      <MenuItem name="2">
+        <div style="font-weight: 700;font-size: 16px">
+          模训记录
+        </div>
+      </MenuItem>
+    </Menu>
+    <Row type="flex" style="padding: 10px 0" v-if="activeName=='1'">
       <Col span="6">
-        <pager-tit title="科二模训" style="float: left"></pager-tit>
+<!--        <pager-tit title="科二模训" style="float: left"></pager-tit>-->
+
         <div style="float: left;margin-top: 8px;cursor: pointer">
           <span style="width: 100px;height: 80px;background-color: #223580;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>
           <span style="width: 100px;height: 80px;cursor: pointer;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;"
@@ -60,9 +73,41 @@
       </Col>
     </Row>
 
-   <Row>
+   <Row v-if="activeName=='1'">
      <Table ref="table" size="small" :columns="columns1" :data="carList"></Table>
    </Row>
+
+    <div class="boxbackborder box_col" v-if="activeName=='2'">
+      <Row>
+        <Col span="6" style="padding: 10px 20px">
+          <Button type="warning" @click="plzf">批量结算</Button>
+        </Col>
+        <Col span="18">
+          <search-bar :parent="v" :show-create-button="false" ></search-bar>
+        </Col>
+      </Row>
+      <Table :height="650" stripe
+             size="small"
+             @on-select="tabcheck"
+             :columns="tableColumns" :data="pageData"></Table>
+<!--      <table-area :parent="v"></table-area>-->
+      <Row class="margin-top-10 pageSty">
+        <div style="text-align: right;padding: 6px 0">
+          <Page :total=param.total
+                :current=param.pageNum
+                :page-size=param.pageSize
+                :page-size-opts=[8,10,20,30,40,50]
+                show-total
+                show-elevator
+                show-sizer
+                placement='top'
+                @on-page-size-change='(n)=>{pageSizeChange(n)}'
+                @on-change='(n)=>{pageChange(n)}'>
+          </Page>
+        </div>
+      </Row>
+    </div>
+
     <Modal
       title="分配车辆"
       v-model="DrawerVal"
@@ -239,6 +284,103 @@
             keyypd,yydrawer,yyModel},
         data() {
             return {
+                qrids:'',
+                apiRoot: this.apis.lcjl,
+                choosedItem: null,
+                searchBarButtons:[
+                    {title:'打印',click:'print'}
+                ],
+                tableColumns: [
+                    {
+                        type: 'index2', align: 'center', minWidth: 80,
+                        render: (h, params) => {
+                            return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
+                        }
+                    },
+                    {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike',minWidth:90},
+                    {title: '车辆编号', key: 'clBh', searchKey: 'clBh',minWidth:90,},
+                    {title: '状态', minWidth:120,render:(h,p)=>{
+                            let s = '';
+                            if (!p.row.kssj || p.row.kssj === ''){
+                                s = '预约中'
+                            }else if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')){
+                                s = '训练中'
+                            }else{
+                                s = '已结束'
+                            }
+                            return h('div',s);
+                        }},
+
+                    {title: '开始时间', key: 'kssj',minWidth:140},
+                    {title: '结束时间', key: 'jssj', searchType: 'daterange',minWidth:140},
+                    {title: '时长', key: 'sc',minWidth:80,defaul:'0'},
+                    {title: '学员数量', key: 'xySl',minWidth:90,defaul:'0'},
+                    // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
+                    {title: '练车费用', key: 'lcFy', append: '元',minWidth:90,defaul:'0'},
+                    {title: '订单状态', key: 'zfzt',minWidth:80,
+                        render:(h,p)=>{
+                            if (p.row.zfzt == '00'){
+                                return h('div','未支付')
+                            }else {
+                                return h('div','已支付')
+                            }
+                        }
+                    },
+                    {title:'操作',minWidth:140,render:(h,p)=>{
+                            let buttons = [];
+                            buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
+                                this.hisPrintMess = p.row
+                                this.componentName = 'print'
+                            }));
+                            if(p.row.zfzt == '00'){
+                                buttons.push(this.util.buildButton(this, h, 'error', 'logo-yen', '结算', () => {
+                                    this.$http.post('/api/lcjl/getBatchPay',{ids:p.row.id}).then((res)=>{
+                                        if (res.code == 200){
+                                            let a = true
+                                            this.QRmess = res.result
+                                            this.QRmess.kssj = this.QRmess.kssj.substring(11,16)
+                                            this.QRmess.jssj = this.QRmess.jssj.substring(11,16)
+                                            if (this.QRmess.fdr.indexOf('1')!=-1){
+                                                this.ls.ls1 = true
+                                            }
+                                            if (this.QRmess.fdr.indexOf('2')!=-1){
+                                                this.ls.ls2 = true
+                                            }
+                                            if (this.QRmess.fdr.indexOf('3')!=-1){
+                                                this.ls.ls3 = true
+                                            }
+                                            this.QRmess.a = a
+                                            this.QRmodal = true
+                                        }
+                                    })
+                                }));
+                            }
+
+                            return h('div', buttons);
+                      }
+                      },
+
+                ],
+                pageData: [],
+                param: {
+                    orderBy:'jssj desc',
+                    jssjIsNotNull:'1',
+                    total: 0,
+                    lcKm:2,
+                    jssjInRange:'',
+                    zhLike: '',
+                    pageNum: 1,
+                    pageSize:8,
+                },
+                dateRange: {
+                    kssj: ''
+                },
+                activeName: '1',
                 ls:{
                     ls1:false,
                     ls2:false,
@@ -283,7 +425,7 @@
                 xxNum:0,
                 carList: [],
                 coachList:[],
-                param: {
+                param1: {
                     notShowLoading:'true',
                     clKm: '2',
                     clBh: '',
@@ -306,7 +448,8 @@
                         title: '车牌号',
                         key: 'clHm',
                         align:'center',
-                        width:120
+                        width:120,
+                        fixed: "left",
                     },
                     // {
                     //     title: '所属考场',
@@ -318,13 +461,14 @@
                         title: '车型',
                         key: 'clCx',
                         align:'center',
-                        width:80
+                        width:80,
+                        fixed: "left",
                     },
                     {
                         title: '车辆状态',
                         key: 'clZt',
                         align:'center',
-                        width:120,
+                        width:150,
                         render:(h,p)=>{
                             if (p.row.clZt == '00'){
                                 return h('div','空闲')
@@ -343,12 +487,20 @@
                     //     }
                     // },
                     {
-                        title: '用车人',
+                        title: '教练员姓名',
                         key: 'jlXm',
-                        width:120,
+                        width:150,
                         align:'center',
                         render:(h,p)=>{
                             return h('div',p.row.lcJl.jlXm)
+                        }
+                    },
+                    {
+                        title: '教练员电话',
+                        key: 'jlDh',
+                        align:'center',
+                        render:(h,p)=>{
+                            return h('div',p.row.lcJl.jlDh)
                         }
                     },
                     {
@@ -364,7 +516,6 @@
                         title: '开始时间',
                         key: 'xySl',
                         align:'center',
-                        width:160,
                         render:(h,p)=>{
                             return h('div',p.row.lcJl.kssj)
                         }
@@ -379,23 +530,17 @@
                         }
                     },
                     {
-                        title: '费用',
+                        title: '当前费用',
                         key: 'xySl',
-                        width:90,
                         align:'center',
                         render:(h,p)=>{
                             return h('div',p.row.zj)
                         }
                     },
                     {
-                        title: '备注',
-                        key: 'bz',
-                        align:'center',
-                    },
-                    {
                         title: '操作',
                         align:'center',
-                        width: 200,
+                        width: 150,
                         fixed: "right",
                         render: (h, p) => {
                             let buttons = [];
@@ -484,7 +629,12 @@
                                                                         if (this.QRmess.fdr.indexOf('3')!=-1){
                                                                             this.ls.ls3 = true
                                                                         }
-                                                                        this.QRmodal = true
+                                                                        if (p.row.lcJl.lcLx=='00'){
+                                                                            this.QRmodal = true
+                                                                        }else {
+
+                                                                        }
+
                                                                         // this.print(res.result)
                                                                         this.getCarList()
                                                                     }else {
@@ -504,26 +654,26 @@
                                 );
                             }
 
-
-                            buttons.push(
-                                h('Tooltip',
-                                    {props: {placement: 'top', content: '训练记录',}},
-                                    [
-                                        h('Button', {
-                                            props: {
-                                                type: 'warning',
-                                                size: 'small',
-                                            },
-                                            style: {margin: '0 10px 0 0'},
-                                            on: {
-                                                click: () => {
-                                                   this.his(p.row)
-                                                }
-                                            }
-                                        }, '记录')
-                                    ]
-                                ),
-                            );
+                            //
+                            // buttons.push(
+                            //     h('Tooltip',
+                            //         {props: {placement: 'top', content: '训练记录',}},
+                            //         [
+                            //             h('Button', {
+                            //                 props: {
+                            //                     type: 'warning',
+                            //                     size: 'small',
+                            //                 },
+                            //                 style: {margin: '0 10px 0 0'},
+                            //                 on: {
+                            //                     click: () => {
+                            //                        this.his(p.row)
+                            //                     }
+                            //                 }
+                            //             }, '记录')
+                            //         ]
+                            //     ),
+                            // );
                             buttons.push(
                                 h('Tooltip',
                                     {props: {placement: 'top', content: '打印票据',}},
@@ -594,15 +744,110 @@
                 'set_LcTime',
                 'Ch_LcTime'
             ]),
-            QRcancel(){},
-            QRok(){
-                this.$http.post('/api/lcjl/pay',{id:this.QRmess.id}).then((res)=>{
+            pageChange(val){
+                this.param.pageNum = val
+                this.util.getPageData(this)
+            },
+            pageSizeChange(val){
+                console.log(val);
+                this.param.pageSize = val
+                console.log(this.param.pageSize);
+                this.param.pageNum = 1
+                    this.util.getPageData(this)
+
+            },
+            plzf(){
+                this.$http.post('/api/lcjl/getBatchPay',{ids:this.qrids}).then((res)=>{
                     if (res.code == 200){
-                        this.$Message.success(res.message)
+                        this.QRmess = res.result
+                        this.QRmess.kssj = this.QRmess.kssj.substring(11,16)
+                        this.QRmess.jssj = this.QRmess.jssj.substring(11,16)
+                        if (this.QRmess.fdr.indexOf('1')!=-1){
+                            this.ls.ls1 = true
+                        }
+                        if (this.QRmess.fdr.indexOf('2')!=-1){
+                            this.ls.ls2 = true
+                        }
+                        if (this.QRmess.fdr.indexOf('3')!=-1){
+                            this.ls.ls3 = true
+                        }
+                        this.QRmodal = true
                     }else {
                         this.$Message.error(res.message)
                     }
                 })
+            },
+            tabcheck(selection,row){
+                console.log(selection);
+                console.log(row);
+                let ids = []
+                for(let r of selection){
+                    ids.push(r.id)
+                    console.log(r);
+                }
+                ids.push(row.id)
+                let a = ids.join(',')
+                this.qrids = a
+            },
+            MenuClick(name) {
+                this.activeName = name;
+                if (name == '1') {
+                    this.getCarList()
+                } else if (name == '2') {
+                    this.dateRange.jssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
+                    this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
+                    this.param.pageSize = 20
+                    console.log(this.param);
+                    this.util.initTable(this);
+                } else {
+
+                }
+            },
+            parseTime(s) {
+                s = parseInt(s);
+                let h = parseInt(s / 60);
+                let m = s % 60;
+                let r = '';
+                if (h != 0) r += h + '小时'
+                return r + m + '分钟'
+            },
+            afterPager(list){
+                for (let r of list){
+                    r.sc = this.parseTime(r.sc)
+                    r.kssj = r.kssj.substring(0,16)
+                    r.jssj = r.jssj.substring(0,16)
+                }
+            },
+            QRcancel(){
+
+            },
+            QRok(){
+                let ids = ''
+                if (this.qrids!=''){
+                    ids = this.qrids
+                    this.$http.post('/api/lcjl/batchPay',{ids:ids}).then((res)=>{
+                        if (res.code == 200){
+                            this.$Message.success(res.message)
+                            this.print(this.QRmess)
+                            this.qrids=''
+                            this.util.getPageData(this)
+                        }else {
+                            this.$Message.error(res.message)
+                        }
+                    })
+                }else {
+                    ids = this.QRmess.id
+                    this.$http.post('/api/lcjl/pay',{id:ids}).then((res)=>{
+                        if (res.code == 200){
+                            this.$Message.success(res.message)
+                            this.qrids=''
+                            this.util.getPageData(this)
+                        }else {
+                            this.$Message.error(res.message)
+                        }
+                    })
+                }
+
             },
             lcFyChange(v){
                 this.formData.zddm = v
@@ -799,7 +1044,7 @@
                 this.getCoachList(id)
             },
             getCarList() {//获取车辆
-                this.param.clBh = this.formData.clBh
+                this.param1.clBh = this.formData.clBh
                 this.zxNum=0;
                 this.xxNum=0;
                 this.$http.post('/api/lccl/getCar', {notShowLoading:'true',pagerNum:1,pageSize:99999,clKm:"2",clBh:this.formData.clBh,orderBy:'clZt asc,clBh asc,clCx asc',clZt:this.formData.clZt,clCx:this.formData.clCx}).then((res) => {
