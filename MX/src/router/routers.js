@@ -191,6 +191,15 @@ export default [
         },
         component: () => import('@/view/charge/rebate')
       },
+      {
+        path: 'jlcz',
+        name: 'jlcz',
+        meta: {
+          icon: '_bear',
+          title: '教练充值'
+        },
+        component: () => import('@/view/charge/jlcz')
+      },
     ]
   },
   {
