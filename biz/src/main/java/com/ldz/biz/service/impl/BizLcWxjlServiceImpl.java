@@ -1,14 +1,18 @@
 package com.ldz.biz.service.impl;
 
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.ldz.biz.mapper.BizJlCzMapper;
 import com.ldz.biz.mapper.BizLcWxjlMapper;
+import com.ldz.biz.model.BizJlCz;
 import com.ldz.biz.model.BizLcWxjl;
 import com.ldz.biz.service.BizLcWxjlService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.EncryptUtil;
 import com.ldz.util.exception.RuntimeCheck;
@@ -25,6 +29,8 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
 
 	@Autowired
 	private BizLcWxjlMapper baseMapper;
+	@Autowired
+	private BizJlCzMapper czMapper;
 	
 	@Override
 	protected Mapper<BizLcWxjl> getBaseMapper() {
@@ -62,6 +68,7 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
 	@Override
 	public ApiResponse<String> bindCardNo(String id) {
 		BizLcWxjl wxjl = findById(id);
+		RuntimeCheck.ifTrue(StringUtils.isNotBlank(wxjl.getCardNo()) , "教练员已经绑定卡号, 请勿重复操作");
 		int maxNo = baseMapper.getMaxNo();
 		String cardNo = genCardNo(maxNo);
 		List<BizLcWxjl> eq = findEq(BizLcWxjl.InnerColumn.cardNo, cardNo);
@@ -89,11 +96,10 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
 		RuntimeCheck.ifEmpty(wxjlList, "未找到卡片信息");
 		BizLcWxjl wxjl = wxjlList.get(0);
 		String pwd = wxjl.getPwd();
-		String userPwd = EncryptUtil.encryptUserPwd(pwd);
+		String userPwd = EncryptUtil.encryptUserPwd(old);
 		RuntimeCheck.ifFalse(StringUtils.equals(pwd, userPwd), "原始密码错误");
 		wxjl.setPwd(EncryptUtil.encryptUserPwd(newPwd));
 		update(wxjl);
-
 		return ApiResponse.success();
 	}
 
@@ -109,16 +115,27 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
 		return ApiResponse.success();
 	}
 
+	@Override
+	public ApiResponse<String> czmx(int pageNum, int pageSize, String id) {
+		RuntimeCheck.ifBlank(id, "请选择记录");
+		SimpleCondition condition = new SimpleCondition(BizJlCz.class);
+		condition.eq(BizJlCz.InnerColumn.jlId, id);
+		PageInfo<BizJlCz> info = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(() -> czMapper.selectByExample(condition));
+		ApiResponse<String> res = new ApiResponse<>();
+		res.setPage(info);
+		return res;
+	}
+
 	private String genCardNo(int maxNo){
-		String s = maxNo++  + "";
+		StringBuilder s = new StringBuilder(maxNo++ + "");
 		int length = s.length();
 
 		if(length == 6 ){
 			return maxNo +"";
 		}
 		for(int i = 0 ; i < 6 - length; i ++ ){
-			s = "0" + s;
+			s.insert(0, "0");
 		}
-		return  s;
+		return s.toString();
 	}
 }

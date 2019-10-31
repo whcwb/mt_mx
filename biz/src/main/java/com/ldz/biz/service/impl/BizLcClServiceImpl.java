@@ -5,8 +5,10 @@ import com.github.pagehelper.PageInfo;
 import com.ldz.biz.mapper.BizLcClMapper;
 import com.ldz.biz.model.BizLcCl;
 import com.ldz.biz.model.BizLcJl;
+import com.ldz.biz.model.BizLcWxjl;
 import com.ldz.biz.service.BizLcClService;
 import com.ldz.biz.service.BizLcJlService;
+import com.ldz.biz.service.BizLcWxjlService;
 import com.ldz.biz.service.ZgjbxxService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
@@ -40,6 +42,8 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
     private BizLcJlService jlService;
     @Autowired
     private ZdxmService zdxmService;
+    @Autowired
+    private BizLcWxjlService wxjlService;
 
     @Override
     protected Mapper<BizLcCl> getBaseMapper() {
@@ -119,11 +123,12 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
                     List<BizLcJl> jls = jlService.findByCondition(condition);
                     if (CollectionUtils.isNotEmpty(jls)) {
                         BizLcJl bizLcJl = jls.get(0);
-
+                        BizLcWxjl wxjl = wxjlService.findById(bizLcJl.getJlId());
                         bizLcCl.setLcJl(bizLcJl);
+                        bizLcJl.setJlDh(wxjl.getJlLxdh());
                         // 计算下时长
                         String kssj = bizLcJl.getKssj();
-                        String sc = "0";
+                        String sc;
 
                         Date ks = dateFormat.parse(kssj);
                         Date js = new Date();
