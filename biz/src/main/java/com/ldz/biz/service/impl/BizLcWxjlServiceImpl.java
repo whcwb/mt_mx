@@ -1,17 +1,24 @@
 package com.ldz.biz.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import com.ldz.biz.mapper.BizLcWxjlMapper;
 import com.ldz.biz.model.BizLcWxjl;
 import com.ldz.biz.service.BizLcWxjlService;
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.DateUtils;
+import com.ldz.util.commonUtil.EncryptUtil;
 import com.ldz.util.exception.RuntimeCheck;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.List;
 
 @Service
 public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> implements BizLcWxjlService {
@@ -41,4 +48,77 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
 		res.setResult(entity.getId());
 		return res;
     }
+
+    @Override
+    public ApiResponse<String> getWxjl(Page<BizLcWxjl> page) {
+		LimitedCondition queryCondition = getQueryCondition();
+		queryCondition.and().andIsNotNull(BizLcWxjl.InnerColumn.cardNo.name());
+		PageInfo<BizLcWxjl> info = findPage(page, queryCondition);
+		ApiResponse<String> res = new ApiResponse<>();
+		res.setPage(info);
+		return res;
+    }
+
+	@Override
+	public ApiResponse<String> bindCardNo(String id) {
+		BizLcWxjl wxjl = findById(id);
+		int maxNo = baseMapper.getMaxNo();
+		String cardNo = genCardNo(maxNo);
+		List<BizLcWxjl> eq = findEq(BizLcWxjl.InnerColumn.cardNo, cardNo);
+		while (CollectionUtils.isNotEmpty(eq)){
+			int anInt = Integer.parseInt(cardNo) + 1;
+			cardNo = genCardNo(anInt);
+			eq = findEq(BizLcWxjl.InnerColumn.cardNo, cardNo);
+		}
+		wxjl.setCardNo(cardNo);
+		wxjl.setPwd(EncryptUtil.encryptUserPwd("123456"));
+		update(wxjl);
+		return ApiResponse.success(cardNo);
+	}
+
+	@Override
+	public ApiResponse<String> updatePwd(String cardNo, String old, String newPwd, String newPwd1) {
+		RuntimeCheck.ifBlank(cardNo, "请上传卡号");
+		RuntimeCheck.ifBlank(old, "请输入旧密码");
+		RuntimeCheck.ifBlank(newPwd, "请输入新密码");
+		RuntimeCheck.ifBlank(newPwd1, "请再次输入新密码");
+		RuntimeCheck.ifFalse(StringUtils.equals(newPwd1, newPwd), "两次密码不一致");
+		RuntimeCheck.ifTrue(StringUtils.equals(old, newPwd), "新密码与旧密码不能一致");
+
+		List<BizLcWxjl> wxjlList = findEq(BizLcWxjl.InnerColumn.cardNo, cardNo);
+		RuntimeCheck.ifEmpty(wxjlList, "未找到卡片信息");
+		BizLcWxjl wxjl = wxjlList.get(0);
+		String pwd = wxjl.getPwd();
+		String userPwd = EncryptUtil.encryptUserPwd(pwd);
+		RuntimeCheck.ifFalse(StringUtils.equals(pwd, userPwd), "原始密码错误");
+		wxjl.setPwd(EncryptUtil.encryptUserPwd(newPwd));
+		update(wxjl);
+
+		return ApiResponse.success();
+	}
+
+	@Override
+	public ApiResponse<String> resetPwd(String cardNo) {
+
+		RuntimeCheck.ifBlank(cardNo, "请选择要重置的卡号");
+		List<BizLcWxjl> wxjls = findEq(BizLcWxjl.InnerColumn.cardNo, cardNo);
+		RuntimeCheck.ifEmpty(wxjls,  "未找到卡号信息");
+		BizLcWxjl wxjl = wxjls.get(0);
+		wxjl.setPwd(EncryptUtil.encryptUserPwd("123456"));
+		update(wxjl);
+		return ApiResponse.success();
+	}
+
+	private String genCardNo(int maxNo){
+		String s = maxNo++  + "";
+		int length = s.length();
+
+		if(length == 6 ){
+			return maxNo +"";
+		}
+		for(int i = 0 ; i < 6 - length; i ++ ){
+			s = "0" + s;
+		}
+		return  s;
+	}
 }

@@ -29,9 +29,31 @@ public class BizLcWxjl implements Serializable {
     @Column(name = "jl_lxdh")
     private String jlLxdh;
 
+    @Column(name = "ye")
     private int ye;
 
+    @Column(name = "card_no")
+    private String cardNo;
+
+    @Column(name = "pay_type")
+    private String payType;
+
+    private String pwd;
+
+    @Column(name = "card_je")
+    private int cardJe;
+
+
+
     private static final long serialVersionUID = 1L;
+
+    public int getCardJe() {
+        return cardJe;
+    }
+
+    public void setCardJe(int cardJe) {
+        this.cardJe = cardJe;
+    }
 
     public int getYe() {
         return ye;
@@ -39,6 +61,30 @@ public class BizLcWxjl implements Serializable {
 
     public void setYe(int ye) {
         this.ye = ye;
+    }
+
+    public String getCardNo() {
+        return cardNo;
+    }
+
+    public void setCardNo(String cardNo) {
+        this.cardNo = cardNo;
+    }
+
+    public String getPayType() {
+        return payType;
+    }
+
+    public void setPayType(String payType) {
+        this.payType = payType;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 
     public String getJlLxdh() {
@@ -133,7 +179,10 @@ public class BizLcWxjl implements Serializable {
         jlJx("jl_jx"),
         cjr("cjr"),
         cjsj("cjsj"),
-        jlLxdh("jl_lxdh");
+        jlLxdh("jl_lxdh"),
+        cardNo("card_no"),
+        payType("pay_type"),
+        pwd("pwd");
 
         private final String column;
 

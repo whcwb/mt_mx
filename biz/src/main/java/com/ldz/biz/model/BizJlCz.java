@@ -1,6 +1,7 @@
 package com.ldz.biz.model;
 
 import lombok.Data;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -16,15 +17,23 @@ public class BizJlCz {
     @Column(name = "jl_id")
     private String jlId;
 
+    @Column(name = "je")
     private int je;
 
     private String cjsj;
 
     private String type;
 
+    @Column(name = "czqje")
     private int czqje;
-
+    @Column(name = "czhje")
     private int czhje;
+
+    private String zy;
+
+    private String bz;
+    @Column(name = "sfje")
+    private int sfje;
 
     public enum InnerColumn{
         id("ID"),
@@ -33,7 +42,9 @@ public class BizJlCz {
         cjsj("CJSJ"),
         type("type"),
         czqje("czqje"),
-        czhje("czhje");
+        czhje("czhje"),
+        zy("zy"),
+        bz("bz");
         private final String column;
 
         InnerColumn(String column) {
