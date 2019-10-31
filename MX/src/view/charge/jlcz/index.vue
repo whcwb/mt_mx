@@ -32,6 +32,7 @@
 
     <Row style="position: relative;">
       <Table stripe
+             size="small"
              :height="AF.getPageHeight()-250"
              :columns="columns1"
              :data="dataList">
@@ -79,7 +80,7 @@
                 >
                   <Option v-for="(it,index) in searchCoachList" :value="it.value" :key="index">{{it.label}}</Option>
                 </Select>
-                <span style="color: red;font-size: 18px">*初始密码为123456</span>
+<!--                <span style="color: red;font-size: 18px">*初始密码为123456</span>-->
               </FormItem>
             </div>
             <div style="padding-top: 22px;">
@@ -135,13 +136,13 @@
             </Row>
             <Row style="display: flex;justify-content: space-between">
               <Col span="11">
-                <FormItem label="充值金额" label-position="top">
-                  <Input v-model="payItem.je"/>
+                <FormItem label="实收金额" label-position="top">
+                  <Input v-model="payItem.sfje"/>
                 </FormItem>
               </Col>
               <Col span="11">
-                <FormItem label="实收金额" label-position="top">
-                  <Input v-model="payItem.sfje"/>
+                <FormItem label="充值金额" label-position="top">
+                  <Input v-model="payItem.je"/>
                 </FormItem>
               </Col>
             </Row>
@@ -451,7 +452,7 @@
                                 v.pay = true
                               }
                             }
-                          }, '继续充值'
+                          }, '充值'
                         ),h('DropdownItem', {
                               nativeOn: {
                                   click(name) {
@@ -459,7 +460,7 @@
                                       v.info = true
                                   }
                               }
-                          }, '信息修改'
+                          }, '维护'
                       ),
                         // h('DropdownItem', {
                         //   nativeOn: {

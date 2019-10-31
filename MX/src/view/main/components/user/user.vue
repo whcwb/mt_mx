@@ -17,18 +17,18 @@
     <!--</DropdownMenu>-->
     <!--</Dropdown>-->
     <!--<Avatar :src="userAvator"/>-->
-    <Button type="text"
-            style="font-size:20px;font-weight: 700">
-      {{usermess.xm}} 您好,欢迎使用本平台!
-    </Button>
-    <Button type="text" class="timeSty">
-      <div class="time">
-        {{todayTime}}
-      </div>
-      <!--<div class="time">-->
-        <!--{{todayTime_N}}-->
-      <!--</div>-->
-    </Button>
+<!--    <Button type="text"-->
+<!--            style="font-size:20px;font-weight: 700">-->
+<!--      {{usermess.xm}} 您好,欢迎使用本平台!-->
+<!--    </Button>-->
+<!--    <Button type="text" class="timeSty">-->
+<!--      <div class="time">-->
+<!--        {{todayTime}}-->
+<!--      </div>-->
+<!--      &lt;!&ndash;<div class="time">&ndash;&gt;-->
+<!--        &lt;!&ndash;{{todayTime_N}}&ndash;&gt;-->
+<!--      &lt;!&ndash;</div>&ndash;&gt;-->
+<!--    </Button>-->
 <!--    <Tooltip content="全屏" style="margin-right: 16px">-->
 <!--      <Button type="info"-->
 <!--              size="small"-->
@@ -36,13 +36,13 @@
 <!--        <Icon type="ios-albums-outline" size="24" color="#fff"/>-->
 <!--      </Button>-->
 <!--    </Tooltip>-->
-    <Tooltip content="UKey驱动下载" style="margin-right: 16px">
-      <Button type="warning"
-              size="small"
-              @click="ukey">
-        <Icon type="md-key" size="24" color="#fff"/>
-      </Button>
-    </Tooltip>
+<!--    <Tooltip content="UKey驱动下载" style="margin-right: 16px">-->
+<!--      <Button type="warning"-->
+<!--              size="small"-->
+<!--              @click="ukey">-->
+<!--        <Icon type="md-key" size="24" color="#fff"/>-->
+<!--      </Button>-->
+<!--    </Tooltip>-->
     <Tooltip content="打印机驱动下载" style="margin-right: 16px">
       <Button type="warning"
               size="small"
@@ -57,13 +57,13 @@
         <Icon type="ios-card-outline" size="24" color="#fff"/>
       </Button>
     </Tooltip>
-    <Tooltip content="读卡器驱动(身份证)" style="margin-right: 16px">
-      <Button type="warning"
-              size="small"
-              @click="xzx">
-        <Icon type="ios-card" size="24" color="#fff"/>
-      </Button>
-    </Tooltip>
+<!--    <Tooltip content="读卡器驱动(身份证)" style="margin-right: 16px">-->
+<!--      <Button type="warning"-->
+<!--              size="small"-->
+<!--              @click="xzx">-->
+<!--        <Icon type="ios-card" size="24" color="#fff"/>-->
+<!--      </Button>-->
+<!--    </Tooltip>-->
     <Tooltip content="密码修改" style="margin-right: 16px">
       <Button type="info"
               size="small"

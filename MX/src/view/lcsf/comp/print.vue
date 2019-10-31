@@ -89,8 +89,8 @@
         showCode: false,
         codeSrc: '',
         mess: [
-          {title: '训练科目', key: 'kc'},
-          // {title: '训练科目', key: 'lcKm', dict: 'km'},
+          // {title: '训练科目', key: 'km'},
+          {title: '训练科目', key: 'lcKm', dict: 'km'},
           {title: '车辆编号', key: 'clBh'},
           {title: '训练车型', key: 'jlCx'},
           {title: '教练员', key: 'jlJx', key2: 'jlXm'},

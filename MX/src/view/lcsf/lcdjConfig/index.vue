@@ -1,18 +1,20 @@
 <template>
   <div class="box_col" style="margin-left: 20px;">
-    <pager-tit title="费用修改"></pager-tit>
+    <pager-tit title="套餐维护"></pager-tit>
     <div class="box_col_auto" style="overflow-x: hidden;">
       <Row :gutter="12">
         <Col span="8" v-for="(item,index) in list" :prop="item.zdmc" :key="item.zdId" >
           <Card  style="margin-top: 12px;">
             <p slot="title">
               <Icon type="ios-car"></Icon>
-              {{item.by1 +'-' + item.by2}}
+              {{item.by9}}
             </p>
             <Row>
-              <Col span="20">
-                <InputNumber  v-model="item.zdmc" :placeholder="'请填写练车单价...'" style="width: 200px;" @on-change="change(item)"></InputNumber>
-                <span>元</span>
+              <Col span="20" v-if="item.zddm =='K2KF'">
+                <InputNumber  v-model="item.zdmc" :placeholder="'请填写练车价格'" style="width: 200px;" @on-change="change(item)"></InputNumber>
+                <span v-if="item.zddm =='K2PY'"> 元套餐</span>
+                <span v-else-if="item.zddm =='K2KF'">元/人</span>
+                <span v-else> 元套餐</span>
               </Col>
               <Col span="4">
 
@@ -22,7 +24,7 @@
               <Col span="20">
                 <InputNumber  v-model="item.by3" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
                 <span v-if="item.zddm =='K2PY'"> 元/人</span>
-                <span v-else-if="item.zddm =='K2KF1'||item.zddm =='K2KF2'||item.zddm =='K2KF3'"> 元</span>
+                <span v-else-if="item.zddm =='K2KF'">返点金额</span>
                 <span v-else> 元/分钟</span>
               </Col>
               <Col span="4">
@@ -81,17 +83,6 @@
                         r.zdmc = parseInt(r.zdmc)
                         r.by3 = parseFloat(r.by3)
                         r.by4 = parseFloat(r.by4)
-                        if(r.zddm =='k2JS'){
-                            r.by2 = r.by2+'-计时'
-                        } if(r.zddm =='K2PY'){
-                            r.by2 = r.by2+'-培优'
-                        }if(r.zddm =='K2KF1'){
-                            r.by2 = r.by2+'-开放日1'
-                        }if(r.zddm =='K2KF2'){
-                            r.by2 = r.by2+'-开放日2'
-                        }if(r.zddm =='K2KF3'){
-                            r.by2 = r.by2+'-开放日3'
-                        }
                     }
                 }else{
                     this.$Message.error(res.message)

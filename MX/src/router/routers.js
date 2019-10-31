@@ -30,26 +30,26 @@ export default [
       notCache: true
     },
     children: [
-      // {
-      //   path: '/home',
-      //   name: 'home',
-      //   meta: {
-      //     hideInMenu: true,
-      //     title: '工作台',
-      //     notCache: true
-      //   },
-      //   component: () => import('@/view/single-page/home')
-      // }
       {
         path: '/home',
         name: 'home',
         meta: {
           hideInMenu: true,
-          title: '练车费维护',
+          title: '工作台',
           notCache: true
         },
-        component: () => import('@/view/lcsf/lcdjConfig')
-      },
+        component: () => import('@/view/single-page/home')
+      }
+      // {
+      //   path: '/home',
+      //   name: 'home',
+      //   meta: {
+      //     hideInMenu: true,
+      //     title: '练车费维护',
+      //     notCache: true
+      //   },
+      //   component: () => import('@/view/lcsf/lcdjConfig')
+      // },
     ]
   },
   {

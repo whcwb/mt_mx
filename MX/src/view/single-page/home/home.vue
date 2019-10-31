@@ -36,658 +36,658 @@
 </style>
 <template>
   <div>
-    <div style="position: absolute;padding-top: 20px;padding-left: 20px;z-index: 99">
-      <Tooltip :content="gxsj" placement="bottom-start">
-        <Button type="primary" shape="circle" icon="md-refresh" :loading="loadBtnFlag" @click="loadData"></Button>
-      </Tooltip>
-    </div>
-    <div v-if="anayDivFlag" style="position: absolute;padding-top: 80px;padding-left: 20px">
-      <Tooltip :content="anayGxsj" placement="bottom-start">
-        <Button type="error" shape="circle" icon="md-analytics" :loading="anayBtnFlag" @click="anayData"></Button>
-      </Tooltip>
-    </div>
-    <Row :gutter="20" type="flex" justify="center" align="middle" style="padding-top: 20px">
-      <Col span="5">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="primary" style="font-weight: bold;font-size: 16px">报名审核</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPage('Student-recruit_audit')">待办</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.BMDSH == null ? 0 : dashboard.BMDSH" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('001', null)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.BMSHYC == null ? 0 : dashboard.BMSHYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider/>
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-            &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-      <Col span="5">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="primary" style="font-weight: bold;font-size: 16px">收费确认</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPage('charge-signUp')">待收</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.SFDQR == null ? 0 : dashboard.SFDQR" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('002', null)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.SFQRYC == null ? 0 : dashboard.SFQRYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-            &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-      <Col span="5">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="primary" style="font-weight: bold;font-size: 16px">分期还款</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-            <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPage('charge-arrearage')">待收</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.FQDQR == null ? 0 : dashboard.FQDQR" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-            <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('903', null)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.FQQRYC == null ? 0 : dashboard.FQQRYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-      <Col span="5">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="primary" style="font-weight: bold;font-size: 16px">受理确认</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPage('Student-acceptance')">待办</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.SLDQR == null ? 0 : dashboard.SLDQR" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('003', null)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.SLQRYC == null ? 0 : dashboard.SLQRYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-    </Row>
+<!--    <div style="position: absolute;padding-top: 20px;padding-left: 20px;z-index: 99">-->
+<!--      <Tooltip :content="gxsj" placement="bottom-start">-->
+<!--        <Button type="primary" shape="circle" icon="md-refresh" :loading="loadBtnFlag" @click="loadData"></Button>-->
+<!--      </Tooltip>-->
+<!--    </div>-->
+<!--    <div v-if="anayDivFlag" style="position: absolute;padding-top: 80px;padding-left: 20px">-->
+<!--      <Tooltip :content="anayGxsj" placement="bottom-start">-->
+<!--        <Button type="error" shape="circle" icon="md-analytics" :loading="anayBtnFlag" @click="anayData"></Button>-->
+<!--      </Tooltip>-->
+<!--    </div>-->
+<!--    <Row :gutter="20" type="flex" justify="center" align="middle" style="padding-top: 20px">-->
+<!--      <Col span="5">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="primary" style="font-weight: bold;font-size: 16px">报名审核</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPage('Student-recruit_audit')">待办</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.BMDSH == null ? 0 : dashboard.BMDSH" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('001', null)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.BMSHYC == null ? 0 : dashboard.BMSHYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider/>-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--            &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--      <Col span="5">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="primary" style="font-weight: bold;font-size: 16px">收费确认</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPage('charge-signUp')">待收</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.SFDQR == null ? 0 : dashboard.SFDQR" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('002', null)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.SFQRYC == null ? 0 : dashboard.SFQRYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--            &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--      <Col span="5">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="primary" style="font-weight: bold;font-size: 16px">分期还款</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPage('charge-arrearage')">待收</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.FQDQR == null ? 0 : dashboard.FQDQR" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('903', null)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.FQQRYC == null ? 0 : dashboard.FQQRYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--      <Col span="5">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="primary" style="font-weight: bold;font-size: 16px">受理确认</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPage('Student-acceptance')">待办</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.SLDQR == null ? 0 : dashboard.SLDQR" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('003', null)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.SLQRYC == null ? 0 : dashboard.SLQRYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--    </Row>-->
 
-    <Row :gutter="20" type="flex" justify="center" align="middle" style="padding-top: 20px">
-      <Col span="7">
-      <Card  :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="success" style="font-weight: bold;font-size: 16px" @click="goToPageByParam('Student-appointment', '1')">科目一预约</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-query', '10')">待考</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM1YY == null ? 0 : dashboard.KM1YY" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('991', 1)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM1YYYC == null ? 0 : dashboard.KM1YYYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-      <Col span="6">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="success" style="font-weight: bold;font-size: 16px">科目一初考费</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('charge-examination',1)">待缴</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM1JF == null ? 0 : dashboard.KM1JF" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('101', 1)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM1JFYC == null ? 0 : dashboard.KM1JFYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-      <Col span="7">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="success" style="font-weight: bold;font-size: 16px">科目一成绩确认</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-examination',1)">待办</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM1DQR == null ? 0 : dashboard.KM1DQR" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('102', 1)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM1QRYC == null ? 0 : dashboard.KM1QRYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-    </Row>
-    <Row :gutter="20" type="flex" justify="center" align="middle" style="padding-top: 20px">
-      <Col span="7">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="success" style="font-weight: bold;font-size: 16px" @click="goToPageByParam('Student-appointment', '2')">科目二预约</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-query', '20')">待考</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM2YY == null ? 0 : dashboard.KM2YY" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('991', 2)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM2YYYC == null ? 0 : dashboard.KM2YYYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-      <Col span="6">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="success" style="font-weight: bold;font-size: 16px">科目二初考费</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('charge-examination',2)">待缴</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM2JF == null ? 0 : dashboard.KM2JF" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('201', 2)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM2JFYC == null ? 0 : dashboard.KM2JFYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-      <Col span="7">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="success" style="font-weight: bold;font-size: 16px">科目二成绩确认</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-examination',2)">待办</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM2DQR == null ? 0 : dashboard.KM2DQR" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('202', 2)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM2QRYC == null ? 0 : dashboard.KM2QRYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-    </Row>
-    <Row :gutter="20" type="flex" justify="center" align="middle" style="padding-top: 20px">
-      <Col span="7">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="success" style="font-weight: bold;font-size: 16px"  @click="goToPageByParam('Student-appointment', '3')">科目三预约</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-            <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-query', '30')">待考</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM3YY == null ? 0 : dashboard.KM3YY" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-            <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('991', 3)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM3YYYC == null ? 0 : dashboard.KM3YYYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-      <Col span="6">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="success" style="font-weight: bold;font-size: 16px">科目三初考费</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-            <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('charge-examination',3)">待缴</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM3JF == null ? 0 : dashboard.KM3JF" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-            <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('301', 3)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM3JFYC == null ? 0 : dashboard.KM3JFYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-      <Col span="7">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="success" style="font-weight: bold;font-size: 16px">科目三成绩确认</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-            <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-examination',3)">待办</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM3DQR == null ? 0 : dashboard.KM3DQR" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-            <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('302', 3)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM3QRYC == null ? 0 : dashboard.KM3QRYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-    </Row>
-    <Row :gutter="20" type="flex" justify="center" align="middle" style="padding-top: 20px;padding-bottom: 20px">
-      <Col span="10">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="info" style="font-weight: bold;font-size: 16px" @click="goToPageByParam('Student-appointment', '4')">科目四预约</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-            <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-query', '40')">待考</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM4YY == null ? 0 : dashboard.KM4YY" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-            <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('991', 4)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM4YYYC == null ? 0 : dashboard.KM4YYYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-      <Col span="10">
-      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">
-        <div slot="title" style="text-align: center">
-          <Button type="info" style="font-weight: bold;font-size: 16px">科目四成绩确认</Button>
-        </div>
-        <Row style="text-align: center">
-          <Col span="10">
-          <Row>
-            <Col span="24">
-            <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-examination',4)">待办</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM4DQR == null ? 0 : dashboard.KM4DQR" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-          <Col span="2" style="text-align: center;height:80px">
-          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>
-          </Col>
-          <Col span="10">
-          <Row>
-            <Col span="24">
-            <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('402', 4)">异常</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-            <count-to :end="dashboard.KM4QRYC == null ? 0 : dashboard.KM4QRYC" :duration='0.2' count-class="count-style-excpetion"/>
-            </Col>
-          </Row>
-          </Col>
-        </Row>
-        <Divider />
-        <Row class="childerFooter" type="flex" justify="center" align="middle">
-          <Col offset="1" span="22">
-          &nbsp;
-          </Col>
-        </Row>
-      </Card>
-      </Col>
-    </Row>
-  </div>
+<!--    <Row :gutter="20" type="flex" justify="center" align="middle" style="padding-top: 20px">-->
+<!--      <Col span="7">-->
+<!--      <Card  :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="success" style="font-weight: bold;font-size: 16px" @click="goToPageByParam('Student-appointment', '1')">科目一预约</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-query', '10')">待考</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM1YY == null ? 0 : dashboard.KM1YY" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('991', 1)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM1YYYC == null ? 0 : dashboard.KM1YYYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--      <Col span="6">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="success" style="font-weight: bold;font-size: 16px">科目一初考费</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('charge-examination',1)">待缴</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM1JF == null ? 0 : dashboard.KM1JF" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('101', 1)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM1JFYC == null ? 0 : dashboard.KM1JFYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--      <Col span="7">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="success" style="font-weight: bold;font-size: 16px">科目一成绩确认</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-examination',1)">待办</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM1DQR == null ? 0 : dashboard.KM1DQR" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('102', 1)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM1QRYC == null ? 0 : dashboard.KM1QRYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--    </Row>-->
+<!--    <Row :gutter="20" type="flex" justify="center" align="middle" style="padding-top: 20px">-->
+<!--      <Col span="7">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="success" style="font-weight: bold;font-size: 16px" @click="goToPageByParam('Student-appointment', '2')">科目二预约</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-query', '20')">待考</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM2YY == null ? 0 : dashboard.KM2YY" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('991', 2)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM2YYYC == null ? 0 : dashboard.KM2YYYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--      <Col span="6">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="success" style="font-weight: bold;font-size: 16px">科目二初考费</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('charge-examination',2)">待缴</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM2JF == null ? 0 : dashboard.KM2JF" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('201', 2)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM2JFYC == null ? 0 : dashboard.KM2JFYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--      <Col span="7">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="success" style="font-weight: bold;font-size: 16px">科目二成绩确认</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-examination',2)">待办</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM2DQR == null ? 0 : dashboard.KM2DQR" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--              <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('202', 2)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM2QRYC == null ? 0 : dashboard.KM2QRYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--    </Row>-->
+<!--    <Row :gutter="20" type="flex" justify="center" align="middle" style="padding-top: 20px">-->
+<!--      <Col span="7">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="success" style="font-weight: bold;font-size: 16px"  @click="goToPageByParam('Student-appointment', '3')">科目三预约</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-query', '30')">待考</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM3YY == null ? 0 : dashboard.KM3YY" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('991', 3)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM3YYYC == null ? 0 : dashboard.KM3YYYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--      <Col span="6">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="success" style="font-weight: bold;font-size: 16px">科目三初考费</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('charge-examination',3)">待缴</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM3JF == null ? 0 : dashboard.KM3JF" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('301', 3)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM3JFYC == null ? 0 : dashboard.KM3JFYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--      <Col span="7">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="success" style="font-weight: bold;font-size: 16px">科目三成绩确认</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-examination',3)">待办</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM3DQR == null ? 0 : dashboard.KM3DQR" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('302', 3)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM3QRYC == null ? 0 : dashboard.KM3QRYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--    </Row>-->
+<!--    <Row :gutter="20" type="flex" justify="center" align="middle" style="padding-top: 20px;padding-bottom: 20px">-->
+<!--      <Col span="10">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="info" style="font-weight: bold;font-size: 16px" @click="goToPageByParam('Student-appointment', '4')">科目四预约</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-query', '40')">待考</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM4YY == null ? 0 : dashboard.KM4YY" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('991', 4)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM4YYYC == null ? 0 : dashboard.KM4YYYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--      <Col span="10">-->
+<!--      <Card :bordered="false" class="cardBox" style="box-shadow: 0 2px 12px rgba(0,0,0,.2)">-->
+<!--        <div slot="title" style="text-align: center">-->
+<!--          <Button type="info" style="font-weight: bold;font-size: 16px">科目四成绩确认</Button>-->
+<!--        </div>-->
+<!--        <Row style="text-align: center">-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <Button type="success"  ghost style="font-weight: bold;font-size: 14px" @click="goToPageByParam('Student-examination',4)">待办</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM4DQR == null ? 0 : dashboard.KM4DQR" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--          <Col span="2" style="text-align: center;height:80px">-->
+<!--          <div align="center" style="background: #e8eaec;width: 2px; height:70px;margin-left:50%;margin-top:50%;">&nbsp;</div>-->
+<!--          </Col>-->
+<!--          <Col span="10">-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <Button type="error"  ghost style="font-weight: bold;font-size: 14px" @click="goToExceptionPage('402', 4)">异常</Button>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          <Row>-->
+<!--            <Col span="24">-->
+<!--            <count-to :end="dashboard.KM4QRYC == null ? 0 : dashboard.KM4QRYC" :duration='0.2' count-class="count-style-excpetion"/>-->
+<!--            </Col>-->
+<!--          </Row>-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--        <Divider />-->
+<!--        <Row class="childerFooter" type="flex" justify="center" align="middle">-->
+<!--          <Col offset="1" span="22">-->
+<!--          &nbsp;-->
+<!--          </Col>-->
+<!--        </Row>-->
+<!--      </Card>-->
+<!--      </Col>-->
+<!--    </Row>-->
+<!--  </div>-->
 
   <!--<div class="HomeBox" style="position: relative;min-height: 100%">
     <Row :gutter="20" v-if="false">
@@ -779,6 +779,7 @@
     </Row>
 
   </div>-->
+  </div>
 </template>
 
 <script>

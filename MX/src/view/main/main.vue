@@ -19,20 +19,22 @@
                    :menu-list="menuList">
           <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
           <div class="logo-con">
-            <img v-show="!collapsed" :src="maxLogo" key="max-logo" width="312" height="85"/>
-            <img v-show="collapsed" :src="minLogo" key="min-logo"/>
+            <div v-show="!collapsed" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">知音考场</div>
+            <div v-show="collapsed" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">W</div>
+
+            <!--            <img v-show="!collapsed" :src="maxLogo" key="max-logo" width="312" height="85"/>-->
+<!--            <img v-show="collapsed" :src="minLogo" key="min-logo"/>-->
           </div>
         </side-menu>
       </Sider>
     <!--</Header>-->
 
-
     <Layout class="box_col">
       <div class="header-con">
-        <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange">
+        <header-bar :collapsed="collapsed" @changenewval="changenewval" @on-coll-change="handleCollapsedChange">
+
           <user :user-avator="userAvator" @on-closeAll="handleCloseTag"/>
 <!--          <language @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>-->
-          <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
         </header-bar>
       </div>
       <div class="box_col_100">
@@ -63,7 +65,6 @@
   import HeaderBar from './components/header-bar'
   import TagsNav from './components/tags-nav'
   import User from './components/user'
-  import Fullscreen from './components/fullscreen'
   import Language from './components/language'
   import { mapMutations, mapActions} from 'vuex'
   import {getNewTagList, getNextName} from '@/libs/util'
@@ -77,7 +78,6 @@
       HeaderBar,
       Language,
       TagsNav,
-      Fullscreen,
       User
     },
     data() {
@@ -86,7 +86,6 @@
         collapsed: false,
         minLogo,
         maxLogo,
-        isFullscreen: false
       }
     },
     computed: {
@@ -132,6 +131,9 @@
       ...mapActions([
         'handleLogin'
       ]),
+        changenewval(a){
+          this.collapsed = a
+        },
       turnToPage(name) {
         if (name.indexOf('isTurnByHref_') > -1) {
           window.open(name.split('_')[1])
@@ -166,7 +168,10 @@
       '$route'(newRoute) {
         this.setBreadCrumb(newRoute.matched)
         this.setTagNavList(getNewTagList(this.tagNavList, newRoute))
-      }
+      },
+        'collapsed':function (newval) {
+            console.log(newval);
+        }
     },
     mounted() {
       /**

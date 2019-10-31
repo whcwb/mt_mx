@@ -1,53 +1,78 @@
 <template>
   <div class="box_col">
+    <pager-tit title="开放日训练" style="float: left"></pager-tit>
     <Row style="margin-bottom: 18px" type="flex" align="bottom">
-      <Col span="4">
-        <pager-tit title="开放日训练" style="float: left"></pager-tit>
-        <!--<div style="float: left;margin-top: 8px;cursor: pointer">-->
-        <!--<span style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>-->
-        <!--<span style="width: 100px;height: 80px;cursor: pointer;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;"-->
-        <!--@click="formData.clZt = '01',getCarList()">-->
-        <!--在训{{zxNum}}台</span>-->
-        <!--<span style="width: 100px;height: 80px;background-color: #66CD00;color:white;padding:6px;border-radius: 4px;margin-left: 16px;cursor: pointer;"-->
-        <!--@click="formData.clZt = '00',getCarList()"-->
-        <!--&gt;空闲{{xxNum}}台</span>-->
-        <!--</div>-->
-      </Col>
-      <Col span="8">
-        <div class="box_row">
-          <!--          <div  style="font-size: 24px;color: #e91b10;line-height: 45px;">-->
-          <!--            累计：{{total}} 元-->
-          <!--          </div>-->
-          <!--          <div @click="compName='keyypd'" style="font-size: 24px;color: #2baee9;line-height: 45px;margin: 0 6px"> 当前排队中</div>-->
-          <!--          <div style="margin: 0 6px">-->
-          <!--            <Button style="font-size: 20px;font-weight: 600" @click="componentName='keyypd'" type="error">{{yyrs}}</Button>-->
-          <!--          </div>-->
+<!--      <Col span="4">-->
+<!--        &lt;!&ndash;<div style="float: left;margin-top: 8px;cursor: pointer">&ndash;&gt;-->
+<!--        &lt;!&ndash;<span style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>&ndash;&gt;-->
+<!--        &lt;!&ndash;<span style="width: 100px;height: 80px;cursor: pointer;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;"&ndash;&gt;-->
+<!--        &lt;!&ndash;@click="formData.clZt = '01',getCarList()">&ndash;&gt;-->
+<!--        &lt;!&ndash;在训{{zxNum}}台</span>&ndash;&gt;-->
+<!--        &lt;!&ndash;<span style="width: 100px;height: 80px;background-color: #66CD00;color:white;padding:6px;border-radius: 4px;margin-left: 16px;cursor: pointer;"&ndash;&gt;-->
+<!--        &lt;!&ndash;@click="formData.clZt = '00',getCarList()"&ndash;&gt;-->
+<!--        &lt;!&ndash;&gt;空闲{{xxNum}}台</span>&ndash;&gt;-->
+<!--        &lt;!&ndash;</div>&ndash;&gt;-->
+<!--      </Col>-->
+<!--      <Col span="8">-->
+<!--        <div class="box_row">-->
+<!--          &lt;!&ndash;          <div  style="font-size: 24px;color: #e91b10;line-height: 45px;">&ndash;&gt;-->
+<!--          &lt;!&ndash;            累计：{{total}} 元&ndash;&gt;-->
+<!--          &lt;!&ndash;          </div>&ndash;&gt;-->
+<!--          &lt;!&ndash;          <div @click="compName='keyypd'" style="font-size: 24px;color: #2baee9;line-height: 45px;margin: 0 6px"> 当前排队中</div>&ndash;&gt;-->
+<!--          &lt;!&ndash;          <div style="margin: 0 6px">&ndash;&gt;-->
+<!--          &lt;!&ndash;            <Button style="font-size: 20px;font-weight: 600" @click="componentName='keyypd'" type="error">{{yyrs}}</Button>&ndash;&gt;-->
+<!--          &lt;!&ndash;          </div>&ndash;&gt;-->
 
-        </div>
-      </Col>
-      <Col span="12">
-        <Row type="flex" justify="end" :gutter="16">
-          <Col span="24">
-            <search-bar :parent="v" :show-create-button="false"></search-bar>
+<!--        </div>-->
+<!--      </Col>-->
+      <Col span="24">
+        <Row type="flex" justify="end" :gutter="8">
+          <!--        <Col span="6" style="padding: 10px 20px">-->
+          <!--          <Button type="warning" @click="plzf">批量结算</Button>-->
+          <!--        </Col>-->
+
+
+          <Col span="3">
+            <DatePicker v-model="dateRange.jssj"
+                        @on-change="param.jssjInRange = v.util.dateRangeChange(dateRange.jssj)"
+                        @on-open-change="v.util.dateRangeChange(dateRange.jssj)"
+                        format="yyyy-MM-dd"
+                        split-panels
+                        type="daterange" :placeholder="'请输入时间'"></DatePicker>
+          </Col>
+          <Col span="3">
+            <Input size="large" v-model="param.jlXmLike" clearable  placeholder="请输入教练姓名"  @on-enter="v.util.getPageData(v)"/>
+          </Col>
+          <Col span="1" align="center">
+            <Button type="primary" @click="v.util.getPageData(v)">
+              <Icon type="md-search"></Icon>
+              <!--查询-->
+            </Button>
+          </Col>
+          <Col span="1" align="center">
+            <Button type="primary" @click="faCar('kf')">
+              <Icon type="md-add"></Icon>
+              <!--查询-->
+            </Button>
           </Col>
         </Row>
       </Col>
     </Row>
     <div>
       <Row>
-        <Col span="21">
+
           <table-area :pager="false" :parent="v"></table-area>
-        </Col>
-        <Col span="3">
+
+
 <!--          <Row style="padding: 5px 10px">-->
 <!--            <Button class="rbutton" size="large" type="Default" long @click="faCar('kk')">开卡训练</Button>-->
 <!--          </Row>-->
 <!--          <Row style="padding: 5px 10px">-->
 <!--            <Button class="rbutton" size="large" type="Default" long @click="faCar('py')">培优训练</Button>-->
 <!--          </Row>-->
-          <Row style="padding: 5px 10px">
-            <Button class="rbutton" size="large" type="Default" long @click="faCar('kf')">开放训练</Button>
-          </Row>
+<!--          <Row style="padding: 5px 10px">-->
+<!--            <Button class="rbutton" size="large" type="Default" long @click="faCar('kf')">开放训练</Button>-->
+<!--          </Row>-->
 <!--          <Row style="padding: 5px 10px">-->
 <!--            <Button class="rbutton" size="large" long type="Default"-->
 <!--                    @click="giveCar.overCar(v,'2'),printClose=true">-->
@@ -61,7 +86,6 @@
           <!--<Button class="rbutton" size="large" type="Default" long @click="componentName='keyypd'">预约排队:{{yyrs}}</Button>-->
           <!--</Row>-->
 
-        </Col>
       </Row>
 
     </div>
@@ -121,7 +145,7 @@
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
                 <Select v-model="formData.zddm" style="width:200px">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm!='k2JS'&&it.zddm!='K2PY'">{{it.by9}}</Option>
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm=='K2KF'">{{it.by9}}</Option>
                 </Select>
                 <!--              <CheckboxGroup v-model="formData.lcFy">-->
                 <!--                <Checkbox label="900"></Checkbox>-->
@@ -267,24 +291,24 @@
                     //         }, p.row.jlCx)
                     //     }
                     // },
-                    {title: '开始时间', key: 'kssj', searchType: 'daterange', minWidth: 140},
+                    {title: '创建时间', key: 'kssj', searchType: 'daterange', minWidth: 140},
                     // {title: '安全员姓名', key: 'zgXm',minWidth:100},
-                    {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
+                    // {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
                     {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
                     {title: '练车费用', key: 'lcFy', minWidth: 90, defaul: '0'},
-                    {
-                        title: '状态', minWidth: 120, render: (h, p) => {
-                            let s = '';
-                            if (!p.row.kssj || p.row.kssj === '') {
-                                s = '预约中'
-                            } else if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')) {
-                                s = '训练中'
-                            } else {
-                                s = '已结束'
-                            }
-                            return h('div', s);
-                        }
-                    },
+                    // {
+                    //     title: '状态', minWidth: 120, render: (h, p) => {
+                    //         let s = '';
+                    //         if (!p.row.kssj || p.row.kssj === '') {
+                    //             s = '预约中'
+                    //         } else if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')) {
+                    //             s = '训练中'
+                    //         } else {
+                    //             s = '已结束'
+                    //         }
+                    //         return h('div', s);
+                    //     }
+                    // },
                     {
                         title: '操作', fixed: 'right', width: 80, render: (h, p) => {
                             let buttons = [];
@@ -316,21 +340,21 @@
                                     this.hisPrintMess = p.row
                                     this.componentName = 'print'
                                 }));
-                                if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')){
-                                    buttons.push(this.util.buildButton(this, h, 'error', 'md-card', '结束训练', () => {
-                                        if (p.row.lcLx == '20' || p.row.lcLx == '30') {
-                                            this.$http.post('/api/lcjl/updateJssj', {id: p.row.id}).then((res) => {
-                                                if (res.code == 200) {
-                                                    this.$Message.success(res.message)
-                                                    this.util.initTable(this);
-                                                }
-                                            })
-                                        } else {
-                                            this.giveCar.overCar(v, '2'), printClose = true
-                                        }
-
-                                    }));
-                                }
+                                // if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')){
+                                //     buttons.push(this.util.buildButton(this, h, 'error', 'md-card', '结束训练', () => {
+                                //         if (p.row.lcLx == '20' || p.row.lcLx == '30') {
+                                //             this.$http.post('/api/lcjl/updateJssj', {id: p.row.id}).then((res) => {
+                                //                 if (res.code == 200) {
+                                //                     this.$Message.success(res.message)
+                                //                     this.util.initTable(this);
+                                //                 }
+                                //             })
+                                //         } else {
+                                //             this.giveCar.overCar(v, '2'), printClose = true
+                                //         }
+                                //
+                                //     }));
+                                // }
 
                             }
                             return h('div', buttons);
@@ -345,10 +369,10 @@
                 clId: '',
                 showFQfzkp: false,
                 formData: {
-                    zddm:'',
+                    zddm:'K2KF',
                     zgXm:'',
                     lcKm: 2,
-                    lcLx: '',
+                    lcLx: '30',
                     lcFy: '',
                     cardNo: '',
                     clBh: '',
@@ -381,6 +405,7 @@
                     // kssjIsNotNull: '1',
                     total: 0,
                     lcKm: 2,
+                    lcLx: '30',
                     cjsjInRange: '',
                     zhLike: ''
                 },
