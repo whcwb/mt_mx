@@ -165,8 +165,8 @@ export default [
     ]
   },
   {
-    path: '/cw',
-    name: 'cw',
+    path: '/caiwu',
+    name: 'caiwu',
     meta: {
       icon: 'logo-buffer',
       title: '财务管理'

@@ -523,7 +523,7 @@
                     {
                         title: '操作',
                         align:'center',
-                        width: 200,
+                        width: 150,
                         fixed: "right",
                         render: (h, p) => {
                             let buttons = [];
@@ -793,6 +793,7 @@
                 this.$http.post('/api/lcjl/batchPay',{ids:ids}).then((res)=>{
                     if (res.code == 200){
                         this.$Message.success(res.message)
+                        this.qrids=''
                         this.util.getPageData(this)
                     }else {
                         this.$Message.error(res.message)
