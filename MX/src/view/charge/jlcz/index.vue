@@ -37,16 +37,21 @@
              :data="dataList">
       </Table>
     </Row>
-    <!--<Row class="margin-top-10 pageSty">-->
-    <!--<Page :total=pageTotal-->
-    <!--:current=param.pageNum-->
-    <!--:page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]-->
-    <!--@on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'-->
-    <!--show-total-->
-    <!--show-elevator show-sizer placement='top'-->
-    <!--@on-change='pageChange'>-->
-    <!--</Page>-->
-    <!--</Row>-->
+    <Row class="margin-top-10 pageSty">
+      <div style="text-align: right;padding: 6px 0">
+        <Page :total=totalS
+              :current=param.pageNum
+              :page-size=param.pageSize
+              :page-size-opts=[8,10,20,30,40,50]
+              show-total
+              show-elevator
+              show-sizer
+              placement='top'
+              @on-page-size-change='(n)=>{pageSizeChange(n)}'
+              @on-change='(n)=>{pageChange(n)}'>
+        </Page>
+      </div>
+    </Row>
 
     <!--<Row>-->
     <!--<Table ref="table" size="small" :columns="columns1" :data="carList"></Table>-->
@@ -74,7 +79,7 @@
                 >
                   <Option v-for="(it,index) in searchCoachList" :value="it.value" :key="index">{{it.label}}</Option>
                 </Select>
-                <span style="color: red;font-size: 18px">*初始密码为888888</span>
+                <span style="color: red;font-size: 18px">*初始密码为123456</span>
               </FormItem>
             </div>
             <div style="padding-top: 22px;">
@@ -130,38 +135,37 @@
             </Row>
             <Row style="display: flex;justify-content: space-between">
               <Col span="11">
-                <FormItem label="实收金额" label-position="top">
-                  <Input v-model="formData.xyZjhm"/>
-                </FormItem>
-              </Col>
-
-              <Col span="11">
                 <FormItem label="充值金额" label-position="top">
-                  <Input v-model="formData.xyZjhm"/>
+                  <Input v-model="payItem.je"/>
+                </FormItem>
+              </Col>
+              <Col span="11">
+                <FormItem label="实收金额" label-position="top">
+                  <Input v-model="payItem.sfje"/>
                 </FormItem>
               </Col>
             </Row>
 
-            <Row style="display: flex;justify-content: space-between">
-              <Col span="11">
-                <FormItem label="收款方式" label-position="bottom">
-                  <Select v-model="formData.zddm" style="width:200px" @on-change="lcFyChange">
-                    <Option value="">现金</Option>
-                    <Option value="">支付宝</Option>
-                    <Option value="">微信</Option>
-                  </Select>
-                </FormItem>
-              </Col>
-              <Col span="11">
-                <FormItem label="付款人" label-position="top">
-                  <Input v-model="formData.xyZjhm"/>
-                </FormItem>
-              </Col>
-            </Row>
+            <!--<Row style="display: flex;justify-content: space-between">-->
+              <!--<Col span="11">-->
+                <!--<FormItem label="收款方式" label-position="bottom">-->
+                  <!--<Select v-model="formData.zddm" style="width:200px" @on-change="lcFyChange">-->
+                    <!--<Option value="">现金</Option>-->
+                    <!--<Option value="">支付宝</Option>-->
+                    <!--<Option value="">微信</Option>-->
+                  <!--</Select>-->
+                <!--</FormItem>-->
+              <!--</Col>-->
+              <!--<Col span="23">-->
+                <!--<FormItem label="付款人" label-position="top">-->
+                  <!--<Input v-model="formData.xyZjhm"/>-->
+                <!--</FormItem>-->
+              <!--</Col>-->
+            <!--</Row>-->
             <Row style="display: flex;justify-content: center">
               <Col span="23">
                 <FormItem label="备注" label-position="top">
-                  <Input v-model="formData.xyZjhm"/>
+                  <Input v-model="payItem.bz"/>
                 </FormItem>
               </Col>
             </Row>
@@ -169,18 +173,10 @@
 
         </Row>
 
-
-        <component :is="compName" :jxmc="jlJx"
-                   @SaveOk="addjlSaveOk"
-                   @colse="clearYY"
-                   @remove="getCoachList('',true)"
-                   @JLRowClick="JLRowClick"
-                   @jxSeljxSel="(val)=>{getCoachList('',true)}"></component>
-
       </Form>
       <div slot='footer'>
         <Button style="margin-right: 8px" @click="closePay">取消</Button>
-        <Button type="primary" @click="save">添加</Button>
+        <Button type="primary" @click="savePay">充值</Button>
       </div>
     </Modal>
 
@@ -196,13 +192,13 @@
           <Col span="12">
             <div style="float: left">
               <FormItem label="原密码" label-position="top">
-                <Input v-model="formData.xyZjhm"/>
+                <Input v-model="passwordItem.old"/>
               </FormItem>
               <FormItem label="新密码" label-position="top">
-                <Input v-model="formData.xyZjhm"/>
+                <Input v-model="passwordItem.newPwd"/>
               </FormItem>
               <FormItem label="确认密码" label-position="top">
-                <Input v-model="formData.xyZjhm"/>
+                <Input v-model="passwordItem.newPwd1"/>
               </FormItem>
             </div>
           </Col>
@@ -212,7 +208,7 @@
       </Form>
       <div slot='footer'>
         <Button style="margin-right: 8px" @click="closePw">取消</Button>
-        <Button type="primary" @click="updatePw">添加</Button>
+        <Button type="primary" @click="updatePw">更改</Button>
       </div>
     </Modal>
 
@@ -238,9 +234,14 @@
         isMxb: false,
         jlItem: {},
         pay: false,        //充值modal
-        payItem: {},
+        payItem: {
+          je:'',
+          sfje:'',
+          no:''
+        },
         password:false,
         passwordItem:{},
+        totalS:0,
 
         fylist: [],
         v: this,
@@ -317,7 +318,13 @@
           },
           {
             title: '余额',
-            key: 'jlLxdh',
+            key: 'cardJe',
+            align: 'center',
+
+          },
+          {
+            title: '开放日余额',
+            key: 'ye',
             align: 'center',
 
           },
@@ -475,6 +482,7 @@
           params: this.param
         }).then(res => {
           if (res.code == 200) {
+            this.totalS = res.page.total
             this.dataList = res.page.list
           } else {
 
@@ -490,12 +498,60 @@
         this.payItem={}
         this.pay=false
       },
+      savePay(){
+        this.$http.post('/api/lcjl/cz', this.payItem).then(res => {
+          if (res.code == 200) {
+            this.pay=false;
+            this.payItem = {};
+            this.getData();
+            this.swal({
+              title: '充值成功',
+              type: 'success',
+              confirmButtonText: '确定',
+            })
+          } else {
+            this.swal({
+              title: res.message,
+              type: 'warning'
+            })
+          }
+        }).catch(err => {
+        })
+      },
       closePw(){
         this.password=false
         this.passwordItem={}
       },
-      savePw(){
+      updatePw(){
+        var v=this
+        this.swal({
+          title: '确认更改'+v.passwordItem.jlXm+'的密码?',
+          type: 'warning',
+          confirmButtonText: '确认',
+          cancelButtonText: '关闭',
+          showCancelButton: true
+        }).then((res) => {
+          if (res.value) {
+            this.$http.post('/api/lcwxjl/updatePwd', v.passwordItem).then((res) => {
+              if (res.code == 200) {
+                v.getData();
+                v.passwordItem={}
+                v.password=false
+                v.swal({
+                  title: '修改成功',
+                  type: 'success',
+                  confirmButtonText: '确认',
+                  cancelButtonText: '关闭',
+                  showCancelButton: true
+                })
+              }else {
+                v.$Message.error(res.message)
+              }
+            })
+          } else {
 
+          }
+        })
       },
       resetPw(item){
         this.swal({
@@ -506,10 +562,11 @@
           showCancelButton: true
         }).then((res) => {
           if (res.value) {
-            this.$http.post('', {id: p.row.lcJl.id}).then((res) => {
+            this.$http.post('/api/lcwxjl/resetPwd', {cardNo: item.cardNo}).then((res) => {
               if (res.code == 200) {
+                this.getData();
                 this.swal({
-                  title: '修改成功',
+                  title: '重置成功',
                   type: 'success',
                   confirmButtonText: '确认',
                   cancelButtonText: '关闭',
@@ -523,6 +580,14 @@
 
           }
         })
+      },
+      pageChange(val){
+        this.param.pageNum = val
+        this.getData();
+      },
+      pageSizeChange(val){
+        this.param.pageSize = val
+        this.getData();
       },
       lcFyChange(v) {
         this.formData.zddm = v
