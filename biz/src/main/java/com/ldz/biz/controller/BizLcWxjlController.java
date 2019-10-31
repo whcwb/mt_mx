@@ -50,4 +50,11 @@ public class BizLcWxjlController extends BaseController<BizLcWxjl, String> {
     public ApiResponse<String> resetPwd(String cardNo){
         return service.resetPwd(cardNo);
     }
+
+    @PostMapping("/czmx")
+    public ApiResponse<String> czmx(@RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "8") int pageSize, String id){
+        return service.czmx(pageNum, pageSize, id);
+    }
+
+
 }
