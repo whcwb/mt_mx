@@ -4,14 +4,21 @@
 <!--功能管理-->
 <template>
   <div class="boxbackborder">
-    <pager-tit title="功能管理"></pager-tit>
+    <!--<pager-tit title="功能管理"></pager-tit>-->
+    <Menu mode="horizontal" active-name="1">
+      <MenuItem name="1">
+        <div style="font-weight: 700;font-size: 16px">
+          功能管理
+        </div>
+      </MenuItem>
+    </Menu>
     <div class="box_row colCenter rowRight pageFindSty" style="border: none">
       <div>
         <Input v-model="param.gnmcLike"
                placeholder="请输入功能名称" style="width: 200px"
                @on-keyup.enter="v.util.getPageData(v)"></Input>
       </div>
-      <Button type="primary" @click="v.util.getPageData(v)">
+      <Button type="primary" @click="v.util.getPageData(v)" style="margin: 0">
         <Icon type="md-search"></Icon>
         <!--查询-->
       </Button>

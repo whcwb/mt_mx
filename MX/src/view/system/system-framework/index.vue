@@ -37,7 +37,14 @@
 </style>
 <template>
   <div class="boxbackborder">
-    <pager-tit title="组织机构管理"></pager-tit>
+    <!--<pager-tit title="组织机构管理"></pager-tit>-->
+    <Menu mode="horizontal" active-name="1" style="margin-bottom: 8px">
+      <MenuItem name="1">
+        <div style="font-weight: 700;font-size: 16px">
+          组织机构管理
+        </div>
+      </MenuItem>
+    </Menu>
     <div class="box_row framework" :style="{height:AF.getPageHeight()-200+'px'}">
       <div class='frame-tree'>
         <div class="box">

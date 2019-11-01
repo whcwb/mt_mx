@@ -1,6 +1,13 @@
 <template>
   <div class="box_col" style="margin-left: 20px;">
-    <pager-tit title="套餐维护"></pager-tit>
+    <!--<pager-tit title="套餐维护"></pager-tit>-->
+    <Menu mode="horizontal" active-name="1">
+      <MenuItem name="1">
+        <div style="font-weight: 700;font-size: 16px">
+          套餐维护
+        </div>
+      </MenuItem>
+    </Menu>
     <div class="box_col_auto" style="overflow-x: hidden;">
       <Row :gutter="12">
         <Col span="8" v-for="(item,index) in list" :prop="item.zdmc" :key="item.zdId" >

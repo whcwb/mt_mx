@@ -16,34 +16,38 @@
       </Col>
     </Row>
     <div class="body" v-if="MenuItemName=='1'">
-      <Row style="padding: 12px 0" :gutter="6">
-        <Col span="4">
-          <Input id="code" autofocus v-model="param.idLike" placeholder="请扫描条形码" @on-enter="add"/>
+      <Row style="padding: 12px 0;" :gutter="6">
+        <Col span="6">
+            <span style="color: red;font-weight: 600;font-size: 20px;">
+            <span>合计：</span>
+            <span>{{total}}元</span>
+          </span>
         </Col>
-        <Col span="4">
-          <Input autofocus v-model="param.jlXmLike" placeholder="教练员姓名" @on-enter="add"/>
-        </Col>
-        <Col span="8">
-          <span style="margin-left: 16px;">
+        <Col span="18" style="display: flex;justify-content: flex-end">
+          <Col span="4" style="margin-right: 10px">
+            <Input id="code" autofocus v-model="param.idLike" placeholder="请扫描条形码" @on-enter="add"/>
+          </Col>
+          <Col span="4">
+            <Input autofocus v-model="param.jlXmLike" placeholder="教练员姓名" @on-enter="add"/>
+          </Col>
+          <Col span="2">
+          <span style="margin-left: 10px;">
             <Button type="primary" @click="getOldData">
               <Icon type="md-search"></Icon>
               <!--查询-->
             </Button>
           </span>
-          <span style="color: red;font-weight: 600;font-size: 20px;padding-left: 16px">
-            <span>合计：</span>
-            <span>{{total}}元</span>
-          </span>
-        </Col>
-        <Col span="8">
-          <Row type="flex" justify="end">
-            <Col span="8">
-              <Input autofocus v-model="okParams.fdJe" placeholder="返点金额" @on-enter="add"/>
-            </Col>
-            <Col span="6">
-              <span style="margin-left: 16px"><Button type="error" @click="confirm">确认</Button></span>
-            </Col>
-          </Row>
+          </Col>
+          <!--<Col span="6">-->
+          <!--<Row type="flex" justify="end">-->
+          <Col span="4">
+            <Input autofocus v-model="okParams.fdJe" placeholder="返点金额" @on-enter="add"/>
+          </Col>
+          <Col span="2">
+            <span style="margin-left: 16px"><Button type="error" @click="confirm">确认</Button></span>
+          </Col>
+          <!--</Row>-->
+          <!--</Col>-->
         </Col>
       </Row>
       <Table :height="AF.getPageHeight()-380" stripe size="small" @on-select="tabsel" @on-select-all="tabsel"
@@ -123,9 +127,11 @@
             align: 'center'
           },
           {title: '凭证号', key: 'id', minWidth: 150},
-          {title: '训练时间', key: 'kssj', minWidth: 120,render:(h,p)=>{
-            return h('div',p.row.kssj.substring(0,10))
-            }},
+          {
+            title: '训练时间', key: 'kssj', minWidth: 120, render: (h, p) => {
+              return h('div', p.row.kssj.substring(0, 10))
+            }
+          },
           {title: '教练员', key: 'jlXm', minWidth: 120},
           {title: '累计时长', key: 'sc', unit: '分钟', minWidth: 120},
           {title: '累计费用', key: 'lcFy', append: '元', minWidth: 120},
@@ -136,7 +142,7 @@
           {title: '备注', key: 'bz', minWidth: 80},
           {
             title: '状态', key: 'fdZt', minWidth: 100, dict: 'ZDCLK1047', render: (h, p) => {
-              let s = p.row.fdZt == '10' ? '已返点' : p.row.fdZt == '40'? '不返点': '未返点';
+              let s = p.row.fdZt == '10' ? '已返点' : p.row.fdZt == '40' ? '不返点' : '未返点';
               return h('Tag', {
                 props: {
                   type: 'dot',
@@ -168,7 +174,7 @@
         total: 0,
         ids: '',
         scanning: false,
-        totalS:0,
+        totalS: 0,
         param: {
           idLike: '',
           jlXmLike: '',
@@ -191,11 +197,11 @@
       }, 200)
     },
     methods: {
-      pageChange(val){
+      pageChange(val) {
         this.param.pageNum = val
         this.getOldData();
       },
-      pageSizeChange(val){
+      pageSizeChange(val) {
         this.param.pageSize = val
         this.getOldData();
       },

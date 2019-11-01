@@ -1,6 +1,13 @@
 <template>
     <div class="boxbackborder box_col">
-        <pager-tit title="模训记录"></pager-tit>
+        <!--<pager-tit title="模训记录"></pager-tit>-->
+      <Menu mode="horizontal" active-name="1" style="margin-bottom: 8px">
+        <MenuItem name="1">
+          <div style="font-weight: 700;font-size: 16px">
+            模训记录
+          </div>
+        </MenuItem>
+      </Menu>
         <search-bar :parent="v" :show-create-button="false" ></search-bar>
         <table-area :parent="v"></table-area>
         <component :is="componentName"></component>

@@ -1,8 +1,15 @@
 <template>
   <div class="box_col">
-    <Row style="margin-bottom: 18px" type="flex" align="bottom">
+    <Menu mode="horizontal" active-name="1" style="margin-bottom: 8px">
+      <MenuItem name="1">
+        <div style="font-weight: 700;font-size: 16px">
+          开卡充值
+        </div>
+      </MenuItem>
+    </Menu>
+    <Row style="margin-bottom: 8px" type="flex" align="bottom">
       <Col span="6">
-        <pager-tit title="开卡充值" style="float: left"></pager-tit>
+        <!--<pager-tit title="开卡充值" style="float: left"></pager-tit>-->
       </Col>
       <Col span="18">
         <Row type="flex" justify="end" :gutter="8">
@@ -18,7 +25,7 @@
               <!--查询-->
             </Button>
           </Col>
-          <Col span="2" align="center">
+          <Col span="1" align="center" style="margin-right: 10px">
             <Tooltip content="添加">
               <Button type="primary" @click="DrawerVal = true">
                 +
@@ -308,8 +315,8 @@
         password:false,
         passwordItem:{},
         totalS:0,
-          info:false,
-          infoItem:{},
+        info:false,
+        infoItem:{},
 
         fylist: [],
         v: this,

@@ -56,10 +56,10 @@
 
             <div style="float: left;margin-top: 8px;cursor: pointer">
               <span style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">总计{{carList.length}}台</span>
-              <span style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
+              <span style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;"
                     @click="formData.clZt = '01',getCarList()">
             在训{{zxNum}}台</span>
-              <span style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;cursor: pointer;"
+              <span style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;cursor: pointer;"
                     @click="formData.clZt = '00',getCarList()"
               >空闲{{xxNum}}台</span>
             </div>
@@ -79,7 +79,7 @@
    </Row>
 
     <div class="boxbackborder box_col" v-if="activeName=='2'">
-      <Row type="flex" justify="end" :gutter="8">
+      <Row type="flex" justify="end" :gutter="8" style="margin-bottom:10px;">
 <!--        <Col span="6" style="padding: 10px 20px">-->
 <!--          <Button type="warning" @click="plzf">批量结算</Button>-->
 <!--        </Col>-->

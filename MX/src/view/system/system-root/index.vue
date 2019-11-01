@@ -4,7 +4,14 @@
 <!--角色管理-->
 <template>
   <div class="boxbackborder box_col">
-    <pager-tit title="角色管理"></pager-tit>
+    <!--<pager-tit title="角色管理"></pager-tit>-->
+    <Menu mode="horizontal" active-name="1">
+      <MenuItem name="1">
+        <div style="font-weight: 700;font-size: 16px">
+          角色管理
+        </div>
+      </MenuItem>
+    </Menu>
 
     <div class="box_row colCenter rowRight pageFindSty" style="border: none">
       <div>
@@ -16,7 +23,7 @@
                @on-change="findMessList"></Input>
       </div>
 
-      <Button type="primary" @click="findMessList()">
+      <Button type="primary" @click="findMessList()" style="margin: 0">
         <Icon type="md-search"></Icon>
         <!--查询-->
       </Button>

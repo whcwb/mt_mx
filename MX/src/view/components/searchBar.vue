@@ -3,7 +3,7 @@
     <div v-for="r in columns" v-if="r.searchKey || r.searchType" style="float: left">
       <Icon :type="r.icon" size="34"/>
       <Input v-if="!r.searchType || r.searchType === 'text'" v-model="parent.param[r.searchKey]"
-             :placeholder="'请输入'+r.title" style="width: 200px"></Input>
+             :placeholder="'请输入'+r.title" style="width: 150px"></Input>
       <DatePicker v-else-if="r.searchType == 'daterange'" v-model="dateRange[r.key]"
                   @on-change="param[r.key+'InRange'] = parent.util.dateRangeChange(dateRange[r.key])" confirm format="yyyy-MM-dd"
                   type="daterange" :placeholder="'请输入'+r.title"  style="width: 200px"></DatePicker>
@@ -16,14 +16,14 @@
       </Select>
     </div>
 
-    <Button v-if="showSearchButton" type="primary" @click="parent.util.getPageData(parent)">
+    <Button v-if="showSearchButton" type="primary" @click="parent.util.getPageData(parent)" style="margin: 0">
       <Icon type="md-search"></Icon>
       <!--查询-->
     </Button>
     <Button v-if="showCreateButton" type="primary" @click="parent.util.add(parent)">
       <Icon type="md-add"></Icon>
     </Button>
-    <Button v-for="(item,index) in buttons" key="index" :key="index" :type="item.type ? item.type : 'primary'" @click="$emit(item.click)">
+    <Button style="margin-right: 0" v-for="(item,index) in buttons" key="index" :key="index" :type="item.type ? item.type : 'primary'" @click="$emit(item.click)">
       <Icon v-if="item.icon" :type="item.icon"></Icon>
       {{item.title}}
     </Button>

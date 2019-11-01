@@ -1,11 +1,18 @@
 <template>
   <div class="box_col">
-    <Row style="margin-bottom: 18px" type="flex" align="top">
-      <Col span="4">
-        <pager-tit title="科三模训" style="float: left"></pager-tit>
-      </Col>
-      <Col span="8">
-        <div class="box_row">
+    <Menu mode="horizontal" active-name="1" style="margin-bottom: 8px">
+      <MenuItem name="1">
+        <div style="font-weight: 700;font-size: 16px">
+          科三模训
+        </div>
+      </MenuItem>
+    </Menu>
+    <Row style="margin-bottom: 8px;" type="flex" align="top">
+      <!--<Col span="4">-->
+        <!--<pager-tit title="科三模训" style="float: left"></pager-tit>-->
+      <!--</Col>-->
+      <!--<Col span="24">-->
+        <!--<div class="box_row">-->
               <!--<div  style="font-size: 24px;color: #e91b10;line-height: 45px;">-->
                 <!--累计：{{total}} 元-->
               <!--</div>-->
@@ -25,9 +32,9 @@
 <!--                  还-->
 <!--                </Button>-->
 <!--              </div>-->
-            </div>
-      </Col>
-      <Col span="12">
+            <!--</div>-->
+      <!--</Col>-->
+      <Col span="24">
         <Row  type="flex" justify="end" :gutter="16">
           <Col span="24">
             <search-bar :parent="v" :show-create-button="false" ></search-bar>

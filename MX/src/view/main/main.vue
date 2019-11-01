@@ -19,7 +19,7 @@
                    :menu-list="menuList">
           <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
           <div class="logo-con">
-            <div v-show="!collapsed" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">知音考场</div>
+            <div v-show="!collapsed" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">知音考场管理系统</div>
             <div v-show="collapsed" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">W</div>
 
             <!--            <img v-show="!collapsed" :src="maxLogo" key="max-logo" width="312" height="85"/>-->
