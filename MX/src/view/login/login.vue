@@ -15,10 +15,10 @@
     </div>
     <div class="copyRight" style="color: #fff;padding-bottom: 80px">
       <div>
-        知音考场管理系统
-        <!--版本号-->
-        v2.2.2.1
-        <!--2018-1121-->
+        © Copyright Reserved 版权所有
+      </div>
+      <div class="messItem" style="font-size: 16px">
+        武汉天弘腾创科技有限公司
       </div>
 <!--      <div class="messItem" style="font-size: 16px">-->
 <!--        Copyright@2018 武汉创伟博科技有限公司-->
