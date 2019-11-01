@@ -149,18 +149,36 @@ export default [
         name: 'clwh',
         meta: {
           icon: '_bear',
-          title: '考试车维护'
+          title: '科目二考试'
         },
         component: () => import('@/view/lcsf/clgl')
+      },
+      {
+        path: 'kmsks',
+        name: 'kmsks',
+        meta: {
+          icon: '_bear',
+          title: '科目三考试'
+        },
+        component: () => import('@/view/lcsf/kmsks')
       },
       {
         path: 'lcdjConfig',
         name: 'lcdjConfig',
         meta: {
           icon: '_bear',
-          title: '练车费维护'
+          title: '科目二套餐'
         },
         component: () => import('@/view/lcsf/lcdjConfig')
+      },
+      {
+        path: 'kmstc',
+        name: 'kmstc',
+        meta: {
+          icon: '_bear',
+          title: '科目三套餐'
+        },
+        component: () => import('@/view/lcsf/kmstc')
       },
     ]
   },

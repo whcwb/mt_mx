@@ -14,7 +14,7 @@
         </span>
       </Col>
     </Row>
-    <Table :height="AF.getPageHeight()-350" stripe size="small"
+    <Table :height="AF.getPageHeight()-250" stripe size="small"
            :columns="tableColumns" :data="tableData"></Table>
     <div style="text-align: right;padding: 6px 0">
       <Page :total=totalS
