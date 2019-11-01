@@ -1,12 +1,12 @@
 <template>
   <div>
-    <Row style="padding: 12px 0" :gutter="12">
+    <Row style="padding: 12px 0" :gutter="12" type="flex" justify="end">
       <Col span="4">
         <Input v-model="param.cjrLike" placeholder="操作人"
                @on-enter="getOldData()"/>
       </Col>
-      <Col span="8">
-        <span style="margin-left: 16px;">
+      <Col span="1" style="margin-right: 10px">
+        <span>
           <Button type="primary" @click="getOldData">
             <Icon type="md-search"></Icon>
             <!--查询-->
@@ -14,7 +14,7 @@
         </span>
       </Col>
     </Row>
-    <Table :height="AF.getPageHeight()-350" stripe size="small"
+    <Table :height="AF.getPageHeight()-250" stripe size="small"
            :columns="tableColumns" :data="tableData"></Table>
     <div style="text-align: right;padding: 6px 0">
       <Page :total=totalS

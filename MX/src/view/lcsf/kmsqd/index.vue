@@ -1,8 +1,15 @@
 <template>
     <div class="boxbackborder box_col">
-        <pager-tit title="安全员签到"></pager-tit>
+        <!--<pager-tit title="安全员签到"></pager-tit>-->
+      <Menu mode="horizontal" active-name="1" style="margin-bottom: 8px">
+        <MenuItem name="1">
+          <div style="font-weight: 700;font-size: 16px">
+            安全员签到
+          </div>
+        </MenuItem>
+      </Menu>
         <div style="text-align: right">
-            <Input v-model="param.xmLike" placeholder="请输入姓名" style="width: 200px;margin-right: 16px;"></Input>
+            <Input v-model="param.xmLike" placeholder="请输入姓名" style="width: 200px;margin-right: 10px;"></Input>
             <Button type="primary" @click="getData">
                 <Icon type="md-search"></Icon>
             </Button>

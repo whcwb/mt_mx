@@ -1,7 +1,14 @@
 <template>
   <div class="box_col">
-    <pager-tit title="开放日训练" style="float: left"></pager-tit>
-    <Row style="margin-bottom: 18px" type="flex" align="bottom">
+    <!--<pager-tit title="开放日训练" style="float: left"></pager-tit>-->
+    <Menu mode="horizontal" active-name="1" style="margin-bottom: 8px">
+      <MenuItem name="1">
+        <div style="font-weight: 700;font-size: 16px">
+          开放日训练
+        </div>
+      </MenuItem>
+    </Menu>
+    <Row style="margin-bottom: 8px" type="flex" align="bottom">
 <!--      <Col span="4">-->
 <!--        &lt;!&ndash;<div style="float: left;margin-top: 8px;cursor: pointer">&ndash;&gt;-->
 <!--        &lt;!&ndash;<span style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>&ndash;&gt;-->
@@ -50,7 +57,7 @@
             </Button>
           </Col>
           <Col span="1" align="center">
-            <Button type="primary" @click="faCar('kf')">
+            <Button type="primary" @click="formData.zddm='K2KF';faCar('kf')">
               <Icon type="md-add"></Icon>
               <!--查询-->
             </Button>
@@ -402,7 +409,7 @@
                 coachList: [],
                 param: {
                     notShowLoading: 'true',
-                    orderBy: 'jssj desc',
+                    orderBy: 'jlId asc,jssj desc',
                     // kssjIsNotNull: '1',
                     total: 0,
                     lcKm: 2,

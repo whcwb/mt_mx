@@ -8,8 +8,15 @@
 <!--字典管理-->
 <template>
   <div class="boxbackborder box" style="background-color: #fff;">
-    <pager-tit title="字典管理"></pager-tit>
-    <div class="box_row colCenter rowRight pageFindSty">
+    <!--<pager-tit title="字典管理"></pager-tit>-->
+    <Menu mode="horizontal" active-name="1">
+      <MenuItem name="1">
+        <div style="font-weight: 700;font-size: 16px">
+          字典管理
+        </div>
+      </MenuItem>
+    </Menu>
+    <div class="box_row colCenter rowRight pageFindSty" style="padding: 8px 0">
       <div>
         <Icon type="md-person" size="34"/>
         <Input v-model="param.lmmcLike" placeholder="请输入字典名称..."
@@ -17,7 +24,7 @@
                @on-keyup.enter="findMessList()"
                @on-change="findMessList"></Input>
       </div>
-      <Button type="primary" @click="findMessList()">
+      <Button type="primary" @click="findMessList()" style="margin: 0">
         <Icon type="md-search"></Icon>
         <!--查询-->
       </Button>

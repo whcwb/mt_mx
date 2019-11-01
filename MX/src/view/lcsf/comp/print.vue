@@ -95,10 +95,12 @@
           {title: '训练车型', key: 'jlCx'},
           {title: '教练员', key: 'jlJx', key2: 'jlXm'},
           {title: '安全员', key: 'zgXm'},
-          {title: '优惠时长', key: 'yhsc'},
+          // {title: '优惠时长', key: 'yhsc'},
           // {title: '优惠金额', key: 'yhje'},
           {title: '累计时长', key: 'sc'},
           {title: '累计费用', key: 'lcFy', unit: '元'},
+          {title: '备注', key: 'bz'},
+
         ],
         mesTime: 7,
         info: '',

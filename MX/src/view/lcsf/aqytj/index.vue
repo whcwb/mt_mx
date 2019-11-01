@@ -4,12 +4,12 @@
       <DatePicker v-model="dateRange.kssj"
                   @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm format="yyyy-MM-dd"
                   type="daterange" :placeholder="'请输入'" style="width: 200px"></DatePicker>
-      <Button type="primary" @click="getData" style="margin-left: 16px;">
+      <Button type="primary" @click="getData" style="margin-left: 10px;">
         <Icon type="md-search"></Icon>
         <!--查询-->
       </Button>
-      <Button type="primary" @click="doPrint" style="margin-left: 16px;">打印</Button>
-      <Button type="primary" @click="exportExcel" style="margin-left: 16px;">导出</Button>
+      <Button type="primary" @click="doPrint" style="margin-left: 10px;">打印</Button>
+      <Button type="primary" @click="exportExcel" style="margin-left: 10px;">导出</Button>
     </div>
     <div class="box_col_100" id="page1" style="width: 100%">
       <div style="text-align: center"><span style="font-weight: 600;font-size: 20px">科目三模拟训练工作日志</span></div>

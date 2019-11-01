@@ -81,7 +81,7 @@
         getData(){
             let param = {
                 zdlmdm:'ZDCLK1045',
-                by1:'科二'
+              by1:'科三'
             }
             this.$http.get(this.apis.DICTIONARY_LIST.list,{params:param}).then((res)=>{
                 if (res.code == 200 && res.result){
