@@ -16,7 +16,7 @@
         </div>
       </MenuItem>
     </Menu>
-    <div class="box_row colCenter rowRight pageFindSty">
+    <div class="box_row colCenter rowRight pageFindSty" style="padding: 8px 0">
       <div>
         <Icon type="md-person" size="34"/>
         <Input v-model="param.lmmcLike" placeholder="请输入字典名称..."

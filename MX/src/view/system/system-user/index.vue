@@ -12,7 +12,7 @@
         </div>
       </MenuItem>
     </Menu>
-    <div class="box_row colCenter rowRight pageFindSty" style="border: none">
+    <div class="box_row colCenter rowRight pageFindSty" style="border: none;padding: 8px 0;">
       <div>
         <Icon type="md-person" size="34"/>
         <Input v-model="param.xmLike"

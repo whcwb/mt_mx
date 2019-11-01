@@ -12,7 +12,7 @@
         </div>
       </MenuItem>
     </Menu>
-    <div class="box_row colCenter rowRight pageFindSty" style="border: none">
+    <div class="box_row colCenter rowRight pageFindSty" style="border: none;padding: 8px 0;">
       <div>
         <Input v-model="param.gnmcLike"
                placeholder="请输入功能名称" style="width: 200px"
