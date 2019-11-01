@@ -50,7 +50,7 @@
           <!--</Col>-->
         </Col>
       </Row>
-      <Table :height="AF.getPageHeight()-380" stripe size="small" @on-select="tabsel" @on-select-all="tabsel"
+      <Table :height="AF.getPageHeight()-250" stripe size="small" @on-select="tabsel" @on-select-all="tabsel"
              :columns="tableColumns" :data="tableData"></Table>
       <div style="text-align: right;padding: 6px 0">
         <Page :total=totalS
@@ -92,7 +92,7 @@
 
           </Col>
         </Row>
-        <Table :height="AF.getPageHeight()-350" stripe size="small"
+        <Table :height="AF.getPageHeight()-250" stripe size="small"
                :columns="tableColumns" :data="tableData"></Table>
       </div>
     </div>

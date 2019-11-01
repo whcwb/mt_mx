@@ -1,9 +1,9 @@
 <template>
   <div class="box_col">
-    <Menu mode="horizontal" :theme="theme1" active-name="2"
+    <Menu mode="horizontal" :theme="theme1" active-name="3"
           style="font-size: 48px;font-weight: bold;margin-bottom: 8px">
-      <MenuItem name="2">
-        科目二考试车
+      <MenuItem name="3">
+        科目三考试车
       </MenuItem>
     </Menu>
     <Row style="margin-bottom: 8px">
@@ -143,7 +143,7 @@
           pageSize: 99999,
           clBh: '',
           clHm: '',
-          clKm: '2',
+          clKm: '3',
           orderBy: 'clKm asc,clBh asc',
           notShowLoading: 'true'
         },
