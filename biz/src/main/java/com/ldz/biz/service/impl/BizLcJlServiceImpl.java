@@ -21,6 +21,8 @@ import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.exception.RuntimeCheck;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -231,6 +233,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 jlCz.setType("00");
                 // 新增充值记录
                 czMapper.insert(jlCz);
+
                 if (fdje > 0) {
                     // 新增返点记录
                     BizLcFd lcFd = new BizLcFd();
@@ -244,6 +247,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     lcFd.setLcId(entity.getId());
                     fdService.save(lcFd);
                 }
+                wxjlService.update(wxjl);
             }
         }
         entity.setCjr(currentUser.getZh() + "-" + currentUser.getXm());
@@ -438,7 +442,31 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String s1 = lcJls.stream().map(BizLcJl::getId).collect(Collectors.joining(","));
         ApiResponse<BizLcJl> response = getBatchPay(s1);
         BizLcJl result = response.getResult();
-        result.setJls(lcJls);
+        condition = new SimpleCondition(BizLcJl.class);
+        condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
+        condition.startWith(BizLcJl.InnerColumn.kssj, DateTime.now().toString("yyyy-MM-dd"));
+        List<BizLcJl> bizLcJls = findByCondition(condition);
+        bizLcJls.forEach(bizLcJl -> {
+            if(StringUtils.equals(bizLcJl.getLcLx(), "00")){
+                // 如果已经结束 直接查看时长和总价
+                if(StringUtils.isBlank(bizLcJl.getJssj())){
+                    // 计算时长和费用
+                    Date date = new Date();
+                    Date ksDate = DateTime.parse(bizLcJl.getKssj(), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+                    long sc = (date.getTime() - ksDate.getTime()) / (60 * 1000);
+                    SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
+                    condition1.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+                    condition1.eq(SysZdxm.InnerColumn.zddm, bizLcJl.getZddm());
+                    condition1.eq(SysZdxm.InnerColumn.by5, bizLcJl.getLcLx());
+                    List<SysZdxm> zdxms = zdxmService.findByCondition(condition1);
+                    SysZdxm zdxm = zdxms.get(0);
+                    long lcfy = Math.round(Double.parseDouble(zdxm.getBy3()) * sc);
+                    bizLcJl.setSc((int) sc);
+                    bizLcJl.setLcFy((int) lcfy);
+                }
+            }
+        });
+        result.setJls(bizLcJls);
         return ApiResponse.success(result);
     }
 
@@ -1357,10 +1385,14 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         fd.setJlXm(wxjl.getJlXm());
         fd.setId(genId());
         fd.setFdje((int) Math.ceil(xjje * rate));
+
         fd.setCjsj(DateUtils.getNowTime());
         fd.setCjr(yh.getZh() + "," + yh.getXm());
         fd.setFdlx("00");
-        fdService.save(fd);
+        if(fd.getFdje() > 0 ){
+            fdService.save(fd);
+        }
+
 
         return ApiResponse.success(fd.getId());
 
