@@ -8,8 +8,8 @@
     </Menu>
     <Row style="margin-bottom: 8px">
       <Col span="24">
-        <Row :gutter="6" type="flex" justify="end">
-          <Col span="12">
+        <Row :gutter="6" type="flex" justify="start">
+          <Col span="11">
             <div style="float: left;margin-top: 8px;">
               <span
                 style="width: 100px;height: 80px;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">共{{tabdata.length}}台</span>
@@ -27,7 +27,7 @@
             <Input v-model="param.clHm" size="large" placeholder="请输入车牌号"/>
             <br>
           </Col>
-          <Col span="1" align="center">
+          <Col span="1" align="center" style="margin-right: 10px">
             <Button type="primary" @click="CLCX">
               <Icon type="md-search"></Icon>
               <!--查询-->

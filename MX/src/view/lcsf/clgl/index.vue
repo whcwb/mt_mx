@@ -8,8 +8,8 @@
     </Menu>
     <Row style="margin-bottom: 8px">
       <Col span="24">
-        <Row :gutter="6" type="flex" justify="end">
-          <Col span="12">
+        <Row :gutter="6" type="flex" justify="space-bewteen">
+          <Col span="11">
             <div style="float: left;margin-top: 8px;">
               <span
                 style="width: 100px;height: 80px;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">共{{tabdata.length}}台</span>
@@ -19,7 +19,7 @@
                 style="width: 100px;height: 80px;background-color: #66CD00;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">启用{{xxNum}}台</span>
             </div>
           </Col>
-          <Col span="5">
+          <Col span="5" >
             <Input v-model="param.clBh" size="large" placeholder="请输入车辆编号"/>
             <br>
           </Col>
@@ -33,7 +33,7 @@
               <!--查询-->
             </Button>
           </Col>
-          <Col span="1" align="center">
+          <Col span="1" align="center" style="margin-left: 10px">
             <Button type="primary" @click="compName='cjcar'">
               <Icon type="md-add"></Icon>
               <!--查询-->
