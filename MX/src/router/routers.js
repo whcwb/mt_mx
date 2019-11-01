@@ -136,53 +136,6 @@ export default [
     ]
   },
   {
-    path: '/baseinfo',
-    name: 'baseinfo',
-    meta: {
-      icon: 'logo-buffer',
-      title: '基础数据'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'clwh',
-        name: 'clwh',
-        meta: {
-          icon: '_bear',
-          title: '科目二考试'
-        },
-        component: () => import('@/view/lcsf/clgl')
-      },
-      {
-        path: 'kmsks',
-        name: 'kmsks',
-        meta: {
-          icon: '_bear',
-          title: '科目三考试'
-        },
-        component: () => import('@/view/lcsf/kmsks')
-      },
-      {
-        path: 'lcdjConfig',
-        name: 'lcdjConfig',
-        meta: {
-          icon: '_bear',
-          title: '科目二套餐'
-        },
-        component: () => import('@/view/lcsf/lcdjConfig')
-      },
-      {
-        path: 'kmstc',
-        name: 'kmstc',
-        meta: {
-          icon: '_bear',
-          title: '科目三套餐'
-        },
-        component: () => import('@/view/lcsf/kmstc')
-      },
-    ]
-  },
-  {
     path: '/caiwu',
     name: 'caiwu',
     meta: {
@@ -237,6 +190,24 @@ export default [
           title: '科目三模训'
         },
         component: () => import('@/view/lcsf/kesanlianche')
+      },
+      {
+        path: 'kmstc',
+        name: 'kmstc',
+        meta: {
+          icon: '_bear',
+          title: '科目三套餐'
+        },
+        component: () => import('@/view/lcsf/kmstc')
+      },
+      {
+        path: 'kmsks',
+        name: 'kmsks',
+        meta: {
+          icon: '_bear',
+          title: '科目三考试'
+        },
+        component: () => import('@/view/lcsf/kmsks')
       },
       {
         path: 'k3kfr',
@@ -303,7 +274,24 @@ export default [
         },
         component: () => import('@/view/lcsf/kfr')
       },
-
+      {
+        path: 'clwh',
+        name: 'clwh',
+        meta: {
+          icon: '_bear',
+          title: '科目二考试'
+        },
+        component: () => import('@/view/lcsf/clgl')
+      },
+      {
+        path: 'lcdjConfig',
+        name: 'lcdjConfig',
+        meta: {
+          icon: '_bear',
+          title: '科目二套餐'
+        },
+        component: () => import('@/view/lcsf/lcdjConfig')
+      },
       {
         path: 'lcsf-statistics',
         name: 'lcsf-statistics',

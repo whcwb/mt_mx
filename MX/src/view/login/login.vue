@@ -20,6 +20,9 @@
         v2.2.2.1
         <!--2018-1121-->
       </div>
+      <div class="messItem" style="font-size: 16px">
+        Copyright@2019 武汉创伟博科技有限公司
+      </div>
 <!--      <div class="messItem" style="font-size: 16px">-->
 <!--        Copyright@2018 武汉创伟博科技有限公司-->
 <!--      </div>-->
