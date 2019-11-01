@@ -46,6 +46,7 @@
         tableData: [],
         tableColumns: [
           {title: '#', type: 'index', fixed: 'left', align: 'center', minWidth: 80},
+            {title: '教练员', key: 'jlXm', align: 'center', minWidth: 120},
           {
             title: '返点时间', key: 'cjsj', align: 'center', minWidth: 120, render: (h, p) => {
               let a = p.row.cjsj.substring(0, 16)
@@ -77,9 +78,10 @@
         total: 0,
         totalS: 0,
         param: {
+            qrsjIsNotNull:'1',
+            orderBy: 'qrsj desc',
           cjrLike: '',
           fdZt: '10',
-          notShowLoading: 'true',
           pageNum: 1,
           pageSize: 10
         }
@@ -102,7 +104,7 @@
         this.compName = fdms
       },
       getOldData() {
-        this.$http.get('/api/bizlcfd/pager', {params: this.param}).then((res) => {
+        this.$http.post('/api/bizlcfd/pager',this.param).then((res) => {
           if (res.code == 200 && res.page.list) {
             this.totalS = res.page.total
             this.tableData = res.page.list;
