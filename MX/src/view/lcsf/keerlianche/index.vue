@@ -316,27 +316,36 @@
             return {
                 columns2: [
                     {
-                        title: '序号',
-                        key: 'index'
+                        type: 'index',
+                        width: 60,
+                        align: 'center'
                     },
                     {
                         title: '车辆编号',
-                        key: 'clBh'
+                        key: 'clBh',
+                        align: 'center'
                     },
                     {
                         title: '时长(分钟)',
-                        key: 'sc'
+                        key: 'sc',
+                        align: 'center'
                     },
                     {
                         title: '费用(元)',
-                        key: 'lcFy'
+                        key: 'lcFy',
+                        align: 'center'
                     },
                     {
                         title: '支付状态',
                         key: 'zfzt',
+                        align: 'center',
                         render:(h,p)=>{
                             if (p.row.zfzt == '00' || p.row.jssj == ''){
-                                return h('div','未支付')
+                                return h('Tag', {
+                                    props: {
+                                        type: 'volcano',
+                                    }
+                                }, '未支付')
                             }else {
                                 return h('div','已支付')
                             }
@@ -345,9 +354,14 @@
                     {
                         title: '训练状态',
                         key: 'clZt',
+                        align: 'center',
                         render:(h,p)=>{
                             if (p.row.jssj == ''){
-                                return h('div','在训')
+                                return h('Tag', {
+                                    props: {
+                                        type: 'blue',
+                                    }
+                                },'在训')
                             }else {
                                 return h('div','结束')
                             }
@@ -401,7 +415,7 @@
                             }
                         }
                     },
-                    {title:'操作',minWidth:140,render:(h,p)=>{
+                    {title:'操作',minWidth:60,fixed:'right',render:(h,p)=>{
                             let buttons = [];
                             buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
                                 this.hisPrintMess = p.row
@@ -876,7 +890,7 @@
                     this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
                     v.param.pageSize = 20;
                     console.log(this.param);
-                    this.util.initTable(this);
+                    v.util.getPageData(v)
                 } else {
 
                 }
@@ -902,7 +916,7 @@
             QRok(){
                     this.$http.post('/api/lcjl/batchPay',{ids:this.QRmess.id}).then((res)=>{
                         if (res.code == 200){
-                            this.$Message.success(res.message)
+                            // this.$Message.success(res.message)
                             this.QRmess.id = res.message
                             this.print(this.QRmess)
                             this.qrids=''
