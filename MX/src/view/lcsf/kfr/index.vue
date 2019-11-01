@@ -57,7 +57,7 @@
             </Button>
           </Col>
           <Col span="1" align="center">
-            <Button type="primary" @click="faCar('kf')">
+            <Button type="primary" @click="formData.zddm='K2KF';faCar('kf')">
               <Icon type="md-add"></Icon>
               <!--查询-->
             </Button>
@@ -409,7 +409,7 @@
                 coachList: [],
                 param: {
                     notShowLoading: 'true',
-                    orderBy: 'jssj desc',
+                    orderBy: 'jlId asc,jssj desc',
                     // kssjIsNotNull: '1',
                     total: 0,
                     lcKm: 2,

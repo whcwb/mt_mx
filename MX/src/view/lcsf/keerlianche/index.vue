@@ -316,23 +316,36 @@
             return {
                 columns2: [
                     {
+                        type: 'index',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
                         title: '车辆编号',
-                        key: 'clBh'
+                        key: 'clBh',
+                        align: 'center'
                     },
                     {
                         title: '时长(分钟)',
-                        key: 'sc'
+                        key: 'sc',
+                        align: 'center'
                     },
                     {
                         title: '费用(元)',
-                        key: 'lcFy'
+                        key: 'lcFy',
+                        align: 'center'
                     },
                     {
                         title: '支付状态',
                         key: 'zfzt',
+                        align: 'center',
                         render:(h,p)=>{
                             if (p.row.zfzt == '00' || p.row.jssj == ''){
-                                return h('div','未支付')
+                                return h('Tag', {
+                                    props: {
+                                        type: 'volcano',
+                                    }
+                                }, '未支付')
                             }else {
                                 return h('div','已支付')
                             }
@@ -341,9 +354,14 @@
                     {
                         title: '训练状态',
                         key: 'clZt',
+                        align: 'center',
                         render:(h,p)=>{
                             if (p.row.jssj == ''){
-                                return h('div','在训')
+                                return h('Tag', {
+                                    props: {
+                                        type: 'blue',
+                                    }
+                                },'在训')
                             }else {
                                 return h('div','结束')
                             }
@@ -397,7 +415,7 @@
                             }
                         }
                     },
-                    {title:'操作',minWidth:140,render:(h,p)=>{
+                    {title:'操作',minWidth:60,fixed:'right',render:(h,p)=>{
                             let buttons = [];
                             buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
                                 this.hisPrintMess = p.row
@@ -441,7 +459,7 @@
                     jssjInRange:'',
                     zhLike: '',
                     pageNum: 1,
-                    pageSize:8,
+                    pageSize:30,
                 },
                 dateRange: {
                     kssj: '',
@@ -505,20 +523,6 @@
                 },  1000),
                 columns1: [
                     {
-                        title: '车辆编号',
-                        key: 'clBh',
-                        align:'center',
-                        fixed: "left",
-                        width:100,
-                        render: (h, p) => {
-                            return h('Tag', {
-                                props: {
-                                    type: 'volcano',
-                                }
-                            }, p.row.clBh)
-                        }
-                    },
-                    {
                         title: '车牌号',
                         key: 'clHm',
                         align:'center',
@@ -562,15 +566,6 @@
                     //     }
                     // },
                     {
-                        title: '教练员姓名',
-                        key: 'jlXm',
-                        width:150,
-                        align:'center',
-                        render:(h,p)=>{
-                            return h('div',p.row.lcJl.jlXm)
-                        }
-                    },
-                    {
                         title: '教练员电话',
                         key: 'jlDh',
                         align:'center',
@@ -596,7 +591,7 @@
                         }
                     },
                     {
-                        title: '时长(分钟)',
+                        title: '时长',
                         key: 'sc',
                         width:120,
                         align:'center',
@@ -604,19 +599,43 @@
                             if (p.row.dqsc ==''){
 
                             }else {
-                                return h('div',parseInt(p.row.dqsc/60))
+                                return h('div',parseInt(p.row.dqsc/60)+'分钟')
                             }
 
                         }
                     },
                     {
-                        title: '当前费用(元)',
+                        title: '当前费用',
                         align:'center',
                         render:(h,p)=>{
                             if (p.row.zj!=''){
-                                return h('div',p.row.zj)
+                                return h('div',p.row.zj+'元')
                             }
 
+                        }
+                    },
+                    {
+                        title: '教练员姓名',
+                        key: 'jlXm',
+                        width:150,
+                        fixed: "right",
+                        align:'center',
+                        render:(h,p)=>{
+                            return h('div',p.row.lcJl.jlXm)
+                        }
+                    },
+                    {
+                        title: '车辆编号',
+                        key: 'clBh',
+                        align:'center',
+                        fixed: "right",
+                        width:100,
+                        render: (h, p) => {
+                            return h('Tag', {
+                                props: {
+                                    type: 'volcano',
+                                }
+                            }, p.row.clBh)
                         }
                     },
                     {
@@ -629,9 +648,7 @@
                             var v = this;
                             if (p.row.clZt == '00'){
                                 buttons.push(
-                                    h('Tooltip',
-                                        {props: {placement: 'top', content: '开始训练',}},
-                                        [
+
                                             h('Button', {
                                                 props: {
                                                     type: 'success',
@@ -659,16 +676,11 @@
                                                         this.showFQfzkp = false;
                                                     }
                                                 }
-                                            }, '开始')
-                                        ]
-                                    ),
+                                            }, '开始训练')
                                 );
                             }
                             if(p.row.clZt == '01'){
                                 buttons.push(
-                                    h('Tooltip',
-                                        {props: {placement: 'top', content: '结束训练',}},
-                                        [
                                             h('Button', {
                                                 props: {
                                                     type: 'error',
@@ -719,9 +731,7 @@
 
                                                     }
                                                 }
-                                            }, '结束')
-                                        ]
-                                    ),
+                                            }, '结束训练')
                                 );
                             }
 
@@ -871,15 +881,16 @@
                 this.qrids = a
             },
             MenuClick(name) {
+                var v = this
                 this.activeName = name;
                 if (name == '1') {
                     this.getCarList()
                 } else if (name == '2') {
-                    this.dateRange.jssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
-                    this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
-                    this.param.pageSize = 20
+                    this.dateRange.jssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59'];
+                    this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
+                    v.param.pageSize = 20;
                     console.log(this.param);
-                    this.util.initTable(this);
+                    v.util.getPageData(v)
                 } else {
 
                 }
@@ -905,7 +916,7 @@
             QRok(){
                     this.$http.post('/api/lcjl/batchPay',{ids:this.QRmess.id}).then((res)=>{
                         if (res.code == 200){
-                            this.$Message.success(res.message)
+                            // this.$Message.success(res.message)
                             this.QRmess.id = res.message
                             this.print(this.QRmess)
                             this.qrids=''
