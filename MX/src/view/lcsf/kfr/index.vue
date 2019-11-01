@@ -50,7 +50,7 @@
           <Col span="3">
             <Input size="large" v-model="param.jlXmLike" clearable  placeholder="请输入教练姓名"  @on-enter="v.util.getPageData(v)"/>
           </Col>
-          <Col span="1" align="center">
+          <Col span="1" align="center" style="margin-right: 10px">
             <Button type="primary" @click="v.util.getPageData(v)">
               <Icon type="md-search"></Icon>
               <!--查询-->
