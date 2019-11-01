@@ -16,7 +16,7 @@
 
       <Col span="24">
         <Row type="flex" justify="end" :gutter="8">
-          <Col  span="12" align="right" style="font-size: 24px;color: #2baee9">
+<!--          <Col  span="12" align="right" style="font-size: 24px;color: #2baee9">-->
 <!--            <div @click="compName='keyypd'"> 当前排队中-->
 <!--              <Button style="font-size: 20px;font-weight: 600" type="error">{{yyrs}}</Button>-->
 <!--            </div>-->
@@ -31,7 +31,7 @@
 <!--            <Button size="large" style="border-radius: 35px;font-size: 20px" type="warning" @click="giveCar.overCar(v,'2'),printClose=true">-->
 <!--              还-->
 <!--            </Button>-->
-          </Col>
+<!--          </Col>-->
 <!--          <Col span="3">-->
 <!--            <Input size="large" v-model="formData.clBh" clearable  placeholder="请输入车辆编号"/>-->
 <!--          </Col>-->
@@ -51,31 +51,29 @@
 <!--              &lt;!&ndash;查询&ndash;&gt;-->
 <!--            </Button>-->
 <!--          </Col>-->
-          <Col span="5">
             <!--        <pager-tit title="科二模训" style="float: left"></pager-tit>-->
 
-            <div style="float: left;margin-top: 8px;cursor: pointer">
+            <div style="float: left;margin-top: 8px;cursor: pointer;margin-right: 12px">
               <span style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">总计{{carList.length}}台</span>
-              <span style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
+              <span style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;"
                     @click="formData.clZt = '01',getCarList()">
             在训{{zxNum}}台</span>
               <span style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;cursor: pointer;"
                     @click="formData.clZt = '00',getCarList()"
               >空闲{{xxNum}}台</span>
             </div>
-          </Col>
-          <Col span="2" align="center">
+
             <Button type="primary" @click="getCarList">
-              刷新
+              <Icon type="md-refresh" />
               <!--查询-->
             </Button>
-          </Col>
+
         </Row>
       </Col>
     </Row>
 
    <Row v-if="activeName=='1'">
-     <Table ref="table" size="small" :columns="columns1" :data="carList"></Table>
+     <Table ref="table" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
    </Row>
 
     <div class="boxbackborder box_col" v-if="activeName=='2'">
@@ -175,7 +173,7 @@
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
                 <Select v-model="formData.zddm" style="width:200px" placeholder="计时500/小时" @on-change="lcFyChange">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index">{{it.by9}}</Option>
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm!='K2KF'">{{it.by9}}</Option>
                 </Select>
                 <!--              <CheckboxGroup v-model="formData.lcFy">-->
                 <!--                <Checkbox label="900"></Checkbox>-->
@@ -259,12 +257,21 @@
     >
       <div>
         <Row>
+          <Col>
+            <Table size="small" :columns="columns2" :data="QRmess.jls"></Table>
+<!--            <Card>-->
+<!--              <p slot="title" style="font-size: 20px;font-weight: 600">未支付订单</p>-->
+<!--              <p v-for="(item,index) in QRmess.jls" :key="index" style="font-size: 18px;font-weight: 500;padding: 10px">{{item.clBh}}号车,时长{{item.sc}}分钟,费用{{item.lcFy}}元</p>-->
+<!--            </Card>-->
+          </Col>
+        </Row>
+        <Row>
           <Col span="12">
             <Card>
               <p slot="title" style="font-size: 20px;font-weight: 600">训练信息</p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">教练 : {{QRmess.jlXm}}</p>
+              <p style="font-size: 18px;font-weight: 500;padding: 10px">教练员 : {{QRmess.jlXm}}</p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">总时长 : {{QRmess.sc}}分钟</p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">费用 : {{QRmess.lcFy}}元</p>
+              <p style="font-size: 18px;font-weight: 500;padding: 10px;color: red">总费用 : {{QRmess.lcFy}}元</p>
             </Card>
           </Col> <Col span="12">
           <Card>
@@ -276,18 +283,8 @@
           </Col>
 
         </Row>
-        <Row>
-          <Col span="12">
-            <Card>
-              <p slot="title" style="font-size: 20px;font-weight: 600">未支付订单</p>
-              <p v-for="(item,index) in QRmess.jls" :key="index" style="font-size: 18px;font-weight: 500;padding: 10px">{{item.clBh}}号车,时长{{item.sc}}分钟,费用{{item.lcFy}}元</p>
-            </Card>
-          </Col> <Col span="12">
-          <Card>
-            <p slot="title" style="font-size: 20px;font-weight: 600">应付金额</p>
-            <p style="font-size: 20px;font-weight: 600;padding: 10px">{{QRmess.bz}} 元</p>
-          </Card>
-        </Col>
+        <Row style="text-align: left;padding-left: 10px">
+          <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">{{QRmess.bz}} 元</p>
         </Row>
       </div>
     </Modal>
@@ -316,6 +313,42 @@
             keyypd,yydrawer,yyModel},
         data() {
             return {
+                columns2: [
+                    {
+                        title: '车辆编号',
+                        key: 'clBh'
+                    },
+                    {
+                        title: '时长(分钟)',
+                        key: 'sc'
+                    },
+                    {
+                        title: '费用(元)',
+                        key: 'lcFy'
+                    },
+                    {
+                        title: '支付状态',
+                        key: 'zfzt',
+                        render:(h,p)=>{
+                            if (p.row.zfzt == '00' || p.row.jssj == ''){
+                                return h('div','未支付')
+                            }else {
+                                return h('div','已支付')
+                            }
+                        }
+                    },
+                    {
+                        title: '训练状态',
+                        key: 'clZt',
+                        render:(h,p)=>{
+                            if (p.row.jssj == ''){
+                                return h('div','在训')
+                            }else {
+                                return h('div','结束')
+                            }
+                        }
+                    }
+                ],
                 qrids:'',
                 apiRoot: this.apis.lcjl,
                 choosedItem: null,
@@ -350,10 +383,10 @@
 
                     {title: '开始时间', key: 'kssj',minWidth:140},
                     {title: '结束时间', key: 'jssj', searchType: 'daterange',minWidth:140},
-                    {title: '时长', key: 'sc',minWidth:80,defaul:'0'},
+                    {title: '时长(分钟)', key: 'sc',minWidth:80,defaul:'0'},
                     {title: '学员数量', key: 'xySl',minWidth:90,defaul:'0'},
                     // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
-                    {title: '练车费用', key: 'lcFy', append: '元',minWidth:90,defaul:'0'},
+                    {title: '练车费用(元)', key: 'lcFy', append: '元',minWidth:90,defaul:'0'},
                     {title: '订单状态', key: 'zfzt',minWidth:80,
                         render:(h,p)=>{
                             if (p.row.zfzt == '00'){
@@ -555,14 +588,14 @@
                     },
                     {
                         title: '开始时间',
-                        key: 'xySl',
                         align:'center',
                         render:(h,p)=>{
+                            if(p.row.lcJl!=[] && p.row.lcJl.kssj!='')
                             return h('div',p.row.lcJl.kssj.substring(0,16))
                         }
                     },
                     {
-                        title: '时长',
+                        title: '时长(分钟)',
                         key: 'sc',
                         width:120,
                         align:'center',
@@ -570,13 +603,13 @@
                             if (p.row.dqsc ==''){
 
                             }else {
-                                return h('div',parseInt(p.row.dqsc/60)+'分钟')
+                                return h('div',parseInt(p.row.dqsc/60))
                             }
 
                         }
                     },
                     {
-                        title: '当前费用',
+                        title: '当前费用(元)',
                         align:'center',
                         render:(h,p)=>{
                             if (p.row.zj!=''){
@@ -653,7 +686,7 @@
                                                             if (res.value) {
                                                                 this.$http.post('/api/lcjl/updateJssj', {id: p.row.lcJl.id}).then((res) => {
                                                                     if (res.code == 200) {
-                                                                        this.$Message.success(res.message)
+                                                                        // this.$Message.success(res.message)
                                                                         this.QRmess = res.result
                                                                         this.QRmess.kssj = this.QRmess.kssj.substring(11,16)
                                                                         this.QRmess.jssj = this.QRmess.jssj.substring(11,16)
@@ -711,40 +744,40 @@
                             //         ]
                             //     ),
                             // );
-                            buttons.push(
-                                h('Tooltip',
-                                    {props: {placement: 'top', content: '打印票据',}},
-                                    [
-                                        h('Button', {
-                                            props: {
-                                                size: 'small',
-                                                icon:"ios-print"
-                                            },
-                                            style: {margin: '0 10px 0 0'},
-                                            on: {
-                                                click: () => {
-                                                    if(p.row.lcJl == ''){
-                                                        this.$http.post('/api/lcjl/getLatestJl',{clId:p.row.id}).then((res)=>{
-                                                            if (res.code == 200){
-                                                                if(res.result){
-                                                                    this.print(res.result)
-                                                                }else {
-                                                                    this.$Message.error('暂无练车记录！')
-                                                                }
-
-                                                            }else {
-                                                                this.$Message.error(res.message)
-                                                            }
-                                                        })
-                                                    }else {
-                                                        this.print(p.row.lcJl)
-                                                    }
-                                                }
-                                            }
-                                        }, '')
-                                    ]
-                                ),
-                            );
+                            // buttons.push(
+                            //     h('Tooltip',
+                            //         {props: {placement: 'top', content: '打印票据',}},
+                            //         [
+                            //             h('Button', {
+                            //                 props: {
+                            //                     size: 'small',
+                            //                     icon:"ios-print"
+                            //                 },
+                            //                 style: {margin: '0 10px 0 0'},
+                            //                 on: {
+                            //                     click: () => {
+                            //                         if(p.row.lcJl == ''){
+                            //                             this.$http.post('/api/lcjl/getLatestJl',{clId:p.row.id}).then((res)=>{
+                            //                                 if (res.code == 200){
+                            //                                     if(res.result){
+                            //                                         this.print(res.result)
+                            //                                     }else {
+                            //                                         this.$Message.error('暂无练车记录！')
+                            //                                     }
+                            //
+                            //                                 }else {
+                            //                                     this.$Message.error(res.message)
+                            //                                 }
+                            //                             })
+                            //                         }else {
+                            //                             this.print(p.row.lcJl)
+                            //                         }
+                            //                     }
+                            //                 }
+                            //             }, '')
+                            //         ]
+                            //     ),
+                            // );
                             return h('div', buttons);
                         }
                     }
@@ -772,6 +805,7 @@
             this.getCarList();
             this.getzdlist();
             this.getYYdj();
+            this.enter()
         },
         beforeDestroy(){
             clearInterval(this.IntervalKE)
@@ -781,6 +815,15 @@
                 'set_LcTime',
                 'Ch_LcTime'
             ]),
+            enter(){
+                var _this = this;
+                document.onkeydown = function(e) {
+                    let key = window.event.keyCode;
+                    if (key == 13) {
+                        _this.getCarList();
+                    }
+                };
+            },
             pageChange(val){
                 this.param.pageNum = val
                 this.util.getPageData(this)
@@ -1138,6 +1181,9 @@
 </script>
 
 <style scoped>
+  /deep/.ivu-table-row-hover{
+    background-color: #ff3226 !important
+  }
   .demo-drawer-footer {
     width: 100%;
     position: absolute;

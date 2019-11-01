@@ -222,9 +222,10 @@
         </FormItem>
       </Form>
       <div slot='footer'>
-        <Button type="primary" @click="save">发车</Button>
-        <Button type="primary" @click="yy" v-if="mxlx==='kk'">预约</Button>
         <Button style="margin-right: 8px" @click="close">取消</Button>
+        <Button type="primary" @click="save">确定</Button>
+        <Button type="primary" @click="yy" v-if="mxlx==='kk'">预约</Button>
+
       </div>
     </Modal>
 <!--    <yyModel ref="yyModel"-->

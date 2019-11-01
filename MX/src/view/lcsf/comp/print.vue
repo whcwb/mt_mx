@@ -11,7 +11,7 @@
         <Row>
           <Col span="4 ">
             <!--<Col span="4">-->
-            <p>车单打印</p>
+<!--            <p>车单打印</p>-->
           </Col>
           <!--<Col span="4" align="center">
             <span v-if="printClose">
