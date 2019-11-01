@@ -176,10 +176,10 @@
         scanning: false,
         totalS: 0,
         param: {
+            qrsjIsNull:'1' ,
+            orderBy: 'cjsj desc',
           idLike: '',
           jlXmLike: '',
-          fdZt: '00',
-          notShowLoading: 'true',
           pageNum: 1,
           pageSize: 10
         },
@@ -197,6 +197,13 @@
       }, 200)
     },
     methods: {
+        getFdjl(){
+            this.$http.post('/api/bizlcfd/pager',this.param).then((res)=>{
+                if (res.code == 200){
+
+                }
+            })
+        },
       pageChange(val) {
         this.param.pageNum = val
         this.getOldData();
@@ -216,7 +223,7 @@
       getOldData() {
         this.total = 0;
         this.ids = '';
-        this.$http.get(this.apis.lcjl.QUERY, {params: this.param}).then((res) => {
+        this.$http.post('/api/bizlcfd/pager',this.param).then((res) => {
           if (res.code == 200 && res.page.list) {
             this.totalS = res.page.total
             this.tableData = res.page.list;
