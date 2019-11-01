@@ -74,7 +74,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
     @Override
     public boolean fillPagerCondition(LimitedCondition condition) {
-        condition.setOrderByClause(" jssj  asc, kssj desc");
+        condition.setOrderByClause(" jl_id asc , jssj  desc, kssj desc");
         return true;
     }
 
@@ -240,11 +240,11 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     lcFd.setCjr(currentUser.getZh() + "-" + currentUser.getXm());
                     lcFd.setCjsj(nowTime);
                     lcFd.setFdje(fdje);
-                    lcFd.setFdlx(entity.getLcLx());
                     lcFd.setId(genId());
                     lcFd.setJlId(wxjl.getId());
                     lcFd.setJlXm(wxjl.getJlXm());
                     lcFd.setLcId(entity.getId());
+                    lcFd.setFdlx("20");
                     fdService.save(lcFd);
                 }
                 wxjlService.update(wxjl);
@@ -366,7 +366,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     // 如果实付金额小于 0 , 还需要现金
                     kfje = ye;
                     xjje = Math.abs(sfje);
-
                 } else {
                     // 此时已经支付完成
                     kfje = v;
@@ -425,8 +424,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         } else {
             lcJl.setFdZt("40");
         }
-
-        lcJl.setZfzt("00");
+        if(StringUtils.equals(lcJl.getLcLx(),"00")){
+            lcJl.setZfzt("00");
+        }
         update(lcJl);
         lcJl.setXjje(xjje);
         lcJl.setCardje(cardye);
@@ -446,6 +446,15 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
         condition.startWith(BizLcJl.InnerColumn.kssj, DateTime.now().toString("yyyy-MM-dd"));
         List<BizLcJl> bizLcJls = findByCondition(condition);
+        Set<String> set = bizLcJls.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
+        SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
+        condition1.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        condition1.in(SysZdxm.InnerColumn.zddm, set);
+//        condition1.eq(SysZdxm.InnerColumn.by5, bizLcJl.getLcLx());
+        List<SysZdxm> zdxms = zdxmService.findByCondition(condition1);
+        Map<String, List<SysZdxm>> map = zdxms.stream().collect(Collectors.groupingBy(SysZdxm::getZddm));
+
+
         bizLcJls.forEach(bizLcJl -> {
             if(StringUtils.equals(bizLcJl.getLcLx(), "00")){
                 // 如果已经结束 直接查看时长和总价
@@ -454,12 +463,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     Date date = new Date();
                     Date ksDate = DateTime.parse(bizLcJl.getKssj(), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
                     long sc = (date.getTime() - ksDate.getTime()) / (60 * 1000);
-                    SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
-                    condition1.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-                    condition1.eq(SysZdxm.InnerColumn.zddm, bizLcJl.getZddm());
-                    condition1.eq(SysZdxm.InnerColumn.by5, bizLcJl.getLcLx());
-                    List<SysZdxm> zdxms = zdxmService.findByCondition(condition1);
-                    SysZdxm zdxm = zdxms.get(0);
+                    List<SysZdxm> zdxmList = map.get(bizLcJl.getZddm());
+                    SysZdxm zdxm = zdxmList.get(0);
                     long lcfy = Math.round(Double.parseDouble(zdxm.getBy3()) * sc);
                     bizLcJl.setSc((int) sc);
                     bizLcJl.setLcFy((int) lcfy);
@@ -1054,7 +1059,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fd.setCjr(yh.getZh() + "-" + yh.getXm());
                     fd.setCjsj(DateUtils.getNowTime());
                     fd.setFdje((int) Math.ceil(xjje * rate));
-                    fd.setFdlx("00");
+                    fd.setFdlx("10");
                     fd.setId(genId());
                     fd.setJlXm(wxjl.getJlXm());
                     fd.setJlId(wxjl.getId());
@@ -1275,12 +1280,11 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 xjje = sum;
             }
         }
+        BizLcFd fd = new BizLcFd();
+        fd.setFdlx("00");
         if (kfje > 0) {
-            SimpleCondition zdcondition = new SimpleCondition(SysZdxm.class);
-            zdcondition.eq(SysZdxm.InnerColumn.zddm, lcJl.getZddm());
-            List<SysZdxm> zdxms = zdxmService.findByCondition(zdcondition);
-            SysZdxm zdxm = zdxms.get(0);
-            rate = Double.parseDouble(zdxm.getBy4());
+            fd.setFdlx("10");
+
             // 采用的是 余额加现金的情况
             // 先算出所有的余额
             int jlye = wxjl.getYe();
@@ -1328,7 +1332,11 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             wxjlService.update(wxjl);
 
         } else if (card > 0) {
-
+            SimpleCondition zdcondition = new SimpleCondition(SysZdxm.class);
+            zdcondition.eq(SysZdxm.InnerColumn.zddm, lcJl.getZddm());
+            List<SysZdxm> zdxms = zdxmService.findByCondition(zdcondition);
+            SysZdxm zdxm = zdxms.get(0);
+            rate = Double.parseDouble(zdxm.getBy4());
             // 卡上余额加 现金支付
             int wxjlCardJe = wxjl.getCardJe();
             int czqye = wxjlCardJe;
@@ -1369,6 +1377,11 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             czMapper.insert(bizJlCz);
             wxjlService.update(wxjl);
         } else {
+            SimpleCondition zdcondition = new SimpleCondition(SysZdxm.class);
+            zdcondition.eq(SysZdxm.InnerColumn.zddm, lcJl.getZddm());
+            List<SysZdxm> zdxms = zdxmService.findByCondition(zdcondition);
+            SysZdxm zdxm = zdxms.get(0);
+            rate = Double.parseDouble(zdxm.getBy4());
             for (BizLcJl jl : jls) {
                 jl.setKfje(0);
                 jl.setXjje(jl.getLcFy());
@@ -1379,16 +1392,14 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         }
 
         // 返点
-        BizLcFd fd = new BizLcFd();
+
         fd.setLcId(ids);
         fd.setJlId(wxjl.getId());
         fd.setJlXm(wxjl.getJlXm());
         fd.setId(genId());
         fd.setFdje((int) Math.ceil(xjje * rate));
-
         fd.setCjsj(DateUtils.getNowTime());
         fd.setCjr(yh.getZh() + "," + yh.getXm());
-        fd.setFdlx("00");
         if(fd.getFdje() > 0 ){
             fdService.save(fd);
         }

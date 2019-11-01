@@ -49,8 +49,39 @@ public class BizLcFd implements Serializable {
 
     @Transient
     private List<BizLcJl> jlList;
+    @Transient
+    private Integer lcFy;
+    @Transient
+    private Integer sc;
+    @Transient
+    private String lcKm;
+
 
     private static final long serialVersionUID = 1L;
+
+    public Integer getLcFy() {
+        return lcFy;
+    }
+
+    public void setLcFy(Integer lcFy) {
+        this.lcFy = lcFy;
+    }
+
+    public Integer getSc() {
+        return sc;
+    }
+
+    public void setSc(Integer sc) {
+        this.sc = sc;
+    }
+
+    public String getLcKm() {
+        return lcKm;
+    }
+
+    public void setLcKm(String lcKm) {
+        this.lcKm = lcKm;
+    }
 
     public String getFdlx() {
         return fdlx;
