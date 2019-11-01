@@ -1280,6 +1280,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 xjje = sum;
             }
         }
+
         BizLcFd fd = new BizLcFd();
         fd.setFdlx("00");
         if (kfje > 0) {
@@ -1307,6 +1308,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     jl.setCardje(0);
                     jl.setKfje(0);
                 }
+                jl.setYfJe(jl.getXjje());
                 jl.setZfzt("10");
                 update(jl);
             }
@@ -1393,12 +1395,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
         // 返点
 
-        fd.setLcId(ids);
+        fd.setLcId(jls.stream().map(BizLcJl::getId).collect(Collectors.joining(",")));
         fd.setJlId(wxjl.getId());
         fd.setJlXm(wxjl.getJlXm());
         fd.setId(genId());
         fd.setFdje((int) Math.ceil(xjje * rate));
         fd.setCjsj(DateUtils.getNowTime());
+        fd.setFdsl(jls.size());
         fd.setCjr(yh.getZh() + "," + yh.getXm());
         if(fd.getFdje() > 0 ){
             fdService.save(fd);

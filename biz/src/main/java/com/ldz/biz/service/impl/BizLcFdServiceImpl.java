@@ -12,6 +12,7 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.exception.RuntimeCheck;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
@@ -39,15 +40,18 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 		}
 		List<BizLcFd> lcFds = pageInfo.getList();
 		lcFds.forEach(bizLcFd -> {
-			List<BizLcJl> jlList = jlService.findEq(BizLcJl.InnerColumn.id, Arrays.asList(bizLcFd.getLcId().split(",")));
-			// 计算练车总费用
-			int sum = jlList.stream().mapToInt(BizLcJl::getYfJe).sum();
-			int zsc = jlList.stream().mapToInt(BizLcJl::getSc).sum();
-			String lckm = jlList.get(0).getKm();
-			bizLcFd.setLcFy(sum);
-			bizLcFd.setSc(zsc);
-			bizLcFd.setLcKm(lckm);
-			bizLcFd.setJlList(jlList);
+			if(StringUtils.isNotBlank(bizLcFd.getLcId())){
+
+				List<BizLcJl> jlList = jlService.findIn(BizLcJl.InnerColumn.id, Arrays.asList(bizLcFd.getLcId().split(",")));
+				// 计算练车总费用
+				int sum = jlList.stream().mapToInt(BizLcJl::getYfJe).sum();
+				int zsc = jlList.stream().mapToInt(BizLcJl::getSc).sum();
+				String lckm = jlList.get(0).getLcKm();
+				bizLcFd.setLcFy(sum);
+				bizLcFd.setSc(zsc);
+				bizLcFd.setLcKm(lckm);
+				bizLcFd.setJlList(jlList);
+			}
 		});
 	}
 
@@ -58,15 +62,18 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 		}
 
 		result.forEach(bizLcFd -> {
-			List<BizLcJl> jlList = jlService.findEq(BizLcJl.InnerColumn.id, Arrays.asList(bizLcFd.getLcId().split(",")));
-			// 计算练车总费用
-			int sum = jlList.stream().mapToInt(BizLcJl::getYfJe).sum();
-			int zsc = jlList.stream().mapToInt(BizLcJl::getSc).sum();
-			String lckm = jlList.get(0).getKm();
-			bizLcFd.setLcFy(sum);
-			bizLcFd.setSc(zsc);
-			bizLcFd.setLcKm(lckm);
-			bizLcFd.setJlList(jlList);
+			if(StringUtils.isNotBlank(bizLcFd.getLcId())){
+
+				List<BizLcJl> jlList = jlService.findIn(BizLcJl.InnerColumn.id, Arrays.asList(bizLcFd.getLcId().split(",")));
+				// 计算练车总费用
+				int sum = jlList.stream().mapToInt(BizLcJl::getYfJe).sum();
+				int zsc = jlList.stream().mapToInt(BizLcJl::getSc).sum();
+				String lckm = jlList.get(0).getKm();
+				bizLcFd.setLcFy(sum);
+				bizLcFd.setSc(zsc);
+				bizLcFd.setLcKm(lckm);
+				bizLcFd.setJlList(jlList);
+			}
 		});
 	}
 
@@ -74,15 +81,21 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 	public ApiResponse<String> updateZt(String id) {
 		RuntimeCheck.ifBlank(id, "请确认返点记录");
 		SysYh yh = getCurrentUser();
-		BizLcFd fd = findById(id);
-		fd.setQrr(yh.getZh() + "-" + yh.getXm());
-		fd.setQrsj(DateUtils.getNowTime());
-		update(fd);
-		String[] split = fd.getLcId().split(",");
-		List<BizLcJl> jls = jlService.findIn(BizLcJl.InnerColumn.id, Arrays.asList(split));
-		jls.forEach(bizLcJl -> {
-			bizLcJl.setFdZt("10");
-			jlService.update(bizLcJl);
+		List<String> list = Arrays.asList(id.split(","));
+		List<BizLcFd> fds = findByIds(list);
+		fds.forEach(fd ->{
+			String[] split = fd.getLcId().split(",");
+			List<BizLcJl> jls = jlService.findIn(BizLcJl.InnerColumn.id, Arrays.asList(split));
+			jls.forEach(bizLcJl -> {
+				bizLcJl.setFdZt("10");
+				jlService.update(bizLcJl);
+			});
+			if(fd.getFdsl() == null || fd.getFdsl() == 0 ){
+				fd.setFdsl(jls.size());
+			}
+			fd.setQrr(yh.getZh() + "-" + yh.getXm());
+			fd.setQrsj(DateUtils.getNowTime());
+			update(fd);
 		});
 		return ApiResponse.success();
 	}
