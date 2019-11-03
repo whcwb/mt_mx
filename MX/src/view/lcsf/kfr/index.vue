@@ -844,8 +844,8 @@
                         console.log(res.message)
                         if (this.mxlx == 'py' || this.mxlx == 'kf') {
                             //打印票据
-                            this.formData.id=JSON.parse(res.message).id
-                            this.formData.jssj=JSON.parse(res.message).jssj
+                            this.formData.id =JSON.parse(res.message).id
+                            this.formData.jssj =JSON.parse(res.message).jssj
                             this.formData.jlXm=JSON.parse(res.message).jlXm
                             this.formData.jlJx=JSON.parse(res.message).jlJx
                             this.formData.sc='-'
@@ -854,7 +854,8 @@
                             this.formData.clBh='-'
                             this.formData.lcKm='2'
 
-                                this.printHc(this.formData)
+                            this.hisPrintMess = this.formData
+                            this.componentName = 'print'
 
 
                         }

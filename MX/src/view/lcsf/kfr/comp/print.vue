@@ -113,10 +113,10 @@
       this.info.sc=this.hisPrintMess.sc=='-'?'-':this.parseTime(this.info.sc)
       // this.info.sc = this.parseTime(this.info.sc)
         if (this.info.kssj!='' ){
-            this.info.kssj = this.info.kssj.substr(0, 16)
+            this.info.kssj = this.info.kssj.substring(0,16)
         }
         if( this.info.jssj!=''){
-            this.info.jssj = this.info.jssj.substring(0, 10)
+            this.info.jssj = this.info.jssj.substring(0,10)
         }
       this.info.yhsc = '5分钟'
       this.info.yhje = 8.33*5

@@ -18,7 +18,7 @@
         © Copyright Reserved 版权所有
       </div>
       <div class="messItem" style="font-size: 16px">
-        武汉天弘腾创科技有限公司
+        武汉创伟博科技有限公司
       </div>
 <!--      <div class="messItem" style="font-size: 16px">-->
 <!--        Copyright@2018 武汉创伟博科技有限公司-->
