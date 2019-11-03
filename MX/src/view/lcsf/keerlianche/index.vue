@@ -633,8 +633,8 @@
                                                             if (res.code == 200) {
                                                                 // this.$Message.success(res.message)
                                                                 this.QRmess = res.result
-                                                                this.QRmess.kssj = this.QRmess.kssj.substring(11,16)
-                                                                this.QRmess.jssj = this.QRmess.jssj.substring(11,16)
+                                                                // this.QRmess.kssj = this.QRmess.kssj.substring(11,16)
+                                                                // this.QRmess.jssj = this.QRmess.jssj.substring(11,16)
                                                                 if (this.QRmess.fdr.indexOf('1')!=-1){
                                                                     this.ls.ls1 = true
                                                                 }
@@ -647,7 +647,7 @@
                                                                 if (p.row.lcJl.lcLx=='00'){
                                                                     this.QRmodal = true
                                                                 }else {
-
+                                                                    this.print(res.result)
                                                                 }
 
                                                                 // this.print(res.result)
@@ -853,8 +853,8 @@
                 this.$http.post('/api/lcjl/getBatchPay',{ids:this.qrids}).then((res)=>{
                     if (res.code == 200){
                         this.QRmess = res.result
-                        this.QRmess.kssj = this.QRmess.kssj.substring(11,16)
-                        this.QRmess.jssj = this.QRmess.jssj.substring(11,16)
+                        // this.QRmess.kssj = this.QRmess.kssj.substring(11,16)
+                        // this.QRmess.jssj = this.QRmess.jssj.substring(11,16)
                         if (this.QRmess.fdr.indexOf('1')!=-1){
                             this.ls.ls1 = true
                         }
@@ -913,6 +913,30 @@
                 }
             },
             QRcancel(){
+                var a = true
+                if (this.QRmess.jls){
+                    for (let r of this.QRmess.jls){
+                        if (r.jssj ==''){
+                            a = false
+                            break
+                        }
+                    }
+                }
+                if (a){
+                    this.swal({
+                      title:'该教练当前所有记录都已结束!是否仍要稍后支付?',
+                      type:'question',
+                      showCancelButton: true,
+                      confirmButtonText: '确定',
+                      cancelButtonText: '取消'
+                    }).then(p=>{
+                      if(p.value){
+
+                      }else {
+                          this.QRmodal = true
+                      }
+                    })
+                }
 
             },
             QRok(){

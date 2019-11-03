@@ -113,9 +113,16 @@
       this.info.sc=this.hisPrintMess.sc=='-'?'-':this.parseTime(this.info.sc)
       // this.info.sc = this.parseTime(this.info.sc)
       this.info.kssj = this.info.kssj.substr(0, 16)
-      this.info.jssj = this.info.jssj.substring(0, 10)
+      // this.info.jssj = this.info.jssj.substring(0, 10)
       this.info.yhsc = '5分钟'
       this.info.yhje = 8.33*5
+
+        if (this.info.lcLx == '20'){
+            this.info.bz = this.info.xyXm +"-"+this.info.xyDh
+        }
+        if(this.info.lcLx == '00' && (this.info.cardje - this.info.lcFy) >0){
+            this.info.bz = this.info.bz + ',余额'+(this.info.cardje-this.info.lcFy)
+        }
       let v = this;
       setTimeout(() => {
         let canvas = document.getElementById("barcode");
