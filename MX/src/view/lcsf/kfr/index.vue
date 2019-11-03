@@ -50,24 +50,24 @@
           <Col span="3">
             <Input size="large" v-model="param.jlXmLike" clearable  placeholder="请输入教练姓名"  @on-enter="v.util.getPageData(v)"/>
           </Col>
-          <Col span="1" align="center" style="margin-right: 10px">
+          <Col span="2" align="center" >
             <Button type="primary" @click="v.util.getPageData(v)">
               <Icon type="md-search"></Icon>
               <!--查询-->
             </Button>
-          </Col>
-          <Col span="1" align="center">
             <Button type="primary" @click="formData.zddm='K2KF';faCar('kf')">
               <Icon type="md-add"></Icon>
               <!--查询-->
             </Button>
           </Col>
+<!--          <Col span="1" align="center" style="margin-right: 10px">-->
+
+<!--          </Col>-->
         </Row>
       </Col>
     </Row>
     <div>
       <Row>
-
           <table-area :pager="false" :parent="v"></table-area>
 
 
@@ -254,7 +254,7 @@
     import addjl from '../comp/addJL'
     import carStatistics from '../statistics/carStatistics'
     import keyypd from '../comp/keyypd'
-    import print from '../comp/print'
+    import print from './comp/print'
     import radioCar from '../comp/RadioCar'
     //还车
     import giveCar from '../comp/readCard'
@@ -278,10 +278,14 @@
                 choosedItem: null,
                 tableColumns: [
                     {
-                        type: 'index', align: 'center', minWidth: 80,
-                        // render: (h, params) => {
-                        //   return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
-                        // }
+                        title: '序号', align: 'center', minWidth: 80,
+                        render: (h, params) => {
+                            return h('Tag', {
+                                props: {
+                                    type: 'volcano',
+                                }
+                            }, params.index+1)
+                        }
                     },
                     {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
                     {title: '教练电话', key: 'jlDh', minWidth: 90},
@@ -302,8 +306,8 @@
                     {title: '创建时间', key: 'kssj', searchType: 'daterange', minWidth: 140},
                     // {title: '安全员姓名', key: 'zgXm',minWidth:100},
                     // {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
-                    {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
-                    {title: '练车费用', key: 'lcFy', minWidth: 90, defaul: '0'},
+                    {title: '学员数量(人)', key: 'xySl', minWidth: 90, defaul: '0'},
+                    {title: '练车费用(元)', key: 'lcFy', minWidth: 90, defaul: '0'},
                     // {
                     //     title: '状态', minWidth: 120, render: (h, p) => {
                     //         let s = '';
@@ -836,11 +840,6 @@
                     if (res.code == 200) {
                         this.DrawerVal = false;
                         this.util.initTable(this);
-                        this.swal({
-                            title: '发车成功',
-                            type: 'success',
-                            confirmButtonText: '确定',
-                        })
                         this.carMess = null
                         console.log(res.message)
                         if (this.mxlx == 'py' || this.mxlx == 'kf') {
@@ -853,7 +852,11 @@
                             this.formData.yhsc='5分钟'
                             this.formData.kc='科目二'
                             this.formData.clBh='-'
-                            this.printHc(this.formData)
+                            this.formData.lcKm='2'
+
+                                this.printHc(this.formData)
+
+
                         }
                     } else {
                         this.formData.cardNo = null;
