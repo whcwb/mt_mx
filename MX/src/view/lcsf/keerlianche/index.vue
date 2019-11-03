@@ -1331,11 +1331,11 @@
             if (!key) {
               if (this.DrawerVal) {
                 let v = this
-                // setTimeout(() => {
-                //   if (v.DrawerVal) {
-                //     v.save()
-                //   }
-                // }, 200)
+                setTimeout(() => {
+                  if (v.DrawerVal) {
+                    v.save()
+                  }
+                }, 200)
               }
               if (v.showFQfzkp) {
                 return;
