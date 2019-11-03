@@ -1,5 +1,6 @@
 package com.ldz.biz.model;
 
+import com.ldz.sys.model.SysZdxm;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -115,7 +116,8 @@ public class BizLcCl implements Serializable {
     @Transient
     private String th;
 
-
+    @Transient
+    private SysZdxm zdxm;
     private static final long serialVersionUID = 1L;
 
 

@@ -259,7 +259,8 @@ public class SysZdxm implements Serializable {
         by2("BY2"),
         by3("BY3"),
         by4("BY4"),
-        by5("BY5");
+        by5("BY5"),
+        by6("BY6");
 
         private final String column;
 

@@ -133,6 +133,12 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         entity.setJlLx("10");
         entity.setId(genId());
         RuntimeCheck.ifBlank(entity.getZddm(), "请选择套餐");
+        SimpleCondition condition = new SimpleCondition(SysZdxm.class);
+        condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        condition.eq(SysZdxm.InnerColumn.zddm, entity.getZddm());
+        List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
+        RuntimeCheck.ifEmpty(zdxms, "未找到套餐信息");
+        SysZdxm zdxm = zdxms.get(0);
         BizLcCl lcCl = null;
         if (StringUtils.isNotBlank(entity.getLcClId())) {
             lcCl = clService.findById(entity.getLcClId());
@@ -152,14 +158,24 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             lcCl.setXgsj(DateUtils.getNowTime());
             lcCl.setZgId(entity.getZgId());
         }
-
-        SimpleCondition condition = new SimpleCondition(SysZdxm.class);
-        condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-        condition.eq(SysZdxm.InnerColumn.zddm, entity.getZddm());
-        List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
-        RuntimeCheck.ifEmpty(zdxms, "未找到套餐信息");
-        SysZdxm zdxm = zdxms.get(0);
+        if(StringUtils.equals(zdxm.getBy2(), "1")){
+            // 0 为不启用打卡 1 为启用打卡
+            RuntimeCheck.ifBlank(entity.getCardNo(), " 请刷卡");
+            // 查询此卡是否为在训状态
+            condition = new SimpleCondition(BizLcJl.class);
+            condition.eq(BizLcJl.InnerColumn.cardNo, entity.getCardNo());
+            condition.and().andCondition(" jssj is null or jssj = ''");
+            List<BizLcJl> jls = findByCondition(condition);
+            RuntimeCheck.ifTrue(CollectionUtils.isNotEmpty(jls), "此卡正在训练中 , 请先结束训练");
+            // 此套餐是否需要卡片绑定车辆
+            if(StringUtils.equals(zdxm.getBy6(), "1")){
+                List<BizLcCl> cls = clService.findEq(BizLcCl.InnerColumn.cardNo, entity.getCardNo());
+                RuntimeCheck.ifEmpty(cls, "此卡未绑定车辆");
+                RuntimeCheck.ifFalse(lcCl.getCardNo().equals(entity.getCardNo()), "卡片绑定车辆与当前车辆不匹配");
+            }
+        }
         entity.setLcLx(zdxm.getBy5());
+        entity.setJlJx(wxjl.getJlJx());
         if (!StringUtils.equals(entity.getLcLx(), "30")) {
             RuntimeCheck.ifNull(lcCl, "请选择车辆");
             // 查询卡号记录 判断是否在训练中
@@ -299,7 +315,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     }
 
     @Override
-    public ApiResponse<BizLcJl> updateJssj(String id, String km) throws ParseException {
+    public ApiResponse<BizLcJl> updateJssj(String id, String cardNo, String km) throws ParseException {
 
         // 定义三个 数字
         int kfje = 0;
@@ -307,6 +323,12 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         int xjje = 0;
         SysYh yh = getCurrentUser();
         SimpleCondition jlCondition = new SimpleCondition(BizLcJl.class);
+        if(StringUtils.isNotBlank(id)){
+            jlCondition.eq(BizLcJl.InnerColumn.id, id);
+        }
+        if(StringUtils.isNotBlank(cardNo)){
+            jlCondition.eq(BizLcJl.InnerColumn.cardNo, cardNo);
+        }
         jlCondition.and().andCondition(" card_no = '" + id + "' or id = '" + id + "'");
         jlCondition.and().andCondition("( jssj is null or jssj = '') and kssj is not null  ");
         jlCondition.eq(BizLcJl.InnerColumn.lcKm, km);
@@ -315,6 +337,17 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         RuntimeCheck.ifTrue(CollectionUtils.isEmpty(jls), "没有找到练车记录");
         BizLcJl lcJl = jls.get(0);
 
+        // 计算练车费用
+        SimpleCondition condition = new SimpleCondition(SysZdxm.class);
+        condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        condition.eq(SysZdxm.InnerColumn.zddm, lcJl.getZddm());
+//            condition.eq(SysZdxm.InnerColumn.by2, lcJl.getJlCx());
+        List<SysZdxm> items = zdxmService.findByCondition(condition);
+        RuntimeCheck.ifTrue(CollectionUtils.isEmpty(items), "此套餐未设置费用 , 请先设置套餐费用");
+        SysZdxm management = items.get(0);
+        if(StringUtils.equals(management.getBy2(), "1")){
+            RuntimeCheck.ifBlank(cardNo, "此记录需要刷卡结束");
+        }
         String s = DateUtils.getNowTime();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date end = dateFormat.parse(s);
@@ -330,14 +363,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             RuntimeCheck.ifTrue(StringUtils.equals(km, "3") && !StringUtils.equals(km, lcJl.getLcKm()), "请前往科目三窗口还车");
             // 计算实际时长  (所有车辆免费前五分钟)
             int lcSc = Math.max((int) ((end.getTime() - start.getTime()) / (1000 * 60)), 0);
-            // 计算练车费用
-            SimpleCondition condition = new SimpleCondition(SysZdxm.class);
-            condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-            condition.eq(SysZdxm.InnerColumn.zddm, lcJl.getZddm());
-//            condition.eq(SysZdxm.InnerColumn.by2, lcJl.getJlCx());
-            List<SysZdxm> items = zdxmService.findByCondition(condition);
-            RuntimeCheck.ifTrue(CollectionUtils.isEmpty(items), "此套餐未设置费用 , 请先设置套餐费用");
-            SysZdxm management = items.get(0);
+
             // 每小时的费用
             String hour = management.getZdmc();
             String by3 = management.getBy3();
@@ -424,55 +450,62 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         } else {
             lcJl.setFdZt("40");
         }
-        if(StringUtils.equals(lcJl.getLcLx(),"00")){
+        if(StringUtils.equals(lcJl.getLcLx(),"00")) {
             lcJl.setZfzt("00");
-        }
-        update(lcJl);
-        lcJl.setXjje(xjje);
-        lcJl.setCardje(cardye);
-        lcJl.setKfje(kfye);
-        lcJl.setYfJe(xjje);
-        lcJl.setBz(str);
-        lcJl.setFdr(fdr);
-        // 查询该教练所有未支付的练车记录
-        SimpleCondition condition = new SimpleCondition(BizLcJl.class);
-        condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
-        condition.eq(BizLcJl.InnerColumn.zfzt,  "00");
-        List<BizLcJl> lcJls = findByCondition(condition);
-        String s1 = lcJls.stream().map(BizLcJl::getId).collect(Collectors.joining(","));
-        ApiResponse<BizLcJl> response = getBatchPay(s1);
-        BizLcJl result = response.getResult();
-        condition = new SimpleCondition(BizLcJl.class);
-        condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
-        condition.startWith(BizLcJl.InnerColumn.kssj, DateTime.now().toString("yyyy-MM-dd"));
-        List<BizLcJl> bizLcJls = findByCondition(condition);
-        Set<String> set = bizLcJls.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
-        SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
-        condition1.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-        condition1.in(SysZdxm.InnerColumn.zddm, set);
+
+            update(lcJl);
+            lcJl.setXjje(xjje);
+            lcJl.setCardje(cardye);
+            lcJl.setKfje(kfye);
+            lcJl.setYfJe(xjje);
+            lcJl.setBz(str);
+            lcJl.setFdr(fdr);
+            // 查询该教练所有未支付的练车记录
+            condition = new SimpleCondition(BizLcJl.class);
+            condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
+            condition.eq(BizLcJl.InnerColumn.zfzt, "00");
+            List<BizLcJl> lcJls = findByCondition(condition);
+            String s1 = lcJls.stream().map(BizLcJl::getId).collect(Collectors.joining(","));
+            ApiResponse<BizLcJl> response = getBatchPay(s1);
+            BizLcJl result = response.getResult();
+            result.setJlJx(lcJl.getJlJx());
+            result.setJssj(lcJl.getJssj());
+            result.setLcLx(lcJl.getLcLx());
+            condition = new SimpleCondition(BizLcJl.class);
+            condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
+            condition.startWith(BizLcJl.InnerColumn.kssj, DateTime.now().toString("yyyy-MM-dd"));
+            List<BizLcJl> bizLcJls = findByCondition(condition);
+            Set<String> set = bizLcJls.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
+            SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
+            condition1.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+            condition1.in(SysZdxm.InnerColumn.zddm, set);
 //        condition1.eq(SysZdxm.InnerColumn.by5, bizLcJl.getLcLx());
-        List<SysZdxm> zdxms = zdxmService.findByCondition(condition1);
-        Map<String, List<SysZdxm>> map = zdxms.stream().collect(Collectors.groupingBy(SysZdxm::getZddm));
+            List<SysZdxm> zdxms = zdxmService.findByCondition(condition1);
+            Map<String, List<SysZdxm>> map = zdxms.stream().collect(Collectors.groupingBy(SysZdxm::getZddm));
 
 
-        bizLcJls.forEach(bizLcJl -> {
-            if(StringUtils.equals(bizLcJl.getLcLx(), "00")){
-                // 如果已经结束 直接查看时长和总价
-                if(StringUtils.isBlank(bizLcJl.getJssj())){
-                    // 计算时长和费用
-                    Date date = new Date();
-                    Date ksDate = DateTime.parse(bizLcJl.getKssj(), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
-                    long sc = (date.getTime() - ksDate.getTime()) / (60 * 1000);
-                    List<SysZdxm> zdxmList = map.get(bizLcJl.getZddm());
-                    SysZdxm zdxm = zdxmList.get(0);
-                    long lcfy = Math.round(Double.parseDouble(zdxm.getBy3()) * sc);
-                    bizLcJl.setSc((int) sc);
-                    bizLcJl.setLcFy((int) lcfy);
+            bizLcJls.forEach(bizLcJl -> {
+                if (StringUtils.equals(bizLcJl.getLcLx(), "00")) {
+                    // 如果已经结束 直接查看时长和总价
+                    if (StringUtils.isBlank(bizLcJl.getJssj())) {
+                        // 计算时长和费用
+                        Date date = new Date();
+                        Date ksDate = DateTime.parse(bizLcJl.getKssj(), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+                        long sc = (date.getTime() - ksDate.getTime()) / (60 * 1000);
+                        List<SysZdxm> zdxmList = map.get(bizLcJl.getZddm());
+                        SysZdxm zdxm = zdxmList.get(0);
+                        long lcfy = Math.round(Double.parseDouble(zdxm.getBy3()) * sc);
+                        bizLcJl.setSc((int) sc);
+                        bizLcJl.setLcFy((int) lcfy);
+                    }
                 }
-            }
-        });
-        result.setJls(bizLcJls);
-        return ApiResponse.success(result);
+            });
+            result.setJls(bizLcJls);
+            return ApiResponse.success(result);
+        }else{
+            update(lcJl);
+            return ApiResponse.success(lcJl);
+        }
     }
 
     @Override
@@ -1033,6 +1066,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         BizLcJl lcJl = findById(id);
         RuntimeCheck.ifNull(lcJl, "未找到练车记录");
         RuntimeCheck.ifTrue(lcJl.getZfzt().equals("10"), "此订单已经支付");
+        BizLcFd fd = new BizLcFd();
         if (StringUtils.equals(lcJl.getLcLx(), "00")) {
             SysYh yh = getCurrentUser();
             int v = lcJl.getLcFy();
@@ -1055,7 +1089,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     kfje = ye;
                     xjje = Math.abs(sfje);
                     // 此处返点 0.4
-                    BizLcFd fd = new BizLcFd();
+
                     fd.setCjr(yh.getZh() + "-" + yh.getXm());
                     fd.setCjsj(DateUtils.getNowTime());
                     fd.setFdje((int) Math.ceil(xjje * rate));
@@ -1081,7 +1115,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     if (sfje < 0) {
                         card = cardJe;
                         xjje = Math.abs(sfje);
-                        BizLcFd fd = new BizLcFd();
                         fd.setCjr(yh.getZh() + "-" + yh.getXm());
                         fd.setCjsj(DateUtils.getNowTime());
                         fd.setFdje((int) Math.ceil(xjje * rate));
@@ -1096,7 +1129,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     }
                 } else {
                     xjje = v;
-                    BizLcFd fd = new BizLcFd();
                     fd.setCjr(yh.getZh() + "-" + yh.getXm());
                     fd.setCjsj(DateUtils.getNowTime());
                     fd.setFdje((int) Math.ceil(xjje * 0.3));
@@ -1150,7 +1182,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             update(lcJl);
         }
 
-        return ApiResponse.success();
+        return ApiResponse.success(fd.getId());
     }
 
     @Override

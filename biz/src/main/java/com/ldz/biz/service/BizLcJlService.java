@@ -34,7 +34,7 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
 
     ApiResponse<LcJlModel> getOneLog(String zgId);
 
-    ApiResponse<BizLcJl> updateJssj(String id, String km) throws ParseException;
+    ApiResponse<BizLcJl> updateJssj(String id,String cardNo, String km) throws ParseException;
 
     List<Map<String,Object>>  drivingSchoolStatistics();
 
