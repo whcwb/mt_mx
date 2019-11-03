@@ -111,11 +111,12 @@
       },
       afterPager(list){
         this.addmoney = 0
+          var v = this
         for (let r of list){
             r.sc = this.parseTime(r.sc)
             r.kssj = r.kssj.substring(0,16)
             r.jssj = r.jssj.substring(0,16)
-          this.addmoney += r.lcFy;
+            v.addmoney = v.addmoney + r.lcFy;
         }
       },
       print() {

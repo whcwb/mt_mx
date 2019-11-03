@@ -91,13 +91,15 @@
         mess: [
           // {title: '训练科目', key: 'km'},
           {title: '训练科目', key: 'lcKm', dict: 'km'},
-          // {title: '车辆编号', key: 'clBh'},
+          {title: '车辆编号', key: 'clBh'},
           // {title: '训练车型', key: 'jlCx'},
           {title: '教练员', key: 'jlJx', key2: 'jlXm'},
-          // {title: '安全员', key: 'zgXm'},
+          {title: '安全员', key: 'zgXm'},
           // {title: '优惠时长', key: 'yhsc'},
           // {title: '优惠金额', key: 'yhje'},
-          // {title: '累计时长', key: 'sc'},
+          {title: '累计时长', key: '1',render:(h,p)=>{
+
+              }},
           {title: '累计费用', key: 'lcFy', unit: '元'},
           {title: '备注', key: 'bz'},
 
@@ -110,16 +112,16 @@
     created() {
       this.info = JSON.parse(JSON.stringify(this.hisPrintMess))
       console.log(this.info,'fsdf')
-      this.info.sc=this.hisPrintMess.sc=='-'?'-':this.parseTime(this.info.sc)
-      // this.info.sc = this.parseTime(this.info.sc)
+      // this.info.sc=this.hisPrintMess.sc=='-'?'-':this.parseTime(this.info.sc)
+      // this.info.sc = ''
         if (this.info.kssj!='' ){
             this.info.kssj = this.info.kssj.substring(0,16)
         }
         if( this.info.jssj!=''){
-            this.info.jssj = this.info.jssj.substring(0,10)
+            // this.info.jssj = this.info.jssj.substring(0,10)
         }
-      this.info.yhsc = '5分钟'
       this.info.yhje = 8.33*5
+        this.info.bz = this.info.xySl+'人'
       let v = this;
       setTimeout(() => {
         let canvas = document.getElementById("barcode");
@@ -187,12 +189,17 @@
 
       },
       parseTime(s) {
-        s = parseInt(s);
-        let h = parseInt(s / 60);
-        let m = s % 60;
-        let r = '';
-        if (h != 0) r += h + '小时'
-        return r + m + '分钟'
+          if(s!=0 && s!='' && s!='-'){
+              s = parseInt(s);
+              let h = parseInt(s/60);
+              let m = s % 60;
+              let r = '';
+              if (h != 0) r += h + '小时'
+              return r + m + '分钟'
+          }else {
+              return ''
+          }
+
       },
       getDict(val, key) {
         if (key) {

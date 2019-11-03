@@ -395,6 +395,7 @@
                     xyZjhm: '',
                     xyXm: '',
                     xyDh: '',
+                    xySl:'',
                     // yhsc:'5',
                     id:'',
                     jlXm:'',
@@ -844,14 +845,12 @@
                         console.log(res.message)
                         if (this.mxlx == 'py' || this.mxlx == 'kf') {
                             //打印票据
-                            this.formData.id =JSON.parse(res.message).id
-                            this.formData.jssj =JSON.parse(res.message).jssj
-                            this.formData.jlXm=JSON.parse(res.message).jlXm
-                            this.formData.jlJx=JSON.parse(res.message).jlJx
-                            this.formData.sc='-'
+                            console.log(JSON.parse(res.message));
+                            this.formData = JSON.parse(res.message)
+                            this.formData.sc=''
                             this.formData.yhsc='5分钟'
                             this.formData.kc='科目二'
-                            this.formData.clBh='-'
+                            this.formData.clBh=''
                             this.formData.lcKm='2'
 
                             this.hisPrintMess = this.formData
