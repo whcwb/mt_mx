@@ -523,6 +523,20 @@
                 },  1000),
                 columns1: [
                     {
+                        title: '车辆编号',
+                        key: 'clBh',
+                        align:'center',
+                        fixed: "left",
+                        width:100,
+                        render: (h, p) => {
+                            return h('Tag', {
+                                props: {
+                                    type: 'volcano',
+                                }
+                            }, p.row.clBh)
+                        }
+                    },
+                    {
                         title: '车牌号',
                         key: 'clHm',
                         align:'center',
@@ -556,182 +570,100 @@
                             }
                         }
                     },
-                    // {
-                    //     title: '安全员',
-                    //     key: 'zgXm',
-                    //     width:120,
-                    //     align:'center',
-                    //     render:(h,p)=>{
-                    //             return h('div',p.row.lcJl.zgXm)
-                    //     }
-                    // },
-                    {
-                        title: '教练员电话',
-                        key: 'jlDh',
-                        align:'center',
-                        render:(h,p)=>{
-                            return h('div',p.row.lcJl.jlDh)
-                        }
-                    },
-                    {
-                        title: '学员数',
-                        key: 'xySl',
-                        width:100,
-                        align:'center',
-                        render:(h,p)=>{
-                            return h('div',p.row.lcJl.xySl)
-                        }
-                    },
-                    {
-                        title: '开始时间',
-                        align:'center',
-                        render:(h,p)=>{
-                            if(p.row.lcJl!=[] && p.row.lcJl.kssj!='')
-                            return h('div',p.row.lcJl.kssj.substring(0,16))
-                        }
-                    },
-                    {
-                        title: '时长',
-                        key: 'sc',
-                        width:120,
-                        align:'center',
-                        render:(h,p)=>{
-                            if (p.row.dqsc ==''){
-
-                            }else {
-                                return h('div',parseInt(p.row.dqsc/60)+'分钟')
-                            }
-
-                        }
-                    },
-                    {
-                        title: '当前费用',
-                        align:'center',
-                        render:(h,p)=>{
-                            if (p.row.zj!=''){
-                                return h('div',p.row.zj+'元')
-                            }
-
-                        }
-                    },
-                    {
-                        title: '教练员姓名',
-                        key: 'jlXm',
-                        width:150,
-                        fixed: "right",
-                        align:'center',
-                        render:(h,p)=>{
-                            return h('div',p.row.lcJl.jlXm)
-                        }
-                    },
-                    {
-                        title: '车辆编号',
-                        key: 'clBh',
-                        align:'center',
-                        fixed: "right",
-                        width:100,
-                        render: (h, p) => {
-                            return h('Tag', {
-                                props: {
-                                    type: 'volcano',
-                                }
-                            }, p.row.clBh)
-                        }
-                    },
                     {
                         title: '操作',
                         align:'center',
                         width: 150,
-                        fixed: "right",
+                        fixed: "left",
                         render: (h, p) => {
                             let buttons = [];
                             var v = this;
                             if (p.row.clZt == '00'){
                                 buttons.push(
 
-                                            h('Button', {
-                                                props: {
-                                                    type: 'success',
-                                                    size: 'small',
-                                                },
-                                                style: {margin: '0 10px 0 0'},
-                                                on: {
-                                                    click: () => {
-                                                        this.formData.zddm = 'K2JS';
-                                                        this.formData.lcClId = p.row.id
-                                                        this.formData.lcKm = '2';
-                                                        this.$http.post('/api/lcjl/Tc',{km:'2'}).then((res)=>{
-                                                            if (res.code == 200){
-                                                                this.fylist = res.result
-                                                                for (let r of this.fylist){
-                                                                    r.editMode = false
-                                                                    r.zdmc = parseInt(r.zdmc)
-                                                                    r.by3 = parseFloat(r.by3)
-                                                                    r.by4 = parseFloat(r.by4)
-                                                                }
+                                    h('Button', {
+                                        props: {
+                                            type: 'success',
+                                            size: 'small',
+                                        },
+                                        style: {margin: '0 10px 0 0'},
+                                        on: {
+                                            click: () => {
+                                                this.formData.zddm = 'K2JS';
+                                                this.formData.lcClId = p.row.id
+                                                this.formData.lcKm = '2';
+                                                this.$http.post('/api/lcjl/Tc',{km:'2'}).then((res)=>{
+                                                    if (res.code == 200){
+                                                        this.fylist = res.result
+                                                        for (let r of this.fylist){
+                                                            r.editMode = false
+                                                            r.zdmc = parseInt(r.zdmc)
+                                                            r.by3 = parseFloat(r.by3)
+                                                            r.by4 = parseFloat(r.by4)
+                                                        }
 
-                                                            }
-                                                        })
-                                                        this.DrawerVal = true;
-                                                        this.showFQfzkp = false;
                                                     }
-                                                }
-                                            }, '开始训练')
+                                                })
+                                                this.DrawerVal = true;
+                                                this.showFQfzkp = false;
+                                            }
+                                        }
+                                    }, '开始训练')
                                 );
                             }
                             if(p.row.clZt == '01'){
                                 buttons.push(
-                                            h('Button', {
-                                                props: {
-                                                    type: 'error',
-                                                    size: 'small',
-                                                },
-                                                style: {margin: '0 10px 0 0'},
-                                                on: {
-                                                    click: () => {
-                                                        this.swal({
-                                                            title: '是否结束'+p.row.clBh+'号车('+p.row.lcJl.jlXm+")的训练？",
-                                                            type: 'warning',
-                                                            confirmButtonText: '结束',
-                                                            cancelButtonText: '关闭',
-                                                            showCancelButton: true
-                                                        }).then((res) => {
-                                                            if (res.value) {
-                                                                this.$http.post('/api/lcjl/updateJssj', {id: p.row.lcJl.id}).then((res) => {
-                                                                    if (res.code == 200) {
-                                                                        // this.$Message.success(res.message)
-                                                                        this.QRmess = res.result
-                                                                        this.QRmess.kssj = this.QRmess.kssj.substring(11,16)
-                                                                        this.QRmess.jssj = this.QRmess.jssj.substring(11,16)
-                                                                        if (this.QRmess.fdr.indexOf('1')!=-1){
-                                                                            this.ls.ls1 = true
-                                                                        }
-                                                                        if (this.QRmess.fdr.indexOf('2')!=-1){
-                                                                            this.ls.ls2 = true
-                                                                        }
-                                                                        if (this.QRmess.fdr.indexOf('3')!=-1){
-                                                                            this.ls.ls3 = true
-                                                                        }
-                                                                        if (p.row.lcJl.lcLx=='00'){
-                                                                            this.QRmodal = true
-                                                                        }else {
+                                    h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small',
+                                        },
+                                        style: {margin: '0 10px 0 0'},
+                                        on: {
+                                            click: () => {
+                                                this.swal({
+                                                    title: '是否结束'+p.row.clBh+'号车('+p.row.lcJl.jlXm+")的训练？",
+                                                    type: 'warning',
+                                                    confirmButtonText: '结束',
+                                                    cancelButtonText: '关闭',
+                                                    showCancelButton: true
+                                                }).then((res) => {
+                                                    if (res.value) {
+                                                        this.$http.post('/api/lcjl/updateJssj', {id: p.row.lcJl.id}).then((res) => {
+                                                            if (res.code == 200) {
+                                                                // this.$Message.success(res.message)
+                                                                this.QRmess = res.result
+                                                                this.QRmess.kssj = this.QRmess.kssj.substring(11,16)
+                                                                this.QRmess.jssj = this.QRmess.jssj.substring(11,16)
+                                                                if (this.QRmess.fdr.indexOf('1')!=-1){
+                                                                    this.ls.ls1 = true
+                                                                }
+                                                                if (this.QRmess.fdr.indexOf('2')!=-1){
+                                                                    this.ls.ls2 = true
+                                                                }
+                                                                if (this.QRmess.fdr.indexOf('3')!=-1){
+                                                                    this.ls.ls3 = true
+                                                                }
+                                                                if (p.row.lcJl.lcLx=='00'){
+                                                                    this.QRmodal = true
+                                                                }else {
 
-                                                                        }
+                                                                }
 
-                                                                        // this.print(res.result)
-                                                                        this.getCarList()
-                                                                    }else {
-                                                                        this.$Message.error(res.message)
-                                                                    }
-                                                                })
-                                                            } else {
-
+                                                                // this.print(res.result)
+                                                                this.getCarList()
+                                                            }else {
+                                                                this.$Message.error(res.message)
                                                             }
                                                         })
+                                                    } else {
 
                                                     }
-                                                }
-                                            }, '结束训练')
+                                                })
+
+                                            }
+                                        }
+                                    }, '结束训练')
                                 );
                             }
 
@@ -791,7 +723,77 @@
                             // );
                             return h('div', buttons);
                         }
-                    }
+                    },
+                    // {
+                    //     title: '安全员',
+                    //     key: 'zgXm',
+                    //     width:120,
+                    //     align:'center',
+                    //     render:(h,p)=>{
+                    //             return h('div',p.row.lcJl.zgXm)
+                    //     }
+                    // },
+                    {
+                        title: '教练员姓名',
+                        key: 'jlXm',
+                        width:150,
+                        align:'center',
+                        render:(h,p)=>{
+                            return h('div',p.row.lcJl.jlXm)
+                        }
+                    },
+                    {
+                        title: '教练员电话',
+                        key: 'jlDh',
+                        align:'center',
+                        render:(h,p)=>{
+                            return h('div',p.row.lcJl.jlDh)
+                        }
+                    },
+                    {
+                        title: '学员数',
+                        key: 'xySl',
+                        width:100,
+                        align:'center',
+                        render:(h,p)=>{
+                            return h('div',p.row.lcJl.xySl)
+                        }
+                    },
+                    {
+                        title: '开始时间',
+                        align:'center',
+                        render:(h,p)=>{
+                            if(p.row.lcJl!=[] && p.row.lcJl.kssj!='')
+                            return h('div',p.row.lcJl.kssj.substring(0,16))
+                        }
+                    },
+                    {
+                        title: '时长',
+                        key: 'sc',
+                        width:120,
+                        align:'center',
+                        render:(h,p)=>{
+                            if (p.row.dqsc ==''){
+
+                            }else {
+                                return h('div',parseInt(p.row.dqsc/60)+'分钟')
+                            }
+
+                        }
+                    },
+                    {
+                        title: '当前费用',
+                        align:'center',
+                        render:(h,p)=>{
+                            if (p.row.zj!=''){
+                                return h('div',p.row.zj+'元')
+                            }
+
+                        }
+                    },
+
+
+
                 ],
             }
         },
