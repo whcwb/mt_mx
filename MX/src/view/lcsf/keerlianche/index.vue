@@ -486,7 +486,7 @@
           jssjInRange: '',
           zhLike: '',
           pageNum: 1,
-          pageSize: 30,
+          pageSize: 10,
         },
         dateRange: {
           kssj: '',
@@ -1004,7 +1004,7 @@
         } else if (name == '2') {
           this.dateRange.jssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59'];
           this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
-          v.param.pageSize = 20;
+          v.param.pageSize = 10;
           console.log(this.param);
           v.util.getPageData(v)
         } else {
