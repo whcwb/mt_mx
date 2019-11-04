@@ -9,11 +9,11 @@
         <Icon type="md-search"></Icon>
         <!--查询-->
       </Button>
-      <Button type="primary" @click="componentName = 'print'" style="margin-left: 10px;">
-        打印
-      </Button>
+      <!--<Button type="primary" @click="componentName = 'print'" style="margin-left: 10px;">-->
+        <!--打印-->
+      <!--</Button>-->
       <Button type="primary" @click="exportExcel" style="margin-left: 10px;">
-        导出
+        <Icon type="ios-cloud-download" />
       </Button>
     </div>
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-320" :pager="false"></table-area>

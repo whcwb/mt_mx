@@ -2,6 +2,11 @@
   <div>
     <Row style="padding: 12px 0" :gutter="12" type="flex" justify="end">
       <Col span="4">
+      <DatePicker v-model="param.cjsjInRange"
+                   confirm format="yyyy-MM-dd"
+                  type="daterange" :placeholder="'请输入返点时间'"  style="width: 200px"></DatePicker>
+      </Col>
+        <Col span="4">
         <Input v-model="param.cjrLike" placeholder="操作人"
                @on-enter="getOldData()"/>
       </Col>
@@ -104,7 +109,7 @@
         this.compName = fdms
       },
       getOldData() {
-        this.$http.post('/api/bizlcfd/pager',this.param).then((res) => {
+        this.$http.post('/api/fds/pager',this.param).then((res) => {
           if (res.code == 200 && res.page.list) {
             this.totalS = res.page.total
             this.tableData = res.page.list;

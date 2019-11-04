@@ -16,12 +16,12 @@
       </Col>
     </Row>
     <div class="body" v-if="MenuItemName=='1'">
-      <Row style="padding: 12px 0;padding-right: 10px" :gutter="6">
+      <Row style="padding: 12px 0;padding-right: 10px;display: flex;justify-content: flex-end" :gutter="6">
         <Col span="6">
-            <span style="color: red;font-weight: 600;font-size: 20px;">
-            <span>合计：</span>
-            <span>{{okParams.fdJe}}元</span>
-          </span>
+          <!--<span style="color: red;font-weight: 600;font-size: 20px;">-->
+          <!--<span>合计：</span>-->
+          <!--<span>{{okParams.fdJe}}元</span>-->
+          <!--</span>-->
         </Col>
         <Col span="18" style="display: flex;justify-content: flex-end">
           <Col span="4" style="margin-right: 10px">
@@ -30,8 +30,8 @@
           <Col span="4">
             <Input autofocus v-model="param.jlXmLike" placeholder="教练员姓名" @on-enter="add"/>
           </Col>
-          <Col span="2">
-          <span style="margin-left: 10px;">
+          <Col span="1" style="margin-right: 16px">
+          <span style="margin:0 10px;">
             <Button type="primary" @click="getOldData">
               <Icon type="md-search"></Icon>
               <!--查询-->
@@ -40,11 +40,11 @@
           </Col>
           <!--<Col span="6">-->
           <!--<Row type="flex" justify="end">-->
-<!--          <Col span="4">-->
-<!--            <Input autofocus v-model="okParams.fdJe" placeholder="返点金额" @on-enter="add"/>-->
-<!--          </Col>-->
-          <Col span="2">
-            <span style="margin-left: 16px"><Button type="error" @click="confirm">批量返点</Button></span>
+          <!--          <Col span="4">-->
+          <!--            <Input autofocus v-model="okParams.fdJe" placeholder="返点金额" @on-enter="add"/>-->
+          <!--          </Col>-->
+          <Col span="2" style="margin-right: 10px">
+            <span style="margin-left: 10px"><Button type="primary" @click="confirm">批量返点</Button></span>
           </Col>
           <!--</Row>-->
           <!--</Col>-->
@@ -52,7 +52,11 @@
       </Row>
       <Table :height="AF.getPageHeight()-250" stripe size="small" @on-select="tabsel" @on-select-all="tabsel"
              :columns="tableColumns" :data="tableData"></Table>
-      <div style="text-align: right;padding: 6px 0">
+      <div style="text-align: right;padding: 6px 0;display: flex;justify-content: flex-end">
+        <span style="color: red;font-weight: 600;font-size: 20px;">
+          <span>合计：</span>
+          <span>{{okParams.fdJe}}元</span>
+          </span>
         <Page :total=totalS
               :current=param.pageNum
               :page-size=param.pageSize
@@ -61,6 +65,7 @@
               show-elevator
               show-sizer
               placement='top'
+              style="display: inline-block;margin-left: 20px"
               @on-page-size-change='(n)=>{pageSizeChange(n)}'
               @on-change='(n)=>{pageChange(n)}'>
         </Page>
@@ -126,110 +131,123 @@
             align: 'center'
           },
           {title: '凭证号', key: 'id', minWidth: 150},
-            {title: '训练科目', key: 'lcKm', minWidth: 120,
-                render:(h,p)=>{
-                  if (p.row.lcKm == '2'){
-                      return h('div','科目二')
-                  }else {
-                      return h('div','科目三')
-                  }
-                }
-            },
+          {
+            title: '训练科目', key: 'lcKm', minWidth: 120,
+            render: (h, p) => {
+              if (p.row.lcKm == '2') {
+                return h('div', '科目二')
+              } else {
+                return h('div', '科目三')
+              }
+            }
+          },
           {title: '教练员', key: 'jlXm', minWidth: 120},
-          {title: '累计时长', key: 'sc', minWidth: 120,
-              render:(h,p)=>{
-                  return h('div',p.row.sc+'分钟')
-              }
-
-          },
-          {title: '累计费用', key: 'lcFy', minWidth: 120,
-              render:(h,p)=>{
-                      return h('div',p.row.lcFy+'元')
-              }
-
-          },
-          {title: '返点类型', key: 'fdlx', minWidth: 120,
-              render:(h,p)=>{
-                  if (p.row.fdlx == '00'){
-                      return h('div','开卡返点')
-                  }else if (p.row.fdlx == '10'){
-                      return h('div','抵扣返点')
-                  }else {
-                      return h('div','人数返点')
-                  }
-               }
-          },
-          {title: '返点金额', key: 'fdje', minWidth: 120,
-              render:(h,p)=>{
-                  return h('div',p.row.fdje+'元')
-              }
-          },
-
-          // {title: '备注', key: 'bz', minWidth: 80},
           {
-            title: '状态', key: 'fdZt', minWidth: 100, render: (h, p) => {
-              let s = p.row.fdZt == '10' ? '已返点' : p.row.fdZt == '40' ? '不返点' : '未返点';
-              return h('Tag', {
-                props: {
-                  type: 'dot',
-                  color: p.row.fdZt == '10' ? 'success' : 'error'
-                }
-              }, s)
+            title: '累计时长', key: 'sc', minWidth: 120,
+            render: (h, p) => {
+              return h('div', p.row.sc + '分钟')
+            }
+
+          },
+          {
+            title: '累计费用', key: 'lcFy', minWidth: 120,
+            render: (h, p) => {
+              return h('div', p.row.lcFy + '元')
+            }
+
+          },
+          {
+            title: '返点类型', key: 'fdlx', minWidth: 120,
+            render: (h, p) => {
+              if (p.row.fdlx == '00') {
+                return h('div', '计时返点')
+              } else if (p.row.fdlx == '10') {
+                return h('div', '抵扣返点')
+              } else {
+                return h('div', '开放日返点')
+              }
             }
           },
           {
-            title: '操作', minWidth: 120, render: (h, p) => {
-              return h('Tooltip',
-                {props: {placement: 'top', transfer: true, content: '返点',}},
-                [
-                  h('Button', {
-                    props: {type: 'success', size: 'small',},
-                    style: {marginRight: '10px'},
-                    on: {
-                      click: () => {
-                          this.swal({
-                              title: '确认返点?',
-                              type: 'warning',
-                              confirmButtonText: '确认',
-                              cancelButtonText: '关闭',
-                              showCancelButton: true
-                          }).then((res) => {
-                              if (res.value) {
-                                  this.$http.post('/api/bizlcfd/updateZt', {id: p.row.id}).then((res) => {
-                                      if (res.code == 200) {
-                                          this.getOldData();
-                                          this.swal({
-                                              title: '返点成功!',
-                                              type: 'success',
-                                              confirmButtonText: '确认',
-                                              cancelButtonText: '关闭',
-                                              showCancelButton: true
-                                          })
-                                      }else {
-                                          this.$Message.error(res.message)
-                                      }
-                                  })
-                              } else {
-
-                              }
-                          })
-                        // this.choosedItem = p.row
-                        // this.componentName = 'remark'
-                      }
-                    }
-                  }, '确认返点')
-                ]
-              )
+            title: '返点金额', key: 'fdje', minWidth: 120,
+            render: (h, p) => {
+              return h('div', p.row.fdje + '元')
             }
-          }
+          },
+
+          {
+            title: '备注', key: 'bz', minWidth: 80,
+            render: (h, p) => {
+              if (p.row.fdlx == '20')
+                return h('div', '人数：' + p.row.xySl)
+              else return h('div', '/')
+
+            }
+          },
+          // {
+          //   title: '状态', key: 'fdZt', minWidth: 100, render: (h, p) => {
+          //     let s = p.row.fdZt == '10' ? '已返点' : p.row.fdZt == '40' ? '不返点' : '未返点';
+          //     return h('Tag', {
+          //       props: {
+          //         type: 'dot',
+          //         color: p.row.fdZt == '10' ? 'success' : 'error'
+          //       }
+          //     }, s)
+          //   }
+          // },
+          // {
+          //   title: '操作', minWidth: 120, render: (h, p) => {
+          //     return h('Tooltip',
+          //       {props: {placement: 'top', transfer: true, content: '返点',}},
+          //       [
+          //         h('Button', {
+          //           props: {type: 'success', size: 'small',},
+          //           style: {marginRight: '10px'},
+          //           on: {
+          //             click: () => {
+          //                 this.swal({
+          //                     title: '确认返点?',
+          //                     type: 'warning',
+          //                     confirmButtonText: '确认',
+          //                     cancelButtonText: '关闭',
+          //                     showCancelButton: true
+          //                 }).then((res) => {
+          //                     if (res.value) {
+          //                         this.$http.post('/api/bizlcfd/updateZt', {id: p.row.id}).then((res) => {
+          //                             if (res.code == 200) {
+          //                                 this.getOldData();
+          //                                 this.swal({
+          //                                     title: '返点成功!',
+          //                                     type: 'success',
+          //                                     confirmButtonText: '确认',
+          //                                     cancelButtonText: '关闭',
+          //                                     showCancelButton: true
+          //                                 })
+          //                             }else {
+          //                                 this.$Message.error(res.message)
+          //                             }
+          //                         })
+          //                     } else {
+          //
+          //                     }
+          //                 })
+          //               // this.choosedItem = p.row
+          //               // this.componentName = 'remark'
+          //             }
+          //           }
+          //         }, '确认返点')
+          //       ]
+          //     )
+          //   }
+          // }
         ],
         total: 0,
         ids: '',
         scanning: false,
         totalS: 0,
         param: {
-            qrsjIsNull:'1' ,
-            orderBy: 'cjsj desc',
+          qrsjIsNull: '1',
+          orderBy: 'cjsj desc',
           idLike: '',
           jlXmLike: '',
           pageNum: 1,
@@ -249,13 +267,13 @@
       // }, 200)
     },
     methods: {
-        getFdjl(){
-            this.$http.post('/api/bizlcfd/pager',this.param).then((res)=>{
-                if (res.code == 200){
+      getFdjl() {
+        this.$http.post('/api/bizlcfd/pager', this.param).then((res) => {
+          if (res.code == 200) {
 
-                }
-            })
-        },
+          }
+        })
+      },
       pageChange(val) {
         this.param.pageNum = val
         this.getOldData();
@@ -266,18 +284,21 @@
       },
       keerkesan(val) {
         this.MenuItemName = val
-          if (val == 1){
-              this.param.qrsjIsNull='1'
-              this.param.orderBy = 'cjsj desc'
-              delete this.param.qrsjIsNotNull
-              this.getOldData();
-          }
-          if (val == 2){
-              this.param.qrsjIsNotNull = '1';
-              this.param.orderBy = 'qrsj desc';
-              delete this.param.qrsjIsNull
-              this.getOldData();
-          }
+        if (val == 1) {
+          this.param.qrsjIsNull = '1'
+          this.param.orderBy = 'cjsj desc'
+          delete this.param.qrsjIsNotNull
+          this.getOldData();
+        }
+        if (val == 2) {
+          this.param.qrsjIsNotNull = '1';
+          this.param.orderBy = 'qrsj desc';
+          delete this.param.qrsjIsNull
+          this.total = 0;
+          this.ids = '';
+          // this.getDoneData()
+          // this.getOldData();
+        }
 
         // console.log(this.MenuItemName);
         // console.log(val);
@@ -288,7 +309,7 @@
       getOldData() {
         this.total = 0;
         this.ids = '';
-        this.$http.post('/api/bizlcfd/pager',this.param).then((res) => {
+        this.$http.post('/api/bizlcfd/pager', this.param).then((res) => {
           if (res.code == 200 && res.page.list) {
             this.totalS = res.page.total
             this.tableData = res.page.list;
@@ -329,9 +350,9 @@
       },
       tabsel(list, row) {
         this.okParams.id = ''
-          this.okParams.fdJe = 0
-          list.forEach((it, index) => {
-            this.okParams.fdJe = this.okParams.fdJe + it.fdje
+        this.okParams.fdJe = 0
+        list.forEach((it, index) => {
+          this.okParams.fdJe = this.okParams.fdJe + it.fdje
           if (index == list.length - 1) {
             this.okParams.id = this.okParams.id + it.id
 
@@ -348,7 +369,7 @@
           })
           return
         }
-        this.$http.post('/api/bizlcfd/updateZt', {id:this.okParams.id}).then(res => {
+        this.$http.post('/api/bizlcfd/updateZt', {id: this.okParams.id}).then(res => {
           if (res.code == 200) {
             this.swal({
               title: '返点成功',
