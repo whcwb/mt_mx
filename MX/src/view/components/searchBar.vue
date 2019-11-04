@@ -20,6 +20,23 @@
       <Icon type="md-search"></Icon>
       <!--查询-->
     </Button>
+
+    <Button v-if="showDownLoadButton" type="primary" @click="exportExcel" style="margin: 0;margin-left: 10px">
+      <Icon type="ios-cloud-download" />
+      <!--导出-->
+    </Button>
+
+    <!--<Col span="5" offset="1">-->
+      <!--<Upload-->
+        <!--ref="upload"-->
+        <!--type="drag">-->
+        <!--<div style="padding: 20px 0">-->
+          <!--<Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>-->
+        <!--</div>-->
+      <!--</Upload>-->
+    <!--</Col>-->
+
+
     <Button v-if="showCreateButton" type="primary" @click="parent.util.add(parent)">
       <Icon type="md-add"></Icon>
     </Button>
@@ -42,6 +59,10 @@
         }
       },
       showSearchButton: {
+        type: Boolean,
+        default: true
+      },
+      showDownLoadButton: {
         type: Boolean,
         default: true
       },
@@ -98,6 +119,11 @@
         this.param = this.parent.param;
       }
     },
+    methods:{
+      exportExcel(){
+        this.$emit('exportExcel')
+      }
+    }
   }
 </script>
 

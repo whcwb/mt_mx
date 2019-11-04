@@ -9,7 +9,7 @@
     <Row style="margin-bottom: 8px">
       <Col span="24">
         <Row :gutter="6" type="flex" justify="space-bewteen">
-          <Col span="11">
+          <Col span="12">
             <div style="float: left;margin-top: 8px;">
               <span
                 style="width: 100px;height: 80px;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">共{{tabdata.length}}台</span>
@@ -33,7 +33,7 @@
               <!--查询-->
             </Button>
           </Col>
-          <Col span="1" align="center" style="margin-left: 10px">
+          <Col span="1" align="center" >
             <Button type="primary" @click="compName='cjcar'">
               <Icon type="md-add"></Icon>
               <!--查询-->

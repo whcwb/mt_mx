@@ -42,6 +42,9 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
 		SysYh user = getCurrentUser();
 //		RuntimeCheck.ifBlank(entity.getJlJx(), "驾校名称不能为空");
 		RuntimeCheck.ifBlank(entity.getJlXm(), "教练姓名不能为空");
+		RuntimeCheck.ifBlank(entity.getJlLxdh(), "教练联系电话不能为空");
+		List<BizLcWxjl> wxjls = findEq(BizLcWxjl.InnerColumn.jlLxdh, entity.getJlLxdh());
+		RuntimeCheck.ifTrue( CollectionUtils.isNotEmpty(wxjls), "此号码已经绑定 " + wxjls.get(0).getJlJx() + "-" + wxjls.get(0).getJlXm() + " , 请勿重复绑定");
 		entity.setId(genId());
 		entity.setCjr(user.getZh()+"-"+user.getXm());
 		entity.setCjsj(DateUtils.getNowTime());

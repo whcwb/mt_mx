@@ -19,7 +19,7 @@
           <Col span="4">
             <Input size="large" v-model="param.jlJx" clearable placeholder="请输入驾校"/>
           </Col>
-          <Col span="2" align="center">
+          <Col span="1" align="center" style="margin-right: 16px">
             <Button type="primary" @click="getData">
               <Icon type="md-search"></Icon>
               <!--查询-->

@@ -42,8 +42,8 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * 手动结束一条练车记录
      */
     @PostMapping("/updateJssj")
-    public ApiResponse<BizLcJl> updateJssj(String id,String km) throws ParseException {
-        return service.updateJssj(id,km);
+    public ApiResponse<BizLcJl> updateJssj(String id, String cardNo,String km) throws ParseException {
+        return service.updateJssj(id,cardNo,km);
     }
 
     /**
