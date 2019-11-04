@@ -349,6 +349,20 @@
         })
       },
       tabsel(list, row) {
+
+        console.log(list)
+        if(list[0].jlId!==row.jlId){
+          this.$Message.error('选择的教练并非同一位')
+          console.log(row.id)
+          this.tableData.map((val,index,arr)=>{
+            if(val.id===row.id){
+              val._checked=false
+            }
+          })
+          console.log(this.tableData)
+          return
+        }
+
         this.okParams.id = ''
         this.okParams.fdJe = 0
         list.forEach((it, index) => {

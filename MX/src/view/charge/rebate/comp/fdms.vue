@@ -40,14 +40,10 @@
         tableColumns: [
           {title: '#', align: 'center', type: 'index', fixed: 'left', minWidth: 80},
           {title: '凭证号', align: 'center', key: 'id', minWidth: 150},
-          {title: '训练单位', key: 'jlJx', align: 'center', minWidth: 120},
-          {title: '训练车型', key: 'jlCx', align: 'center', minWidth: 120},
-          {title: '训练科目', key: 'lcKm', dict: 'km', align: 'center', minWidth: 120},
-          {title: '安全员', key: 'zgXm', align: 'center', minWidth: 120},
-          {title: '教练员', key: 'jlXm', align: 'center', minWidth: 120},
-          {title: '累计时长', key: 'sc', unit: '分钟', align: 'center', minWidth: 120},
-          {title: '累计费用', key: 'lcFy', append: '元', align: 'center', minWidth: 120}
-        ],
+          {title: '教练姓名', align: 'center', key: 'jlXm', minWidth: 150},
+          {title: '返点时间', key: 'cjsj', align: 'center', minWidth: 120},
+          {title: '返点金额', key: 'fdje', dict: 'km', align: 'center', minWidth: 120},
+         ],
       }
     },
     methods:{
