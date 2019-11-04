@@ -55,13 +55,13 @@
             <Row style="margin-top: 16px;">
               <Col span="24">
                 <i-switch v-model="item.by2" @on-change="confirm(item)"></i-switch>
-                <span>启用刷卡</span>
+                <span>启用【刷卡发车】</span>
               </Col>
             </Row>
             <Row style="margin-top: 16px;">
               <Col span="24">
                 <i-switch v-model="item.by6" @on-change="confirm(item)"></i-switch>
-                <span>启用车辆绑卡</span>
+                <span>启用【车辆绑卡】</span>
               </Col>
             </Row>
           </Card>
