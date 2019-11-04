@@ -19,7 +19,7 @@
           <Col span="4">
             <Input size="large" v-model="param.jlJx" clearable placeholder="请输入驾校"/>
           </Col>
-          <Col span="2" align="center">
+          <Col span="1" align="center" style="margin-right: 16px">
             <Button type="primary" @click="getData">
               <Icon type="md-search"></Icon>
               <!--查询-->
@@ -294,12 +294,13 @@
   import addjl from '../../lcsf/comp/addJL'
   import mxb from '../jlcz/mxb'
   import {mapMutations} from 'vuex'
-
+  import printSignUp from '../../lcsf/comp/printSignUp'
   export default {
     name: "index",
     components: {
       addjl,
-      mxb
+      mxb,
+        printSignUp
     },
     data() {
       return {
@@ -525,7 +526,8 @@
 
           }
         ],
-          JX:[]
+          JX:[],
+          printMess:{}
       }
     },
     watch: {
@@ -576,24 +578,29 @@
         })
       },
       closeMXB() {
-        this.jlItem = {}
+        this.jlItem = {};
         this.isMxb = false
       },
       closePay(){
-        this.payItem={}
+        this.payItem={};
         this.pay=false
       },
+        winPrint(a) {
+                this.hisPrintMess = a
+                this.componentName = 'printSignUp'
+        },
       savePay(){
         this.$http.post('/api/lcjl/cz', this.payItem).then(res => {
           if (res.code == 200) {
             this.pay=false;
-            this.payItem = {};
             this.getData();
+              this.payItem = {};
             this.swal({
               title: '充值成功',
               type: 'success',
               confirmButtonText: '确定',
             })
+              this.winPrint(res.result)
           } else {
             this.swal({
               title: res.message,

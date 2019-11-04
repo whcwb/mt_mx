@@ -160,6 +160,7 @@ util.getdateStrD = ()=>{
         return h('div',s);
     }
 util.dateRangeChange = (s)=>{
+  console.log(s)
     if (s[0] == '')return '';
     return s[0].format("yyyy-MM-dd")+','+s[1].format("yyyy-MM-dd");
 }

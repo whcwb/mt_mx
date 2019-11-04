@@ -1,6 +1,6 @@
 <template>
   <div class="boxbackborder box_col" style="padding-top:16px">
-    <search-bar :parent="v" :show-create-button="false" :buttons="searchBarButtons" @print="componentName = 'print'"
+    <search-bar :parent="v" :showDownLoadButton="true" :show-create-button="false" :buttons="searchBarButtons" @print="componentName = 'print'"
                 @exportExcel="exportExcel"></search-bar>
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-380" :pager="false"></table-area>
     <Row>
@@ -31,8 +31,8 @@
         choosedItem: null,
         componentName: '',
         searchBarButtons: [
-          {title: '打印', click: 'print'},
-            {title: '导出', click: 'exportExcel'}
+          // {title: '打印', click: 'print'},
+          //   {title: '导出', click: 'exportExcel'}
         ],
         dateRange: {
           kssj: ''
@@ -45,7 +45,7 @@
             }
           },
           {
-            title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90, render: (h, p) => {
+            title: '车辆编号', key: 'clBh', minWidth: 90, render: (h, p) => {
               return h('Button', {
                 props: {
                   type: 'error',
@@ -59,11 +59,11 @@
           },
           {title: '开始时间', key: 'kssj', searchType: 'daterange', minWidth: 180},
           {title: '结束时间', key: 'jssj', minWidth: 180},
-          {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
+          {title: '教练姓名', key: 'jlXm',  minWidth: 90},
           {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
-          {title: '驾校/队号', key: 'jlJx', searchKey: 'jlJxLike', minWidth: 90},
+          {title: '驾校/队号', key: 'jlJx', minWidth: 90},
           {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
-          {title: '计费类型', key: 'lcLx', minWidth: 90, dict: 'ZDCLK1048'},
+          // {title: '计费类型', key: 'lcLx', minWidth: 90, dict: 'ZDCLK1048'},
           {title: '练车费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0'},
           // {title:'操作',render:(h,p)=>{
           //     let buttons = [];

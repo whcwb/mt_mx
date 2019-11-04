@@ -32,7 +32,7 @@
 
     <Layout class="box_col">
       <div class="header-con">
-        <header-bar :collapsed="collapsed" @changenewval="changenewval" @on-coll-change="handleCollapsedChange">
+        <header-bar :collapsed="collapsed" @changenewval="changenewvals" @on-coll-change="handleCollapsedChange">
 
           <user :user-avator="userAvator" @on-closeAll="handleCloseTag"/>
 <!--          <language @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>-->
@@ -132,9 +132,6 @@
       ...mapActions([
         'handleLogin'
       ]),
-        changenewval(a){
-          this.collapsed = a
-        },
       turnToPage(name) {
         if (name.indexOf('isTurnByHref_') > -1) {
           window.open(name.split('_')[1])
@@ -144,6 +141,9 @@
           name: name
         })
       },
+        changenewvals(a){
+            this.collapsed = a
+        },
       handleCollapsedChange(state) {
         this.collapsed = state
       },
