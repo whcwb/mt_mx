@@ -336,7 +336,7 @@
     },
     data() {
       return {
-        tcIndex:0,
+        tcIndex: 0,
         columns2: [
           {
             type: 'index',
@@ -627,11 +627,29 @@
                               r.by3 = parseFloat(r.by3)
                               r.by4 = parseFloat(r.by4)
                             }
-
                           }
                         })
+
+                        // console.log(p.row)
+                        // console.log(ifCard)
+
+                        // var ifCard = p.row.zdxm.by2 === '0' ? false : true
+                        // if (ifCard) {
+                        //   if (!!window.ActiveXObject || "ActiveXObject" in window) {
+                        //
+                        //   } else {
+                        //     this.swal({
+                        //       title: '已启用刷卡模式，请使用IE10以上的浏览器',
+                        //       type: 'warning',
+                        //       confirmButtonText: '关闭'
+                        //     })
+                        //     return
+                        //   }
+                        // }
+
                         this.DrawerVal = true;
                         this.showFQfzkp = false;
+
                       }
                     }
                   }, '开始训练')
@@ -647,7 +665,7 @@
                     style: {margin: '0 10px 0 0'},
                     on: {
                       click: () => {
-                        var v=this
+                        var v = this
                         this.swal({
                           title: '是否结束' + p.row.clBh + '号车(' + p.row.lcJl.jlXm + ")的训练？",
                           type: 'warning',
@@ -657,10 +675,10 @@
                         }).then((res) => {
                           if (res.value) {
 
-                            var ifCard= p.row.zdxm.by2==='0'?false:true
+                            var ifCard = p.row.zdxm.by2 === '0' ? false : true
 
 
-                            var cardNo=''
+                            var cardNo = ''
                             console.log(ifCard)
                             if (!ifCard) {
 
@@ -682,7 +700,7 @@
                                   if (p.row.lcJl.lcLx == '00') {
                                     this.QRmodal = true
                                   } else {
-                                      this.print(res.result)
+                                    this.print(res.result)
                                   }
                                   // this.print(res.result)
                                   this.getCarList()
@@ -690,7 +708,7 @@
                                   this.$Message.error(res.message)
                                 }
                               })
-                            }else{
+                            } else {
                               if (!!window.ActiveXObject || "ActiveXObject" in window) {
                               } else {
                                 this.swal({
@@ -702,26 +720,29 @@
                               }
                               var v = this
                               this.giveCar.readCard((key, mess) => {
-                                console.log(key,mess)
+                                console.log(key, mess)
                                 if (!key) {
                                   v.swal({
                                     title: mess,
                                     type: 'error',
                                     confirmButtonText: '确定',
                                   })
-                                    // .then((res) => {
-                                    // if (res.value) {
-                                    //   v.showFQfzkp = false;
-                                    //   v.save()
-                                    // } else {
-                                    //   v.showFQfzkp = false;
-                                    //   v.showQfshowFQfzkpzkp = false;
-                                    //   v.DrawerVal = false
-                                    // }
+                                  // .then((res) => {
+                                  // if (res.value) {
+                                  //   v.showFQfzkp = false;
+                                  //   v.save()
+                                  // } else {
+                                  //   v.showFQfzkp = false;
+                                  //   v.showQfshowFQfzkpzkp = false;
+                                  //   v.DrawerVal = false
+                                  // }
                                   // })
                                 } else {
                                   cardNo = mess;
-                                  this.$http.post('/api/lcjl/updateJssj', {id: p.row.lcJl.id,cardNo:cardNo}).then((res) => {
+                                  this.$http.post('/api/lcjl/updateJssj', {
+                                    id: p.row.lcJl.id,
+                                    cardNo: cardNo
+                                  }).then((res) => {
                                     if (res.code == 200) {
                                       // this.$Message.success(res.message)
                                       this.QRmess = res.result
@@ -1006,30 +1027,30 @@
         }
       },
       QRcancel() {
-          var a = true
-          if (this.QRmess.jls){
-              for (let r of this.QRmess.jls){
-                  if (r.jssj ==''){
-                      a = false
-                      break
-                  }
-              }
+        var a = true
+        if (this.QRmess.jls) {
+          for (let r of this.QRmess.jls) {
+            if (r.jssj == '') {
+              a = false
+              break
+            }
           }
-          if (a){
-              this.swal({
-                  title:'该教练当前所有记录都已结束!是否仍要稍后支付?',
-                  type:'question',
-                  showCancelButton: true,
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消'
-              }).then(p=>{
-                  if(p.value){
+        }
+        if (a) {
+          this.swal({
+            title: '该教练当前所有记录都已结束!是否仍要稍后支付?',
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+          }).then(p => {
+            if (p.value) {
 
-                  }else {
-                      this.QRmodal = true
-                  }
-              })
-          }
+            } else {
+              this.QRmodal = true
+            }
+          })
+        }
       },
       QRok() {
         this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
@@ -1046,7 +1067,28 @@
       },
       lcFyChange(v) {
         this.formData.zddm = v
+        console.log(v)
         console.log(this.formData.zddm);
+
+        // var ifCard = false;
+        // this.fylist.map((val, index, arr) => {
+        //   if (val.zddm === v) {
+        //     ifCard = val.by2 === '0' ? false : true
+        //   }
+        // })
+        //
+        // if (ifCard) {
+        //   if (!!window.ActiveXObject || "ActiveXObject" in window) {
+        //   } else {
+        //     this.swal({
+        //       title: '该套餐已启用刷卡模式，请使用IE10以上的浏览器',
+        //       type: 'warning',
+        //       confirmButtonText: '关闭'
+        //     })
+        //     return
+        //   }
+        // }
+
       },
       getzdlist() {
         let a = sessionStorage.getItem('dictMap')
@@ -1301,19 +1343,16 @@
       save() {//发车
         this.formData.notShowLoading = 'true'
 
-        var ifCard=false;
-        this.fylist.map((val,index,arr)=>{
-          if(val.zddm===this.formData.zddm){
-            ifCard= val.by2=== '0'?false:true
+        var ifCard = false;
+        this.fylist.map((val, index, arr) => {
+          if (val.zddm === this.formData.zddm) {
+            ifCard = val.by2 === '0' ? false : true
           }
         })
 
-        // var ifNo=false;
-        // if(this.formData.cardNo!=''&&this.formData.cardNo!=undefined&&this.formData.cardNo!=null)
+        console.log(this.formData.cardNo, '455')
 
-          console.log(this.formData.cardNo,'455')
-
-        if (!ifCard||(ifCard&&(this.formData.cardNo!=''&&this.formData.cardNo!=undefined&&this.formData.cardNo!=null))) {                //判断是否需要刷卡 by2 0不刷 1刷
+        if (!ifCard || (ifCard && (this.formData.cardNo != '' && this.formData.cardNo != undefined && this.formData.cardNo != null))) {                //判断是否需要刷卡 by2 0不刷 1刷
           this.$http.post('/api/lcjl/save', this.formData).then(res => {
             if (res.code == 200) {
               this.DrawerVal = false;
@@ -1341,7 +1380,7 @@
           if (!!window.ActiveXObject || "ActiveXObject" in window) {
           } else {
             this.swal({
-              title: '请使用IE10以上的浏览器',
+              title: '该套餐已启用刷卡模式，请使用IE10以上的浏览器',
               type: 'warning',
               confirmButtonText: '关闭'
             })
@@ -1350,7 +1389,7 @@
           var v = this
           this.giveCar.readCard((key, mess) => {
 
-            console.log(key,mess)
+            console.log(key, mess)
             if (!key) {
               if (this.DrawerVal) {
                 let v = this
@@ -1378,28 +1417,28 @@
                   v.showFQfzkp = false;
                   v.showQfshowFQfzkpzkp = false;
                   v.DrawerVal = false
-                  v.formData.cardNo=''
+                  v.formData.cardNo = ''
                 }
               })
             } else {
               // this.AF.carCard('2', mess, (type, res) => {
               //   console.log('**********', res);
-                this.formData.cardNo = mess;
-                  this.save()
-                // if (type) {
-                //   if (res.result) {
-                //     //如果车辆已经绑卡   返回车辆信息
-                //     v.carMess = res.result
-                //     this.formData.lcClId = v.carMess.id
-                //   }
-                //   this.DrawerVal = true;
-                //   v.showFQfzkp = false;
-                //   this.formData.cardNo = mess;
-                //   v.save()
-                // } else {
-                //   this.DrawerVal = false;
-                //   return
-                // }
+              this.formData.cardNo = mess;
+              this.save()
+              // if (type) {
+              //   if (res.result) {
+              //     //如果车辆已经绑卡   返回车辆信息
+              //     v.carMess = res.result
+              //     this.formData.lcClId = v.carMess.id
+              //   }
+              //   this.DrawerVal = true;
+              //   v.showFQfzkp = false;
+              //   this.formData.cardNo = mess;
+              //   v.save()
+              // } else {
+              //   this.DrawerVal = false;
+              //   return
+              // }
               // })
             }
           })
