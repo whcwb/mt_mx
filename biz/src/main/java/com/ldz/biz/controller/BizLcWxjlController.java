@@ -56,5 +56,15 @@ public class BizLcWxjlController extends BaseController<BizLcWxjl, String> {
         return service.czmx(pageNum, pageSize, id);
     }
 
+    @PostMapping("/getPjbh")
+    public ApiResponse<String> getPjbh(){
+        return service.getPjbh();
+    }
+
+    @PostMapping("/savePjbh")
+    public ApiResponse<String> savePjbh(String id , String pjbh){
+        return service.savePjbh(id,pjbh);
+    }
+
 
 }

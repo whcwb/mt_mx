@@ -49,15 +49,26 @@ public class BizLcFd implements Serializable {
 
     @Transient
     private List<BizLcJl> jlList;
-    @Transient
+    @Column(name = "lc_fy")
     private Integer lcFy;
-    @Transient
+    @Column(name = "sc")
     private Integer sc;
-    @Transient
+    @Column(name = "lc_km")
     private String lcKm;
+
+    @Transient
+    private int xySl;
 
 
     private static final long serialVersionUID = 1L;
+
+    public int getXySl() {
+        return xySl;
+    }
+
+    public void setXySl(int xySl) {
+        this.xySl = xySl;
+    }
 
     public Integer getLcFy() {
         return lcFy;

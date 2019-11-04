@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.ldz.biz.mapper.BizJlCzMapper;
 import com.ldz.biz.mapper.BizLcWxjlMapper;
 import com.ldz.biz.model.BizJlCz;
+import com.ldz.biz.model.BizLcFd;
 import com.ldz.biz.model.BizLcWxjl;
 import com.ldz.biz.service.BizLcWxjlService;
 import com.ldz.sys.base.BaseServiceImpl;
@@ -18,11 +19,16 @@ import com.ldz.util.commonUtil.EncryptUtil;
 import com.ldz.util.exception.RuntimeCheck;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
+import javax.management.relation.RoleUnresolved;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> implements BizLcWxjlService {
@@ -124,9 +130,52 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
 		SimpleCondition condition = new SimpleCondition(BizJlCz.class);
 		condition.eq(BizJlCz.InnerColumn.jlId, id);
 		PageInfo<BizJlCz> info = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(() -> czMapper.selectByExample(condition));
+		if(CollectionUtils.isNotEmpty(info.getList())){
+			Set<String> set = info.getList().stream().map(BizJlCz::getJlId).collect(Collectors.toSet());
+			List<BizLcWxjl> wxjlList = findByIds(set);
+			Map<String, BizLcWxjl> map = wxjlList.stream().collect(Collectors.toMap(BizLcWxjl::getId, p -> p));
+			info.getList().forEach(bizJlCz -> {
+				BizLcWxjl wxjl = map.get(bizJlCz.getJlId());
+				bizJlCz.setXm(wxjl.getJlXm());
+				bizJlCz.setJx(wxjl.getJlJx());
+			});
+		}
 		ApiResponse<String> res = new ApiResponse<>();
 		res.setPage(info);
 		return res;
+	}
+
+    @Override
+    public ApiResponse<String> getPjbh() {
+		String time = DateTime.now().toString("yyyyMMdd");
+		SimpleCondition condition = new SimpleCondition(BizJlCz.class);
+		condition.startWith(BizJlCz.InnerColumn.pjbh, time);
+		condition.setOrderByClause(" pjbh desc ");
+		List<BizJlCz> czs = czMapper.selectByExample(condition);
+		if(CollectionUtils.isEmpty(czs)){
+			return ApiResponse.success(time + "-0001");
+		}
+		int anInt = Integer.parseInt(czs.get(0).getPjbh().split("-")[1]) +1;
+		if(anInt < 10 ){
+			return ApiResponse.success(time + "-000" + anInt);
+		}else if(anInt < 100){
+			return ApiResponse.success(time + "-00" + anInt);
+		}else if(anInt < 1000){
+			return ApiResponse.success(time + "-0" + anInt);
+		}else{
+			return ApiResponse.success(time + "-" + anInt);
+		}
+    }
+
+	@Override
+	public ApiResponse<String> savePjbh(String id, String pjbh) {
+		SimpleCondition condition = new SimpleCondition(BizJlCz.class);
+		condition.eq(BizJlCz.InnerColumn.id, id);
+		BizJlCz cz = czMapper.selectOneByExample(condition);
+		RuntimeCheck.ifNull(cz, "请选择要打印的充值记录");
+		cz.setPjbh(pjbh);
+		czMapper.updateByPrimaryKeySelective(cz);
+		return ApiResponse.success();
 	}
 
 	private String genCardNo(int maxNo){

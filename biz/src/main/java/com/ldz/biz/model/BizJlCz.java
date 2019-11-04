@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Table(name = "BIZ_JL_CZ")
 @Data
@@ -35,6 +36,14 @@ public class BizJlCz {
     @Column(name = "sfje")
     private int sfje;
 
+    private String pjbh;
+
+    @Transient
+    private String jx;
+
+    @Transient
+    private String xm;
+
     public enum InnerColumn{
         id("ID"),
         jlId("JL_ID"),
@@ -44,7 +53,8 @@ public class BizJlCz {
         czqje("czqje"),
         czhje("czhje"),
         zy("zy"),
-        bz("bz");
+        bz("bz"),
+        pjbh("pjbh");
         private final String column;
 
         InnerColumn(String column) {

@@ -162,7 +162,7 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
                                     // 不能除尽的按分钟算
                                     float mv = m * Float.parseFloat(by3);
                                     // 总费用
-                                    int v = Math.round(hv + mv);
+                                    int v = (int) Math.ceil(hv + mv);
                                     bizLcCl.setDj(anInt);
                                     bizLcCl.setDj1(Float.parseFloat(management.getBy3()));
                                     bizLcCl.setZj(v);
