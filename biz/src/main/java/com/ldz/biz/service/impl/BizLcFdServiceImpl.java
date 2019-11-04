@@ -83,6 +83,7 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 		SysYh yh = getCurrentUser();
 		List<String> list = Arrays.asList(id.split(","));
 		List<BizLcFd> fds = findByIds(list);
+		RuntimeCheck.ifEmpty(fds, "此记录不需要返点");
 		fds.forEach(fd ->{
 			String[] split = fd.getLcId().split(",");
 			List<BizLcJl> jls = jlService.findIn(BizLcJl.InnerColumn.id, Arrays.asList(split));

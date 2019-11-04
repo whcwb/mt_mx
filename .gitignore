@@ -5,3 +5,10 @@
 /var/log/ldz/biz/
 /util/target/classes/com/ldz/util/
 /util/util.iml
+/biz/target/
+/util/target/
+/util/target/classes/
+/util/target/util-lib.jar
+/util/target/maven-status/
+/util/target/maven-archiver/
+/util/target/generated-sources/
