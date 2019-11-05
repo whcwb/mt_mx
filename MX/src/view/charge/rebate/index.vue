@@ -44,7 +44,7 @@
           <!--            <Input autofocus v-model="okParams.fdJe" placeholder="返点金额" @on-enter="add"/>-->
           <!--          </Col>-->
           <Col span="2" style="margin-right: 10px">
-            <span style="margin-left: 10px"><Button type="primary" @click="confirm">批量返点</Button></span>
+            <span style="margin-left: 10px"><Button type="primary" @click="confirm">确认返点</Button></span>
           </Col>
           <!--</Row>-->
           <!--</Col>-->
