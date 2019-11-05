@@ -60,8 +60,8 @@
         </table>
         <div>
           <Row>
-            <Col span="12"><div style="font-family:黑体;font-weight: 600;font-size: 14px!important;color: #000">本票据遗失不补</div></Col>
-            <Col> <div style="font-weight: 500;font-size: 16px;text-align: right">{{info.jssj}}</div></Col>
+            <Col span="12"><div style="font-family:黑体;font-weight: 600;font-size: 12px!important;color: #000">本票据遗失不补</div></Col>
+            <Col> <div style="font-weight: 500;font-size: 12px;text-align: right">{{info.jssj}}</div></Col>
           </Row>
         </div>
 
@@ -117,7 +117,6 @@
       this.info = JSON.parse(JSON.stringify(this.hisPrintMess))
       console.log(this.info,'fsdf')
       this.info.sc=this.hisPrintMess.sc=='-'?'-':this.parseTime(this.info.sc)
-      // this.info.sc = this.parseTime(this.info.sc)
       // this.info.kssj = this.info.kssj.substr(0, 16)
       this.info.jssj = this.info.jssj.substring(0, 16)
       this.info.yhsc = '5分钟'

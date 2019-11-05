@@ -60,8 +60,8 @@
         </table>
         <div>
           <Row>
-            <Col span="12"><div style="font-family:黑体;font-weight: 600;font-size: 14px!important;color: #000">本票据遗失不补</div></Col>
-            <Col> <div style="font-weight: 500;font-size: 16px;text-align: right">{{info.jssj}}</div></Col>
+            <Col span="12"><div style="font-family:黑体;font-weight: 600;font-size: 12px!important;color: #000">本票据遗失不补</div></Col>
+            <Col> <div style="font-weight: 500;font-size: 12px;text-align: right">{{info.jssj}}</div></Col>
           </Row>
         </div>
       </div>
@@ -173,6 +173,7 @@
                 let key = window.event.keyCode;
                 if (key == 13) {
                     _this.doPrint();
+                    // _this.colse();
                 }
             };
         },
