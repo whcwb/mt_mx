@@ -37,18 +37,21 @@
       </Page>
     </div>
     <component :is="compName" :MSList="MSList"></component>
+    <component :is="componentName"  :hisPrintMess="hisPrintMess"></component>
   </div>
 </template>
 
 <script>
   import fdms from './comp/fdms'
-
+  import printSignUp from './comp/printSignUp'
   export default {
     name: "okBack",
-    components: {fdms},
+    components: {fdms,printSignUp},
     data() {
       return {
         v: this,
+          hisPrintMess:{},
+          componentName:'',
         compName: '',
         MSList:[],
         tableData: [],
@@ -77,8 +80,19 @@
                         this.showMS(p.row.fds)
                       }
                     }
-                  }, '明细')
+                  }, '明细'),
+                    h('Button', {
+                        props: {type: 'success', size: 'small',},
+                        style: {marginRight: '10px'},
+                        on: {
+                            click: () => {
+                                this.hisPrintMess = p.row
+                                this.componentName = 'printSignUp'
+                            }
+                        }
+                    }, '打印')
                 ]
+
               )
             }
           }

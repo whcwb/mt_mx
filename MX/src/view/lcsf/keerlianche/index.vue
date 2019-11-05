@@ -69,7 +69,7 @@
             >空闲{{xxNum}}台</span>
           </div>
 
-          <Button type="primary" @click="getCarList">
+          <Button type="primary" @click="getCarList" style="margin-right: 10px">
             <Icon type="md-refresh"/>
             <!--查询-->
           </Button>
@@ -83,7 +83,7 @@
     </Row>
 
     <div class="boxbackborder box_col" v-if="activeName=='2'">
-      <Row type="flex" justify="end" :gutter="8" style="margin-bottom:10px;">
+      <Row type="flex" justify="end" :gutter="8" style="margin:8px 0;">
         <!--        <Col span="6" style="padding: 10px 20px">-->
         <!--          <Button type="warning" @click="plzf">批量结算</Button>-->
         <!--        </Col>-->
@@ -1358,11 +1358,11 @@
               this.DrawerVal = false;
               this.formData = {};
               this.getCarList();
-              this.swal({
-                title: '发车成功',
-                type: 'success',
-                confirmButtonText: '确定',
-              })
+              // this.swal({
+              //   title: '发车成功',
+              //   type: 'success',
+              //   confirmButtonText: '确定',
+              // })
               this.carMess = null
             } else {
               this.formData.cardNo = '';

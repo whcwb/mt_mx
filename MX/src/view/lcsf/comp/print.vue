@@ -193,6 +193,7 @@
         //   jcp.print(myDoc, true);
         // } else
         callback && callback()
+          this.close()
 
       },
       parseTime(s) {

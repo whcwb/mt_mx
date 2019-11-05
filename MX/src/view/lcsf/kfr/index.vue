@@ -8,7 +8,7 @@
         </div>
       </MenuItem>
     </Menu>
-    <Row style="margin-bottom: 8px" type="flex" align="bottom">
+    <Row style="" type="flex" align="bottom">
 <!--      <Col span="4">-->
 <!--        &lt;!&ndash;<div style="float: left;margin-top: 8px;cursor: pointer">&ndash;&gt;-->
 <!--        &lt;!&ndash;<span style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>&ndash;&gt;-->
@@ -344,7 +344,6 @@
                                         if (res.value) {
                                             this.removeYY(p.row.id)
                                         } else {
-
                                         }
                                     })
                                 }));
@@ -821,6 +820,13 @@
                 })
             },
             save() {//发车
+                if(this.formData.xySl == '' ||this.formData.xySl == 0 ){
+                    this.swal({
+                        title:'请填写学员数量',
+                        type:'error'
+                    })
+                    return
+                }
                 // if (this.formData.cardNo == null || this.formData.cardNo == '') {
                 // this.readkar();
                 // } else {

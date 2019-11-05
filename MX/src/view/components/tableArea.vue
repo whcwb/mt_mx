@@ -41,7 +41,7 @@
       },
       TabHeight:{
         type:Number,
-        default:AF.getPageHeight()-200
+        default:AF.getPageHeight()-230
       }
     },
     created(){

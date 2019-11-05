@@ -82,6 +82,19 @@
             text-align: left;
             font-size: 18px;
           }
+          .messTit3 {
+            font-size: 16px;
+            width: 40mm;
+            text-align: right;
+            float: left;
+          }
+          .ItemMess3 {
+            float: left;
+            width: 50mm;
+            border-bottom: solid 1px #000;
+            text-align: left;
+            font-size: 18px;
+          }
         }
       }
       .boxPagerNum {
@@ -111,7 +124,7 @@
       <div id="printDivSigUp" class="printBox">
         <div class="ptintPager">
           <div class="titTop">
-            武汉市明涛驾校
+            知音考场
           </div>
           <div class="bodyMess">
 
@@ -149,18 +162,26 @@
                     交來
                   </div>
                   <div class="ItemMess">
-                    :  练车账户充值费
+                    :  充值费
                   </div>
                 </div>
 
                 <div class="messList">
-                  <div class="messTit">
-                    人民币(大写)
+                  <div class="messTit3">
+                   实收人民币(大写)
                   </div>
-                  <div class="ItemMess">
+                  <div class="ItemMess3">
                     :  {{money | DX}} <span style="float: right">￥{{money}}元</span>
                   </div>
+                  <div class="messTit3">
+                    充值人民币(大写)
+                  </div>
+                  <div class="ItemMess3">
+                    :  {{money1 | DX}} <span style="float: right">￥{{money1}}元</span>
+                  </div>
                 </div>
+
+
 
                 <div class="messList">
                   <div class="messTit2" style="width: 30mm">
@@ -179,7 +200,7 @@
                     :  {{user.xm}}
                   </div>
                   <div class="messTit2">
-                    交款人
+                    付款人
                   </div>
                   <div class="ItemMess2" style="clear:right;">
                     :
@@ -247,6 +268,7 @@
         modalShow: true,
         nameList: '',
         money: 0,
+        money1: 0,
         bz: ':',//备注
         tjr:'',
         messIdList:[],
@@ -264,7 +286,8 @@
         this.jgName = this.hisPrintMess.jx
         this.glyxm = this.hisPrintMess.xm
         this.money = this.hisPrintMess.sfje
-        this.bz = this.hisPrintMess.bz
+        this.money1 = this.hisPrintMess.je
+        this.bz = this.hisPrintMess.bz + '元'
         this.getNum()
       console.log('數據傳遞', this.printMess);
     },
@@ -424,6 +447,19 @@
           .ItemMess2 {
             float: left;
             width: 25mm;
+            border-bottom: solid 1px #000;
+            text-align: left;
+            font-size: 18px;
+          }
+          .messTit3 {
+            font-size: 16px;
+            width: 40mm;
+            text-align: right;
+            float: left;
+          }
+          .ItemMess3 {
+            float: left;
+            width: 50mm;
             border-bottom: solid 1px #000;
             text-align: left;
             font-size: 18px;

@@ -1,4 +1,5 @@
 <template>
+  <div>
   <Modal
     v-model="isMxb"
     :title="itemObj.jlXm+' '+itemObj.cardNo+' 明细表'"
@@ -29,10 +30,15 @@
       </Button>
     </div>
   </Modal>
+  <component :is="componentName"  :hisPrintMess="hisPrintMess"></component>
+  </div>
 </template>
 
 <script>
+  import printSignUp from '../../lcsf/comp/printSignUp'
+
   export default {
+      components: {printSignUp},
     name: "mxb",
     props: {
       itemObj: {
@@ -47,6 +53,8 @@
     data() {
       return {
         mx: false,
+          hisPrintMess:{},
+          componentName:'',
         totalS:0,
         param: {
           pageNum: 1,
@@ -104,7 +112,6 @@
               // } else if (value === 2) {
               //   return row.age < 25;
               // }
-
               switch (value) {
                 case '00':return row.type=='00'
                   break;
@@ -151,7 +158,33 @@
             title: '备注',
             key: 'bz',
             align: 'center',
-          }
+          },
+            {
+                title: '操作',
+                align: 'center',
+                render:(h,p)=>{
+                    if(p.row.type == '10'){
+                        return h('Button', {
+                            props: {
+                                type: 'info',
+                                size: 'small'
+                            },
+                            style: {
+                                borderRadius: '15px'
+                            },
+                            on:{
+                                click:()=>{
+                                    this.hisPrintMess = p.row
+                                    this.componentName = 'printSignUp'
+                                }
+                            }
+                        }, '打印')
+                    }else {
+                        return ''
+                    }
+
+                }
+            }
         ],
       }
     },
