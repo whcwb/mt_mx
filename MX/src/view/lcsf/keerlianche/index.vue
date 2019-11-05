@@ -1358,11 +1358,11 @@
               this.DrawerVal = false;
               this.formData = {};
               this.getCarList();
-              this.swal({
-                title: '发车成功',
-                type: 'success',
-                confirmButtonText: '确定',
-              })
+              // this.swal({
+              //   title: '发车成功',
+              //   type: 'success',
+              //   confirmButtonText: '确定',
+              // })
               this.carMess = null
             } else {
               this.formData.cardNo = '';

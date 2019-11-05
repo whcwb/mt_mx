@@ -344,7 +344,6 @@
                                         if (res.value) {
                                             this.removeYY(p.row.id)
                                         } else {
-
                                         }
                                     })
                                 }));
@@ -821,6 +820,13 @@
                 })
             },
             save() {//发车
+                if(this.formData.xySl == '' ||this.formData.xySl == 0 ){
+                    this.swal({
+                        title:'请填写学员数量',
+                        type:'error'
+                    })
+                    return
+                }
                 // if (this.formData.cardNo == null || this.formData.cardNo == '') {
                 // this.readkar();
                 // } else {

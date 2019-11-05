@@ -191,7 +191,7 @@
         //   jcp.print(myDoc, true);
         // } else
         callback && callback()
-
+        this.close()
       },
       parseTime(s) {
           if(s!=0 && s!='' && s!='-'){

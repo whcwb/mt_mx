@@ -71,7 +71,7 @@
           }
           .messTit2 {
             font-size: 18px;
-            width: 20mm;
+            width: 25mm;
             text-align: right;
             float: left;
           }
@@ -111,7 +111,7 @@
       <div id="printDivSigUp" class="printBox">
         <div class="ptintPager">
           <div class="titTop">
-            武汉市明涛驾校
+            知音考场
           </div>
           <div class="bodyMess">
 
@@ -179,7 +179,7 @@
                     :  {{user.xm}}
                   </div>
                   <div class="messTit2">
-                    付款人
+                    收款人签字
                   </div>
                   <div class="ItemMess2" style="clear:right;">
                     :
@@ -419,7 +419,7 @@
           }
           .messTit2 {
             font-size: 18px;
-            width: 20mm;
+            width: 30mm;
             text-align: right;
             float: left;
           }
