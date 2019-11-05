@@ -338,7 +338,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         jlCondition.eq(BizLcJl.InnerColumn.lcKm, km);
         jlCondition.setOrderByClause(" kssj desc ");
         List<BizLcJl> jls = findByCondition(jlCondition);
-        RuntimeCheck.ifTrue(CollectionUtils.isEmpty(jls), StringUtils.isNotBlank(cardNo)?"此记录与卡片绑定记录不一致":"没有找到练车记录");
+        RuntimeCheck.ifTrue(CollectionUtils.isEmpty(jls), StringUtils.isNotBlank(cardNo)?"发车卡与结束卡不一致":"没有找到练车记录");
         BizLcJl lcJl = jls.get(0);
 
         // 计算练车费用
