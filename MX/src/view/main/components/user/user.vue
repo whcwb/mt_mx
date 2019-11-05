@@ -17,10 +17,10 @@
     <!--</DropdownMenu>-->
     <!--</Dropdown>-->
     <!--<Avatar :src="userAvator"/>-->
-<!--    <Button type="text"-->
-<!--            style="font-size:20px;font-weight: 700">-->
-<!--      {{usermess.xm}} 您好,欢迎使用本平台!-->
-<!--    </Button>-->
+    <Button type="text"
+            style="font-size:20px;font-weight: 700">
+      欢迎 <span style="color: #2db7f5;">{{usermess.xm}}</span>
+    </Button>
 <!--    <Button type="text" class="timeSty">-->
 <!--      <div class="time">-->
 <!--        {{todayTime}}-->
@@ -43,13 +43,13 @@
 <!--        <Icon type="md-key" size="24" color="#fff"/>-->
 <!--      </Button>-->
 <!--    </Tooltip>-->
-    <Tooltip content="打印机驱动下载" style="margin-right: 16px">
-      <Button type="warning"
-              size="small"
-              @click="dyxz">
-        <Icon type="md-print" size="24" color="#fff"/>
-      </Button>
-    </Tooltip>
+    <!--<Tooltip content="打印机驱动下载" style="margin-right: 16px">-->
+      <!--<Button type="warning"-->
+              <!--size="small"-->
+              <!--@click="dyxz">-->
+        <!--<Icon type="md-print" size="24" color="#fff"/>-->
+      <!--</Button>-->
+    <!--</Tooltip>-->
     <Tooltip content="读卡器驱动(练车)" style="margin-right: 16px">
       <Button type="warning"
               size="small"
