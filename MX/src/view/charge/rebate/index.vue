@@ -50,7 +50,7 @@
           <!--</Col>-->
         </Col>
       </Row>
-      <Table :height="AF.getPageHeight()-250" stripe size="small" @on-select="tabsel" @on-select-all="tabsel"
+      <Table :height="AF.getPageHeight()-250" stripe size="small" @on-select="tabsel" @on-select-cancel="tabsel" @on-select-all="tabsel"
              :columns="tableColumns" :data="tableData"></Table>
       <div style="text-align: right;padding: 6px 0;display: flex;justify-content: flex-end">
         <span style="color: red;font-weight: 600;font-size: 20px;">
@@ -353,14 +353,13 @@
         console.log(list)
         if(list[0].jlId!==row.jlId){
           this.$Message.error('选择的教练并非同一位')
-          console.log(row.id)
-          this.tableData.map((val,index,arr)=>{
-            if(val.id===row.id){
-              val._checked=false
-            }
-          })
-          console.log(this.tableData)
-          return
+          // this.tableData.map((val,index,arr)=>{
+          //   if(val.id===row.id){
+          //     val._checked=false
+          //   }
+          // })
+          // console.log(this.tableData)
+          // return
         }
 
         this.okParams.id = ''

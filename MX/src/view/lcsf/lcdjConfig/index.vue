@@ -64,6 +64,12 @@
                 <span>启用【车辆绑卡】</span>
               </Col>
             </Row>
+            <Row style="margin-top: 16px;">
+              <Col span="24">
+                <i-switch v-model="item.by7" @on-change="confirm(item)"></i-switch>
+                <span>启用【刷卡点火】</span>
+              </Col>
+            </Row>
           </Card>
         </Col>
       </Row>
@@ -91,6 +97,7 @@
       confirm(item) {
         item.by2 = item.by2 ? '1' : '0'
         item.by6 = item.by6 ? '1' : '0'
+        item.by7 = item.by7 ? '1' : '0'
         this.$http.post(this.apis.DICTIONARY_LIST.CHANGE, item).then((res) => {
           if (res.code == 200) {
             this.$Message.success(res.message);
@@ -114,6 +121,7 @@
               r.by4 = parseFloat(r.by4)
               r.by2 = r.by2==='0'||r.by2==='' ? false : true
               r.by6 = r.by6==='0'||r.by6==='' ? false : true
+              r.by7 = r.by7==='0'||r.by7==='' ? false : true
             }
           } else {
             this.$Message.error(res.message)

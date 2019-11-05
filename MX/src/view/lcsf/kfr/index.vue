@@ -8,7 +8,7 @@
         </div>
       </MenuItem>
     </Menu>
-    <Row style="margin-bottom: 8px" type="flex" align="bottom">
+    <Row style="" type="flex" align="bottom">
 <!--      <Col span="4">-->
 <!--        &lt;!&ndash;<div style="float: left;margin-top: 8px;cursor: pointer">&ndash;&gt;-->
 <!--        &lt;!&ndash;<span style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>&ndash;&gt;-->
