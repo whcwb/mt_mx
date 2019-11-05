@@ -294,12 +294,13 @@
   import addjl from '../../lcsf/comp/addJL'
   import mxb from '../jlcz/mxb'
   import {mapMutations} from 'vuex'
-
+  import printSignUp from '../../lcsf/comp/printSignUp'
   export default {
     name: "index",
     components: {
       addjl,
-      mxb
+      mxb,
+        printSignUp
     },
     data() {
       return {
@@ -525,7 +526,8 @@
 
           }
         ],
-          JX:[]
+          JX:[],
+          printMess:{}
       }
     },
     watch: {
@@ -576,24 +578,29 @@
         })
       },
       closeMXB() {
-        this.jlItem = {}
+        this.jlItem = {};
         this.isMxb = false
       },
       closePay(){
-        this.payItem={}
+        this.payItem={};
         this.pay=false
       },
+        winPrint(a) {
+                this.hisPrintMess = a
+                this.componentName = 'printSignUp'
+        },
       savePay(){
         this.$http.post('/api/lcjl/cz', this.payItem).then(res => {
           if (res.code == 200) {
             this.pay=false;
-            this.payItem = {};
             this.getData();
+              this.payItem = {};
             this.swal({
               title: '充值成功',
               type: 'success',
               confirmButtonText: '确定',
             })
+              this.winPrint(res.result)
           } else {
             this.swal({
               title: res.message,

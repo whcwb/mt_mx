@@ -32,26 +32,39 @@
     collapsed: Boolean
   },
       data(){
-      return{
-          isFullscreen: false
-      }
-      },
-      watch:{
-        'isFullscreen':function (newVal) {
-            if (newVal){
-                console.log(newVal);
-                this.$emit('changenewval',true);
-            }else {
-                console.log(newVal);
-                this.$emit('changenewval',false);
-            }
+        return{
+            isFullscreen: false
         }
       },
+
   computed: {
     breadCrumbList () {
       return this.$store.state.app.breadCrumbList
     }
   },
+      watch:{
+          isFullscreen: function(newVal, old){				//非josn用法
+              if (newVal){
+                  console.log(newVal);
+                  this.$emit('changenewval',true);
+                  // this.$parent.changenewvals(newVal)
+              }else {
+                  console.log(newVal);
+                  this.$emit('changenewval',false);
+                  // this.$parent.changenewvals(!newVal)
+              }
+          },
+          //
+          // 'isFullscreen':function (newVal) {
+          //     if (newVal){
+          //         console.log(newVal);
+          //         this.$emit('changenewval',true);
+          //     }else {
+          //         console.log(newVal);
+          //         this.$emit('changenewval',false);
+          //     }
+          // }
+      },
   methods: {
     handleCollpasedChange (state) {
       this.$emit('on-coll-change', state)

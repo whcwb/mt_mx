@@ -100,7 +100,7 @@
                :columns="tableColumns" :data="tableData"></Table>
       </div>
     </div>
-    <component :is="componentName"></component>
+    <component :is="componentName"  :hisPrintMess="hisPrintMess"></component>
   </div>
 </template>
 
@@ -108,14 +108,16 @@
   import remark from './remark'
   import $ from 'jquery'
   import okBack from './okBack'
+  import printSignUp from './comp/printSignUp'
 
   export default {
     name: "index",
-    components: {remark, okBack},
+    components: {remark, okBack,printSignUp},
     watch: {},
     data() {
       return {
         input: '',
+          hisPrintMess:{},
         componentName: '',
         choosedItem: null,
         count: 9000,
@@ -388,6 +390,8 @@
               title: '返点成功',
               type: 'success'
             })
+              this.hisPrintMess = res.result
+              this.componentName = 'printSignUp'
             this.okParams.fdJe = 0
             this.getOldData();
           }

@@ -1,6 +1,7 @@
 package com.ldz.biz.controller;
 
 import com.ldz.biz.model.BizLcFd;
+import com.ldz.biz.model.BizLcFds;
 import com.ldz.biz.service.BizLcFdService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
@@ -22,8 +23,13 @@ public class BizLcFdController extends BaseController<BizLcFd, String> {
     }
 
     @PostMapping("/updateZt")
-    public ApiResponse<String> updateZt(String id){
-        return service.updateZt(id);
+    public ApiResponse<BizLcFds> updateZt(String id, String bz){
+        return service.updateZt(id, bz);
+    }
+
+    @PostMapping("/getPj")
+    public ApiResponse<String> getPj(String id){
+        return service.getPj(id);
     }
 
 }

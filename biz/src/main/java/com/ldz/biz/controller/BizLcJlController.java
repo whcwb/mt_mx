@@ -1,6 +1,7 @@
 package com.ldz.biz.controller;
 
 
+import com.ldz.biz.model.BizJlCz;
 import com.ldz.biz.model.BizLcJl;
 import com.ldz.biz.model.LcJlModel;
 import com.ldz.biz.service.BizLcJlService;
@@ -146,7 +147,7 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
     }
 
     @PostMapping("/cz")
-    public ApiResponse<String> saveCz(String cardNo, int je, int sfje){
+    public ApiResponse<BizJlCz> saveCz(String cardNo, int je, int sfje){
         return service.saveCz(cardNo, je, sfje);
     }
 

@@ -18,4 +18,8 @@ public interface BizLcWxjlService extends BaseService<BizLcWxjl, String> {
     ApiResponse<String> resetPwd(String cardNo);
 
     ApiResponse<String> czmx(int pageNum, int pageSize, String id);
+
+    ApiResponse<String> getPjbh();
+
+    ApiResponse<String> savePjbh(String id, String pjbh);
 }

@@ -3,8 +3,10 @@ package com.ldz.biz.service.impl;
 import com.github.pagehelper.PageInfo;
 import com.ldz.biz.mapper.BizLcFdMapper;
 import com.ldz.biz.model.BizLcFd;
+import com.ldz.biz.model.BizLcFds;
 import com.ldz.biz.model.BizLcJl;
 import com.ldz.biz.service.BizLcFdService;
+import com.ldz.biz.service.BizLcFdsService;
 import com.ldz.biz.service.BizLcJlService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.model.SysYh;
@@ -19,6 +21,8 @@ import tk.mybatis.mapper.common.Mapper;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Service
 public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> implements BizLcFdService {
@@ -27,6 +31,8 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 	private BizLcFdMapper baseMapper;
 	@Autowired
 	private BizLcJlService jlService;
+	@Autowired
+	private BizLcFdsService fdsService;
 
 	@Override
 	protected Mapper<BizLcFd> getBaseMapper() {
@@ -44,13 +50,15 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 
 				List<BizLcJl> jlList = jlService.findIn(BizLcJl.InnerColumn.id, Arrays.asList(bizLcFd.getLcId().split(",")));
 				// 计算练车总费用
-				int sum = jlList.stream().mapToInt(BizLcJl::getYfJe).sum();
+				int sum = jlList.stream().mapToInt(BizLcJl::getXjje).sum();
 				int zsc = jlList.stream().mapToInt(BizLcJl::getSc).sum();
 				String lckm = jlList.get(0).getLcKm();
 				bizLcFd.setLcFy(sum);
 				bizLcFd.setSc(zsc);
 				bizLcFd.setLcKm(lckm);
 				bizLcFd.setJlList(jlList);
+				int xysl = jlList.stream().mapToInt(BizLcJl::getXySl).sum();
+				bizLcFd.setXySl(xysl);
 			}
 		});
 	}
@@ -78,26 +86,75 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 	}
 
 	@Override
-	public ApiResponse<String> updateZt(String id) {
+	public ApiResponse<BizLcFds> updateZt(String id, String bz) {
 		RuntimeCheck.ifBlank(id, "请确认返点记录");
 		SysYh yh = getCurrentUser();
 		List<String> list = Arrays.asList(id.split(","));
 		List<BizLcFd> fds = findByIds(list);
+
 		RuntimeCheck.ifEmpty(fds, "此记录不需要返点");
-		fds.forEach(fd ->{
+		int size = fds.stream().map(BizLcFd::getJlId).collect(Collectors.toSet()).size();
+		RuntimeCheck.ifTrue(size > 1, "所选记录为多个教练， 请重新选择");
+		int lcFy = 0;
+		int sc =0;
+		AtomicReference<String> jx = new AtomicReference<>("");
+		for (BizLcFd fd : fds) {
 			String[] split = fd.getLcId().split(",");
 			List<BizLcJl> jls = jlService.findIn(BizLcJl.InnerColumn.id, Arrays.asList(split));
+			int sum = jls.stream().mapToInt(BizLcJl::getYfJe).sum();
+			int s = jls.stream().mapToInt(BizLcJl::getSc).sum();
+			sc+=s;
+			lcFy+=sum;
 			jls.forEach(bizLcJl -> {
+				if(StringUtils.isBlank(jx.get())){
+					jx.set(bizLcJl.getJlJx());
+				}
 				bizLcJl.setFdZt("10");
 				jlService.update(bizLcJl);
 			});
-			if(fd.getFdsl() == null || fd.getFdsl() == 0 ){
+			if (fd.getFdsl() == null || fd.getFdsl() == 0) {
 				fd.setFdsl(jls.size());
 			}
 			fd.setQrr(yh.getZh() + "-" + yh.getXm());
 			fd.setQrsj(DateUtils.getNowTime());
 			update(fd);
-		});
-		return ApiResponse.success();
+		}
+		int sum = fds.stream().mapToInt(BizLcFd::getFdje).sum();
+
+		BizLcFds lcFds = new BizLcFds();
+		lcFds.setCjr(yh.getZh() + "-" + yh.getXm());
+		lcFds.setCjsj(DateUtils.getNowTime());
+		lcFds.setFdje(sum);
+		lcFds.setFdlx(fds.get(0).getFdlx());
+		lcFds.setFdsl(fds.size());
+		if(CollectionUtils.size(fds) == 1){
+			lcFds.setId(list.get(0));
+		}else{
+			lcFds.setId(genId());
+		}
+		lcFds.setJlId(fds.get(0).getJlId());
+		lcFds.setJlXm(fds.get(0).getJlXm());
+		lcFds.setLcFy(lcFy);
+		lcFds.setLcKm(fds.get(0).getLcKm());
+		lcFds.setSc(sc);
+		lcFds.setLcId(fds.stream().map(BizLcFd::getId).collect(Collectors.joining(",")));
+		lcFds.setBz(bz);
+		lcFds.setQrr(lcFds.getCjr());
+		lcFds.setQrsj(lcFds.getCjsj());
+		lcFds.setJx(jx.get());
+		fdsService.save(lcFds);
+		return ApiResponse.success(lcFds);
 	}
+
+	@Override
+	public ApiResponse<String> getPj(String id) {
+		RuntimeCheck.ifBlank(id , "请选择要打印的返点记录");
+		List<String> list = Arrays.asList(id.split(","));
+		if(list.size() == 1){
+			return ApiResponse.success(list.get(0));
+		}else{
+			return ApiResponse.success(genId());
+		}
+	}
+
 }
