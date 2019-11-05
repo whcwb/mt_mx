@@ -2,10 +2,10 @@
   <div>
     <Row style="padding: 12px 0" :gutter="12" type="flex" justify="end">
       <Col span="4">
-      <DatePicker v-model="dateRange.jssj"
+      <DatePicker v-model="dateRange.cjsj"
                   confirm format="yyyy-MM-dd"
-                  @on-change="param.cjsjInRange = v.util.dateRangeChange(dateRange.jssj)"
-                  @on-open-change="v.util.dateRangeChange(dateRange.jssj)"
+                  @on-change="param.cjsjInRange = v.util.dateRangeChange(dateRange.cjsj)"
+                  @on-open-change="pageSizeChange(param.pageSize)"
                   type="daterange" :placeholder="'请输入返点时间'"  style="width: 200px"></DatePicker>
       </Col>
         <Col span="4">
@@ -100,7 +100,7 @@
         total: 0,
         totalS: 0,
         dateRange: {
-          kssj: ''
+          cjsj: ''
         },
         param: {
             qrsjIsNotNull:'1',
@@ -114,7 +114,8 @@
       }
     },
     created() {
-      this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
+      this.dateRange.cjsj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
+      this.param.cjsjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
       this.getOldData()
     },
     methods: {

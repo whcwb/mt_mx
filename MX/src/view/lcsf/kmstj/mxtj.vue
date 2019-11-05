@@ -59,13 +59,9 @@
           },
           {
             title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90, render: (h, p) => {
-              return h('Button', {
+              return h('Tag', {
                 props: {
-                  type: 'error',
-                  size: 'small'
-                },
-                style: {
-                  borderRadius: '15px'
+                  type: 'volcano',
                 }
               }, p.row.clBh)
             }
