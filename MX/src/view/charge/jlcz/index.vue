@@ -595,11 +595,11 @@
             this.pay=false;
             this.getData();
               this.payItem = {};
-            this.swal({
-              title: '充值成功',
-              type: 'success',
-              confirmButtonText: '确定',
-            })
+            // this.swal({
+            //   title: '充值成功',
+            //   type: 'success',
+            //   confirmButtonText: '确定',
+            // })
               this.winPrint(res.result)
           } else {
             this.swal({

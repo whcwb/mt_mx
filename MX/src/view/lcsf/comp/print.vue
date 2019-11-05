@@ -53,7 +53,7 @@
             <td>{{item.title}}</td>
             <td>
               {{getDict(info[item.key],item.dict)}}
-              <span v-if="item.key2">_{{info[item.key2]}}</span>
+              <span v-if="item.key2">{{info[item.key2]}}</span>
               <span v-if="item.unit">{{item.unit}}</span>
             </td>
           </tr>
@@ -104,7 +104,7 @@
           // {title: '优惠时长', key: 'yhsc'},
           // {title: '优惠金额', key: 'yhje'},
           {title: '累计时长', key: 'sc'},
-          {title: '累计费用', key: 'lcFy', unit: '元'},
+          {title: '累计费用', key: 'lcFy'},
           {title: '备注', key: 'bz'},
 
         ],
@@ -122,6 +122,9 @@
       this.info.jssj = this.info.jssj.substring(0, 16)
       this.info.yhsc = '5分钟'
       this.info.yhje = 8.33*5
+        if (this.info.fdr.indexOf('1')>=0){
+            this.info.lcFy = ''
+        }
 
         if (this.info.lcLx == '20'){
             this.info.bz = this.info.xyXm +"-"+this.info.xyDh
@@ -137,6 +140,7 @@
           this.SetPprintInnerHTML(this.$refs.printDiv.innerHTML)
         },300)
       }, 200)
+        this.enter()
     },
     beforeDestroy(){
       this.SetPprintInnerHTML('')
@@ -168,6 +172,15 @@
       ...mapMutations([
         'SetPprintInnerHTML'
       ]),
+        enter() {
+            var _this = this;
+            document.onkeydown = function (e) {
+                let key = window.event.keyCode;
+                if (key == 13) {
+                    _this.doPrint();
+                }
+            };
+        },
       doPrint(how, callback) {
         var myDoc = {
           documents: document, // 打印页面(div)们在本文档中
