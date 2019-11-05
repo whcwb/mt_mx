@@ -50,7 +50,7 @@
           <!--</Col>-->
         </Col>
       </Row>
-      <Table :height="AF.getPageHeight()-250" stripe size="small" @on-select="tabsel" @on-select-cancel="tabsel" @on-select-all="tabsel"
+      <Table :height="AF.getPageHeight()-250" stripe size="small" @on-select="tabsel" @on-select-cancel="tabsel" @on-select-all="tabsel" @on-select-all-cancel="tabsel"
              :columns="tableColumns" :data="tableData"></Table>
       <div style="text-align: right;padding: 6px 0;display: flex;justify-content: flex-end">
         <span style="color: red;font-weight: 600;font-size: 20px;">
