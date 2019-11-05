@@ -221,7 +221,7 @@
         //   jcp.print(myDoc, true);
         // } else
         callback && callback()
-          // this.close()
+          this.close()
 
       },
       parseTime(s) {
