@@ -221,11 +221,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             } else if (StringUtils.equals(entity.getLcLx(), "30")) {
                 // 练车费用为 人数 乘以 价格
                 entity.setZfzt("10");
+                RuntimeCheck.ifNull(entity.getXySl(), "请填写学员数量");
                 entity.setYfJe(Integer.parseInt(jg) * entity.getXySl());
                 entity.setLcFy(Integer.parseInt(jg) * entity.getXySl());
             }
-//            double rate = Double.parseDouble(zdxm.getBy4());
-//            int fdje = (int)Math.ceil(rate * entity.getLcFy());
 
             if (StringUtils.equals(entity.getLcLx(), "30")) {
                 entity.setXjje(entity.getYfJe());
