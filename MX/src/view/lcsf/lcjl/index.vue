@@ -37,7 +37,7 @@
             }
           },
           {
-            title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 80, render: (h, p) => {
+            title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90, render: (h, p) => {
               return h('Tag', {
                 props: {
                   type: 'volcano',
