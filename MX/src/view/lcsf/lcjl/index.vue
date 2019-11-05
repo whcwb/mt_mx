@@ -58,7 +58,16 @@
                         }
                         return h('div',s);
                         }},
-                    {title: '练车科目', key: 'lcKm', dict: 'km',minWidth:120},
+                    {title: '练车科目', key: 'lcKm',minWidth:120,
+                      render:(h,p)=>{
+                          switch (p.row.lcKm) {
+                            case '2':return h('div','科目二')
+                              break;
+                            case '3':return h('div','科目三')
+                              break;
+                          }
+                      }
+                    },
                     {title: '开始时间', key: 'kssj', searchType: 'daterange',minWidth:140},
                     {title: '结束时间', key: 'jssj',minWidth:140},
                     {title: '安全员姓名', key: 'zgXm', searchKey: 'zgXmLike',minWidth:100},

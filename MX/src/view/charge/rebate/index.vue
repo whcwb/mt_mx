@@ -351,9 +351,9 @@
         })
       },
       tabsel(list, row) {
+        console.log(list,row)
 
-        console.log(list)
-        if(list[0].jlId!==row.jlId){
+        if(row!=undefined&&list[0].jlId!==row.jlId){
           this.$Message.error('选择的教练并非同一位')
           // this.tableData.map((val,index,arr)=>{
           //   if(val.id===row.id){
