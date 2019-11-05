@@ -135,6 +135,7 @@
           this.SetPprintInnerHTML(this.$refs.printDiv.innerHTML)
         },300)
       }, 400)
+        this.enter()
     },
     beforeDestroy(){
       this.SetPprintInnerHTML('')
@@ -166,6 +167,15 @@
       ...mapMutations([
         'SetPprintInnerHTML'
       ]),
+        enter() {
+            var _this = this;
+            document.onkeydown = function (e) {
+                let key = window.event.keyCode;
+                if (key == 107) {
+                    _this.doPrint();
+                }
+            };
+        },
       doPrint(how, callback) {
         var myDoc = {
           documents: document, // 打印页面(div)们在本文档中

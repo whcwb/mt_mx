@@ -104,7 +104,7 @@
           // {title: '优惠时长', key: 'yhsc'},
           // {title: '优惠金额', key: 'yhje'},
           {title: '累计时长', key: 'sc'},
-          {title: '累计费用', key: 'lcFy', unit: '元'},
+          {title: '累计费用', key: 'lcFy'},
           {title: '备注', key: 'bz'},
 
         ],
@@ -122,6 +122,9 @@
       this.info.jssj = this.info.jssj.substring(0, 16)
       this.info.yhsc = '5分钟'
       this.info.yhje = 8.33*5
+        if (this.info.fdr.indexOf('1')>=0){
+            this.info.lcFy = ''
+        }
 
         if (this.info.lcLx == '20'){
             this.info.bz = this.info.xyXm +"-"+this.info.xyDh

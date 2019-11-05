@@ -178,7 +178,7 @@
         <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='kf'">
           <Col span="12">
             <FormItem label="学员人数" label-position="top">
-              <Input v-model="formData.xySl" type="number"/>
+              <Input v-model="formData.xySl" type="number" @on-enter="save"/>
             </FormItem>
           </Col>
         </Row>

@@ -386,10 +386,10 @@
         }
         this.$http.post('/api/bizlcfd/updateZt', {id: this.okParams.id}).then(res => {
           if (res.code == 200) {
-            this.swal({
-              title: '返点成功',
-              type: 'success'
-            })
+            // this.swal({
+            //   title: '返点成功',
+            //   type: 'success'
+            // })
               this.hisPrintMess = res.result
               this.componentName = 'printSignUp'
             this.okParams.fdJe = 0
