@@ -410,25 +410,25 @@
           //     align: 'center'
           // },
           {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
-          {title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90,},
-          {
-            title: '状态', minWidth: 120, render: (h, p) => {
-              let s = '';
-              if (!p.row.kssj || p.row.kssj === '') {
-                s = '预约中'
-              } else if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')) {
-                s = '训练中'
-              } else {
-                s = '已结束'
-              }
-              return h('div', s);
-            }
-          },
+          // {title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90,},
+          // {
+          //   title: '状态', minWidth: 120, render: (h, p) => {
+          //     let s = '';
+          //     if (!p.row.kssj || p.row.kssj === '') {
+          //       s = '预约中'
+          //     } else if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')) {
+          //       s = '训练中'
+          //     } else {
+          //       s = '已结束'
+          //     }
+          //     return h('div', s);
+          //   }
+          // },
 
           {title: '开始时间', key: 'kssj', minWidth: 140},
           {title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 140},
           {title: '时长(分钟)', key: 'sc', minWidth: 80, defaul: '0'},
-          {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
+          // {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
           {title: '练车费用(元)', key: 'lcFy', append: '元', minWidth: 90, defaul: '0'},
           {
@@ -441,6 +441,7 @@
               }
             }
           },
+            {title: '凭证', key: 'pz', minWidth: 180,},
           {
             title: '操作', minWidth: 60, fixed: 'right', render: (h, p) => {
               let buttons = [];

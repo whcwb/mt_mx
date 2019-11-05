@@ -135,7 +135,7 @@
           this.SetPprintInnerHTML(this.$refs.printDiv.innerHTML)
         },300)
       }, 400)
-        this.enter()
+        // this.enter()
     },
     beforeDestroy(){
       this.SetPprintInnerHTML('')

@@ -351,7 +351,7 @@
         // this.BDNum()
         this.bzShow = false
         const cssText = `
-          #printDivSigUp {
+        #printDivSigUp {
             /*font-family: "PingFang SC";*/
             font-family: "黑体";
             color: #000000 !important;
@@ -409,23 +409,36 @@
           .ItemMess {
             float: left;
             clear: right;
-            width: 150mm;
+            width: 140mm;
             border-bottom: solid 1px #000;
             text-align: left;
             font-size: 19px;
             padding-right: 4px;
             padding-left: 6px;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
           }
           .messTit2 {
             font-size: 18px;
-            width: 30mm;
+            width: 25mm;
             text-align: right;
             float: left;
           }
           .ItemMess2 {
             float: left;
-            width: 25mm;
+            width: 20mm;
+            border-bottom: solid 1px #000;
+            text-align: left;
+            font-size: 18px;
+          }
+          .messTit3 {
+            font-size: 16px;
+            width: 40mm;
+            text-align: right;
+            float: left;
+          }
+          .ItemMess3 {
+            float: left;
+            width: 50mm;
             border-bottom: solid 1px #000;
             text-align: left;
             font-size: 18px;
