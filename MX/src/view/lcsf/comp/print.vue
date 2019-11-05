@@ -53,7 +53,7 @@
             <td>{{item.title}}</td>
             <td>
               {{getDict(info[item.key],item.dict)}}
-              <span v-if="item.key2">_{{info[item.key2]}}</span>
+              <span v-if="item.key2">{{info[item.key2]}}</span>
               <span v-if="item.unit">{{item.unit}}</span>
             </td>
           </tr>
@@ -140,6 +140,7 @@
           this.SetPprintInnerHTML(this.$refs.printDiv.innerHTML)
         },300)
       }, 200)
+        this.enter()
     },
     beforeDestroy(){
       this.SetPprintInnerHTML('')
@@ -171,6 +172,15 @@
       ...mapMutations([
         'SetPprintInnerHTML'
       ]),
+        enter() {
+            var _this = this;
+            document.onkeydown = function (e) {
+                let key = window.event.keyCode;
+                if (key == 13) {
+                    _this.doPrint();
+                }
+            };
+        },
       doPrint(how, callback) {
         var myDoc = {
           documents: document, // 打印页面(div)们在本文档中

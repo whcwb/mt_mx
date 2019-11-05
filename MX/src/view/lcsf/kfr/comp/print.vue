@@ -53,7 +53,7 @@
             <td>{{item.title}}</td>
             <td>
               {{getDict(info[item.key],item.dict)}}
-              <span v-if="item.key2">_{{info[item.key2]}}</span>
+              <span v-if="item.key2">{{info[item.key2]}}</span>
               <span v-if="item.unit">{{item.unit}}</span>
             </td>
           </tr>
@@ -95,10 +95,10 @@
         codeSrc: '',
         mess: [
           // {title: '训练科目', key: 'km'},
-          {title: '训练科目', key: 'lcKm', dict: 'km'},
+          {title: '训练科目', key: 'lcKm', dict:'km'},
           {title: '车辆编号', key: 'clBh'},
           // {title: '训练车型', key: 'jlCx'},
-          {title: '教练员', key: 'jlJx', key2: 'jlXm'},
+          {title: '教练员', key: 'jlJx', key2:'jlXm'},
           {title: '安全员', key: 'zgXm'},
           // {title: '优惠时长', key: 'yhsc'},
           // {title: '优惠金额', key: 'yhje'},
@@ -126,7 +126,7 @@
             this.info.jssj = this.info.jssj.substring(0,16)
         }
       this.info.yhje = 8.33*5
-        this.info.bz = this.info.xySl+'人'
+        this.info.bz = this.info.xySl+' 人'
       let v = this;
       setTimeout(() => {
         let canvas = document.getElementById("barcode");
@@ -171,7 +171,7 @@
             var _this = this;
             document.onkeydown = function (e) {
                 let key = window.event.keyCode;
-                if (key == 107) {
+                if (key == 13) {
                     _this.doPrint();
                 }
             };
