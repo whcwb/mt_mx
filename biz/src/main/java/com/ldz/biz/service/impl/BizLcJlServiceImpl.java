@@ -478,6 +478,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             condition = new SimpleCondition(BizLcJl.class);
             condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
             condition.startWith(BizLcJl.InnerColumn.kssj, DateTime.now().toString("yyyy-MM-dd"));
+            condition.and().andNotEqualTo(BizLcJl.InnerColumn.lcLx.name(), "30");
             List<BizLcJl> bizLcJls = findByCondition(condition);
             Set<String> set = bizLcJls.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
             SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
@@ -1490,7 +1491,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             fdr += "3";
 
         }
-        str += "应付现金" + jl.getXjje();
+        str += "应付现金" + jl.getXjje() +"元";
         if (fdr.indexOf("2") != -1) {
             // 计算余额
             str += ",卡上余额" + wxjl.getCardJe() + "元";
