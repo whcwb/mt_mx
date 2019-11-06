@@ -1060,17 +1060,45 @@
         }
       },
       QRok() {
-        this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
-          if (res.code == 200) {
-            // this.$Message.success(res.message)
-            this.QRmess.id = res.message
-            this.print(this.QRmess)
-            this.qrids = ''
-            this.util.getPageData(this)
-          } else {
-            this.$Message.error(res.message)
+          if (this.QRmess.xjje == 0 && this.QRmess.fdr.indexOf("1") != -1 ) {
+              // 如果此时不需要支付现金 并且是抵扣支付 则需要弹出是否继续确认支付
+              this.swal({
+                  title: '开放日预存训练费('+this.QRmess.kfje+")元,需一次性使用完,是否强制结算!",
+                  type: 'question',
+                  showCancelButton: true,
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消'
+              }).then(p => {
+                  if (p.value) {
+                      this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
+                          if (res.code == 200) {
+                              // this.$Message.success(res.message)
+                              this.QRmess.id = res.message
+                              this.print(this.QRmess)
+                              this.qrids = ''
+                              this.util.getPageData(this)
+                          } else {
+                              this.$Message.error(res.message)
+                          }
+                      })
+                  } else {
+                      this.QRmodal = true
+                  }
+              })
+          }else{
+              this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
+                  if (res.code == 200) {
+                      // this.$Message.success(res.message)
+                      this.QRmess.id = res.message
+                      this.print(this.QRmess)
+                      this.qrids = ''
+                      this.util.getPageData(this)
+                  } else {
+                      this.$Message.error(res.message)
+                  }
+              })
           }
-        })
+
       },
       lcFyChange(v) {
         this.formData.zddm = v

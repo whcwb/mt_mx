@@ -120,7 +120,10 @@
             this.$http.post('/api/lcjl/getByPz',{pz:this.info.pz}).then((res)=>{
                 if (res.code == 200){
                     this.info = res.result
-                    this.info.sc += ' 分钟'
+                    this.info.sc += '分钟'
+                    if (this.info.fdr.indexOf('1')>=0){
+                        this.info.lcFy = ''
+                    }
                     if (this.info.lcFy ==''){
 
                     }else {
@@ -145,13 +148,17 @@
             // if(this.info.lcLx == '00' && (this.info.cardje - this.info.lcFy)>=0){
             //     this.info.bz = this.info.bz + ' 元,余额'+(this.info.cardje-this.info.lcFy) +' 元'
             // }else {
-            //     this.info.bz = this.info.bz + ' 元'
+            //     this.info.bz = this.info.bz + '元'
             // }
             if (this.info.lcFy!='' || this.info.lcFy == 0){
-                this.info.lcFy = this.info.lcFy+' 元'
+                this.info.lcFy = this.info.lcFy+'元'
+            }else{
+                this.info.lcFy = ''
             }
         }
-
+      if(this.info.lcFy.indexOf('元') == 0){
+          this.info.lcFy= " "
+      }
 
       let v = this;
       setTimeout(() => {

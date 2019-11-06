@@ -6,6 +6,6 @@ import tk.mybatis.mapper.common.Mapper;
 
 public interface BizLcWxjlMapper extends Mapper<BizLcWxjl> {
 
-    @Select(" select CAST(ifnull(card_no,'0') as unsigned ) c from biz_lc_wxjl order by c limit 1 ")
-    int getMaxNo();
+    @Select(" select ifnull(card_no,'1') c from biz_lc_wxjl order by c limit 1 ")
+    String getMaxNo();
 }
