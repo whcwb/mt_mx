@@ -126,7 +126,7 @@
             this.info.jssj = this.info.jssj.substring(0,16)
         }
       this.info.yhje = 8.33*5
-        this.info.bz = this.info.xySl+' 人'
+        this.info.bz = this.info.xySl+'人'
       let v = this;
       setTimeout(() => {
         let canvas = document.getElementById("barcode");
