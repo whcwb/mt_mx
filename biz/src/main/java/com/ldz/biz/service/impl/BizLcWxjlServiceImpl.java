@@ -80,11 +80,11 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
     public ApiResponse<String> bindCardNo(String id) {
         BizLcWxjl wxjl = findById(id);
         RuntimeCheck.ifTrue(StringUtils.isNotBlank(wxjl.getCardNo()), "教练员已经绑定卡号, 请勿重复操作");
-        int maxNo = baseMapper.getMaxNo();
-        String cardNo = genCardNo(maxNo);
+        String maxNo = baseMapper.getMaxNo();
+        String cardNo = genCardNo(Integer.parseInt(maxNo.replaceAll("VIP","")));
         List<BizLcWxjl> eq = findEq(BizLcWxjl.InnerColumn.cardNo, cardNo);
         while (CollectionUtils.isNotEmpty(eq)) {
-            int anInt = Integer.parseInt(cardNo) + 1;
+            int anInt = Integer.parseInt(cardNo.replaceAll("VIP","")) + 1;
             cardNo = genCardNo(anInt);
             eq = findEq(BizLcWxjl.InnerColumn.cardNo, cardNo);
         }

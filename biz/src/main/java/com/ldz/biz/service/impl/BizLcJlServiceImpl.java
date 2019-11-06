@@ -1050,7 +1050,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         jlCz.setCzhje(wxjl.getCardJe());
         String bz = getRequestParamterAsString("bz");
         if (StringUtils.isBlank(bz)) {
-            jlCz.setBz("充值后余额" + wxjl.getCardJe());
+            jlCz.setBz("卡片预存");
         } else {
             jlCz.setBz(bz);
         }
@@ -1166,6 +1166,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 bizJlCz.setCjsj(DateUtils.getNowTime());
                 bizJlCz.setJe(card);
                 bizJlCz.setType("20");
+                bizJlCz.setBz("卡片消费");
                 czMapper.insert(bizJlCz);
             }
             if (kfje > 0) {
@@ -1179,6 +1180,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 jlCz.setCjsj(DateUtils.getNowTime());
                 jlCz.setJe(kfje);
                 jlCz.setType("30");
+                jlCz.setBz("开放日消费");
                 czMapper.insert(jlCz);
             }
             RuntimeCheck.ifTrue(wxjl.getYe() > 0, "抵扣余额未使用完 , 不支持单个订单支付");
