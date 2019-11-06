@@ -14,10 +14,15 @@
       <Col span="18">
         <Row type="flex" justify="end" :gutter="8">
           <Col span="4">
-            <Input size="large" v-model="param.jlXm" clearable placeholder="请输入教练姓名"/>
+            <Select filterable clearable v-model="param.jlJx" :label-in-value="true" placeholder="请输入驾校">
+              <Option v-for="(item,index) in JX" :key="index" :value="item.val">{{item.val}}-{{item.by1}}</Option>
+            </Select>
           </Col>
           <Col span="4">
-            <Input size="large" v-model="param.jlJx" clearable placeholder="请输入驾校"/>
+            <Input size="large" v-model="param.cardNo" clearable placeholder="请输入卡号"/>
+          </Col>
+          <Col span="4">
+            <Input size="large" v-model="param.jlXm" clearable placeholder="请输入教练姓名"/>
           </Col>
           <Col span="1" align="center" style="margin-right: 16px">
             <Button type="primary" @click="getData">
@@ -87,7 +92,7 @@
                 >
                   <Option v-for="(it,index) in searchCoachList" :value="it.value" :key="index">{{it.label}}</Option>
                 </Select>
-<!--                <span style="color: red;font-size: 18px">*初始密码为123456</span>-->
+                <!--                <span style="color: red;font-size: 18px">*初始密码为123456</span>-->
               </FormItem>
             </div>
             <div style="padding-top: 22px;">
@@ -155,20 +160,20 @@
             </Row>
 
             <!--<Row style="display: flex;justify-content: space-between">-->
-              <!--<Col span="11">-->
-                <!--<FormItem label="收款方式" label-position="bottom">-->
-                  <!--<Select v-model="formData.zddm" style="width:200px" @on-change="lcFyChange">-->
-                    <!--<Option value="">现金</Option>-->
-                    <!--<Option value="">支付宝</Option>-->
-                    <!--<Option value="">微信</Option>-->
-                  <!--</Select>-->
-                <!--</FormItem>-->
-              <!--</Col>-->
-              <!--<Col span="23">-->
-                <!--<FormItem label="付款人" label-position="top">-->
-                  <!--<Input v-model="formData.xyZjhm"/>-->
-                <!--</FormItem>-->
-              <!--</Col>-->
+            <!--<Col span="11">-->
+            <!--<FormItem label="收款方式" label-position="bottom">-->
+            <!--<Select v-model="formData.zddm" style="width:200px" @on-change="lcFyChange">-->
+            <!--<Option value="">现金</Option>-->
+            <!--<Option value="">支付宝</Option>-->
+            <!--<Option value="">微信</Option>-->
+            <!--</Select>-->
+            <!--</FormItem>-->
+            <!--</Col>-->
+            <!--<Col span="23">-->
+            <!--<FormItem label="付款人" label-position="top">-->
+            <!--<Input v-model="formData.xyZjhm"/>-->
+            <!--</FormItem>-->
+            <!--</Col>-->
             <!--</Row>-->
             <Row style="display: flex;justify-content: center">
               <Col span="23">
@@ -195,7 +200,7 @@
       width="720"
       :mask-closable="false">
 
-      <Form :model="formData" label-position="top">
+      <Form label-position="top">
         <Row :gutter="32">
           <Col span="24">
             <Row style="display: flex;justify-content: space-between">
@@ -215,9 +220,8 @@
             <Row style="display: flex;justify-content: space-between">
               <Col span="11">
                 <FormItem label="教练驾校" label-position="top">
-<!--                  <Input v-model="infoItem.jlJx"/>-->
-                  <Select v-model="infoItem.jlJx" style="width:200px">
-                    <Option v-for="item in JX" :value="item.val" :key="item.val">{{ item.val }}</Option>
+                  <Select filterable clearable v-model="infoItem.jlJx" :label-in-value="true" placeholder="请输入驾校">
+                    <Option v-for="item in JX" :key="item.val" :value="item.val">{{item.val}}-{{item.by1}}</Option>
                   </Select>
                 </FormItem>
               </Col>
@@ -228,18 +232,18 @@
               </Col>
             </Row>
 
-<!--            <Row style="display: flex;justify-content: space-between">-->
-<!--              <Col span="11">-->
-<!--                <FormItem label="旧密码" label-position="top">-->
-<!--                  <Input v-model="infoItem.old"/>-->
-<!--                </FormItem>-->
-<!--              </Col>-->
-<!--              <Col span="11">-->
-<!--                <FormItem label="电话号码" label-position="top">-->
-<!--                  <Input v-model="infoItem.jlLxdh"/>-->
-<!--                </FormItem>-->
-<!--              </Col>-->
-<!--            </Row>-->
+            <!--            <Row style="display: flex;justify-content: space-between">-->
+            <!--              <Col span="11">-->
+            <!--                <FormItem label="旧密码" label-position="top">-->
+            <!--                  <Input v-model="infoItem.old"/>-->
+            <!--                </FormItem>-->
+            <!--              </Col>-->
+            <!--              <Col span="11">-->
+            <!--                <FormItem label="电话号码" label-position="top">-->
+            <!--                  <Input v-model="infoItem.jlLxdh"/>-->
+            <!--                </FormItem>-->
+            <!--              </Col>-->
+            <!--            </Row>-->
 
           </Col>
 
@@ -249,41 +253,42 @@
 
       <div slot='footer'>
         <Button style="margin-right: 8px" @click="closeInfo">取消</Button>
-        <Button type="primary" @click="updateInfo">更改</Button>
+        <Button type="error" style="margin-right: 8px" @click="delInfo">作废</Button>
+        <Button type="primary" @click="updateInfo">确定</Button>
       </div>
     </Modal>
 
-<!--    <Modal-->
-<!--      :title="passwordItem.jlXm+'修改密码'"-->
-<!--      v-model="password"-->
-<!--      :closable="false"-->
-<!--      width="720"-->
-<!--      :mask-closable="false">-->
+    <!--    <Modal-->
+    <!--      :title="passwordItem.jlXm+'修改密码'"-->
+    <!--      v-model="password"-->
+    <!--      :closable="false"-->
+    <!--      width="720"-->
+    <!--      :mask-closable="false">-->
 
-<!--      <Form :model="formData" label-position="top">-->
-<!--        <Row :gutter="32">-->
-<!--          <Col span="12">-->
-<!--            <div style="float: left">-->
-<!--              <FormItem label="原密码" label-position="top">-->
-<!--                <Input type="password" v-model="passwordItem.old"/>-->
-<!--              </FormItem>-->
-<!--              <FormItem label="新密码" label-position="top">-->
-<!--                <Input type="password" v-model="passwordItem.newPwd"/>-->
-<!--              </FormItem>-->
-<!--              <FormItem label="确认密码" label-position="top">-->
-<!--                <Input  type="password" v-model="passwordItem.newPwd1"/>-->
-<!--              </FormItem>-->
-<!--            </div>-->
-<!--          </Col>-->
+    <!--      <Form :model="formData" label-position="top">-->
+    <!--        <Row :gutter="32">-->
+    <!--          <Col span="12">-->
+    <!--            <div style="float: left">-->
+    <!--              <FormItem label="原密码" label-position="top">-->
+    <!--                <Input type="password" v-model="passwordItem.old"/>-->
+    <!--              </FormItem>-->
+    <!--              <FormItem label="新密码" label-position="top">-->
+    <!--                <Input type="password" v-model="passwordItem.newPwd"/>-->
+    <!--              </FormItem>-->
+    <!--              <FormItem label="确认密码" label-position="top">-->
+    <!--                <Input  type="password" v-model="passwordItem.newPwd1"/>-->
+    <!--              </FormItem>-->
+    <!--            </div>-->
+    <!--          </Col>-->
 
-<!--        </Row>-->
+    <!--        </Row>-->
 
-<!--      </Form>-->
-<!--      <div slot='footer'>-->
-<!--        <Button style="margin-right: 8px" @click="closePw">取消</Button>-->
-<!--        <Button type="primary" @click="updatePw">更改</Button>-->
-<!--      </div>-->
-<!--    </Modal>-->
+    <!--      </Form>-->
+    <!--      <div slot='footer'>-->
+    <!--        <Button style="margin-right: 8px" @click="closePw">取消</Button>-->
+    <!--        <Button type="primary" @click="updatePw">更改</Button>-->
+    <!--      </div>-->
+    <!--    </Modal>-->
 
     <mxb :itemObj="jlItem" :isMxb="isMxb" @closemxb="closeMXB"></mxb>
     <component :is="componentName" :printClose="printClose" :hisPrintMess="hisPrintMess"></component>
@@ -295,12 +300,13 @@
   import mxb from '../jlcz/mxb'
   import {mapMutations} from 'vuex'
   import printSignUp from '../../lcsf/comp/printSignUp'
+
   export default {
     name: "index",
     components: {
       addjl,
       mxb,
-        printSignUp
+      printSignUp
     },
     data() {
       return {
@@ -309,15 +315,16 @@
         jlItem: {},
         pay: false,        //充值modal
         payItem: {
-          je:'',
-          sfje:'',
-          no:''
+          je: '',
+          sfje: '',
+          no: ''
         },
-        password:false,
-        passwordItem:{},
-        totalS:0,
-        info:false,
-        infoItem:{},
+        jxList: [],
+        password: false,
+        passwordItem: {},
+        totalS: 0,
+        info: false,
+        infoItem: {},
 
         fylist: [],
         v: this,
@@ -393,13 +400,13 @@
 
           },
           {
-            title: '余额',
+            title: '充值卡余额',
             key: 'cardJe',
             align: 'center',
 
           },
           {
-            title: '开放日余额',
+            title: '开放日预存',
             key: 'ye',
             align: 'center',
 
@@ -456,19 +463,19 @@
                         h('DropdownItem', {
                             nativeOn: {
                               click(name) {
-                                v.payItem = p.row
+                                v.payItem = JSON.parse(JSON.stringify(p.row))
                                 v.pay = true
                               }
                             }
                           }, '充值'
-                        ),h('DropdownItem', {
-                              nativeOn: {
-                                  click(name) {
-                                      v.infoItem = p.row
-                                      v.info = true
-                                  }
-                              }
-                          }, '维护'
+                        ), h('DropdownItem', {
+                          nativeOn: {
+                            click(name) {
+                              v.infoItem = JSON.parse(JSON.stringify(p.row))
+                              v.info = true
+                            }
+                          }
+                        }, '维护'
                       ),
                         // h('DropdownItem', {
                         //   nativeOn: {
@@ -526,8 +533,8 @@
 
           }
         ],
-          JX:[],
-          printMess:{}
+        JX: [],
+        printMess: {}
       }
     },
     watch: {
@@ -553,7 +560,7 @@
       // this.getYYdj();
 
       this.getData()
-        this.getJX()
+      this.getJX()
       this.getCoachList();
     },
     beforeDestroy() {
@@ -581,26 +588,26 @@
         this.jlItem = {};
         this.isMxb = false
       },
-      closePay(){
-        this.payItem={};
-        this.pay=false
+      closePay() {
+        this.payItem = {};
+        this.pay = false
       },
-        winPrint(a) {
-                this.hisPrintMess = a
-                this.componentName = 'printSignUp'
-        },
-      savePay(){
+      winPrint(a) {
+        this.hisPrintMess = a
+        this.componentName = 'printSignUp'
+      },
+      savePay() {
         this.$http.post('/api/lcjl/cz', this.payItem).then(res => {
           if (res.code == 200) {
-            this.pay=false;
+            this.pay = false;
             this.getData();
-              this.payItem = {};
+            this.payItem = {};
             // this.swal({
             //   title: '充值成功',
             //   type: 'success',
             //   confirmButtonText: '确定',
             // })
-              this.winPrint(res.result)
+            this.winPrint(res.result)
           } else {
             this.swal({
               title: res.message,
@@ -610,38 +617,71 @@
         }).catch(err => {
         })
       },
-        closeInfo(){
-            this.info=false
-            this.infoItem={}
-        },
-        updateInfo(){
-            this.$http.post('/api/lcwxjl/update', this.infoItem).then(res => {
-                if (res.code == 200) {
-                    this.info=false
-                    this.infoItem={}
-                    this.getData();
-                    this.swal({
-                        title: '更改成功',
-                        type: 'success',
-                        confirmButtonText: '确定',
-                    })
-                } else {
-                    this.swal({
-                        title: res.message,
-                        type: 'warning'
-                    })
-                }
-            }).catch(err => {
-            })
-        },
-      closePw(){
-        this.password=false
-        this.passwordItem={}
+      closeInfo() {
+        this.info = false
+        this.infoItem = {}
       },
-      updatePw(){
+      updateInfo() {
+        this.$http.post('/api/lcwxjl/update', this.infoItem).then(res => {
+          if (res.code == 200) {
+            this.info = false
+            this.infoItem = {}
+            this.getData();
+            this.swal({
+              title: '更改成功',
+              type: 'success',
+              confirmButtonText: '确定',
+            })
+          } else {
+            this.swal({
+              title: res.message,
+              type: 'warning'
+            })
+          }
+        }).catch(err => {
+        })
+      },
+      delInfo(){
         var v=this
         this.swal({
-          title: '确认更改'+v.passwordItem.jlXm+'的密码?',
+          title: '确认作废' + this.infoItem.jlXm + '的充值卡?',
+          type: 'warning',
+          confirmButtonText: '确认',
+          cancelButtonText: '关闭',
+          showCancelButton: true
+        }).then((res) => {
+          if (res.value) {
+            v.$http.post('/api/lcwxjl/unbindCardNo', {id:v.infoItem.id}).then(res => {
+              if (res.code == 200) {
+                v.info = false
+                v.infoItem = {}
+                v.getData();
+                v.swal({
+                  title: '作废成功',
+                  type: 'success',
+                  confirmButtonText: '确定',
+                })
+              } else {
+                v.swal({
+                  title: res.message,
+                  type: 'warning'
+                })
+              }
+            }).catch(err => {
+            })
+          } else {
+
+          }
+        })
+      },
+      closePw() {
+        this.password = false
+        this.passwordItem = {}
+      },
+      updatePw() {
+        var v = this
+        this.swal({
+          title: '确认更改' + v.passwordItem.jlXm + '的密码?',
           type: 'warning',
           confirmButtonText: '确认',
           cancelButtonText: '关闭',
@@ -651,8 +691,8 @@
             this.$http.post('/api/lcwxjl/updatePwd', v.passwordItem).then((res) => {
               if (res.code == 200) {
                 v.getData();
-                v.passwordItem={}
-                v.password=false
+                v.passwordItem = {}
+                v.password = false
                 v.swal({
                   title: '修改成功',
                   type: 'success',
@@ -660,7 +700,7 @@
                   cancelButtonText: '关闭',
                   showCancelButton: true
                 })
-              }else {
+              } else {
                 v.$Message.error(res.message)
               }
             })
@@ -669,9 +709,9 @@
           }
         })
       },
-      resetPw(item){
+      resetPw(item) {
         this.swal({
-          title: '确认重置'+item.jlXm+'的密码?',
+          title: '确认重置' + item.jlXm + '的密码?',
           type: 'warning',
           confirmButtonText: '确认',
           cancelButtonText: '关闭',
@@ -688,7 +728,7 @@
                   cancelButtonText: '关闭',
                   showCancelButton: true
                 })
-              }else {
+              } else {
                 this.$Message.error(res.message)
               }
             })
@@ -697,11 +737,11 @@
           }
         })
       },
-      pageChange(val){
+      pageChange(val) {
         this.param.pageNum = val
         this.getData();
       },
-      pageSizeChange(val){
+      pageSizeChange(val) {
         this.param.pageSize = val
         this.getData();
       },
@@ -822,9 +862,9 @@
         })
 
       },
-        getJX(){
-            this.JX = this.dictUtil.getByCode(this, 'ZDCLK1017');
-        }
+      getJX() {
+        this.JX = this.dictUtil.getByCode(this, 'ZDCLK1017');
+      }
     },
   }
 </script>
