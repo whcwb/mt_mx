@@ -305,7 +305,7 @@
 
         </Row>
         <Row style="text-align: left;padding-left: 10px">
-          <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">{{QRmess.bz}} 元</p>
+          <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">{{QRmess.bz}}</p>
         </Row>
       </div>
     </Modal>
