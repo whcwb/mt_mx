@@ -76,32 +76,32 @@
             render: (h, p) => {
               let type=''
               switch (p.row.type) {
-                case '00':type='开放日充值'
+                case '00':type='开放日预存'
                       break;
-                case '10':type='卡片充值'
+                case '10':type='卡片预存'
                   break;
-                case '20':type='卡片消费'
+                case '20':type='卡片抵扣'
                   break;
-                case '30':type='开放日消费'
+                case '30':type='开放日抵扣'
                   break;
               }
               return h('div', type);
             },
             filters: [
               {
-                label: '开放日充值',
-                value: '00'
-              },
-              {
-                label: '卡片充值',
+                label: '充值卡预存',
                 value: '10'
               },
               {
-                label: '卡片消费',
+                label: '充值卡抵扣',
                 value: '20'
               },
               {
-                label: '开放日消费',
+                label: '开放日预存',
+                value: '00'
+              },
+              {
+                label: '开放日抵扣',
                 value: '30'
               }
             ],
@@ -146,9 +146,9 @@
                   break;
                 case '30':type='开放日余额:'+p.row.czhje
                   break;
-                case '10':type='卡片余额:'+p.row.czhje
+                case '10':type='充值卡余额:'+p.row.czhje
                   break;
-                case '20':type='卡片余额:'+p.row.czhje
+                case '20':type='充值卡余额:'+p.row.czhje
                   break;
               }
               return h('div', type);
