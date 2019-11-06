@@ -4,39 +4,40 @@
     <Card>
       <Form :model="formDataJL">
         <Row :gutter="32">
-          <Col span="17">
-            <Col span="8">
-              <FormItem label="教练员姓名" label-position="top">
+          <Col span="24">
+            <Col span="6">
+              <FormItem label="教练员姓名" label-position="top" style="width: 95%">
                 <Input v-model="formDataJL.jlXm"/>
               </FormItem>
             </Col>
-            <Col span="8">
-              <FormItem label="教练员联系方式" label-position="top">
+            <Col span="6">
+              <FormItem label="教练员联系方式" label-position="top" style="width: 95%">
                 <Input v-model="formDataJL.jlLxdh"/>
               </FormItem>
             </Col>
-            <Col span="8">
-              <FormItem label="所属驾校" label-position="top">
+            <Col span="6">
+              <FormItem label="所属驾校" label-position="top" style="width: 95%">
                 <Select filterable clearable v-model="formDataJL.jlJx" :label-in-value="true" @on-change="jsSelect">
                   <Option v-for="(item,index) in schoolList" :key="index" :value="item.val">{{item.val}}-{{item.by1}}</Option>
                 </Select>
               </FormItem>
             </Col>
+            <Col span="3">
+              <FormItem label-position="top" style="width: 95%">
+                <div slot="label" style="color: #fff">_________</div>
+                <Button type="primary" @click="wxjlSave">新增</Button>
+              </FormItem>
+            </Col>
+            <Col span="3">
+              <FormItem label-position="top" style="width: 95%">
+                <div slot="label" style="color: #fff">_________</div>
+                <Button type="warning" @click="gogo">
+                  关闭
+                </Button>
+              </FormItem>
+            </Col>
           </Col>
-          <Col span="3">
-            <FormItem label-position="top">
-              <div slot="label" style="color: #fff">_________</div>
-              <Button type="primary" @click="wxjlSave">新增</Button>
-            </FormItem>
-          </Col>
-          <Col span="3">
-            <FormItem label-position="top">
-              <div slot="label" style="color: #fff">_________</div>
-              <Button type="warning" @click="gogo">
-                关闭
-              </Button>
-            </FormItem>
-          </Col>
+
         </Row>
       </Form>
       <jlwh ref="jlwh"
@@ -126,13 +127,13 @@
           })
           return
         }
-        // if(this.formDataJL.jlLxdh == ''){
-        //   this.swal({
-        //     title:'请填写教练电话!',
-        //     type:'warning'
-        //   })
-        //   return
-        // }
+        if(this.formDataJL.jlLxdh == ''){
+          this.swal({
+            title:'请填写教练电话!',
+            type:'warning'
+          })
+          return
+        }
         console.log('######',this.formDataJL);
         let params = JSON.parse(JSON.stringify(this.formDataJL));
         this.$http.post('/api/lcwxjl/save', params).then(res => {

@@ -938,7 +938,7 @@
       this.getCoachList();
       this.getCarList();
       this.getzdlist();
-      this.getYYdj();
+      // this.getYYdj();
       this.enter()
     },
     beforeDestroy() {
