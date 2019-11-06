@@ -40,6 +40,21 @@
       }
     },
     created(){
+      let name=Symbol('name11')
+
+      let a={
+        [name]:'fzj',
+        age:18,
+        title:'aaasdad'
+      }
+
+      console.log(a[name])
+
+      for(let p in a){
+        console.log(p)
+      }
+
+
       this.num = Math.floor(this.AF.getRandom(1)/2)
       this.$store.commit('setTagNavList',[])
     },
