@@ -29,7 +29,7 @@ router.beforeEach((to, from, next) => {
     next({
       name: LOGIN_PAGE_NAME // 跳转到登录页
     })
-    iView.Message.info('请重新登录');
+    // iView.Message.info('请重新登录');
   } else if (to.name === LOGIN_PAGE_NAME || token) {
     // 未登陆且要跳转的页面是登录页
     next() // 跳转
