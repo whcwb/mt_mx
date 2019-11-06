@@ -769,7 +769,10 @@
                                       // this.print(res.result)
                                       this.getCarList()
                                     } else {
-                                      this.$Message.error(res.message)
+                                        this.swal({
+                                            title:res.message,
+                                            type:'error'
+                                        })
                                     }
                                   })
                                 }

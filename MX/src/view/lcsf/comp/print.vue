@@ -134,7 +134,6 @@
             if (this.info.fdr.indexOf('1')>=0){
                 this.info.lcFy = ''
             }
-
             if (this.info.lcLx == '20'){
                 this.info.bz = this.info.xyXm +"-"+this.info.xyDh
             }
