@@ -428,7 +428,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             str += " 应收现金" + xjje;
         } else {
             fdr = "3";
-            str = " 应收现金: " + lcJl.getLcFy() + " 元";
+            str = " 应收现金: " + lcJl.getLcFy() + "元";
         }
 
         // 更新这辆车的状态
@@ -1247,10 +1247,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
             fdr += "3";
         }
-        str += "应收现金" + xjje + " 元";
+        str += "应收现金" + xjje + "元";
         if (fdr.indexOf("2") != -1) {
             // 计算余额
-            str += ",卡上余额" + (wxjl.getCardJe() - card) + " 元";
+            str += ",卡上余额" + (wxjl.getCardJe() - card) + "元";
         }
         BizLcJl lcJl = new BizLcJl();
         lcJl.setId(ids);
@@ -1493,7 +1493,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         str += "应付现金" + jl.getXjje();
         if (fdr.indexOf("2") != -1) {
             // 计算余额
-            str += ",卡上余额" + wxjl.getCardJe() + " 元";
+            str += ",卡上余额" + wxjl.getCardJe() + "元";
         }
         jl.setBz(str);
         jl.setFdr(fdr);
