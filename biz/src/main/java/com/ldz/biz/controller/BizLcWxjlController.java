@@ -6,6 +6,7 @@ import com.ldz.biz.service.BizLcWxjlService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,6 +66,24 @@ public class BizLcWxjlController extends BaseController<BizLcWxjl, String> {
     public ApiResponse<String> savePjbh(String id , String pjbh){
         return service.savePjbh(id,pjbh);
     }
+
+    @Override
+    @PostMapping("/update")
+    public ApiResponse<String> update(BizLcWxjl entity){
+        return service.updateEntity(entity);
+    }
+
+    @Override
+    @PostMapping("/remove/{pkid}")
+    public ApiResponse<String> remove(@PathVariable("pkid") String id){
+        return service.removeEntity(id);
+    }
+
+    @PostMapping("/unbindCardNo")
+    public ApiResponse<String> unbindCardNo(String id){
+        return service.unbindCardNo(id);
+    }
+
 
 
 }

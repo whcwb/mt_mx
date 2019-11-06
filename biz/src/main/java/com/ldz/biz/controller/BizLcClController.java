@@ -47,16 +47,34 @@ public class BizLcClController extends BaseController<BizLcCl, String> {
         return service.getCar(page);
     }
 
+    /**
+     * 更新车辆
+     * @param entity
+     * @return
+     */
     @PostMapping("/update")
     public ApiResponse<String> update(BizLcCl entity){
         return service.updateEntity(entity);
     }
 
+    /**
+     * 更改车辆绑定卡号
+     * @param id
+     * @param cardNo
+     * @param th
+     * @return
+     */
     @PostMapping("/updateCardNo")
     public ApiResponse<String> updateCardNo(String id, String cardNo, @RequestParam(required = false) String th){
         return service.updateCardNo(id, cardNo, th);
     }
 
+    /**
+     * 根据卡号获取车辆信息
+     * @param cardNo
+     * @param km
+     * @return
+     */
     @PostMapping("/carInfo")
     public ApiResponse<BizLcCl> getCarInfo(String cardNo, String km){
         return service.getCarInfo(cardNo, km);

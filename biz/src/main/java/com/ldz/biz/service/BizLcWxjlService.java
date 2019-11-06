@@ -22,4 +22,10 @@ public interface BizLcWxjlService extends BaseService<BizLcWxjl, String> {
     ApiResponse<String> getPjbh();
 
     ApiResponse<String> savePjbh(String id, String pjbh);
+
+    ApiResponse<String> updateEntity(BizLcWxjl entity);
+
+    ApiResponse<String> removeEntity(String id);
+
+    ApiResponse<String> unbindCardNo(String id);
 }

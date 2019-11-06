@@ -25,9 +25,8 @@ import tk.mybatis.mapper.common.Mapper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> implements BizLcClService {
@@ -62,20 +61,20 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
         RuntimeCheck.ifBlank(entity.getClHm(), "车牌号码不能为空");
         RuntimeCheck.ifBlank(entity.getClKc(), "所属考场不能为空");
         RuntimeCheck.ifBlank(entity.getClKm(), "车辆科目不能为空");
-        // RuntimeCheck.ifBlank(entity.getZgId(),"安全员");
         RuntimeCheck.ifBlank(entity.getClCx(), "车型不能为空");
 
         SimpleCondition condition = new SimpleCondition(BizLcCl.class);
         condition.eq(BizLcCl.InnerColumn.clBh, entity.getClBh());
         condition.eq(BizLcCl.InnerColumn.clKm, entity.getClKm());
         List<BizLcCl> bizLcClList = findByCondition(condition);
-        RuntimeCheck.ifTrue(CollectionUtils.isNotEmpty(bizLcClList), "该科目的车辆编号已经存在,请不要重复添加");
+        RuntimeCheck.ifTrue(CollectionUtils.isNotEmpty(bizLcClList), "该科目的车辆编号已经存在,请勿重复添加");
         if (StringUtils.isNotBlank(entity.getCardNo())) {
             SimpleCondition jlCondition = new SimpleCondition(BizLcJl.class);
             jlCondition.eq(BizLcJl.InnerColumn.cardNo, entity.getCardNo());
             jlCondition.and().andCondition(" jssj is null or jssj = ''");
             jlCondition.setOrderByClause(" kssj desc ");
             List<BizLcJl> jls = jlService.findByCondition(jlCondition);
+            // 判断 卡号 和 车辆 状态是否能够绑卡
             if (CollectionUtils.isNotEmpty(jls)) {
                 return ApiResponse.fail("此卡正在训练中，不能绑定车辆");
             }
@@ -115,70 +114,71 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
         PageInfo<BizLcCl> pageInfo = findPage(page, queryCondition);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (CollectionUtils.isNotEmpty(pageInfo.getList())) {
-            for (BizLcCl bizLcCl : pageInfo.getList()) {
-                if (StringUtils.equals(bizLcCl.getClZt(), "01")) {
-                    SimpleCondition condition = new SimpleCondition(BizLcJl.class);
-                    condition.eq(BizLcJl.InnerColumn.lcClId, bizLcCl.getId());
-                    condition.and().andCondition(" jssj is null or jssj = ''");
-                    condition.setOrderByClause(" kssj desc");
-                    List<BizLcJl> jls = jlService.findByCondition(condition);
-                    if (CollectionUtils.isNotEmpty(jls)) {
-                        BizLcJl bizLcJl = jls.get(0);
-                        BizLcWxjl wxjl = wxjlService.findById(bizLcJl.getJlId());
-                        bizLcCl.setLcJl(bizLcJl);
-                        bizLcJl.setJlDh(wxjl.getJlLxdh());
-                        // 计算下时长
-                        String kssj = bizLcJl.getKssj();
-                        String sc;
-
-                        Date ks = dateFormat.parse(kssj);
-                        Date js = new Date();
-                        sc = (((js.getTime() - ks.getTime()) / (60 * 1000))) + "";
-                        bizLcCl.setYhsc("0");
-                        bizLcCl.setDqsc((js.getTime() - ks.getTime()) / (1000) + "");
-                        SimpleCondition zjCondition = new SimpleCondition(SysZdxm.class);
-                        zjCondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-                        zjCondition.eq(SysZdxm.InnerColumn.zddm, bizLcJl.getZddm());
-                        List<SysZdxm> items = zdxmService.findByCondition(zjCondition);
-                        SysZdxm zdxm = items.get(0);
-                        bizLcCl.setZdxm(zdxm);
-                        if (StringUtils.equals(bizLcJl.getLcLx(), "00")) {
-
-                            if (CollectionUtils.isNotEmpty(items)) {
-                                //bizLcCl.setDj(Float.parseFloat(items.get(0).getZdmc()));
-                                SysZdxm management = items.get(0);
-
-                                // 计算费用和分钟的最大公约数
-                                // 每小时的费用
-                                int anInt = Integer.parseInt(management.getZdmc());
-
-                                if (StringUtils.equals(bizLcJl.getLcLx(), "00")) {
-                                    String hour = management.getZdmc();
-                                    String by3 = management.getBy3();
-                                    int h = Integer.parseInt(sc) / 60;
-                                    int m = Integer.parseInt(sc) % 60;
-                                    // 小时能除尽的按小时计费
-                                    float hv = Float.parseFloat(hour) * h;
-                                    // 不能除尽的按分钟算
-                                    float mv = m * Float.parseFloat(by3);
-                                    // 总费用
-                                    int v = (int) Math.ceil(hv + mv);
-                                    bizLcCl.setDj(anInt);
-                                    bizLcCl.setDj1(Float.parseFloat(management.getBy3()));
-                                    bizLcCl.setZj(v);
-                                } else {
-                                    bizLcCl.setZj(Integer.parseInt(StringUtils.isBlank(management.getBy4()) ? "0" : management.getBy4()));
-                                    bizLcCl.setDj(Float.parseFloat(StringUtils.isBlank(management.getBy4()) ? "0" : management.getBy4()));
-                                }
-                            }
-
-                        }else {
-                            bizLcCl.setZj(bizLcJl.getLcFy());
-                        }
-
+            // 根据车辆列表查询当前正在训练的所有记录
+            Set<String> clIds = pageInfo.getList().stream().map(BizLcCl::getId).collect(Collectors.toSet());
+            SimpleCondition condition = new SimpleCondition(BizLcJl.class);
+            condition.in(BizLcJl.InnerColumn.lcClId, clIds);
+            condition.and().andCondition(" jssj is null or jssj = ''");
+            condition.setOrderByClause(" kssj desc");
+            List<BizLcJl> jls = jlService.findByCondition(condition);
+            if (CollectionUtils.isNotEmpty(jls)) {
+                // 在训车辆 每辆车对应一条记录
+                Map<String, BizLcJl> jlMap = jls.stream().collect(Collectors.toMap(BizLcJl::getLcClId, p -> p));
+                for (BizLcCl bizLcCl : pageInfo.getList()) {
+                    BizLcJl bizLcJl = jlMap.get(bizLcCl.getId());
+                    if(bizLcJl == null ){
+                        continue;
                     }
+                    BizLcWxjl wxjl = wxjlService.findById(bizLcJl.getJlId());
+                    bizLcCl.setLcJl(bizLcJl);
+                    bizLcJl.setJlDh(wxjl.getJlLxdh());
+                    // 计算下时长 所有计费向上取整
+                    String kssj = bizLcJl.getKssj();
+                    String sc;
+                    Date ks = dateFormat.parse(kssj);
+                    Date js = new Date();
+                    sc = (((js.getTime() - ks.getTime()) / (60 * 1000))) + "";
+                    bizLcCl.setYhsc("0");
+                    bizLcCl.setDqsc((js.getTime() - ks.getTime()) / (1000) + "");
+                    SimpleCondition zjCondition = new SimpleCondition(SysZdxm.class);
+                    zjCondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+                    zjCondition.eq(SysZdxm.InnerColumn.zddm, bizLcJl.getZddm());
+                    List<SysZdxm> items = zdxmService.findByCondition(zjCondition);
+                    SysZdxm zdxm = items.get(0);
+                    bizLcCl.setZdxm(zdxm);
+                    if (StringUtils.equals(bizLcJl.getLcLx(), "00")) {
+                        if (CollectionUtils.isNotEmpty(items)) {
+                            //bizLcCl.setDj(Float.parseFloat(items.get(0).getZdmc()));
+                            SysZdxm management = items.get(0);
+                            // 计算费用和分钟的最大公约数
+                            // 每小时的费用
+                            int anInt = Integer.parseInt(management.getZdmc());
+                            if (StringUtils.equals(bizLcJl.getLcLx(), "00")) {
+                                String hour = management.getZdmc();
+                                String by3 = management.getBy3();
+                                int h = Integer.parseInt(sc) / 60;
+                                int m = Integer.parseInt(sc) % 60;
+                                // 小时能除尽的按小时计费
+                                float hv = Float.parseFloat(hour) * h;
+                                // 不能除尽的按分钟算
+                                float mv = m * Float.parseFloat(by3);
+                                // 总费用
+                                int v = (int) Math.ceil(hv + mv);
+                                bizLcCl.setDj(anInt);
+                                bizLcCl.setDj1(Float.parseFloat(management.getBy3()));
+                                bizLcCl.setZj(v);
+                            } else {
+                                bizLcCl.setZj(Integer.parseInt(StringUtils.isBlank(management.getBy4()) ? "0" : management.getBy4()));
+                                bizLcCl.setDj(Float.parseFloat(StringUtils.isBlank(management.getBy4()) ? "0" : management.getBy4()));
+                            }
+                        }
+                    } else {
+                        bizLcCl.setZj(bizLcJl.getLcFy());
+                    }
+
                 }
             }
+
         }
         result.setPage(pageInfo);
         return result;

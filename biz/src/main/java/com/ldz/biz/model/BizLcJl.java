@@ -200,6 +200,8 @@ public class BizLcJl implements Serializable {
     private int kfje;
     @Transient
     private List<BizLcJl> jls;
+    @Column(name = "pz")
+    private String pz;
 
 
     private static final long serialVersionUID = 1L;
@@ -231,7 +233,8 @@ public class BizLcJl implements Serializable {
         xyZjhm("xy_zjhm"),
         xyDh("xy_dh"),
         zddm("zddm"),
-        zfzt("zfzt");
+        zfzt("zfzt"),
+        pz("pz");
 
         private final String column;
 
