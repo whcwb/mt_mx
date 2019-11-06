@@ -387,7 +387,6 @@
           zgXm: '',
           lcKm: 2,
           lcLx: '30',
-          lcFy: '',
           cardNo: '',
           clBh: '',
           lcClId: '',
