@@ -116,21 +116,36 @@
     created() {
       this.info = JSON.parse(JSON.stringify(this.hisPrintMess))
       console.log(this.info,'fsdf')
-      this.info.sc=this.hisPrintMess.sc=='-'?'-':this.parseTime(this.info.sc)
-      // this.info.kssj = this.info.kssj.substr(0, 16)
-      this.info.jssj = this.info.jssj.substring(0, 16)
-      this.info.yhsc = '5分钟'
-      this.info.yhje = 8.33*5
-        if (this.info.fdr.indexOf('1')>=0){
-            this.info.lcFy = ''
+        if (this.info.pz!=''){
+            this.$http.post('/api/lcjl/getByPz',{pz:this.info.pz}).then((res)=>{
+                if (res.code == 200){
+                    this.info = res.result
+                    this.info.sc += '分钟'
+                    this.info.lcFy = this.info.lcFy+'元'
+                    if (this.info.fdr.indexOf('1')>=0){
+                        this.info.bz += ',余额'+this.info.cardje
+                    }
+                }
+            })
+        }else{
+            this.info.sc = this.parseTime(this.info.sc)
+            // this.info.kssj = this.info.kssj.substr(0, 16)
+            this.info.jssj = this.info.jssj.substring(0, 16)
+            if (this.info.fdr.indexOf('1')>=0){
+                this.info.lcFy = ''
+            }
+            if (this.info.lcLx == '20'){
+                this.info.bz = this.info.xyXm +"-"+this.info.xyDh
+            }
+            if(this.info.lcLx == '00' && (this.info.cardje - this.info.lcFy) >0){
+                this.info.bz = this.info.bz + ',余额'+(this.info.cardje-this.info.lcFy) +'元'
+            }
+            if (this.info.lcFy!='' || this.info.lcFy == 0){
+                this.info.lcFy = this.info.lcFy+'元'
+            }
         }
 
-        if (this.info.lcLx == '20'){
-            this.info.bz = this.info.xyXm +"-"+this.info.xyDh
-        }
-        if(this.info.lcLx == '00' && (this.info.cardje - this.info.lcFy) >0){
-            this.info.bz = this.info.bz + ',余额'+(this.info.cardje-this.info.lcFy)
-        }
+
       let v = this;
       setTimeout(() => {
         let canvas = document.getElementById("barcode");
@@ -139,7 +154,7 @@
           this.SetPprintInnerHTML(this.$refs.printDiv.innerHTML)
         },300)
       }, 200)
-        this.enter()
+        // this.enter()
     },
     beforeDestroy(){
       this.SetPprintInnerHTML('')
