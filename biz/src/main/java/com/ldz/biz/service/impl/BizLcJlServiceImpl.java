@@ -1355,12 +1355,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 jl.setPz(pz);
                 update(jl);
             }
-            // 最后 余额小于0
-            if (jlye <= 0) {
-                jlye = 0;
-            }
             // 使用抵扣余额 , 所有余额清0
-
             // 生成消费记录
             BizJlCz jlCz = new BizJlCz();
             jlCz.setJlId(wxjl.getId());
