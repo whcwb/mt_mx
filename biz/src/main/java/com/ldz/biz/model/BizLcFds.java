@@ -53,10 +53,13 @@ public class BizLcFds {
 
     @Transient
     private List<BizLcFd> fds;
+
     @Column(name = "lc_fy")
     private Integer lcFy;
+
     @Column(name = "sc")
     private Integer sc;
+
     @Column(name = "lc_km")
     private String lcKm;
 
@@ -75,8 +78,7 @@ public class BizLcFds {
         jlXm("JL_XM"),
         qrsj("qrsj"),
         qrr("qrr"),
-        lcId("LC_ID"),
-        pj("PJ");
+        lcId("LC_ID");
 
         private final String column;
 

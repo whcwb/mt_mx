@@ -165,4 +165,13 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
     public ApiResponse<String> saveBatchPay(String ids){
         return service.saveBatch(ids);
     }
+
+    /**
+     * 根据打印凭证 返回需要打印的所有数据
+     */
+    @PostMapping("/getByPz")
+    public ApiResponse<BizLcJl> getByPz(String pz){
+        return service.getByPz(pz);
+    }
+
 }

@@ -106,6 +106,11 @@
               if(res.code == 200){
                   this.$emit('remove');
                 this.getPagerList()
+              }else {
+                  this.swal({
+                      title:res.message,
+                      type:'error'
+                  })
               }
             }).catch(err=>{})
           }
