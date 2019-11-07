@@ -12,7 +12,18 @@
         </div>
       </MenuItem>
     </Menu>
-    <Row type="flex" style="padding: 10px 0" v-if="activeName=='1'">
+
+    <!--<Tabs type="card" :animated="false" @on-click="tabClick">-->
+      <!--<TabPane label="科二模训">-->
+        <!---->
+      <!--</TabPane>-->
+
+      <!--<TabPane label="模训记录">-->
+       <!---->
+      <!--</TabPane>-->
+    <!--</Tabs>-->
+
+    <Row type="flex" style="padding: 10px 0" v-show="activeName=='1'">
 
       <Col span="24">
         <Row type="flex" justify="end" :gutter="8">
@@ -78,11 +89,11 @@
       </Col>
     </Row>
 
-    <Row v-if="activeName=='1'">
+    <Row v-show="activeName=='1'">
       <Table ref="table" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
     </Row>
 
-    <div class="boxbackborder box_col" v-if="activeName=='2'">
+    <div class="boxbackborder box_col" v-show="activeName=='2'" >
       <Row type="flex" justify="end" :gutter="8" style="margin:8px 0;">
         <!--        <Col span="6" style="padding: 10px 20px">-->
         <!--          <Button type="warning" @click="plzf">批量结算</Button>-->
@@ -112,7 +123,7 @@
           </Button>
         </Col>
       </Row>
-      <Table :height="650" stripe
+      <Table :height="500" stripe
              size="small"
              @on-select="tabcheck"
              :columns="tableColumns" :data="pageData"></Table>
@@ -1013,6 +1024,19 @@
           this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
           v.param.pageSize = 10;
           console.log(this.param);
+          v.util.getPageData(v)
+        } else {
+
+        }
+      },
+      tabClick(name){
+        var v = this
+        if (name == '0') {
+          this.getCarList()
+        } else if (name == '1') {
+          this.dateRange.jssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59'];
+          this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
+          v.param.pageSize = 10;
           v.util.getPageData(v)
         } else {
 

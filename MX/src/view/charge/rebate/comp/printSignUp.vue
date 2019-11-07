@@ -195,7 +195,7 @@
                            :maxlength="30"
                            :rows="1" id="textarr"
                            placeholder="备注说明" />
-                    <span v-else>{{bz}}</span>
+                    <span v-else>{{bz}}&nbsp</span>
                   </div>
                 </div>
 
@@ -247,7 +247,7 @@
         modalShow: true,
         nameList: '',
         money: 0,
-        bz: ':',//备注
+        bz: '',//备注
         tjr:'',
         messIdList:[],
         studentIDS:[]
