@@ -122,6 +122,11 @@
             <!--查询-->
           </Button>
         </Col>
+        <Col span="2" align="center">
+          <Button type="primary" @click="plzf">
+            批量支付
+          </Button>
+        </Col>
       </Row>
       <Table :height="500" stripe
              size="small"
@@ -280,7 +285,7 @@
       <div>
         <Row>
           <Col>
-            <Table size="small" :columns="columns2" :data="QRmess.jls"></Table>
+            <!--<Table size="small" :columns="columns2" :data="QRmess.jls"></Table>-->
             <!--            <Card>-->
             <!--              <p slot="title" style="font-size: 20px;font-weight: 600">未支付订单</p>-->
             <!--              <p v-for="(item,index) in QRmess.jls" :key="index" style="font-size: 18px;font-weight: 500;padding: 10px">{{item.clBh}}号车,时长{{item.sc}}分钟,费用{{item.lcFy}}元</p>-->
@@ -416,11 +421,11 @@
               return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
             }
           },
-          // {
-          //     type: 'selection',
-          //     width: 60,
-          //     align: 'center'
-          // },
+          {
+              type: 'selection',
+              width: 60,
+              align: 'center'
+          },
           {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
           // {title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90,},
           // {
