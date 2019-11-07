@@ -105,7 +105,7 @@
           {title: '累计时长', key: '1',render:(h,p)=>{
 
               }},
-          {title: '累计费用', key: 'lcFy', unit: '元'},
+          {title: '累计费用', key: 'lcFy'},
           {title: '备注', key: 'bz'},
 
         ],
@@ -125,8 +125,9 @@
         if( this.info.jssj!=''){
             this.info.jssj = this.info.jssj.substring(0,16)
         }
+        this.info.lcFy += "元"
       this.info.yhje = 8.33*5
-        this.info.bz = this.info.xySl+' 人'
+        this.info.bz = this.info.xySl+'人'
       let v = this;
       setTimeout(() => {
         let canvas = document.getElementById("barcode");
