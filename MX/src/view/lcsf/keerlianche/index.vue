@@ -155,10 +155,10 @@
 <!--    </Button>-->
 <!--    </ButtonGroup>-->
 
-<!--    <RadioGroup v-model="activeName" type="button">-->
-<!--      <Radio label="1"  @click="activeName='1'"> 科二模训</Radio>-->
-<!--      <Radio label="2" @click="activeName='2'">模训记录</Radio>-->
-<!--    </RadioGroup>-->
+    <!--<RadioGroup v-model="activeName" type="button">-->
+      <!--<Radio label="1"  @click="activeName='1'"> 科二模训</Radio>-->
+      <!--<Radio label="2" @click="activeName='2'">模训记录</Radio>-->
+    <!--</RadioGroup>-->
 
 
     <Row type="flex" style="padding: 10px 0" v-if="activeName=='1'">
