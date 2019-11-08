@@ -238,7 +238,7 @@
         <!--        </Col>-->
 
 
-        <Col span="3">
+        <Col span="5" style="margin-right: -40px">
           <DatePicker v-model="dateRange.jssj"
                       @on-change="param.jssjInRange = v.util.dateRangeChange(dateRange.jssj)"
                       @on-open-change="pageSizeChange(param.pageSize)"
