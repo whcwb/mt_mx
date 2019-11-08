@@ -21,6 +21,7 @@ public class BizJlCz {
     @Column(name = "je")
     private int je;
 
+
     private String cjsj;
 
     private String type;
