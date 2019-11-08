@@ -146,14 +146,19 @@
     <!--</TabPane>-->
     <!--</Tabs>-->
 
-    <ButtonGroup :size="buttonSize">
-    <Button :size="buttonSize" type="primary" @click="activeName='1'">
-      科二模训
-    </Button>
-    <Button :size="buttonSize" type="primary" @click="activeName='2'">
-      模训记录
-    </Button>
-    </ButtonGroup>
+<!--    <ButtonGroup :size="buttonSize">-->
+<!--    <Button :size="buttonSize" type="primary" @click="activeName='1'">-->
+<!--      科二模训-->
+<!--    </Button>-->
+<!--    <Button :size="buttonSize" type="primary" @click="activeName='2'">-->
+<!--      模训记录-->
+<!--    </Button>-->
+<!--    </ButtonGroup>-->
+
+    <RadioGroup v-model="activeName" type="button">
+      <Radio label="1"  @click="activeName='1'"> 科二模训</Radio>
+      <Radio label="2" @click="activeName='2'">模训记录</Radio>
+    </RadioGroup>
 
 
     <Row type="flex" style="padding: 10px 0" v-if="activeName=='1'">
@@ -257,7 +262,7 @@
         </Col>
         <Col span="2" align="center">
           <Button type="primary" @click="plzf">
-            批量支付
+            确认支付
           </Button>
         </Col>
       </Row>
