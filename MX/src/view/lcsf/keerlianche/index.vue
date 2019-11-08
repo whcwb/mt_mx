@@ -1,154 +1,277 @@
 <template>
   <div class="box_col" style="position: relative">
-    <Menu mode="horizontal" :active-name="activeName" @on-select="MenuClick">
-      <MenuItem name="1">
-        <div style="font-weight: 700;font-size: 16px">
-          科二模训
-        </div>
-      </MenuItem>
-      <MenuItem name="2">
-        <div style="font-weight: 700;font-size: 16px">
-          模训记录
-        </div>
-      </MenuItem>
-    </Menu>
+    <!--<Menu mode="horizontal" :active-name="activeName" @on-select="MenuClick">-->
+      <!--<MenuItem name="1">-->
+        <!--<div style="font-weight: 700;font-size: 16px">-->
+          <!--科二模训-->
+        <!--</div>-->
+      <!--</MenuItem>-->
+      <!--<MenuItem name="2">-->
+        <!--<div style="font-weight: 700;font-size: 16px">-->
+          <!--模训记录-->
+        <!--</div>-->
+      <!--</MenuItem>-->
+    <!--</Menu>-->
 
-    <!--<Tabs type="card" :animated="false" @on-click="tabClick">-->
-      <!--<TabPane label="科二模训">-->
-        <!---->
-      <!--</TabPane>-->
+    <Tabs type="card" :animated="false" @on-click="tabClick">
+      <TabPane label="科二模训">
+        <Row type="flex" style="padding: 10px 0">
 
-      <!--<TabPane label="模训记录">-->
-       <!---->
-      <!--</TabPane>-->
-    <!--</Tabs>-->
+          <Col span="24">
+            <Row type="flex" justify="end" :gutter="8">
+              <!--          <Col  span="12" align="right" style="font-size: 24px;color: #2baee9">-->
+              <!--            <div @click="compName='keyypd'"> 当前排队中-->
+              <!--              <Button style="font-size: 20px;font-weight: 600" type="error">{{yyrs}}</Button>-->
+              <!--            </div>-->
+              <!--          </COl>-->
+              <!--          <Col span="2" align="center">-->
+              <!--            <Button type="success" style="border-radius: 35px;font-size: 20px" @click="yyClick">预</Button>-->
+              <!--          </Col>-->
+              <!--          <Col span="2" align="center">-->
+              <!--            <Button type="error" style="border-radius: 35px;font-size: 20px" @click="faCar">发</Button>-->
+              <!--          </Col>-->
+              <!--          <Col span="2" align="center">-->
+              <!--            <Button size="large" style="border-radius: 35px;font-size: 20px" type="warning" @click="giveCar.overCar(v,'2'),printClose=true">-->
+              <!--              还-->
+              <!--            </Button>-->
+              <!--          </Col>-->
+              <!--          <Col span="3">-->
+              <!--            <Input size="large" v-model="formData.clBh" clearable  placeholder="请输入车辆编号"/>-->
+              <!--          </Col>-->
+              <!--          <Col span="3">-->
+              <!--            <Select v-model="formData.clCx" clearable @on-change="getCarList">-->
+              <!--              <Option  v-for="item in dictUtil.getByCode(v,'ZDCLK0040')" :value="item.key" :key="item.index">{{ item.val }}</Option>-->
+              <!--            </Select>-->
+              <!--          </Col>-->
+              <!--          <Col span="3">-->
+              <!--            <Select v-model="formData.clZt" clearable @on-change="getCarList">-->
+              <!--              <Option v-if="item.key!='02' && item.key!='03'" v-for="item in dictUtil.getByCode(v,'ZDCLK1044')" :value="item.key" :key="item.index">{{ item.val }}</Option>-->
+              <!--            </Select>-->
+              <!--          </Col>-->
+              <!--          <Col span="1" align="center">-->
+              <!--            <Button type="primary" @click="getCarList">-->
+              <!--              <Icon type="md-search"></Icon>-->
+              <!--              &lt;!&ndash;查询&ndash;&gt;-->
+              <!--            </Button>-->
+              <!--          </Col>-->
+              <!--        <pager-tit title="科二模训" style="float: left"></pager-tit>-->
 
-    <Row type="flex" style="padding: 10px 0" v-show="activeName=='1'">
-
-      <Col span="24">
-        <Row type="flex" justify="end" :gutter="8">
-          <!--          <Col  span="12" align="right" style="font-size: 24px;color: #2baee9">-->
-          <!--            <div @click="compName='keyypd'"> 当前排队中-->
-          <!--              <Button style="font-size: 20px;font-weight: 600" type="error">{{yyrs}}</Button>-->
-          <!--            </div>-->
-          <!--          </COl>-->
-          <!--          <Col span="2" align="center">-->
-          <!--            <Button type="success" style="border-radius: 35px;font-size: 20px" @click="yyClick">预</Button>-->
-          <!--          </Col>-->
-          <!--          <Col span="2" align="center">-->
-          <!--            <Button type="error" style="border-radius: 35px;font-size: 20px" @click="faCar">发</Button>-->
-          <!--          </Col>-->
-          <!--          <Col span="2" align="center">-->
-          <!--            <Button size="large" style="border-radius: 35px;font-size: 20px" type="warning" @click="giveCar.overCar(v,'2'),printClose=true">-->
-          <!--              还-->
-          <!--            </Button>-->
-          <!--          </Col>-->
-          <!--          <Col span="3">-->
-          <!--            <Input size="large" v-model="formData.clBh" clearable  placeholder="请输入车辆编号"/>-->
-          <!--          </Col>-->
-          <!--          <Col span="3">-->
-          <!--            <Select v-model="formData.clCx" clearable @on-change="getCarList">-->
-          <!--              <Option  v-for="item in dictUtil.getByCode(v,'ZDCLK0040')" :value="item.key" :key="item.index">{{ item.val }}</Option>-->
-          <!--            </Select>-->
-          <!--          </Col>-->
-          <!--          <Col span="3">-->
-          <!--            <Select v-model="formData.clZt" clearable @on-change="getCarList">-->
-          <!--              <Option v-if="item.key!='02' && item.key!='03'" v-for="item in dictUtil.getByCode(v,'ZDCLK1044')" :value="item.key" :key="item.index">{{ item.val }}</Option>-->
-          <!--            </Select>-->
-          <!--          </Col>-->
-          <!--          <Col span="1" align="center">-->
-          <!--            <Button type="primary" @click="getCarList">-->
-          <!--              <Icon type="md-search"></Icon>-->
-          <!--              &lt;!&ndash;查询&ndash;&gt;-->
-          <!--            </Button>-->
-          <!--          </Col>-->
-          <!--        <pager-tit title="科二模训" style="float: left"></pager-tit>-->
-
-          <div style="float: left;margin-top: 8px;cursor: pointer;margin-right: 12px">
+              <div style="float: left;margin-top: 8px;cursor: pointer;margin-right: 12px">
             <span
               style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
               @click="formData.clZt = '',getCarList()">总计{{carList.length}}台</span>
-            <span
-              style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;"
-            <span
-              style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;"
-              @click="formData.clZt = '01',getCarList()">
+                <span
+                  style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;"
+                <span
+                  style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;"
+                  @click="formData.clZt = '01',getCarList()">
             在训{{zxNum}}台</span>
-            <span
-              style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;cursor: pointer;"
-              @click="formData.clZt = '00',getCarList()"
-            >空闲{{xxNum}}台</span>
-          </div>
+                <span
+                  style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;cursor: pointer;"
+                  @click="formData.clZt = '00',getCarList()"
+                >空闲{{xxNum}}台</span>
+              </div>
 
-          <Button type="primary" @click="getCarList" style="margin-right: 10px">
-            <Icon type="md-refresh"/>
-            <!--查询-->
-          </Button>
+              <Button type="primary" @click="getCarList" style="margin-right: 10px">
+                <Icon type="md-refresh"/>
+                <!--查询-->
+              </Button>
 
+            </Row>
+          </Col>
         </Row>
-      </Col>
-    </Row>
 
-    <Row v-show="activeName=='1'">
-      <Table ref="table" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
-    </Row>
+        <Row>
+          <Table ref="table" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
+        </Row>
+      </TabPane>
 
-    <div class="boxbackborder box_col" v-show="activeName=='2'" >
-      <Row type="flex" justify="end" :gutter="8" style="margin:8px 0;">
-        <!--        <Col span="6" style="padding: 10px 20px">-->
-        <!--          <Button type="warning" @click="plzf">批量结算</Button>-->
-        <!--        </Col>-->
+      <TabPane label="模训记录">
+        <div class="boxbackborder box_col" >
+          <Row type="flex" justify="end" :gutter="8" style="margin:8px 0;">
+            <!--        <Col span="6" style="padding: 10px 20px">-->
+            <!--          <Button type="warning" @click="plzf">批量结算</Button>-->
+            <!--        </Col>-->
 
 
-        <Col span="3">
-          <DatePicker v-model="dateRange.jssj"
-                      @on-change="param.jssjInRange = v.util.dateRangeChange(dateRange.jssj)"
-                      @on-open-change="pageSizeChange(param.pageSize)"
-                      format="yyyy-MM-dd"
-                      split-panels
-                      type="daterange" :placeholder="'请输入时间'"></DatePicker>
-        </Col>
-        <Col span="3">
-          <Input size="large" v-model="param.clBh" clearable placeholder="请输入车辆编号"
-                 @on-enter="pageSizeChange(param.pageSize)"/>
-        </Col>
-        <Col span="3">
-          <Input size="large" v-model="param.jlXmLike" clearable placeholder="请输入教练姓名"
-                 @on-enter="pageSizeChange(param.pageSize)"/>
-        </Col>
-        <Col span="1" align="center">
-          <Button type="primary" @click="pageSizeChange(param.pageSize)">
-            <Icon type="md-search"></Icon>
-            <!--查询-->
-          </Button>
-        </Col>
-        <Col span="2" align="center">
-          <Button type="primary" @click="plzf">
-            批量支付
-          </Button>
-        </Col>
-      </Row>
-      <Table :height="500" stripe
-             size="small"
-             @on-select="tabcheck"
-             :columns="tableColumns" :data="pageData"></Table>
-      <!--      <table-area :parent="v"></table-area>-->
-      <Row class="margin-top-10 pageSty">
-        <div style="text-align: right;padding: 6px 0">
-          <Page :total=param.total
-                :current=param.pageNum
-                :page-size=param.pageSize
-                :page-size-opts=[8,10,20,30,40,50]
-                show-total
-                show-elevator
-                show-sizer
-                placement='top'
-                @on-page-size-change='(n)=>{pageSizeChange(n)}'
-                @on-change='(n)=>{pageChange(n)}'>
-          </Page>
+            <Col span="3">
+              <DatePicker v-model="dateRange.jssj"
+                          @on-change="param.jssjInRange = v.util.dateRangeChange(dateRange.jssj)"
+                          @on-open-change="pageSizeChange(param.pageSize)"
+                          format="yyyy-MM-dd"
+                          split-panels
+                          type="daterange" :placeholder="'请输入时间'"></DatePicker>
+            </Col>
+            <Col span="3">
+              <Input size="large" v-model="param.clBh" clearable placeholder="请输入车辆编号"
+                     @on-enter="pageSizeChange(param.pageSize)"/>
+            </Col>
+            <Col span="3">
+              <Input size="large" v-model="param.jlXmLike" clearable placeholder="请输入教练姓名"
+                     @on-enter="pageSizeChange(param.pageSize)"/>
+            </Col>
+            <Col span="1" align="center">
+              <Button type="primary" @click="pageSizeChange(param.pageSize)">
+                <Icon type="md-search"></Icon>
+                <!--查询-->
+              </Button>
+            </Col>
+            <Col span="2" align="center">
+              <Button type="primary" @click="plzf">
+                批量支付
+              </Button>
+            </Col>
+          </Row>
+          <Table :height="500" stripe
+                 size="small"
+                 @on-select="tabcheck"
+                 :columns="tableColumns" :data="pageData"></Table>
+          <!--      <table-area :parent="v"></table-area>-->
+          <Row class="margin-top-10 pageSty">
+            <div style="text-align: right;padding: 6px 0">
+              <Page :total=param.total
+                    :current=param.pageNum
+                    :page-size=param.pageSize
+                    :page-size-opts=[8,10,20,30,40,50]
+                    show-total
+                    show-elevator
+                    show-sizer
+                    placement='top'
+                    @on-page-size-change='(n)=>{pageSizeChange(n)}'
+                    @on-change='(n)=>{pageChange(n)}'>
+              </Page>
+            </div>
+          </Row>
         </div>
-      </Row>
-    </div>
+      </TabPane>
+    </Tabs>
+
+    <!--<Row type="flex" style="padding: 10px 0" v-show="activeName=='1'">-->
+
+      <!--<Col span="24">-->
+        <!--<Row type="flex" justify="end" :gutter="8">-->
+          <!--&lt;!&ndash;          <Col  span="12" align="right" style="font-size: 24px;color: #2baee9">&ndash;&gt;-->
+          <!--&lt;!&ndash;            <div @click="compName='keyypd'"> 当前排队中&ndash;&gt;-->
+          <!--&lt;!&ndash;              <Button style="font-size: 20px;font-weight: 600" type="error">{{yyrs}}</Button>&ndash;&gt;-->
+          <!--&lt;!&ndash;            </div>&ndash;&gt;-->
+          <!--&lt;!&ndash;          </COl>&ndash;&gt;-->
+          <!--&lt;!&ndash;          <Col span="2" align="center">&ndash;&gt;-->
+          <!--&lt;!&ndash;            <Button type="success" style="border-radius: 35px;font-size: 20px" @click="yyClick">预</Button>&ndash;&gt;-->
+          <!--&lt;!&ndash;          </Col>&ndash;&gt;-->
+          <!--&lt;!&ndash;          <Col span="2" align="center">&ndash;&gt;-->
+          <!--&lt;!&ndash;            <Button type="error" style="border-radius: 35px;font-size: 20px" @click="faCar">发</Button>&ndash;&gt;-->
+          <!--&lt;!&ndash;          </Col>&ndash;&gt;-->
+          <!--&lt;!&ndash;          <Col span="2" align="center">&ndash;&gt;-->
+          <!--&lt;!&ndash;            <Button size="large" style="border-radius: 35px;font-size: 20px" type="warning" @click="giveCar.overCar(v,'2'),printClose=true">&ndash;&gt;-->
+          <!--&lt;!&ndash;              还&ndash;&gt;-->
+          <!--&lt;!&ndash;            </Button>&ndash;&gt;-->
+          <!--&lt;!&ndash;          </Col>&ndash;&gt;-->
+          <!--&lt;!&ndash;          <Col span="3">&ndash;&gt;-->
+          <!--&lt;!&ndash;            <Input size="large" v-model="formData.clBh" clearable  placeholder="请输入车辆编号"/>&ndash;&gt;-->
+          <!--&lt;!&ndash;          </Col>&ndash;&gt;-->
+          <!--&lt;!&ndash;          <Col span="3">&ndash;&gt;-->
+          <!--&lt;!&ndash;            <Select v-model="formData.clCx" clearable @on-change="getCarList">&ndash;&gt;-->
+          <!--&lt;!&ndash;              <Option  v-for="item in dictUtil.getByCode(v,'ZDCLK0040')" :value="item.key" :key="item.index">{{ item.val }}</Option>&ndash;&gt;-->
+          <!--&lt;!&ndash;            </Select>&ndash;&gt;-->
+          <!--&lt;!&ndash;          </Col>&ndash;&gt;-->
+          <!--&lt;!&ndash;          <Col span="3">&ndash;&gt;-->
+          <!--&lt;!&ndash;            <Select v-model="formData.clZt" clearable @on-change="getCarList">&ndash;&gt;-->
+          <!--&lt;!&ndash;              <Option v-if="item.key!='02' && item.key!='03'" v-for="item in dictUtil.getByCode(v,'ZDCLK1044')" :value="item.key" :key="item.index">{{ item.val }}</Option>&ndash;&gt;-->
+          <!--&lt;!&ndash;            </Select>&ndash;&gt;-->
+          <!--&lt;!&ndash;          </Col>&ndash;&gt;-->
+          <!--&lt;!&ndash;          <Col span="1" align="center">&ndash;&gt;-->
+          <!--&lt;!&ndash;            <Button type="primary" @click="getCarList">&ndash;&gt;-->
+          <!--&lt;!&ndash;              <Icon type="md-search"></Icon>&ndash;&gt;-->
+          <!--&lt;!&ndash;              &lt;!&ndash;查询&ndash;&gt;&ndash;&gt;-->
+          <!--&lt;!&ndash;            </Button>&ndash;&gt;-->
+          <!--&lt;!&ndash;          </Col>&ndash;&gt;-->
+          <!--&lt;!&ndash;        <pager-tit title="科二模训" style="float: left"></pager-tit>&ndash;&gt;-->
+
+          <!--<div style="float: left;margin-top: 8px;cursor: pointer;margin-right: 12px">-->
+            <!--<span-->
+              <!--style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"-->
+              <!--@click="formData.clZt = '',getCarList()">总计{{carList.length}}台</span>-->
+            <!--<span-->
+              <!--style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;"-->
+            <!--<span-->
+              <!--style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;"-->
+              <!--@click="formData.clZt = '01',getCarList()">-->
+            <!--在训{{zxNum}}台</span>-->
+            <!--<span-->
+              <!--style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;cursor: pointer;"-->
+              <!--@click="formData.clZt = '00',getCarList()"-->
+            <!--&gt;空闲{{xxNum}}台</span>-->
+          <!--</div>-->
+
+          <!--<Button type="primary" @click="getCarList" style="margin-right: 10px">-->
+            <!--<Icon type="md-refresh"/>-->
+            <!--&lt;!&ndash;查询&ndash;&gt;-->
+          <!--</Button>-->
+
+        <!--</Row>-->
+      <!--</Col>-->
+    <!--</Row>-->
+
+    <!--<Row v-show="activeName=='1'">-->
+      <!--<Table ref="table" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>-->
+    <!--</Row>-->
+
+    <!--<div class="boxbackborder box_col" v-show="activeName=='2'" >-->
+      <!--<Row type="flex" justify="end" :gutter="8" style="margin:8px 0;">-->
+        <!--&lt;!&ndash;        <Col span="6" style="padding: 10px 20px">&ndash;&gt;-->
+        <!--&lt;!&ndash;          <Button type="warning" @click="plzf">批量结算</Button>&ndash;&gt;-->
+        <!--&lt;!&ndash;        </Col>&ndash;&gt;-->
+
+
+        <!--<Col span="3">-->
+          <!--<DatePicker v-model="dateRange.jssj"-->
+                      <!--@on-change="param.jssjInRange = v.util.dateRangeChange(dateRange.jssj)"-->
+                      <!--@on-open-change="pageSizeChange(param.pageSize)"-->
+                      <!--format="yyyy-MM-dd"-->
+                      <!--split-panels-->
+                      <!--type="daterange" :placeholder="'请输入时间'"></DatePicker>-->
+        <!--</Col>-->
+        <!--<Col span="3">-->
+          <!--<Input size="large" v-model="param.clBh" clearable placeholder="请输入车辆编号"-->
+                 <!--@on-enter="pageSizeChange(param.pageSize)"/>-->
+        <!--</Col>-->
+        <!--<Col span="3">-->
+          <!--<Input size="large" v-model="param.jlXmLike" clearable placeholder="请输入教练姓名"-->
+                 <!--@on-enter="pageSizeChange(param.pageSize)"/>-->
+        <!--</Col>-->
+        <!--<Col span="1" align="center">-->
+          <!--<Button type="primary" @click="pageSizeChange(param.pageSize)">-->
+            <!--<Icon type="md-search"></Icon>-->
+            <!--&lt;!&ndash;查询&ndash;&gt;-->
+          <!--</Button>-->
+        <!--</Col>-->
+        <!--<Col span="2" align="center">-->
+          <!--<Button type="primary" @click="plzf">-->
+            <!--批量支付-->
+          <!--</Button>-->
+        <!--</Col>-->
+      <!--</Row>-->
+      <!--<Table :height="500" stripe-->
+             <!--size="small"-->
+             <!--@on-select="tabcheck"-->
+             <!--:columns="tableColumns" :data="pageData"></Table>-->
+      <!--&lt;!&ndash;      <table-area :parent="v"></table-area>&ndash;&gt;-->
+      <!--<Row class="margin-top-10 pageSty">-->
+        <!--<div style="text-align: right;padding: 6px 0">-->
+          <!--<Page :total=param.total-->
+                <!--:current=param.pageNum-->
+                <!--:page-size=param.pageSize-->
+                <!--:page-size-opts=[8,10,20,30,40,50]-->
+                <!--show-total-->
+                <!--show-elevator-->
+                <!--show-sizer-->
+                <!--placement='top'-->
+                <!--@on-page-size-change='(n)=>{pageSizeChange(n)}'-->
+                <!--@on-change='(n)=>{pageChange(n)}'>-->
+          <!--</Page>-->
+        <!--</div>-->
+      <!--</Row>-->
+    <!--</div>-->
 
     <Modal
       title="分配车辆"
