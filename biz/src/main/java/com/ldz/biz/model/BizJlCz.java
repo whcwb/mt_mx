@@ -22,7 +22,7 @@ public class BizJlCz {
     @Column(name = "jl_id")
     private String jlId;
     /**
-     *  金额 (充值消费金额)
+     *  金额 (充值 或 消费金额)
      */
     @Column(name = "je")
     private int je;
