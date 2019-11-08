@@ -2,7 +2,7 @@
   <div class="boxbackborder box_col" style="padding-top:16px">
     <search-bar :parent="v" :showDownLoadButton="true" :show-create-button="false" :buttons="searchBarButtons" @print="componentName = 'print'"
                 @exportExcel="exportExcel"></search-bar>
-    <table-area :parent="v" :TabHeight="AF.getPageHeight()-380" :pager="false"></table-area>
+    <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
     <Row>
       <Col span="24" align="right">
         <div style="font-size: 24px;font-weight: 600">

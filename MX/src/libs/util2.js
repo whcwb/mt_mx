@@ -162,7 +162,7 @@ util.getdateStrD = ()=>{
 util.dateRangeChange = (s)=>{
   console.log(s)
     if (s[0] == '')return '';
-    return s[0].format("yyyy-MM-dd")+','+s[1].format("yyyy-MM-dd");
+    return s[0].format("yyyy-MM-dd")+' 00:00:00,'+s[1].format("yyyy-MM-dd")+' 23:59:59';
 }
 util.initTableHeight = (v)=>{
     v.tableHeight = window.innerHeight - 240

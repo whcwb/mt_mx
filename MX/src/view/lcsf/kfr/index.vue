@@ -97,6 +97,18 @@
 
       </Row>
 
+      <Row>
+        <Col span="24" align="right">
+          <span style="font-size: 24px;font-weight: 600">
+            人数：<span style="color: #ed3f14"> {{rs}} </span> 人
+          </span>
+          &nbsp&nbsp&nbsp
+          <span style="font-size: 24px;font-weight: 600">
+            合计：<span style="color: #ed3f14"> {{hj}} </span> 元
+          </span>
+        </Col>
+      </Row>
+
     </div>
     <!--<div class="box_col_auto" style="background-color: #f2f2f2">-->
     <!--<div class="box_row_list">-->
@@ -273,6 +285,8 @@
     },
     data() {
       return {
+        hj:0,
+        rs:0,
         mxlx: '',
         total: 0,
         giveCar: giveCar,
@@ -535,10 +549,15 @@
         return r + m + '分钟'
       },
       afterPager(list) {
+        this.hj = 0
+        this.rs=0
         for (let r of list) {
           r.sc = this.parseTime(r.sc)
           r.kssj = r.kssj.substring(0, 16)
           r.jssj = r.jssj.substring(0, 16)
+
+          this.hj = this.hj + r.lcFy;
+          this.rs=this.rs+r.xySl
         }
       },
       ...mapMutations([
