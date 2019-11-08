@@ -127,7 +127,7 @@
                     if (this.info.lcFy ==''){
 
                     }else {
-                        this.info.lcFy = this.info.lcFy+'元'
+                        this.info.lcFy = this.info.lcFy+' 元'
                     }
 
                     // if (this.info.fdr.indexOf('1')>=0){
@@ -156,7 +156,7 @@
                 this.info.lcFy = ''
             }
         }
-      if(this.info.lcFy == '元'){
+      if(this.info.lcFy.indexOf('元') == 0){
           this.info.lcFy= " "
       }
 

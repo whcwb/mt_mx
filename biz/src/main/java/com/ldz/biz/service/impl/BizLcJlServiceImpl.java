@@ -478,7 +478,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             condition = new SimpleCondition(BizLcJl.class);
             condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
             condition.startWith(BizLcJl.InnerColumn.kssj, DateTime.now().toString("yyyy-MM-dd"));
-            condition.and().andNotEqualTo(BizLcJl.InnerColumn.lcLx.name(), "30");
             List<BizLcJl> bizLcJls = findByCondition(condition);
             Set<String> set = bizLcJls.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
             SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
@@ -1253,12 +1252,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             // 计算余额
             str += ",卡上余额" + (wxjl.getCardJe() - card) + "元";
         }
-        // 查询当天所有非开放日记录
-        SimpleCondition condition1 = new SimpleCondition(BizLcJl.class);
-        condition1.eq(BizLcJl.InnerColumn.jlId, jls.get(0).getJlId());
-        condition1.startWith(BizLcJl.InnerColumn.kssj, DateTime.now().toString("yyyy-MM-dd"));
-        condition1.and().andNotEqualTo(BizLcJl.InnerColumn.lcLx.name(), "30");
-        List<BizLcJl> lcJls = findByCondition(condition1);
         BizLcJl lcJl = new BizLcJl();
         lcJl.setId(ids);
         lcJl.setFdr(fdr);
@@ -1271,7 +1264,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         lcJl.setJlXm(wxjl.getJlXm());
         lcJl.setLcKm(jls.get(0).getLcKm());
         lcJl.setKm(lcJl.getLcKm());
-        lcJl.setJls(lcJls);
         lcJl.setClBh(jls.stream().map(BizLcJl::getClBh).collect(Collectors.joining(",")));
         lcJl.setJlCx(jls.stream().map(BizLcJl::getJlCx).collect(Collectors.joining(",")));
         return ApiResponse.success(lcJl);
@@ -1498,7 +1490,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             fdr += "3";
 
         }
-        str += "应付现金" + jl.getXjje() +"元";
+        str += "应付现金" + jl.getXjje();
         if (fdr.indexOf("2") != -1) {
             // 计算余额
             str += ",卡上余额" + wxjl.getCardJe() + "元";
