@@ -7,19 +7,28 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+/**
+ * 教练流水记录表
+ */
 @Table(name = "BIZ_JL_CZ")
 @Data
 public class BizJlCz {
 
     @Id
     private String id;
-
+    /**
+     * 教练Id
+     */
     @Column(name = "jl_id")
     private String jlId;
-
+    /**
+     *  金额 (充值消费金额)
+     */
     @Column(name = "je")
     private int je;
-
+    /**
+     * 创建时间
+     */
     private String cjsj;
 
     private String type;
