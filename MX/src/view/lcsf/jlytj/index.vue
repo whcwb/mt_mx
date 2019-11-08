@@ -17,7 +17,7 @@
       </Button>
     </div>
     <!--<search-bar :parent="v" :show-create-button="false" :buttons="searchBarButtons" @print="componentName = 'print'" :show-search-button="false"></search-bar>-->
-    <table-area :parent="v" :TabHeight="AF.getPageHeight()-320" :pager="false"></table-area>
+    <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
     <Row>
       <Col span="24" align="right">
         <div style="font-size: 24px;font-weight: 600">
