@@ -74,10 +74,14 @@ public class BizLcCl implements Serializable {
      */
     @Column(name = "cl_cx")
     private String clCx;
-
+    /**
+     * 车辆图片路径
+     */
     @Column(name = "cl_img")
     private String clImg;
-
+    /**
+     * 车辆绑定卡号
+     */
     @Column(name = "card_no")
     private String cardNo;
 
@@ -119,8 +123,6 @@ public class BizLcCl implements Serializable {
     @Transient
     private SysZdxm zdxm;
     private static final long serialVersionUID = 1L;
-
-
 
     public enum InnerColumn {
         id("ID"),
