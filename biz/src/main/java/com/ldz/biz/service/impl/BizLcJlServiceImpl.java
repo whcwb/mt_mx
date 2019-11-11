@@ -932,6 +932,11 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
     @Override
     public void pagerExcel(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Map<String,String> lxMap = new HashMap<>();
+        lxMap.put("00","计时");
+        lxMap.put("10", "按次");
+        lxMap.put("20", "培优");
+        lxMap.put("30", "开放日");
         String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
         String fileName = time + "-明细统计";
         LimitedCondition condition = getQueryCondition();
@@ -972,7 +977,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             dataMap.put(6, jl.getSc() + "");
             dataMap.put(7, jl.getJlJx());
             dataMap.put(8, jl.getXySl() + "");
-            dataMap.put(9, jl.getLcLx().equals("00") ? "计时" : "按次");
+            dataMap.put(9, lxMap.get(jl.getLcLx()));
             dataMap.put(10, jl.getLcFy() == null ? "0" : jl.getLcFy() + "");
             data.add(dataMap);
         }

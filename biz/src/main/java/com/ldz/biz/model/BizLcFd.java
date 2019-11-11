@@ -1,5 +1,7 @@
 package com.ldz.biz.model;
 
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -8,6 +10,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Table(name = "biz_lc_fd")
+@Data
 public class BizLcFd implements Serializable {
     @Id
     private String id;
@@ -32,27 +35,49 @@ public class BizLcFd implements Serializable {
      */
     private Integer fdsl;
 
+    /**
+     * 返点类型 (已废弃)
+     */
     private String fdlx;
-
+    /**
+     * 教练 id
+     */
     @Column(name = "jl_id")
     private String jlId;
-
+    /**
+     * 教练姓名
+     */
     @Column(name = "jl_xm")
     private String jlXm;
-
+    /**
+     * 确认时间
+     */
     private String qrsj;
-
+    /**
+     * 确认人
+     */
     private String qrr;
-
+    /**
+     * 练车记录ID  用逗号拼接
+     */
     @Column(name = "lc_id")
     private String lcId;
 
     @Transient
     private List<BizLcJl> jlList;
+    /**
+     * 练车费用 (可能是多条练车记录的总费用, 记录的支付现金金额)
+     */
     @Column(name = "lc_fy")
     private Integer lcFy;
+    /**
+     * 练车总时长
+     */
     @Column(name = "sc")
     private Integer sc;
+    /**
+     * 练车科目
+     */
     @Column(name = "lc_km")
     private String lcKm;
 
@@ -62,179 +87,7 @@ public class BizLcFd implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public int getXySl() {
-        return xySl;
-    }
 
-    public void setXySl(int xySl) {
-        this.xySl = xySl;
-    }
-
-    public Integer getLcFy() {
-        return lcFy;
-    }
-
-    public void setLcFy(Integer lcFy) {
-        this.lcFy = lcFy;
-    }
-
-    public Integer getSc() {
-        return sc;
-    }
-
-    public void setSc(Integer sc) {
-        this.sc = sc;
-    }
-
-    public String getLcKm() {
-        return lcKm;
-    }
-
-    public void setLcKm(String lcKm) {
-        this.lcKm = lcKm;
-    }
-
-    public String getFdlx() {
-        return fdlx;
-    }
-
-    public void setFdlx(String fdlx) {
-        this.fdlx = fdlx;
-    }
-
-    public String getJlId() {
-        return jlId;
-    }
-
-    public void setJlId(String jlId) {
-        this.jlId = jlId;
-    }
-
-    public String getJlXm() {
-        return jlXm;
-    }
-
-    public void setJlXm(String jlXm) {
-        this.jlXm = jlXm;
-    }
-
-    public String getQrsj() {
-        return qrsj;
-    }
-
-    public void setQrsj(String qrsj) {
-        this.qrsj = qrsj;
-    }
-
-    public String getQrr() {
-        return qrr;
-    }
-
-    public void setQrr(String qrr) {
-        this.qrr = qrr;
-    }
-
-    public String getLcId() {
-        return lcId;
-    }
-
-    public void setLcId(String lcId) {
-        this.lcId = lcId;
-    }
-
-    public List<BizLcJl> getJlList() {
-        return jlList;
-    }
-
-    public void setJlList(List<BizLcJl> jlList) {
-        this.jlList = jlList;
-    }
-
-    /**
-     * @return id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * 获取返点时间
-     *
-     * @return cjsj - 返点时间
-     */
-    public String getCjsj() {
-        return cjsj;
-    }
-
-    /**
-     * 设置返点时间
-     *
-     * @param cjsj 返点时间
-     */
-    public void setCjsj(String cjsj) {
-        this.cjsj = cjsj;
-    }
-
-    /**
-     * 获取返点人
-     *
-     * @return cjr - 返点人
-     */
-    public String getCjr() {
-        return cjr;
-    }
-
-    /**
-     * 设置返点人
-     *
-     * @param cjr 返点人
-     */
-    public void setCjr(String cjr) {
-        this.cjr = cjr;
-    }
-
-    /**
-     * 获取返点总金额
-     *
-     * @return fdje - 返点总金额
-     */
-    public Integer getFdje() {
-        return fdje;
-    }
-
-    /**
-     * 设置返点总金额
-     *
-     * @param fdje 返点总金额
-     */
-    public void setFdje(Integer fdje) {
-        this.fdje = fdje;
-    }
-
-    /**
-     * 获取返点数量
-     *
-     * @return fdsl - 返点数量
-     */
-    public Integer getFdsl() {
-        return fdsl;
-    }
-
-    /**
-     * 设置返点数量
-     *
-     * @param fdsl 返点数量
-     */
-    public void setFdsl(Integer fdsl) {
-        this.fdsl = fdsl;
-    }
 
     public enum InnerColumn {
         id("id"),

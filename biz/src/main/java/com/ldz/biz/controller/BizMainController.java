@@ -10,19 +10,19 @@ import com.ldz.biz.model.TraineeInformation;
 import com.ldz.biz.service.BizLcJlService;
 import com.ldz.biz.service.DataStaService;
 import com.ldz.biz.service.TraineeInformationService;
+import com.ldz.sys.mapper.SysZdxmMapper;
+import com.ldz.sys.model.SysZdxm;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-import com.ldz.util.commonUtil.DateUtils;
-import com.ldz.util.commonUtil.ExcelUtil;
-import com.ldz.util.commonUtil.HttpUtil;
-import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.commonUtil.*;
 import jxl.Workbook;
 import jxl.format.Alignment;
 import jxl.format.BorderLineStyle;
 import jxl.format.VerticalAlignment;
 import jxl.write.*;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -64,10 +65,36 @@ public class BizMainController {
 
     @Autowired
     private DataStaService staService;
+    @Autowired
+    private SysZdxmMapper zdxmMapper;
+    @Autowired
+    private SnowflakeIdWorker idWorker;
 
     @Autowired
     private JgService jgService;
 
+
+    @GetMapping("/saveJx")
+    public ApiResponse<String> saveJx() throws IOException {
+
+        File f = new File("C://jx.txt");
+        List<String> list = FileUtils.readLines(f, "UTF-8");
+        list.forEach(s -> {
+            if(StringUtils.isNotBlank(s)){
+                String[] split = s.split(",");
+                SysZdxm sysZdxm = new SysZdxm();
+                sysZdxm.setZdId(idWorker.nextId() +"");
+                sysZdxm.setZdlmdm("ZDCLK1017");
+                sysZdxm.setZddm(split[0]);
+                sysZdxm.setZdmc(split[1]);
+                sysZdxm.setCjsj(new Date());
+                sysZdxm.setCjr("admini-超级管理员");
+                zdxmMapper.insert(sysZdxm);
+            }
+        });
+
+        return ApiResponse.success();
+    }
 
 
     @RequestMapping(value = "/getTime", method = {RequestMethod.GET, RequestMethod.POST})

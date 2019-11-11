@@ -22,7 +22,7 @@ public class BizJlCz {
     @Column(name = "jl_id")
     private String jlId;
     /**
-     *  金额 (充值消费金额)
+     *  金额 (充值 或 消费金额)
      */
     @Column(name = "je")
     private int je;
@@ -30,26 +30,45 @@ public class BizJlCz {
      * 创建时间
      */
     private String cjsj;
-
+    /**
+     *  类型  00 : 卡片充值 10: 开放日充值 20: 卡片消费  30 : 抵扣消费
+     */
     private String type;
-
+    /**
+     * 充值前金额
+     */
     @Column(name = "czqje")
     private int czqje;
-
+    /**
+     * 充值后金额
+     */
     @Column(name = "czhje")
     private int czhje;
-
+    /**
+     * 摘要
+     */
     private String zy;
-
+    /**
+     * 备注
+     */
     private String bz;
+    /**
+     * 实付金额
+     */
     @Column(name = "sfje")
     private int sfje;
-
+    /**
+     * 票据编号
+     */
     private String pjbh;
-
+    /**
+     * 驾校名称
+     */
     @Transient
     private String jx;
-
+    /**
+     * 教练姓名
+     */
     @Transient
     private String xm;
 
