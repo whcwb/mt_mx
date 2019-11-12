@@ -4,7 +4,7 @@
                   @print="componentName = 'print'"
                   @exportExcel="exportExcel"
       ></search-bar>
-    <table-area :parent="v" :TabHeight="AF.getPageHeight()-380" :pager="false"></table-area>
+    <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
     <Row>
         <!--<Col span="1" align="center" >-->
           <!--<div @click="AnYearTJ" style="padding: 10px;border-radius: 35px;background-color: #10AEFF;color: white;font-size: 28px">年</div>-->
@@ -44,8 +44,8 @@
         choosedItem: null,
         componentName: '',
         searchBarButtons: [
-          {title: '打印', click: 'print'},
-          {title: '导出', click: 'exportExcel'}
+          // {title: '打印', click: 'print'},
+          // {title: '导出', click: 'exportExcel'}
         ],
         dateRange: {
           kssj: ''
@@ -58,7 +58,7 @@
             // }
           },
           {
-            title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90, render: (h, p) => {
+            title: '车辆编号', key: 'clBh', minWidth: 90, render: (h, p) => {
               return h('Tag', {
                 props: {
                   type: 'volcano',
@@ -68,10 +68,10 @@
           },
           {title: '开始时间', key: 'kssj', searchType: 'daterange', minWidth: 180},
           {title: '结束时间', key: 'jssj', minWidth: 180},
-          {title: '安全员姓名', key: 'zgXm', searchKey: 'zgXmLike', minWidth: 100},
-          {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
+          {title: '安全员姓名', key: 'zgXm', minWidth: 100},
+          {title: '教练姓名', key: 'jlXm',  minWidth: 90},
           {title: '时长', key: 'sc', append: '分钟', minWidth: 80, defaul: '0'},
-          {title: '驾校/队号', key: 'jlJx', searchKey: 'jlJxLike', minWidth: 90},
+          {title: '驾校/队号', key: 'jlJx',minWidth: 90},
           {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           {title: '计费类型', key: 'lcLx', minWidth: 90, dict: 'ZDCLK1048'},
           {title: '练车费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0', fixed: 'right'},

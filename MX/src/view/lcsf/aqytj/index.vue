@@ -9,7 +9,7 @@
         <!--查询-->
       </Button>
       <Button type="primary" @click="doPrint" style="margin-left: 10px;">打印</Button>
-      <Button type="primary" @click="exportExcel" style="margin-left: 10px;">导出</Button>
+      <Button type="primary" @click="exportExcel" style="margin-left: 10px;"><Icon type="ios-cloud-download" /></Button>
     </div>
     <div class="box_col_100" id="page1" style="width: 100%">
       <div style="text-align: center"><span style="font-weight: 600;font-size: 20px">科目三模拟训练工作日志</span></div>
