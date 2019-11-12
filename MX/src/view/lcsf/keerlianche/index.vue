@@ -238,14 +238,15 @@
         <!--        </Col>-->
 
 
-        <Col span="5" style="margin-right: -40px">
+        <!--<Col span="4">-->
           <DatePicker v-model="dateRange.jssj"
+                      style="margin-right: 5px"
                       @on-change="param.jssjInRange = v.util.dateRangeChange(dateRange.jssj)"
                       @on-open-change="pageSizeChange(param.pageSize)"
                       format="yyyy-MM-dd"
                       split-panels
                       type="daterange" :placeholder="'请输入时间'"></DatePicker>
-        </Col>
+        <!--</Col>-->
         <Col span="3">
           <Input size="large" v-model="param.clBh" clearable placeholder="请输入车辆编号"
                  @on-enter="pageSizeChange(param.pageSize)"/>
@@ -254,13 +255,13 @@
           <Input size="large" v-model="param.jlXmLike" clearable placeholder="请输入教练姓名"
                  @on-enter="pageSizeChange(param.pageSize)"/>
         </Col>
-        <Col span="1" align="center">
+        <Col span="1" align="center" style="margin-right: 10px;">
           <Button type="primary" @click="pageSizeChange(param.pageSize)">
             <Icon type="md-search"></Icon>
             <!--查询-->
           </Button>
         </Col>
-        <Col span="2" align="center">
+        <Col span="1" align="center" style="margin-right: 40px">
           <Button type="primary" @click="plzf">
             确认支付
           </Button>
