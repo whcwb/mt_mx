@@ -31,6 +31,7 @@
 <script>
   // import formData from './formModal.vue'
   import print from './print'
+  import Cookies from 'js-cookie'
 
   export default {
     name: 'char',
@@ -73,9 +74,15 @@
       }
     },
     created() {
+      if(Cookies.get("daterange")!=undefined&&Cookies.get("daterange")!=''){
+        this.dateRange.tjsj = Cookies.get("daterange").split(',')
+        this.param.tjsj = Cookies.get("daterange")
+      }else {
+        this.dateRange.tjsj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
+        this.param.tjsj = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
+      }
+
       this.param.lcKm = this.lcKm
-      this.dateRange.tjsj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
-      this.param.tjsj = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       this.util.initTable(this);
     },
     methods: {

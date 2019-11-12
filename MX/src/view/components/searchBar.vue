@@ -5,7 +5,7 @@
       <Input v-if="!r.searchType || r.searchType === 'text'" v-model="parent.param[r.searchKey]"
              :placeholder="'请输入'+r.title" style="width: 150px"></Input>
       <DatePicker v-else-if="r.searchType == 'daterange'" v-model="dateRange[r.key]"
-                  @on-change="param[r.key+'InRange'] = parent.util.dateRangeChange(dateRange[r.key])" confirm format="yyyy-MM-dd"
+                  @on-change="param[r.key+'InRange'] = parent.util.dateRangeChange(dateRange[r.key])" @on-ok="parent.util.getPageData(parent)" confirm format="yyyy-MM-dd"
                   type="daterange" :placeholder="'请输入'+r.title"  style="width: 200px"></DatePicker>
       <Select v-else-if="r.searchType == 'dict'" filterable clearable v-model="param[r.key]" :placeholder="r.title"
               style="width: 200px">
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+  import Cookies from 'js-cookie'
   export default {
     name: "searchBar",
 
@@ -95,6 +96,7 @@
       }
     },
     created() {
+
       if (this.parent.tableColumns) {
         this.columns = JSON.parse(JSON.stringify(this.parent.tableColumns));
         if (this.parent.searchParams){

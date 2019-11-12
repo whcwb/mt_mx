@@ -75,6 +75,7 @@
 <script>
 
   import print from './print'
+  import Cookies from 'js-cookie'
 
   export default {
     name: 'char',
@@ -100,8 +101,13 @@
       }
     },
     created() {
-      this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
-      this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
+      if(Cookies.get("daterange")!=undefined&&Cookies.get("daterange")!=''){
+        this.dateRange.kssj = Cookies.get("daterange").split(',')
+        this.param.kssjInRange = Cookies.get("daterange")
+      }else {
+        this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
+        this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
+      }
       this.getData();
     },
     methods: {

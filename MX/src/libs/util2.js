@@ -160,8 +160,11 @@ util.getdateStrD = ()=>{
         return h('div',s);
     }
 util.dateRangeChange = (s)=>{
-  console.log(s)
+  // console.log(s)
+  console.log(s[0].format("yyyy-MM-dd")+' 00:00:00,'+s[1].format("yyyy-MM-dd")+' 23:59:59')
     if (s[0] == '')return '';
+
+    Cookies.set("daterange",s[0].format("yyyy-MM-dd")+' 00:00:00,'+s[1].format("yyyy-MM-dd")+' 23:59:59');
     return s[0].format("yyyy-MM-dd")+' 00:00:00,'+s[1].format("yyyy-MM-dd")+' 23:59:59';
 }
 util.initTableHeight = (v)=>{

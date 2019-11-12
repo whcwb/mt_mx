@@ -8,7 +8,7 @@
         </div>
       </MenuItem>
     </Menu>
-    <search-bar :parent="v" :show-create-button="false"></search-bar>
+    <search-bar :parent="v" :show-create-button="false" :showDownLoadButton="false"></search-bar>
     <table-area :parent="v"></table-area>
     <component :is="componentName"></component>
   </div>
