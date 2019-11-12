@@ -16,7 +16,7 @@
 
 
 
-    <Row type="flex" style="padding: 10px 0">
+    <Row type="flex">
       <Col span="4"><pager-tit title="科二模训" style="float: left"></pager-tit></Col>
       <Col span="20">
         <Row type="flex" justify="end" :gutter="8">
