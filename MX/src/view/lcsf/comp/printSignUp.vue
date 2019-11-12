@@ -102,7 +102,6 @@
         padding: 2px 0;
         font-size: 14px;
       }
-
     }
   }
 </style>
@@ -287,7 +286,7 @@
         this.glyxm = this.hisPrintMess.xm
         this.money = this.hisPrintMess.sfje
         this.money1 = this.hisPrintMess.je
-        this.bz = this.hisPrintMess.bz + '元'
+        this.bz = this.hisPrintMess.bz
         this.getNum()
       console.log('數據傳遞', this.printMess);
     },
