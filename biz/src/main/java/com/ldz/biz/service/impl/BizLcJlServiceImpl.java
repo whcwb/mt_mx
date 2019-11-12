@@ -478,6 +478,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             condition = new SimpleCondition(BizLcJl.class);
             condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
             condition.startWith(BizLcJl.InnerColumn.kssj, DateTime.now().toString("yyyy-MM-dd"));
+            condition.and().andNotEqualTo(BizLcJl.InnerColumn.lcLx.name(), "30");
+            condition.eq(BizLcJl.InnerColumn.lcKm, lcJl.getLcKm());
             List<BizLcJl> bizLcJls = findByCondition(condition);
             Set<String> set = bizLcJls.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
             SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
@@ -1206,6 +1208,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         List<String> set = jls.stream().map(BizLcJl::getJlId).distinct().collect(Collectors.toList());
         int size = set.size();
         RuntimeCheck.ifTrue(size > 1, "所选记录为多个教练的练车记录 ,请重新选择");
+        Set<String> lckms = jls.stream().map(BizLcJl::getLcKm).collect(Collectors.toSet());
+        RuntimeCheck.ifTrue(lckms.size() > 1 , "请将科目二和科目三的费用分开支付");
         // 总费用
         int sum = jls.stream().map(BizLcJl::getLcFy).mapToInt(value -> value).sum();
         BizLcWxjl wxjl = wxjlService.findById(set.get(0));
@@ -1257,6 +1261,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             // 计算余额
             str += ",卡上余额" + (wxjl.getCardJe() - card) + "元";
         }
+        // 查询当天所有非开放日记录
+        SimpleCondition condition1 = new SimpleCondition(BizLcJl.class);
+        condition1.eq(BizLcJl.InnerColumn.jlId, jls.get(0).getJlId());
+        condition1.startWith(BizLcJl.InnerColumn.kssj, DateTime.now().toString("yyyy-MM-dd"));
+        condition1.and().andNotEqualTo(BizLcJl.InnerColumn.lcLx.name(), "30");
+        condition.eq(BizLcJl.InnerColumn.lcKm, jls.get(0).getLcKm());
+        List<BizLcJl> lcJls = findByCondition(condition1);
         BizLcJl lcJl = new BizLcJl();
         lcJl.setId(ids);
         lcJl.setFdr(fdr);
@@ -1269,6 +1280,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         lcJl.setJlXm(wxjl.getJlXm());
         lcJl.setLcKm(jls.get(0).getLcKm());
         lcJl.setKm(lcJl.getLcKm());
+        lcJl.setJls(lcJls);
         lcJl.setClBh(jls.stream().map(BizLcJl::getClBh).collect(Collectors.joining(",")));
         lcJl.setJlCx(jls.stream().map(BizLcJl::getJlCx).collect(Collectors.joining(",")));
         return ApiResponse.success(lcJl);
@@ -1346,8 +1358,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                         jl.setXjje(0);
                         jl.setCardje(0);
                     } else {
+
                         jl.setXjje(Math.abs(jlye));
                         jl.setKfje(jl.getLcFy() + jlye);
+                        jlye = 0;
                         jl.setCardje(0);
                     }
                 } else {
@@ -1396,6 +1410,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     } else {
                         jl.setXjje(Math.abs(wxjlCardJe));
                         jl.setKfje(jl.getLcFy() + wxjlCardJe);
+                        wxjlCardJe = 0;
                         jl.setCardje(0);
                     }
                 } else {
