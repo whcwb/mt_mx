@@ -266,7 +266,7 @@
           </Button>
         </Col>
       </Row>
-      <Table :height="500" stripe
+      <Table :height="680" stripe
              size="small"
              @on-select="tabcheck"
              :columns="tableColumns" :data="pageData"></Table>
@@ -276,7 +276,7 @@
           <Page :total=param.total
                 :current=param.pageNum
                 :page-size=param.pageSize
-                :page-size-opts=[8,10,20,30,40,50]
+                :page-size-opts=[8,10,15,20,30,40]
                 show-total
                 show-elevator
                 show-sizer
@@ -424,11 +424,11 @@
       <div>
         <Row>
           <Col>
-            <!--<Table size="small" :columns="columns2" :data="QRmess.jls"></Table>-->
-            <!--            <Card>-->
-            <!--              <p slot="title" style="font-size: 20px;font-weight: 600">未支付订单</p>-->
-            <!--              <p v-for="(item,index) in QRmess.jls" :key="index" style="font-size: 18px;font-weight: 500;padding: 10px">{{item.clBh}}号车,时长{{item.sc}}分钟,费用{{item.lcFy}}元</p>-->
-            <!--            </Card>-->
+            <Table size="small" :columns="columns2" :data="QRmess.jls"></Table>
+<!--                        <Card>-->
+<!--                          <p slot="title" style="font-size: 20px;font-weight: 600">未支付订单</p>-->
+<!--                          <p v-for="(item,index) in QRmess.jls" :key="index" style="font-size: 18px;font-weight: 500;padding: 10px">{{item.clBh}}号车,时长{{item.sc}}分钟,费用{{item.lcFy}}元</p>-->
+<!--                        </Card>-->
           </Col>
         </Row>
         <Row>
@@ -445,11 +445,11 @@
               <p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">
                 <Checkbox disabled v-model="ls.ls3">{{ls.ls6}}</Checkbox>
-                现金支付;
+                现金支付
               </p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">
                 <Checkbox disabled v-model="ls.ls2">{{ls.ls6}}</Checkbox>
-                充卡支付(余额:{{QRmess.cardje}}元);
+                充卡支付(余额:{{QRmess.cardje}}元)
               </p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">
                 <Checkbox disabled v-model="ls.ls1">{{ls.ls6}}</Checkbox>
@@ -460,7 +460,7 @@
 
         </Row>
         <Row style="text-align: left;padding-left: 10px">
-          <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">{{QRmess.bz}} 元</p>
+          <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">{{QRmess.bz}}</p>
         </Row>
       </div>
     </Modal>
@@ -591,7 +591,14 @@
             title: '订单状态', key: 'zfzt', minWidth: 80,
             render: (h, p) => {
               if (p.row.zfzt == '00') {
-                return h('div', '未支付')
+
+                          return h('Tag', {
+                              props: {
+                                  type: 'volcano',
+                              }
+                          }, '未支付')
+
+
               } else {
                 return h('div', '已支付')
               }
@@ -643,7 +650,7 @@
           jssjInRange: '',
           zhLike: '',
           pageNum: 1,
-          pageSize: 10,
+          pageSize: 15,
         },
         dateRange: {
           kssj: '',
@@ -1170,7 +1177,7 @@
         } else if (name == '2') {
           this.dateRange.jssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59'];
           this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
-          v.param.pageSize = 10;
+          v.param.pageSize = 15;
           console.log(this.param);
           v.util.getPageData(v)
         } else {
@@ -1184,7 +1191,7 @@
         } else if (name == '1') {
           this.dateRange.jssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59'];
           this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
-          v.param.pageSize = 10;
+          v.param.pageSize = 15;
           v.util.getPageData(v)
         } else {
 
