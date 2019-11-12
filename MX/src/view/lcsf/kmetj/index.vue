@@ -28,6 +28,7 @@
   import jxtj from  '../jxtj'
   //教练统计
   import jltj from  '../jlytj'
+  import Cookies from 'js-cookie'
   export default {
     name: 'char',
     components: {print,jxtj,mxtj,jltj},
@@ -89,6 +90,7 @@
       }
     },
     created() {
+      Cookies.remove('daterange')
       this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
       this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       this.util.initTable(this);

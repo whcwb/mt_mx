@@ -34,10 +34,6 @@ public class AppStartListener implements ApplicationListener<ContextRefreshedEve
         f.write(bytes);
         f.flush();
         f.close();
-
-
-
-
     }
 
 }

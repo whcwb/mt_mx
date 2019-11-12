@@ -151,7 +151,7 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         return service.saveCz(cardNo, je, sfje);
     }
 
-    @PostMapping("/pay")
+//    @PostMapping("/pay")
     public ApiResponse<String> savePay(String id){
         return service.savePay(id);
     }
