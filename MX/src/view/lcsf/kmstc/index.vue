@@ -1,6 +1,5 @@
 <template>
   <div class="box_col" style="margin-left: 20px;">
-    <!--<pager-tit title="套餐维护"></pager-tit>-->
     <Menu mode="horizontal" active-name="1">
       <MenuItem name="1">
         <div style="font-weight: 700;font-size: 16px">
@@ -10,40 +9,64 @@
     </Menu>
     <div class="box_col_auto" style="overflow-x: hidden;">
       <Row :gutter="12">
-        <Col span="8" v-for="(item,index) in list" :prop="item.zdmc" :key="item.zdId" >
-          <Card  style="margin-top: 12px;">
+        <Col span="8" v-for="(item,index) in list" :prop="item.zdmc" :key="item.zdId">
+          <Card style="margin-top: 12px;">
             <p slot="title">
               <Icon type="ios-car"></Icon>
               {{item.by9}}
             </p>
             <Row>
-              <Col span="20" v-if="item.zddm =='K2KF'">
-                <InputNumber  v-model="item.zdmc" :placeholder="'请填写练车价格'" style="width: 200px;" @on-change="change(item)"></InputNumber>
-                <span v-if="item.zddm =='K2PY'"> 元套餐</span>
-                <span v-else-if="item.zddm =='K2KF'">元/人</span>
+              <Col span="20" v-if="item.zddm =='K3KF'">
+                <InputNumber v-model="item.zdmc" :placeholder="'请填写练车价格'" style="width: 200px;"
+                             @on-change="change(item)"></InputNumber>
+                <span v-if="item.zddm =='K3PY'"> 元套餐</span>
+                <span v-else-if="item.zddm =='K3KF'">元/人</span>
                 <span v-else> 元套餐</span>
               </Col>
-              <Col span="4">
-
+              <Col span="20" v-if="item.zddm !='K3KF'&&item.zddm !='K3PY'">
+                <InputNumber v-model="item.zdmc" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
+                <span>元/小时</span>
+              </Col>
+              <Col span="20" v-if="item.zddm =='K3PY'">
+                <InputNumber v-model="item.zdmc" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
+                <span>元/人</span>
               </Col>
             </Row>
-            <Row  style="margin-top: 16px;">
+            <Row style="margin-top: 16px;">
               <Col span="20">
-                <InputNumber  v-model="item.by3" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
-                <span v-if="item.zddm =='K2PY'"> 元/人</span>
-                <span v-else-if="item.zddm =='K2KF'">返点金额</span>
+                <InputNumber v-model="item.by3" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
+                <span v-if="item.zddm =='K3PY'"> 元/人</span>
+                <span v-else-if="item.zddm =='K3KF'">返点金额</span>
                 <span v-else> 元/分钟</span>
               </Col>
               <Col span="4">
               </Col>
             </Row>
-            <Row  style="margin-top: 16px;">
+            <Row style="margin-top: 16px;">
               <Col span="20">
-                <InputNumber  v-model="item.by4" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
+                <InputNumber v-model="item.by4" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
                 <span>返点率</span>
               </Col>
               <Col span="4">
                 <Button type="primary" @click="confirm(item)">修改</Button>
+              </Col>
+            </Row>
+            <Row style="margin-top: 16px;">
+              <Col span="24">
+                <i-switch v-model="item.by2" @on-change="confirm(item)"></i-switch>
+                <span>启用【刷卡发车】</span>
+              </Col>
+            </Row>
+            <Row style="margin-top: 16px;">
+              <Col span="24">
+                <i-switch v-model="item.by6" @on-change="confirm(item)"></i-switch>
+                <span>启用【车辆绑卡】</span>
+              </Col>
+            </Row>
+            <Row style="margin-top: 16px;">
+              <Col span="24">
+                <i-switch v-model="item.by7" @on-change="confirm(item)"></i-switch>
+                <span>启用【刷卡点火】</span>
               </Col>
             </Row>
           </Card>
