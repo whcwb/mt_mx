@@ -26,14 +26,7 @@ import java.util.List;
 @Configuration
 @Order(1)
 public class RedisConfig {
-	/*@Value("${apiurl}")
-	public  String url;
-	@Value("${znzpurl}")
-	public  String znzpurl;
-	@Value("${biz_url: }") // : http://47.98.39.45:8080
-	public  String bizurl;
-	@Value("${distance}")
-	public double distance;*/
+
 	@Autowired
 	private RedisConnectionFactory redisConnectionFactory;
 
@@ -53,7 +46,6 @@ public class RedisConfig {
 		nJedisConn.setUsePool(true);
 		nJedisConn.setShardInfo(jedisConn.getShardInfo());
 		nJedisConn.setDatabase(8);
-
 		RedisTemplateUtil bean = new RedisTemplateUtil(nJedisConn);
 		return bean;
 	}
@@ -81,15 +73,6 @@ public class RedisConfig {
 		System.out.println("redis消息监听器容器");
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
-
-		//订阅 的通道
-		List<Topic> topics = new ArrayList<>();
-		topics.add(new PatternTopic("now_send_message"));//立刻下发消息通道
-
-		// 订阅过期 topic
-		// 设置监听的Topic
-		SysMessageService sysMessageService = SpringContextUtil.getBean(SysMessageService.class);
-		PatternTopic channelTopic = new PatternTopic("__keyevent@8__:expired");
 		return container;
 	}
 
