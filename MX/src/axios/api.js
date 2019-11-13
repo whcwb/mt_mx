@@ -2,8 +2,8 @@
 // let ajaxUrl = 'http://192.168.1.156:8080';
 // let ajaxUrl = 'http://192.168.123.12:10010';//羊
 // let ajaxUrl ='http://192.168.123.69:8080'; // 陈伟
-let ajaxUrl ='http://192.168.0.103:8080';//宋
-// let ajaxUrl ='http://192.168.123.69:8080';//宋
+// let ajaxUrl ='http://192.168.0.103:8080';//宋
+let ajaxUrl ='http://192.168.123.69:8080';//宋
 // let ajaxUrl = 'http://mt.xxpt123.com:81';
 export default {
   NETWORK_ERR_STR: '网络加载异常!',
