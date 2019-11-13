@@ -156,7 +156,7 @@
                 this.info.lcFy = ''
             }
         }
-      if(this.info.lcFy.indexOf('元') == 0){
+      if(this.info.lcFy == '元'){
           this.info.lcFy= " "
       }
 
