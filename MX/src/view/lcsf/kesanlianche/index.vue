@@ -570,7 +570,7 @@
         }, 1000),
         columns1: [
           {
-            title: '车辆',
+            title: '车号',
             key: 'clBh',
             align: 'center',
             fixed: "left",

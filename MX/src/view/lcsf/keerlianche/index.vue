@@ -267,7 +267,7 @@
           </Button>
         </Col>
       </Row>
-      <Table :height="680" stripe
+      <Table :height="680"
              size="small"
              @on-select="tabcheck"
              :columns="tableColumns" :data="pageData"></Table>
@@ -746,7 +746,7 @@
         }, 1000),
         columns1: [
           {
-            title: '车辆编号',
+            title: '车号',
             key: 'clBh',
             align: 'center',
             fixed: "left",
@@ -759,13 +759,13 @@
               }, p.row.clBh)
             }
           },
-          {
-            title: '车牌号',
-            key: 'clHm',
-            align: 'center',
-            width: 120,
-            fixed: "left",
-          },
+          // {
+          //   title: '车牌号',
+          //   key: 'clHm',
+          //   align: 'center',
+          //   width: 120,
+          //   fixed: "left",
+          // },
           // {
           //     title: '所属考场',
           //     key: 'clKc',
@@ -779,20 +779,20 @@
             width: 80,
             fixed: "left",
           },
-          {
-            title: '车辆状态',
-            key: 'clZt',
-            align: 'center',
-            width: 150,
-            fixed: "left",
-            render: (h, p) => {
-              if (p.row.clZt == '00') {
-                return h('div', '空闲')
-              } else {
-                return h('div', '在训')
-              }
-            }
-          },
+          // {
+          //   title: '车辆状态',
+          //   key: 'clZt',
+          //   align: 'center',
+          //   width: 150,
+          //   fixed: "left",
+          //   render: (h, p) => {
+          //     if (p.row.clZt == '00') {
+          //       return h('div', '空闲')
+          //     } else {
+          //       return h('div', '在训')
+          //     }
+          //   }
+          // },
           {
             title: '操作',
             align: 'center',
@@ -1051,7 +1051,7 @@
           //     }
           // },
           {
-            title: '教练员姓名',
+            title: '教练员',
             key: 'jlXm',
             width: 150,
             align: 'center',
@@ -1059,14 +1059,14 @@
               return h('div', p.row.lcJl.jlXm)
             }
           },
-          {
-            title: '教练员电话',
-            key: 'jlDh',
-            align: 'center',
-            render: (h, p) => {
-              return h('div', p.row.lcJl.jlDh)
-            }
-          },
+          // {
+          //   title: '教练员电话',
+          //   key: 'jlDh',
+          //   align: 'center',
+          //   render: (h, p) => {
+          //     return h('div', p.row.lcJl.jlDh)
+          //   }
+          // },
           /*{
             title: '学员数',
             key: 'xySl',
@@ -1099,7 +1099,7 @@
             }
           },
           {
-            title: '当前费用',
+            title: '费用',
             align: 'center',
             render: (h, p) => {
               if (p.row.zj != '') {
