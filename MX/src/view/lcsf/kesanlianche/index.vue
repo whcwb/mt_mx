@@ -202,7 +202,7 @@
             </FormItem>
           </Col>
         </Row>
-        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm.includes('K3PY')">
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined&&formData.zddm.includes('K3PY')">
           <Col span="8">
             <FormItem label="学员姓名" label-position="top">
               <Input v-model="formData.xyXm"/>
@@ -574,7 +574,7 @@
             key: 'clBh',
             align: 'center',
             fixed: "left",
-            width: 100,
+              minWidth: 60,
             render: (h, p) => {
               return h('Tag', {
                 props: {
@@ -583,13 +583,13 @@
               }, p.row.clBh)
             }
           },
-          {
-            title: '车牌号',
-            key: 'clHm',
-            align: 'center',
-            width: 120,
-            fixed: "left",
-          },
+          // {
+          //   title: '车牌号',
+          //   key: 'clHm',
+          //   align: 'center',
+          //   width: 120,
+          //   fixed: "left",
+          // },
           // {
           //     title: '所属考场',
           //     key: 'clKc',
@@ -600,27 +600,27 @@
             title: '车型',
             key: 'clCx',
             align: 'center',
-            width: 80,
+              minWidth: 80,
             fixed: "left",
           },
-          {
-            title: '车辆状态',
-            key: 'clZt',
-            align: 'center',
-            width: 150,
-            fixed: "left",
-            render: (h, p) => {
-              if (p.row.clZt == '00') {
-                return h('div', '空闲')
-              } else {
-                return h('div', '在训')
-              }
-            }
-          },
+          // {
+          //   title: '车辆状态',
+          //   key: 'clZt',
+          //   align: 'center',
+          //     minWidth: 150,
+          //   fixed: "left",
+          //   render: (h, p) => {
+          //     if (p.row.clZt == '00') {
+          //       return h('div', '空闲')
+          //     } else {
+          //       return h('div', '在训')
+          //     }
+          //   }
+          // },
           {
             title: '操作',
             align: 'center',
-            width: 150,
+              minWidth: 150,
             fixed: "left",
             render: (h, p) => {
               let buttons = [];
@@ -880,33 +880,34 @@
           //     }
           // },
           {
-            title: '教练员姓名',
+            title: '教练员',
             key: 'jlXm',
-            width: 150,
+              minWidth: 150,
             align: 'center',
             render: (h, p) => {
               return h('div', p.row.lcJl.jlXm)
             }
           },
+          // {
+          //   title: '教练员电话',
+          //   key: 'jlDh',
+          //   align: 'center',
+          //   render: (h, p) => {
+          //     return h('div', p.row.lcJl.jlDh)
+          //   }
+          // },
           {
-            title: '教练员电话',
-            key: 'jlDh',
-            align: 'center',
-            render: (h, p) => {
-              return h('div', p.row.lcJl.jlDh)
-            }
-          },
-          /*{
-            title: '学员数',
+            title: '人数(人)',
             key: 'xySl',
-            width: 100,
+              minWidth: 100,
             align: 'center',
             render: (h, p) => {
               return h('div', p.row.lcJl.xySl)
             }
-          },*/
+          },
           {
             title: '开始时间',
+              minWidth: 180,
             align: 'center',
             render: (h, p) => {
               if (p.row.lcJl != [] && p.row.lcJl.kssj != '')
@@ -914,29 +915,49 @@
             }
           },
           {
-            title: '时长',
+            title: '时长(分钟)',
             key: 'sc',
-            width: 120,
+            width: 150,
             align: 'center',
             render: (h, p) => {
               if (p.row.dqsc == '') {
 
               } else {
-                return h('div', parseInt(p.row.dqsc / 60) + '分钟')
+                return h('div', parseInt(p.row.dqsc / 60))
               }
 
             }
           },
           {
-            title: '当前费用',
+            title: '费用(元)',
             align: 'center',
+              minWidth: 120,
             render: (h, p) => {
               if (p.row.zj != '') {
-                return h('div', p.row.zj + '元')
+                return h('div', p.row.zj)
               }
 
             }
           },
+            {
+                title: '类型',
+                minWidth: 120,
+                align: 'center',
+                render: (h, p) => {
+                    if (p.row.zdxm != ''){
+                        return h('div', p.row.zdxm.by9+' '+p.row.zdxm.zdmc)
+                    }
+
+                }
+            },
+            {
+                title: '安全员',
+                minWidth: 120,
+                align: 'center',
+                render: (h, p) => {
+                        return h('div', p.row.lcJl.zgXm)
+                }
+            },
 
 
         ],
@@ -1085,7 +1106,7 @@
       },
       afterPager(list) {
         for (let r of list) {
-          r.sc = this.parseTime(r.sc)
+          // r.sc = this.parseTime(r.sc)
           r.kssj = r.kssj.substring(0, 16)
           r.jssj = r.jssj.substring(0, 16)
         }
@@ -1217,17 +1238,7 @@
         this.formData.jlId = row.id
       },
       close() {
-        // this.showCAR = false;
-        this.carMess = null;
-        this.formData = {};
-        this.XY = [];
-        this.compName = '';
-        this.DrawerVal = false;
-        this.sfaemanlist = [];
-        this.formData.lcLx = '00';
-        this.searchCoachList = [];
-        //清空下拉框内容
-        this.$refs.jlySelect.clearSingleSelect();
+        this.DrawerVal = false
       },
       yyClick(val, cx) {
         console.log(val);
