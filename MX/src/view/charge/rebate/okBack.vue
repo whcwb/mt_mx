@@ -1,13 +1,13 @@
 <template>
   <div>
     <Row style="padding: 12px 0" :gutter="12" type="flex" justify="end">
-      <Col span="4">
+      <!--<Col span="4">-->
       <DatePicker v-model="dateRange.cjsj"
                   confirm format="yyyy-MM-dd"
                   @on-change="param.cjsjInRange = v.util.dateRangeChange(dateRange.cjsj)"
                   @on-open-change="pageSizeChange(param.pageSize)"
                   type="daterange" :placeholder="'请输入返点时间'"  style="width: 200px"></DatePicker>
-      </Col>
+      <!--</Col>-->
         <Col span="4">
         <Input v-model="param.cjrLike" placeholder="操作人"
                @on-enter="getOldData()"/>

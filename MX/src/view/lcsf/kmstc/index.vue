@@ -13,7 +13,7 @@
           <Card style="margin-top: 12px;">
             <p slot="title">
               <Icon type="ios-car"></Icon>
-              {{item.by9}}
+              {{item.by9}}【{{item.by8}}】
             </p>
             <Row>
               <Col span="20" v-if="item.zddm =='K3KF'">
@@ -25,7 +25,9 @@
               </Col>
               <Col span="20" v-if="item.zddm !='K3KF'&&item.zddm !='K3PY'">
                 <InputNumber v-model="item.zdmc" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
-                <span>元/小时</span>
+                <span v-if="item.by5=='00'">元/小时</span>
+                <span v-else-if="item.by5=='10'">元/人</span>
+                <span v-else> 元/人</span>
               </Col>
               <Col span="20" v-if="item.zddm =='K3PY'">
                 <InputNumber v-model="item.zdmc" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
@@ -37,7 +39,10 @@
                 <InputNumber v-model="item.by3" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
                 <span v-if="item.zddm =='K3PY'"> 元/人</span>
                 <span v-else-if="item.zddm =='K3KF'">返点金额</span>
-                <span v-else> 元/分钟</span>
+                <!--<span v-else> 元/分钟</span>-->
+                <span v-if="item.by5=='00'">元/分钟</span>
+                <span v-else-if="item.by5=='10'">返点金额</span>
+                <span v-else> 元/人</span>
               </Col>
               <Col span="4">
               </Col>

@@ -1,16 +1,16 @@
 <template>
   <div class="box_col" style="position: relative">
     <Menu mode="horizontal" :active-name="activeName" @on-select="MenuClick">
-    <MenuItem name="1">
-    <div style="font-weight: 700;font-size: 16px">
-    科三模训
-    </div>
-    </MenuItem>
-    <MenuItem name="2">
-    <div style="font-weight: 700;font-size: 16px">
-    模训记录
-    </div>
-    </MenuItem>
+      <MenuItem name="1">
+        <div style="font-weight: 700;font-size: 16px">
+          科三模训
+        </div>
+      </MenuItem>
+      <MenuItem name="2">
+        <div style="font-weight: 700;font-size: 16px">
+          模训记录
+        </div>
+      </MenuItem>
     </Menu>
     <Row type="flex" style="padding: 10px 0" v-if="activeName=='1'">
       <Col span="24">
@@ -88,13 +88,13 @@
 
 
         <!--<Col span="5" style="margin-right: -40px">-->
-          <DatePicker v-model="dateRange.jssj"
-                      style="margin-right: 5px"
-                      @on-change="param.jssjInRange = v.util.dateRangeChange(dateRange.jssj)"
-                      @on-open-change="pageSizeChange(param.pageSize)"
-                      format="yyyy-MM-dd"
-                      split-panels
-                      type="daterange" :placeholder="'请输入时间'"></DatePicker>
+        <DatePicker v-model="dateRange.jssj"
+                    style="margin-right: 5px"
+                    @on-change="param.jssjInRange = v.util.dateRangeChange(dateRange.jssj)"
+                    @on-open-change="pageSizeChange(param.pageSize)"
+                    format="yyyy-MM-dd"
+                    split-panels
+                    type="daterange" :placeholder="'请输入时间'"></DatePicker>
         <!--</Col>-->
         <Col span="3">
           <Input size="large" v-model="param.clBh" clearable placeholder="请输入车辆编号"
@@ -188,11 +188,18 @@
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
                 <Select v-model="formData.zddm" style="width:200px" placeholder="计时500/小时" @on-change="lcFyChange">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm!='K2KF'">{{it.by9}}
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm!='K2KF'">{{it.by9}}-{{it.zdmc}}元
                   </Option>
                 </Select>
               </FormItem>
             </div>
+          </Col>
+        </Row>
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined&&(formData.zddm.includes('K3PY')||formData.zddm.includes('K3AB'))">
+          <Col span="12">
+            <FormItem :label="'人数'" label-position="top">
+              <Input v-model="formData.xySl"></Input>
+            </FormItem>
           </Col>
         </Row>
         <Row :gutter="32" style="padding-top: 5px">
@@ -262,10 +269,10 @@
         <Row>
           <Col>
             <Table size="small" :columns="columns2" :data="QRmess.jls"></Table>
-<!--                        <Card>-->
-<!--                          <p slot="title" style="font-size: 20px;font-weight: 600">未支付订单</p>-->
-<!--                          <p v-for="(item,index) in QRmess.jls" :key="index" style="font-size: 18px;font-weight: 500;padding: 10px">{{item.clBh}}号车,时长{{item.sc}}分钟,费用{{item.lcFy}}元</p>-->
-<!--                        </Card>-->
+            <!--                        <Card>-->
+            <!--                          <p slot="title" style="font-size: 20px;font-weight: 600">未支付订单</p>-->
+            <!--                          <p v-for="(item,index) in QRmess.jls" :key="index" style="font-size: 18px;font-weight: 500;padding: 10px">{{item.clBh}}号车,时长{{item.sc}}分钟,费用{{item.lcFy}}元</p>-->
+            <!--                        </Card>-->
           </Col>
         </Row>
         <Row>
@@ -504,9 +511,9 @@
         hisPrintMess: '',
         clId: '',
         showFQfzkp: false,
-          sfaemanlist: [],
+        sfaemanlist: [],
         formData: {
-            zgId:'',
+          zgId: '',
           xyZjhm: '',
           xyXm: '',
           xyDh: '',
@@ -611,17 +618,22 @@
                     style: {margin: '0 10px 0 0'},
                     on: {
                       click: () => {
+
                         this.formData.zddm = 'K3JS';
                         this.formData.lcClId = p.row.id
                         this.formData.lcKm = '3';
                         this.$http.post('/api/lcjl/Tc', {km: '3'}).then((res) => {
                           if (res.code == 200) {
-                            this.fylist = res.result
-                            for (let r of this.fylist) {
-                              r.editMode = false
-                              r.zdmc = parseInt(r.zdmc)
-                              r.by3 = parseFloat(r.by3)
-                              r.by4 = parseFloat(r.by4)
+                            this.fylist=[]
+                            let fyArr = res.result
+                            for (let r of fyArr) {
+                              if (r.by8.includes(p.row.clCx)) {
+                                r.editMode = false
+                                r.zdmc = parseInt(r.zdmc)
+                                r.by3 = parseFloat(r.by3)
+                                r.by4 = parseFloat(r.by4)
+                                this.fylist.push(r)
+                              }
                             }
                           }
                         })
@@ -936,7 +948,7 @@
       this.getCoachList();
       this.getCarList();
       this.getzdlist();
-        this.getSafemanList()
+      this.getSafemanList()
       // this.getYYdj();
       this.enter()
     },
@@ -948,22 +960,22 @@
         'set_LcTime',
         'Ch_LcTime'
       ]),
-        getSafemanList() {
-            this.$http.post('/api/zgjbxx/getAqy', {notShowLoading: 'true'}).then((res) => {
-                if (res.code == 200) {
-                    res.result.forEach((item, index) => {
-                        let py = this.util.parsePY(item.xm)
-                        item.label = item.xm + ' [' + py + ']'
-                        item.value = item.id
-                        if (index == res.result.length - 1) {
-                            this.sfaemanlist = res.result
-                        }
-                    })
-                } else {
-                    this.$Message.info(res.message);
-                }
+      getSafemanList() {
+        this.$http.post('/api/zgjbxx/getAqy', {notShowLoading: 'true'}).then((res) => {
+          if (res.code == 200) {
+            res.result.forEach((item, index) => {
+              let py = this.util.parsePY(item.xm)
+              item.label = item.xm + ' [' + py + ']'
+              item.value = item.id
+              if (index == res.result.length - 1) {
+                this.sfaemanlist = res.result
+              }
             })
-        },
+          } else {
+            this.$Message.info(res.message);
+          }
+        })
+      },
       enter() {
         var _this = this;
         document.onkeydown = function (e) {

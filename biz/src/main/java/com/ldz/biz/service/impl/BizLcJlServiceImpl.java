@@ -32,6 +32,7 @@ import tk.mybatis.mapper.common.Mapper;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.stream.events.EndElement;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -211,22 +212,39 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
 
         if (!StringUtils.equals(entity.getLcLx(), "00") && StringUtils.isNotBlank(entity.getLcLx())) {
-            // 计算练车费用
+            // 套餐类型不是计时培训 需要在记录的时候就将费用计算出来 , 有返点的直接记录返点
             String jg = zdxm.getZdmc();
             if (StringUtils.equals(entity.getLcLx(), "20")) {
                 // 培优价格为本身价格
                 entity.setZfzt("10");
-                entity.setLcFy(Integer.parseInt(jg));
-                entity.setYfJe(Integer.parseInt(jg));
+                if(StringUtils.equals(entity.getLcKm(), "2")) {
+                    entity.setLcFy(Integer.parseInt(jg));
+                    entity.setYfJe(Integer.parseInt(jg));
+                }else if (StringUtils.equals(entity.getLcKm(), "3")){
+                    RuntimeCheck.ifNull(entity.getXySl(), "请填写学员数量");
+                    RuntimeCheck.ifTrue(entity.getXySl() <= 0 , "学员数量必须大于0");
+                    entity.setYfJe(Integer.parseInt(jg) * entity.getXySl());
+                    entity.setLcFy(Integer.parseInt(jg) * entity.getXySl());
+                    entity.setXjje(entity.getLcFy());
+                }
             } else if (StringUtils.equals(entity.getLcLx(), "30")) {
                 // 练车费用为 人数 乘以 价格
                 entity.setZfzt("10");
                 RuntimeCheck.ifNull(entity.getXySl(), "请填写学员数量");
+                RuntimeCheck.ifTrue(entity.getXySl() <= 0 , "学员数量必须大于0");
                 entity.setYfJe(Integer.parseInt(jg) * entity.getXySl());
                 entity.setLcFy(Integer.parseInt(jg) * entity.getXySl());
+            } else if(StringUtils.equals(entity.getLcLx(), "10")){
+                // 按把训练也需要学员数量
+                entity.setZfzt("10");
+                RuntimeCheck.ifNull(entity.getXySl(), "请填写学员数量");
+                RuntimeCheck.ifTrue(entity.getXySl() <= 0, "学员数量必须大于0");
+                entity.setYfJe(Integer.parseInt(jg) * entity.getXySl());
+                entity.setLcFy(Integer.parseInt(jg) * entity.getXySl());
+                entity.setXjje(entity.getLcFy());
             }
-
-            if (StringUtils.equals(entity.getLcLx(), "30")) {
+            // 科目二开放日类型直接返点
+            if (StringUtils.equals(entity.getLcLx(), "30") && StringUtils.equals(entity.getLcKm(), "2")) {
                 entity.setXjje(entity.getYfJe());
                 // 开放日返点金额
                 int fdje = Integer.parseInt(zdxm.getBy3()) * entity.getXySl();
@@ -268,6 +286,31 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     entity.setPz(lcFd.getId());
                 }
                 wxjlService.update(wxjl);
+            }
+            //  科目三 按把练车需要返点
+            if(StringUtils.equals(entity.getLcKm(),"3") && StringUtils.equals(entity.getLcLx(), "10")){
+                // 不同于开放日 , 没有余额充值, 直接返点就行
+                // 此处根据人数来确定返点金额
+                int fdje = Integer.parseInt(zdxm.getBy3());
+                // 计算返点总金额
+                int zfd = fdje * entity.getXySl();
+                if(zfd > 0 ){
+                    // 新增返点记录
+                    BizLcFd lcFd = new BizLcFd();
+                    lcFd.setCjr(currentUser.getZh() + "-" + currentUser.getXm());
+                    lcFd.setCjsj(nowTime);
+                    lcFd.setFdje(zfd);
+                    lcFd.setId(entity.getId());
+                    lcFd.setJlId(wxjl.getId());
+                    lcFd.setJlXm(wxjl.getJlXm());
+                    lcFd.setLcId(entity.getId());
+                    lcFd.setFdlx("20");
+                    lcFd.setLcFy(entity.getLcFy());
+                    lcFd.setLcKm(entity.getLcKm());
+                    lcFd.setSc(0);
+                    fdService.save(lcFd);
+                    entity.setPz(lcFd.getId());
+                }
             }
         }
         entity.setCjr(currentUser.getZh() + "-" + currentUser.getXm());
@@ -388,7 +431,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             cardye = wxjl.getCardJe();
             // 先扣款 开放日余额
             int ye = wxjl.getYe();
-
+            // 科目三不进行开放日扣款
+            if(StringUtils.equals(lcJl.getLcKm(), "3")){
+                ye = 0;
+            }
             if (ye > 0) {
                 int sfje = ye - v;
                 // 判断此时实付金额为多少
@@ -468,6 +514,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             condition = new SimpleCondition(BizLcJl.class);
             condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
             condition.eq(BizLcJl.InnerColumn.zfzt, "00");
+            condition.eq(BizLcJl.InnerColumn.lcKm, lcJl.getLcKm());
             List<BizLcJl> lcJls = findByCondition(condition);
             String s1 = lcJls.stream().map(BizLcJl::getId).collect(Collectors.joining(","));
             ApiResponse<BizLcJl> response = getBatchPay(s1);
@@ -1218,6 +1265,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         int xjje = 0;
         int ye = wxjl.getYe();
         int cardJe = wxjl.getCardJe();
+        if(StringUtils.equals(jls.get(0).getLcKm(), "3")){
+            ye = 0;
+        }
         if (ye > 0) {
             int sfje = ye - sum;
             if (sfje < 0) {
@@ -1301,6 +1351,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         List<String> set = jls.stream().map(BizLcJl::getJlId).distinct().collect(Collectors.toList());
         int size = set.size();
         RuntimeCheck.ifTrue(size > 1, "所选记录为多个教练的练车记录 ,请重新选择");
+        Set<String> lckms = jls.stream().map(BizLcJl::getLcKm).collect(Collectors.toSet());
+        RuntimeCheck.ifTrue(lckms.size() > 1 , "请将科目二和科目三的费用分开支付");
         String pz = genId();
         // 总费用
         int sum = jls.stream().map(BizLcJl::getLcFy).mapToInt(value -> value).sum();
@@ -1310,6 +1362,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         int xjje = 0;
         int ye = wxjl.getYe();
         int cardJe = wxjl.getCardJe();
+        // 科目三没有开放日余额
+        if(StringUtils.equals(jls.get(0).getLcKm(),"3")){
+            ye = 0;
+        }
         if (ye > 0) {
             // 有开放日抵扣余额 查询开放日返点率
             SimpleCondition zdcondition = new SimpleCondition(SysZdxm.class);

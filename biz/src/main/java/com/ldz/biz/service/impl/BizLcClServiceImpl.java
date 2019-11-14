@@ -175,7 +175,6 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
                     } else {
                         bizLcCl.setZj(bizLcJl.getLcFy());
                     }
-
                 }
             }
 
