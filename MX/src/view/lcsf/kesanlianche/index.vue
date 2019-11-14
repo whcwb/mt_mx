@@ -659,6 +659,8 @@
                           }
                         })
 
+                          this.getSafemanList()
+
                         // console.log(p.row)
                         // console.log(ifCard)
 
