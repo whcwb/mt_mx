@@ -84,10 +84,10 @@ public class BizLcFd implements Serializable {
     @Transient
     private int xySl;
 
+    @Transient
+    private String jlJx;
 
     private static final long serialVersionUID = 1L;
-
-
 
     public enum InnerColumn {
         id("id"),

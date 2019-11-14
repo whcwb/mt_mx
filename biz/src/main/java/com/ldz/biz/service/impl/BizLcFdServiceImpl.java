@@ -57,6 +57,7 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 				bizLcFd.setSc(zsc);
 				bizLcFd.setLcKm(lckm);
 				bizLcFd.setJlList(jlList);
+				bizLcFd.setJlJx(jlList.get(0).getJlJx());
 				int xysl = jlList.stream().mapToInt(BizLcJl::getXySl).sum();
 				bizLcFd.setXySl(xysl);
 			}
