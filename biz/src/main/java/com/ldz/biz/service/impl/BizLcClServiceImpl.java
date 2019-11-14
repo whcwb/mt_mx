@@ -154,16 +154,30 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
                             // 每小时的费用
                             int anInt = Integer.parseInt(management.getZdmc());
                             if (StringUtils.equals(bizLcJl.getLcLx(), "00")) {
-                                String hour = management.getZdmc();
-                                String by3 = management.getBy3();
-                                int h = Integer.parseInt(sc) / 60;
-                                int m = Integer.parseInt(sc) % 60;
-                                // 小时能除尽的按小时计费
-                                float hv = Float.parseFloat(hour) * h;
-                                // 不能除尽的按分钟算
-                                float mv = m * Float.parseFloat(by3);
-                                // 总费用
-                                int v = (int) Math.ceil(hv + mv);
+                                int v;
+                                if(StringUtils.equals(bizLcJl.getLcKm(),"2") && StringUtils.equals(bizLcJl.getZddm(), "K2JS-S")){
+                                    // 科目二的 190 35分钟 , 超出时间按照 8.33计算
+                                    String by3 = management.getBy3();
+                                    // 190
+                                    String hour = management.getZdmc();
+                                    if(Integer.parseInt(sc) > 35){
+                                        v = (int) Math.ceil((Integer.parseInt(sc) - 35) * Float.parseFloat(by3)) + Integer.parseInt(hour);
+                                    }else{
+                                        v = Integer.parseInt(hour);
+                                    }
+                                }else{
+                                    // 每小时的费用
+                                    String hour = management.getZdmc();
+                                    String by3 = management.getBy3();
+                                    int h = Integer.parseInt(sc) / 60;
+                                    int m = Integer.parseInt(sc) % 60;
+                                    // 小时能除尽的按小时计费
+                                    float hv = Float.parseFloat(hour) * h;
+                                    // 不能除尽的按分钟算
+                                    float mv = m * Float.parseFloat(by3);
+                                    // 总费用
+                                    v = (int) Math.ceil(hv + mv);
+                                }
                                 bizLcCl.setDj(anInt);
                                 bizLcCl.setDj1(Float.parseFloat(management.getBy3()));
                                 bizLcCl.setZj(v);

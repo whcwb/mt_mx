@@ -177,7 +177,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         }
         entity.setLcLx(zdxm.getBy5());
         entity.setJlJx(wxjl.getJlJx());
-        if (!StringUtils.equals(entity.getLcLx(), "30")) {
+        if (!StringUtils.equals(entity.getLcLx(), "30") && !(StringUtils.equals(entity.getLcKm(),"2") && StringUtils.equals(entity.getLcLx(),"20")) ) {
             RuntimeCheck.ifNull(lcCl, "请选择车辆");
             // 查询卡号记录 判断是否在训练中
             SimpleCondition jlCondition = new SimpleCondition(BizLcJl.class);
@@ -217,9 +217,21 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             if (StringUtils.equals(entity.getLcLx(), "20")) {
                 // 培优价格为本身价格
                 entity.setZfzt("10");
-                entity.setLcFy(Integer.parseInt(jg));
-                entity.setYfJe(Integer.parseInt(jg));
-                entity.setXjje(entity.getLcFy());
+                if(entity.getLcKm().equals("2")){
+                    entity.setLcFy(Integer.parseInt(jg));
+                    entity.setYfJe(Integer.parseInt(jg));
+                    entity.setXjje(entity.getLcFy());
+                }else {
+                    RuntimeCheck.ifBlank(entity.getXyXm(), "请输入学员信息");
+                    // 根据学员信息计算学员的数量
+                    String[] split = entity.getXyXm().split(",");
+                    RuntimeCheck.ifTrue(split.length <= 0, "请输入学员信息");
+                    int xySl = split.length;
+                    entity.setXySl(xySl);
+                    entity.setLcFy(Integer.parseInt(jg) * xySl);
+                    entity.setYfJe(entity.getLcFy());
+                    entity.setXjje(entity.getLcFy());
+                }
             } else if (StringUtils.equals(entity.getLcLx(), "30")) {
                 // 练车费用为 人数 乘以 价格
                 entity.setZfzt("10");
@@ -306,6 +318,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 }
             }
         }
+
         entity.setCjr(currentUser.getZh() + "-" + currentUser.getXm());
         entity.setLcYj(entity.getLcYj() == null ? 0 : entity.getLcYj());
 
@@ -313,43 +326,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         entity.setJlJx(wxjl.getJlJx());
         entity.setJlDh(wxjl.getJlLxdh());
         entity.setFdZt("30");
-
-
-        // 查询是否有关联到学员
-        if (StringUtils.isNotBlank(entity.getXyIds())) {
-            List<BizLcJlXy> xies = new ArrayList<>();
-            // 关联到学员
-            List<String> list = Arrays.asList(entity.getXyIds().split(","));
-            String xyDh = getRequestParamterAsString("xyDh");
-            List<String> xyDhs = new ArrayList<>();
-            if (StringUtils.isNotBlank(xyDh)) {
-                xyDhs = Arrays.asList(xyDh.split(","));
-            }
-            for (int i = 0; i < list.size(); i++) {
-                String s = list.get(i);
-                if (StringUtils.isBlank(s)) {
-                    continue;
-                }
-                BizLcJlXy jlXy = new BizLcJlXy();
-                if (CollectionUtils.isNotEmpty(xyDhs)) {
-                    jlXy.setXyDh(xyDhs.get(i));
-                }
-                jlXy.setXyJx(wxjl.getJlJx());
-                jlXy.setId(genId());
-                jlXy.setXyXm(s);
-                jlXy.setLcJlId(entity.getId());
-                jlXy.setCjr(currentUser.getZh() + "-" + currentUser.getXm());
-                jlXy.setCjsj(DateUtils.getNowTime());
-                jlXy.setId(genId());
-                xyService.save(jlXy);
-            }
-            if (CollectionUtils.isNotEmpty(xies)) {
-                if (entity.getXySl() == null || entity.getXySl() == 0) {
-                    entity.setXySl(xies.size());
-                }
-            }
-
-        }
         save(entity);
         return ApiResponse.success(JsonUtil.toJson(entity));
     }
@@ -403,20 +379,33 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             RuntimeCheck.ifTrue(StringUtils.equals(km, "3") && !StringUtils.equals(km, lcJl.getLcKm()), "请前往科目三窗口还车");
             // 计算实际时长  (所有车辆免费前五分钟)
             int lcSc = Math.max((int) ((end.getTime() - start.getTime()) / (1000 * 60)), 0);
+            int v;
+            if(StringUtils.equals(lcJl.getLcKm(),"2") && StringUtils.equals(lcJl.getZddm(), "K2JS-S")){
+                // 科目二的 190 35分钟 , 超出时间按照 8.33计算
+                String by3 = management.getBy3();
+                // 190
+                String hour = management.getZdmc();
+                if(lcSc > 35){
+                    v = (int) Math.ceil((lcSc - 35) * Float.parseFloat(by3)) + Integer.parseInt(hour);
+                }else{
+                    v = Integer.parseInt(hour);
+                }
+            }else{
+                // 每小时的费用
+                String hour = management.getZdmc();
+                String by3 = management.getBy3();
+                int h = lcSc / 60;
+                int m = lcSc % 60;
+                // 小时能除尽的按小时计费
+                float hv = Float.parseFloat(hour) * h;
+                // 不能除尽的按分钟算
+                float mv = m * Float.parseFloat(by3);
+                // 总费用
+                v = (int) Math.ceil(hv + mv);
+                lcJl.setLcDj(Float.parseFloat(management.getZdmc()));
+                lcJl.setLcFy(v);
+            }
 
-            // 每小时的费用
-            String hour = management.getZdmc();
-            String by3 = management.getBy3();
-            int h = lcSc / 60;
-            int m = lcSc % 60;
-            // 小时能除尽的按小时计费
-            float hv = Float.parseFloat(hour) * h;
-            // 不能除尽的按分钟算
-            float mv = m * Float.parseFloat(by3);
-            // 总费用
-            int v = (int) Math.ceil(hv + mv);
-            lcJl.setLcDj(Float.parseFloat(management.getZdmc()));
-            lcJl.setLcFy(v);
             // 计算应付金额
             BizLcWxjl wxjl = wxjlService.findById(lcJl.getJlId());
             kfye = wxjl.getYe();
@@ -516,7 +505,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             result.setLcLx(lcJl.getLcLx());
             condition = new SimpleCondition(BizLcJl.class);
             condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
-            condition.startWith(BizLcJl.InnerColumn.kssj, DateTime.now().toString("yyyy-MM-dd"));
+            condition.and().andCondition(" kssj like '%" +DateTime.now().toString("yyyy-MM-dd") + "%' or zfzt = '00'" );
             condition.and().andNotEqualTo(BizLcJl.InnerColumn.lcLx.name(), "30");
             condition.eq(BizLcJl.InnerColumn.lcKm, lcJl.getLcKm());
             List<BizLcJl> bizLcJls = findByCondition(condition);
@@ -1063,13 +1052,14 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     }
 
     @Override
-    public ApiResponse<List<SysZdxm>> getTc(String km, String carType) {
+    public ApiResponse<List<SysZdxm>> getTc(String km, String by5) {
         Map<String, String> map = new HashMap<>();
         map.put("2", "科二");
         map.put("3", "科三");
         SimpleCondition condition = new SimpleCondition(SysZdxm.class);
         condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
         condition.eq(SysZdxm.InnerColumn.by1, map.get(km));
+//        condition.eq(SysZdxm.InnerColumn.by5, by5);
 //        condition.eq(SysZdxm.InnerColumn.by2, carType);
         List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
         return ApiResponse.success(zdxms);
@@ -1306,7 +1296,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         // 查询当天所有非开放日记录
         SimpleCondition condition1 = new SimpleCondition(BizLcJl.class);
         condition1.eq(BizLcJl.InnerColumn.jlId, jls.get(0).getJlId());
-        condition1.startWith(BizLcJl.InnerColumn.kssj, DateTime.now().toString("yyyy-MM-dd"));
+        condition1.and().andCondition(" kssj like '%" +DateTime.now().toString("yyyy-MM-dd") + "%' or zfzt = '00'" );
         condition1.and().andNotEqualTo(BizLcJl.InnerColumn.lcLx.name(), "30");
         condition.eq(BizLcJl.InnerColumn.lcKm, jls.get(0).getLcKm());
         List<BizLcJl> lcJls = findByCondition(condition1);
