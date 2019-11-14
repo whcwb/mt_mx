@@ -144,6 +144,7 @@
             }
           },
           {title: '教练员', key: 'jlXm', minWidth: 120},
+          {title: '驾校名称', key: 'jlJx', minWidth: 120},
           {
             title: '累计时长', key: 'sc', minWidth: 120,
             render: (h, p) => {
