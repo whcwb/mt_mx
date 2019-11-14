@@ -407,7 +407,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             // 每小时的费用
             String hour = management.getZdmc();
             String by3 = management.getBy3();
-            double rate = Double.parseDouble(management.getBy4());
             int h = lcSc / 60;
             int m = lcSc % 60;
             // 小时能除尽的按小时计费
