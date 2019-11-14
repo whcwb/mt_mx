@@ -13,7 +13,7 @@
           <Card style="margin-top: 12px;">
             <p slot="title">
               <Icon type="ios-car"></Icon>
-              {{item.by9}}
+              {{item.by9}}【{{item.by8}}】
             </p>
             <Row>
               <Col span="20" v-if="item.zddm =='K3KF'">
