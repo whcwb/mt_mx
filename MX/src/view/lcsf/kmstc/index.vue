@@ -84,53 +84,60 @@
 <script>
   export default {
     name: "index",
-    data(){
-      return{
-          v:this,
-          formItem:{},
-          ruleInline:{},
-          formItemGroup:[],
-          list:[]
+    data() {
+      return {
+        v: this,
+        formItem: {},
+        ruleInline: {},
+        formItemGroup: [],
+        list: []
       }
     },
     methods: {
-        change(item){
-            item.by3 = parseInt(item.zdmc / 60);
-        },
-        confirm(item){
-          this.$http.post(this.apis.DICTIONARY_LIST.CHANGE,item).then((res)=>{
-              if (res.code == 200){
-                  this.$Message.success(res.message);
-              }else{
-                  this.$Messgae.error(res.message);
-              }
-          })
-        },
-        getData(){
-            let param = {
-                zdlmdm:'ZDCLK1045',
-              by1:'科三'
-            }
-            this.$http.get(this.apis.DICTIONARY_LIST.list,{params:param}).then((res)=>{
-                if (res.code == 200 && res.result){
-                    this.list = res.result
-                    for (let r of this.list){
-                        r.editMode = false
-                        r.zdmc = parseInt(r.zdmc)
-                        r.by3 = parseFloat(r.by3)
-                        r.by4 = parseFloat(r.by4)
-                    }
-                }else{
-                    this.$Message.error(res.message)
-                }
-            })
+      change(item) {
+        item.by3 = parseInt(item.zdmc / 60);
+      },
+      confirm(item) {
+        item.by2 = item.by2 ? '1' : '0'
+        item.by6 = item.by6 ? '1' : '0'
+        item.by7 = item.by7 ? '1' : '0'
+        this.$http.post(this.apis.DICTIONARY_LIST.CHANGE, item).then((res) => {
+          if (res.code == 200) {
+            this.$Message.success(res.message);
+            this.getData()
+          } else {
+            this.$Messgae.error(res.message);
+          }
+        })
+      },
+      getData() {
+        let param = {
+          zdlmdm: 'ZDCLK1045',
+          by1: '科三'
         }
+        this.$http.get(this.apis.DICTIONARY_LIST.list, {params: param}).then((res) => {
+          if (res.code == 200 && res.result) {
+            this.list = res.result
+            for (let r of this.list) {
+              r.editMode = false
+              r.zdmc = parseInt(r.zdmc)
+              r.by3 = parseFloat(r.by3)
+              r.by4 = parseFloat(r.by4)
+              r.by2 = r.by2 === '0' || r.by2 === '' ? false : true
+              r.by6 = r.by6 === '0' || r.by6 === '' ? false : true
+              r.by7 = r.by7 === '0' || r.by7 === '' ? false : true
+            }
+          } else {
+            this.$Message.error(res.message)
+          }
+        })
+      }
     },
-    mounted () {
+    mounted() {
 
     },
-    created(){
-        this.getData();
+    created() {
+      this.getData();
     }
   }
 </script>
