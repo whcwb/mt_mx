@@ -177,7 +177,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         }
         entity.setLcLx(zdxm.getBy5());
         entity.setJlJx(wxjl.getJlJx());
-        if (!StringUtils.equals(entity.getLcLx(), "30") && !(StringUtils.equals(entity.getLcKm(),"2") && StringUtils.equals(entity.getLcLx(),"20")) ) {
+        if (!StringUtils.equals(entity.getLcLx(), "30") && !(StringUtils.equals(entity.getLcKm(), "2") && StringUtils.equals(entity.getLcLx(), "20"))) {
             RuntimeCheck.ifNull(lcCl, "请选择车辆");
             // 查询卡号记录 判断是否在训练中
             SimpleCondition jlCondition = new SimpleCondition(BizLcJl.class);
@@ -217,11 +217,11 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             if (StringUtils.equals(entity.getLcLx(), "20")) {
                 // 培优价格为本身价格
                 entity.setZfzt("10");
-                if(entity.getLcKm().equals("2")){
+                if (entity.getLcKm().equals("2")) {
                     entity.setLcFy(Integer.parseInt(jg));
                     entity.setYfJe(Integer.parseInt(jg));
                     entity.setXjje(entity.getLcFy());
-                }else {
+                } else {
                     RuntimeCheck.ifBlank(entity.getXyXm(), "请输入学员信息");
                     // 根据学员信息计算学员的数量
                     String[] split = entity.getXyXm().split(",");
@@ -380,17 +380,17 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             // 计算实际时长  (所有车辆免费前五分钟)
             int lcSc = Math.max((int) ((end.getTime() - start.getTime()) / (1000 * 60)), 0);
             int v;
-            if(StringUtils.equals(lcJl.getLcKm(),"2") && StringUtils.equals(lcJl.getZddm(), "K2JS-S")){
+            if (StringUtils.equals(lcJl.getLcKm(), "2") && StringUtils.equals(lcJl.getZddm(), "K2JS-S")) {
                 // 科目二的 190 35分钟 , 超出时间按照 8.33计算
                 String by3 = management.getBy3();
                 // 190
                 String hour = management.getZdmc();
-                if(lcSc > 35){
+                if (lcSc > 35) {
                     v = (int) Math.ceil((lcSc - 35) * Float.parseFloat(by3)) + Integer.parseInt(hour);
-                }else{
+                } else {
                     v = Integer.parseInt(hour);
                 }
-            }else{
+            } else {
                 // 每小时的费用
                 String hour = management.getZdmc();
                 String by3 = management.getBy3();
@@ -402,10 +402,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 float mv = m * Float.parseFloat(by3);
                 // 总费用
                 v = (int) Math.ceil(hv + mv);
-                lcJl.setLcDj(Float.parseFloat(management.getZdmc()));
-                lcJl.setLcFy(v);
             }
-
+            lcJl.setLcDj(Float.parseFloat(management.getZdmc()));
+            lcJl.setLcFy(v);
             // 计算应付金额
             BizLcWxjl wxjl = wxjlService.findById(lcJl.getJlId());
             kfye = wxjl.getYe();
@@ -452,7 +451,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             if (xjje > 0) {
                 fdr = fdr + "3";
             }
-            str += " 应收现金" + xjje;
+            str += " 应收现金" + xjje+"元";
         } else {
             fdr = "3";
             str = " 应收现金: " + lcJl.getLcFy() + "元";
@@ -505,7 +504,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             result.setLcLx(lcJl.getLcLx());
             condition = new SimpleCondition(BizLcJl.class);
             condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
-            condition.and().andCondition(" kssj like '%" +DateTime.now().toString("yyyy-MM-dd") + "%' or zfzt = '00'" );
+            condition.and().andCondition(" kssj like '%" + DateTime.now().toString("yyyy-MM-dd") + "%' or zfzt = '00'");
             condition.and().andNotEqualTo(BizLcJl.InnerColumn.lcLx.name(), "30");
             condition.eq(BizLcJl.InnerColumn.lcKm, lcJl.getLcKm());
             List<BizLcJl> bizLcJls = findByCondition(condition);
@@ -1059,7 +1058,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         SimpleCondition condition = new SimpleCondition(SysZdxm.class);
         condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
         condition.eq(SysZdxm.InnerColumn.by1, map.get(km));
-//        condition.eq(SysZdxm.InnerColumn.by5, by5);
+        if (StringUtils.isNotBlank(by5)) {
+            condition.eq(SysZdxm.InnerColumn.by5, by5);
+        }
 //        condition.eq(SysZdxm.InnerColumn.by2, carType);
         List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
         return ApiResponse.success(zdxms);
@@ -1296,7 +1297,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         // 查询当天所有非开放日记录
         SimpleCondition condition1 = new SimpleCondition(BizLcJl.class);
         condition1.eq(BizLcJl.InnerColumn.jlId, jls.get(0).getJlId());
-        condition1.and().andCondition(" kssj like '%" +DateTime.now().toString("yyyy-MM-dd") + "%' or zfzt = '00'" );
+        condition1.and().andCondition(" kssj like '%" + DateTime.now().toString("yyyy-MM-dd") + "%' or zfzt = '00'");
         condition1.and().andNotEqualTo(BizLcJl.InnerColumn.lcLx.name(), "30");
         condition.eq(BizLcJl.InnerColumn.lcKm, jls.get(0).getLcKm());
         List<BizLcJl> lcJls = findByCondition(condition1);
