@@ -195,10 +195,27 @@
             </div>
           </Col>
         </Row>
-        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined&&(formData.zddm.includes('K3PY')||formData.zddm.includes('K3AB'))">
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined&&formData.zddm.includes('K3AB')">
           <Col span="12">
             <FormItem :label="'人数'" label-position="top">
               <Input v-model="formData.xySl"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm.includes('K3PY')">
+          <Col span="8">
+            <FormItem label="学员姓名" label-position="top">
+              <Input v-model="formData.xyXm"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem label="学员电话" label-position="top">
+              <Input v-model="formData.xyDh"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem label="学员身份证号码" label-position="top">
+              <Input v-model="formData.xyZjhm"/>
             </FormItem>
           </Col>
         </Row>
