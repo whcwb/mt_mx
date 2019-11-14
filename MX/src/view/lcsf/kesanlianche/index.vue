@@ -570,11 +570,11 @@
         }, 1000),
         columns1: [
           {
-            title: '车辆编号',
+            title: '车号',
             key: 'clBh',
             align: 'center',
             fixed: "left",
-              minWidth: 60,
+              minWidth: 90,
             render: (h, p) => {
               return h('Tag', {
                 props: {
