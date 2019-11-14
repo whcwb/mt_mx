@@ -165,8 +165,8 @@
           <Col span="12">
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
-                <Select v-model="formData.zddm" style="width:200px">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm=='K2KF'">{{it.by9}}
+                <Select v-model="formData.zddm" @on-change="lcFyChange" style="width:200px">
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="!it.zddm.includes('K2JS')">{{it.by9}}
                   </Option>
                 </Select>
                 <!--              <CheckboxGroup v-model="formData.lcFy">-->
@@ -174,6 +174,32 @@
                 <!--              </CheckboxGroup>-->
               </FormItem>
             </div>
+          </Col>
+        </Row>
+
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2PY'">
+          <Col span="8">
+            <FormItem label="安全员" label-position="top">
+              <Input v-model="formData.zgXm"/>
+            </FormItem>
+          </Col>
+        </Row>
+
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2PY'">
+          <Col span="8">
+            <FormItem label="学员姓名" label-position="top">
+              <Input v-model="formData.xyXm"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem label="学员电话" label-position="top">
+              <Input v-model="formData.xyDh"/>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem label="学员身份证号码" label-position="top">
+              <Input v-model="formData.xyZjhm"/>
+            </FormItem>
           </Col>
         </Row>
         <!--<radio-car v-if="carMess == null"-->
@@ -188,7 +214,7 @@
                    @JLRowClick="JLRowClick"
                    @jxSeljxSel="(val)=>{getCoachList('',true)}"></component>
 
-        <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='kf'">
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2KF'">
           <Col span="12">
             <FormItem label="学员人数" label-position="top">
               <Input v-model="formData.xySl" type="number" @on-enter="save"/>
@@ -198,24 +224,6 @@
 
 
         <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='py'">
-          <Col span="12">
-            <FormItem label="学员姓名" label-position="top">
-              <Input v-model="formData.xyXm"/>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="学员电话" label-position="top">
-              <Input v-model="formData.xyDh"/>
-            </FormItem>
-          </Col>
-        </Row>
-
-        <Row :gutter="32" style="padding-top: 5px" v-if="mxlx==='py'">
-          <Col span="12">
-            <FormItem label="学员身份证号" label-position="top">
-              <Input v-model="formData.xyZjhm"/>
-            </FormItem>
-          </Col>
           <Col span="12">
             <FormItem label="金额" label-position="top">
               <CheckboxGroup v-model="formData.lcFy">
@@ -260,6 +268,31 @@
                @remove="getCoachList('',true)"
                @JLRowClick="JLRowClick"
                @jxSeljxSel="(val)=>{getCoachList('',true)}"></component>
+
+
+    <Modal
+      v-model="updateAQY"
+      :closable="false"
+      width="500"
+      :mask-closable="false">
+      <div slot="header">
+        <div class="box_row">
+          <div style="font-size: 16px;margin-right: 28px;margin-top: 7px">
+            <h2>{{updateAQYtitle}}安全员</h2>
+          </div>
+        </div>
+      </div>
+      <Row :gutter="32" style="padding-top: 5px">
+        <Col span="12">
+            安全员
+            <Input v-model="formData.zgXm"/>
+        </Col>
+      </Row>
+      <div slot='footer'>
+        <Button style="margin-right: 8px" @click="updateAQY=false,formData.zgXm=''">取消</Button>
+        <Button type="primary" @click="save">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -307,6 +340,25 @@
           {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
           {title: '教练电话', key: 'jlDh', minWidth: 90},
           {title: '驾校', key: 'jlJx', minWidth: 90},
+          {title: '安全员',  minWidth: 90,
+            render: (h, p) => {
+              return h('Button',{
+                props:{type:'info',size:'small'},
+                on:{
+                  click:()=>{
+                    if(p.row.zgXm==''){
+                      this.formData.zgXm=''
+                      this.updateAQYtitle='添加'
+                    }else {
+                      this.updateAQYtitle='更改'
+                      this.formData.zgXm=p.row.zgXm
+                    }
+                    this.updateAQY=true
+                  }
+                }
+              },p.row.zgXm==''?'+':p.row.zgXm)
+            }
+          },
           // {
           //     title: '车辆类型', key: 'jlCx', minWidth: 90, render: (h, p) => {
           //         return h('Button', {
@@ -389,6 +441,8 @@
             }
           }
         ],
+        updateAQY:false,
+        updateAQYtitle:'更改',
         DrawerVal: false,
         compName: '',
         componentName: '',
@@ -488,7 +542,7 @@
     },
     methods: {
       getzdlist() {
-        this.$http.post('/api/lcjl/Tc', {km: '2', by5: '30'}).then((res) => {
+        this.$http.post('/api/lcjl/Tc', {km: '2'}).then((res) => {
           if (res.code == 200) {
             this.fylist = res.result
             for (let r of this.fylist) {
@@ -498,9 +552,6 @@
               r.by4 = parseFloat(r.by4)
               if (r.zddm == 'k2JS') {
                 r.by9 = '计时' + r.zdmc + '元/小时'
-              }
-              if (r.zddm == 'K2PY') {
-                r.by9 = '培优' + r.zdmc + '元/人'
               }
               if (r.zddm == 'K2KF1') {
                 r.by9 = '开放日1套餐' + r.zdmc + '元'
@@ -629,6 +680,31 @@
             }
           }
         })
+      },
+      lcFyChange(v) {
+        this.formData.zddm = v
+        console.log(v)
+        console.log(this.formData.zddm);
+
+        // var ifCard = false;
+        // this.fylist.map((val, index, arr) => {
+        //   if (val.zddm === v) {
+        //     ifCard = val.by2 === '0' ? false : true
+        //   }
+        // })
+        //
+        // if (ifCard) {
+        //   if (!!window.ActiveXObject || "ActiveXObject" in window) {
+        //   } else {
+        //     this.swal({
+        //       title: '该套餐已启用刷卡模式，请使用IE10以上的浏览器',
+        //       type: 'warning',
+        //       confirmButtonText: '关闭'
+        //     })
+        //     return
+        //   }
+        // }
+
       },
       faCar(name) {
         if (name === 'kk') {
@@ -843,13 +919,13 @@
         })
       },
       save() {//发车
-        if (this.formData.xySl == '' || this.formData.xySl == 0) {
-          this.swal({
-            title: '请填写学员数量',
-            type: 'error'
-          })
-          return
-        }
+        // if (this.formData.xySl == '' || this.formData.xySl == 0) {
+        //   this.swal({
+        //     title: '请填写学员数量',
+        //     type: 'error'
+        //   })
+        //   return
+        // }
         // if (this.formData.cardNo == null || this.formData.cardNo == '') {
         // this.readkar();
         // } else {

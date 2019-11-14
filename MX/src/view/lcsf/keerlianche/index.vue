@@ -340,7 +340,7 @@
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
                 <Select v-model="formData.zddm" style="width:200px" placeholder="计时500/小时" @on-change="lcFyChange">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm!='K2KF'">{{it.by9}}
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index">{{it.by9}}-{{it.zdmc}}元
                   </Option>
                 </Select>
                 <!--              <CheckboxGroup v-model="formData.lcFy">-->
@@ -815,7 +815,7 @@
                         this.formData.zddm = 'K2JS';
                         this.formData.lcClId = p.row.id
                         this.formData.lcKm = '2';
-                        this.$http.post('/api/lcjl/Tc', {km: '2'}).then((res) => {
+                        this.$http.post('/api/lcjl/Tc', {km: '2',by5: '00'}).then((res) => {
                           if (res.code == 200) {
                             this.fylist = res.result
                             for (let r of this.fylist) {

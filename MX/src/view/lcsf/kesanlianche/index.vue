@@ -202,7 +202,7 @@
             </FormItem>
           </Col>
         </Row>
-        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined&&formData.zddm.includes('K3PY')">
+        <Row :gutter="32" style="padding-top: 5px" v-for="item in pyxyInfo" v-if="formData.zddm!=undefined&&formData.zddm.includes('K3PY')">
           <Col span="8">
             <FormItem label="学员姓名" label-position="top">
               <Input v-model="formData.xyXm"/>
@@ -529,6 +529,9 @@
         clId: '',
         showFQfzkp: false,
         sfaemanlist: [],
+        pyxyInfo:[      //培优学员信息
+
+        ],
         formData: {
           zgId: '',
           xyZjhm: '',
