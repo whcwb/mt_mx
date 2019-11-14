@@ -1253,7 +1253,7 @@
       },
       afterPager(list) {
         for (let r of list) {
-          r.sc = this.parseTime(r.sc)
+          // r.sc = this.parseTime(r.sc)
           r.kssj = r.kssj.substring(0, 16)
           r.jssj = r.jssj.substring(0, 16)
         }
