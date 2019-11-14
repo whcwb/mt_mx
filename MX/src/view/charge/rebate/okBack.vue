@@ -58,6 +58,7 @@
         tableColumns: [
           {title: '#', type: 'index', fixed: 'left', align: 'center', minWidth: 80},
             {title: '教练员', key: 'jlXm', align: 'center', minWidth: 120},
+          {title: '驾校名称', key: 'jx', align: 'center', minWidth: 120},
           {
             title: '返点时间', key: 'cjsj', align: 'center', minWidth: 120, render: (h, p) => {
               let a = p.row.cjsj.substring(0, 16)
