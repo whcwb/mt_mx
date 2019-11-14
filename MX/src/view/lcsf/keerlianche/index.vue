@@ -51,9 +51,6 @@
       <Table ref="table" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
     </Row>
 
-
-
-
     <Modal
       title="分配车辆"
       v-model="DrawerVal"
