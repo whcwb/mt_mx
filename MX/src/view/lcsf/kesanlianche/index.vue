@@ -574,13 +574,17 @@
             key: 'clBh',
             align: 'center',
             fixed: "left",
-              minWidth: 90,
+              minWidth: 100,
             render: (h, p) => {
-              return h('Tag', {
-                props: {
-                  type: 'volcano',
-                }
-              }, p.row.clBh)
+                return h('div',{style:{fontSize: '20px',color:'#fa541c',fontWeight:'600'}}, p.row.clBh)
+              // return h('Tag', {
+              //   props: {
+              //     type: 'volcano',
+              //   },
+              //   style:{
+              //       font_size:'24px'
+              //   }
+              // }, p.row.clBh)
             }
           },
           // {
@@ -915,7 +919,7 @@
             }
           },
           {
-            title: '时长(分钟)',
+            title: '时长',
             key: 'sc',
             width: 150,
             align: 'center',
@@ -923,25 +927,25 @@
               if (p.row.dqsc == '') {
 
               } else {
-                return h('div', parseInt(p.row.dqsc / 60))
+                return h('div', parseInt(p.row.dqsc / 60) + '分钟')
               }
 
             }
           },
           {
-            title: '费用(元)',
+            title: '费用',
             align: 'center',
               minWidth: 120,
             render: (h, p) => {
               if (p.row.zj != '') {
-                return h('div', p.row.zj)
+                return h('div', p.row.zj + '元')
               }
 
             }
           },
             {
                 title: '类型',
-                minWidth: 120,
+                minWidth: 180,
                 align: 'center',
                 render: (h, p) => {
                     if (p.row.zdxm != ''){
