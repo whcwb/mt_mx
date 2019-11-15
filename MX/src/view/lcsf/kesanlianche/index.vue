@@ -202,22 +202,35 @@
             </FormItem>
           </Col>
         </Row>
-        <Row :gutter="32" style="padding-top: 5px" v-for="item in pyxyInfo" v-if="formData.zddm!=undefined&&formData.zddm.includes('K3PY')">
-          <Col span="8">
-            <FormItem label="学员姓名" label-position="top">
-              <Input v-model="formData.xyXm"/>
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem label="学员电话" label-position="top">
-              <Input v-model="formData.xyDh"/>
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem label="学员身份证号码" label-position="top">
-              <Input v-model="formData.xyZjhm"/>
-            </FormItem>
-          </Col>
+        <Row :gutter="32" style="padding-top: 5px"  v-if="formData.zddm!=undefined && formData.zddm.includes('K3PY')">
+          <Card>
+            <p slot="title">学员信息</p>
+            <p>
+              <Row v-for="(item,index) in AMess" :key="index">
+                <Col span="5" :class-name="'colsty'">
+                  <Input type="text" size="default" v-model="item.xyXm" placeholder="学员姓名"/>
+                </Col>
+                <Col span="5" :class-name="'colsty'">
+                  <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"
+                         size="default" v-model="item.xyDh" placeholder="学员联系电话"/>
+                </Col>
+                <Col span="8" :class-name="'colsty'">
+                  <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"
+                         size="default" v-model="item.bz" placeholder="身份证号码"/>
+                </Col>
+                <Col span="2" v-if="AMess.length>1">
+                  <Button size="default" type="warning" @click="remove(index)">删除</Button>
+                </Col>
+                <Col span="2" align="center">
+
+                  <Button type="info" icon="md-add"
+                          @click="pushmess"
+                  >
+                  </Button>
+                </Col>
+              </Row>
+            </p>
+          </Card>
         </Row>
         <Row :gutter="32" style="padding-top: 5px">
           <Col span="12">
@@ -353,6 +366,10 @@
     },
     data() {
       return {
+          Pmess: {},
+          AMess: [
+              {}
+          ],
         tcIndex: 0,
         columns2: [
           {
@@ -579,7 +596,7 @@
             fixed: "left",
               minWidth: 100,
             render: (h, p) => {
-                return h('div',{style:{fontSize: '20px',color:'#fa541c',fontWeight:'600'}}, p.row.clBh)
+                return h('div',{style:{fontSize: '20px',color:'#ffbb96',fontWeight:'600'}}, p.row.clBh)
               // return h('Tag', {
               //   props: {
               //     type: 'volcano',
@@ -642,7 +659,6 @@
                     style: {margin: '0 10px 0 0'},
                     on: {
                       click: () => {
-
                         this.formData.zddm = 'K3JS';
                         this.formData.lcClId = p.row.id
                         this.formData.lcKm = '3';
@@ -1007,6 +1023,55 @@
         'set_LcTime',
         'Ch_LcTime'
       ]),
+        remove(i){
+            this.AMess.splice(i,1)
+        },
+        pushmess() {
+            let a = JSON.parse(JSON.stringify(this.Pmess));
+            this.AMess.push(a);
+        },
+        getWXXY(AMess) {
+             AMess = this.AMess
+            let arrAMess = AMess.length - 1;
+            let messarr = [];
+            let dxarr = [];
+            let sfzarr = [];
+            let a = true
+            for (let i =0;i<=AMess.length; i++){
+                if(AMess[i].xyXm == undefined ||AMess[i].xyXm == ''||AMess[i].xyXm == null){
+                    this.swal({
+                        title: '请填写学员姓名',
+                        type: 'error'
+                    })
+                    a = false
+                    break
+                }else {
+                    messarr.push(AMess[i].xyXm)
+                    dxarr.push(AMess[i].xyDh)
+                    sfzarr.push(AMess[i].bz)
+                    if (AMess[i].index == arrAMess) {
+                        console.log(dxarr.join(','))
+                        console.log(messarr.join(','))
+                        this.formData.xyXm = messarr.join(',');
+                        this.formData.xyDh = dxarr.join(',');
+                        this.formData.xyZjhm = sfzarr.join(',');
+                    }
+                }
+
+            }
+            return a
+            // AMess.forEach((item, index) => {
+            //     console.log(item.xyXm);
+            //
+            // })
+        },
+        scXY(e){
+            this.AMess=[{}];
+            e = parseInt(e);
+            for (let i =1;i<e;i++){
+                this.AMess.push({})
+            }
+        },
       getSafemanList() {
         this.$http.post('/api/zgjbxx/getAqy', {notShowLoading: 'true'}).then((res) => {
           if (res.code == 200) {
@@ -1247,6 +1312,7 @@
         this.formData.jlId = row.id
       },
       close() {
+          this.AMess=[{}];
         this.DrawerVal = false
       },
       yyClick(val, cx) {
@@ -1464,28 +1530,33 @@
 
         console.log(this.formData.cardNo, '455')
 
-        if (!ifCard || (ifCard && (this.formData.cardNo != '' && this.formData.cardNo != undefined && this.formData.cardNo != null))) {                //判断是否需要刷卡 by2 0不刷 1刷
-          this.$http.post('/api/lcjl/save', this.formData).then(res => {
-            if (res.code == 200) {
-              this.DrawerVal = false;
-              this.formData = {};
-              this.getCarList();
-              // this.swal({
-              //   title: '发车成功',
-              //   type: 'success',
-              //   confirmButtonText: '确定',
-              // })
-              this.carMess = null
-            } else {
-              this.formData.cardNo = '';
-              console.log(this.formData.cardNo)
-              this.swal({
-                title: res.message,
-                type: 'warning'
-              })
-            }
-          }).catch(err => {
-          })
+        if (!ifCard || (ifCard && (this.formData.cardNo != '' && this.formData.cardNo != undefined && this.formData.cardNo != null))) {
+            //判断是否需要刷卡 by2 0不刷 1刷
+           if ( this.getWXXY()){
+               this.$http.post('/api/lcjl/save', this.formData).then(res => {
+                   if (res.code == 200) {
+                       this.DrawerVal = false;
+                       this.formData = {};
+                       this.AMess=[{}];
+                       this.getCarList();
+                       // this.swal({
+                       //   title: '发车成功',
+                       //   type: 'success',
+                       //   confirmButtonText: '确定',
+                       // })
+                       this.carMess = null
+                   } else {
+                       this.formData.cardNo = '';
+                       console.log(this.formData.cardNo)
+                       this.swal({
+                           title: res.message,
+                           type: 'warning'
+                       })
+                   }
+               }).catch(err => {
+               })
+           }
+
         }
         else {
 

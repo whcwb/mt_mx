@@ -167,13 +167,13 @@
 
                 <div class="messList">
                   <div class="messTit3">
-                   实收人民币(大写)
+                   实收人民币
                   </div>
                   <div class="ItemMess3">
                     :  {{money | DX}} <span style="float: right">￥{{money}}元</span>
                   </div>
                   <div class="messTit3">
-                    充值人民币(大写)
+                    充值人民币
                   </div>
                   <div class="ItemMess3">
                     :  {{money1 | DX}} <span style="float: right">￥{{money1}}元</span>
