@@ -26,14 +26,15 @@
               </Col>
               <Col span="20" v-if="item.zddm !='K2KF'&&item.zddm !='K2PY'">
                 <InputNumber v-model="item.zdmc" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
-                <span>元/小时</span>
+                <span v-if="index==0">元/小时</span>
+                <span v-if="index==1">元</span>
               </Col>
               <Col span="20" v-if="item.zddm =='K2PY'">
                 <InputNumber v-model="item.zdmc" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
                 <span>元/人</span>
               </Col>
             </Row>
-            <Row style="margin-top: 16px;">
+            <Row v-if="index!=1" style="margin-top: 16px;">
               <Col span="20">
                 <InputNumber v-model="item.by3" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
                 <span v-if="item.zddm =='K2PY'"> 元/人</span>
@@ -43,13 +44,29 @@
               <Col span="4">
               </Col>
             </Row>
-            <Row style="margin-top: 16px;">
+            <Row v-if="index==1" style="margin-top: 16px;">
+              <Col span="20">
+                <InputNumber v-model="item.qz" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
+                <span>分钟</span>
+              </Col>
+              <Col span="4">
+              </Col>
+            </Row>
+            <Row v-if="index!=1" style="margin-top: 16px;">
               <Col span="20">
                 <InputNumber v-model="item.by4" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
                 <span>返点率</span>
               </Col>
               <Col span="4">
                 <Button type="primary" @click="confirm(item)">修改</Button>
+              </Col>
+            </Row>
+            <Row v-else style="margin-top: 16px;">
+              <Col span="20">
+                <InputNumber v-model="item.by3" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
+                <span> 元/分钟</span>
+              </Col>
+              <Col span="4">
               </Col>
             </Row>
             <Row style="margin-top: 16px;">
