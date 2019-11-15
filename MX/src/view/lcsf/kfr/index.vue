@@ -42,6 +42,8 @@
           <Col span="4">
             <DatePicker v-model="dateRange.cjsj"
                         @on-change="param.cjsjInRange = v.util.dateRangeChange(dateRange.cjsj)"
+                        @on-ok="v.util.getPageData(v)"
+                        confirm
                         format="yyyy-MM-dd"
                         split-panels
                         type="daterange" :placeholder="'请输入时间'"></DatePicker>
@@ -285,12 +287,12 @@
       <Row :gutter="32" style="padding-top: 5px">
         <Col span="12">
             安全员
-            <Input v-model="formData.zgXm"/>
+            <Input v-model="aqyItem.zgXm"/>
         </Col>
       </Row>
       <div slot='footer'>
-        <Button style="margin-right: 8px" @click="updateAQY=false,formData.zgXm=''">取消</Button>
-        <Button type="primary" @click="save">确定</Button>
+        <Button style="margin-right: 8px" @click="updateAQY=false,aqyItem.zgXm=aqyItem.id=''">取消</Button>
+        <Button type="primary" @click="update">确定</Button>
       </div>
     </Modal>
   </div>
@@ -340,6 +342,25 @@
           {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
           {title: '教练电话', key: 'jlDh', minWidth: 90},
           {title: '驾校', key: 'jlJx', minWidth: 90},
+          {title: '类型',  minWidth: 90,
+            render: (h, p) => {
+              return h('div',p.row.lcLx=='20'?'培优':'开放日')
+            },
+            filters: [
+              {
+                label: '培优',
+                value: '20'
+              },
+              {
+                label: '开放日',
+                value: '30',
+              }
+            ],
+            filterMultiple: false,
+            filterMethod (value, row) {
+              return row.lcLx == value;
+            }
+          },
           {title: '安全员',  minWidth: 90,
             render: (h, p) => {
               return h('Button',{
@@ -347,12 +368,13 @@
                 on:{
                   click:()=>{
                     if(p.row.zgXm==''){
-                      this.formData.zgXm=''
+                      this.aqyItem.zgXm=''
                       this.updateAQYtitle='添加'
                     }else {
                       this.updateAQYtitle='更改'
-                      this.formData.zgXm=p.row.zgXm
+                      this.aqyItem.zgXm=p.row.zgXm
                     }
+                    this.aqyItem.id=p.row.id
                     this.updateAQY=true
                   }
                 }
@@ -443,6 +465,10 @@
         ],
         updateAQY:false,
         updateAQYtitle:'更改',
+        aqyItem:{
+          zgXm:'',
+          id:''
+        },
         DrawerVal: false,
         compName: '',
         componentName: '',
@@ -487,7 +513,7 @@
           // kssjIsNotNull: '1',
           total: 0,
           lcKm: 2,
-          lcLx: '30',
+          lcLxIn: '20,30',
           cjsjInRange: '',
           zhLike: ''
         },
@@ -822,6 +848,26 @@
             this.formData.cardNo = mess
             callback && callback(true)
             this.save()
+          }
+        })
+      },
+      update(){
+        if(this.aqyItem.zgXm=='') {
+          this.$Message.info('请输入安全员姓名');
+          return
+        }
+        this.$http.post('/api/lcjl/update', this.aqyItem).then(res => {
+          if (res.code == 200) {
+            this.updateAQY=false
+            this.aqyItem={}
+            this.util.initTable(this);
+            this.swal({
+              title: '操作成功',
+              type: 'success',
+              confirmButtonText: '确定',
+            })
+          } else {
+            this.$Message.info(res.message);
           }
         })
       },
