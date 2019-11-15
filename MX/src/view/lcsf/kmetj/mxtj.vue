@@ -40,13 +40,13 @@
         },
         tableColumns: [
           {
-            type: 'index2', align: 'center', minWidth: 80,
+            type: 'index2', align: 'center', minWidth: 80,title: '序号',
             render: (h, params) => {
               return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
             }
           },
           {
-            title: '车辆编号', key: 'clBh', minWidth: 90, render: (h, p) => {
+            title: '车号', key: 'clBh', align: 'center',minWidth: 90, render: (h, p) => {
               return h('Tag', {
                 props: {
                   type: 'volcano',
@@ -54,14 +54,14 @@
               }, p.row.clBh)
             }
           },
+          {title: '驾校', key: 'jlJx', minWidth: 90},
+          {title: '教练员', key: 'jlXm',  minWidth: 90},
+          {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           {title: '开始时间', key: 'kssj', searchType: 'daterange', minWidth: 180},
           {title: '结束时间', key: 'jssj', minWidth: 180},
           {title: '时长', key: 'sc', minWidth: 80, default: '0'},
-          {title: '教练姓名', key: 'jlXm',  minWidth: 90},
-          {title: '驾校/队号', key: 'jlJx', minWidth: 90},
-          {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           // {title: '计费类型', key: 'lcLx', minWidth: 90, dict: 'ZDCLK1048'},
-          {title: '练车费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0'},
+          {title: '费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0'},
           // {title:'操作',render:(h,p)=>{
           //     let buttons = [];
           //     buttons.push(this.util.buildeditButton(this,h,p));
