@@ -12,11 +12,18 @@
           <Col span="12">
             <div style="float: left;margin-top: 8px;">
               <span
-                style="width: 100px;height: 80px;background-color: #ffbb96;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">共{{tabdata.length}}台</span>
+                style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;">
+
+              <!--                style="width: 100px;height: 80px;background-color: #ffbb96;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">-->
+                共{{tabdata.length}}台
+              </span>
               <span
-                style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">停用{{zxNum}}台</span>
+                style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;"
+
+              >停用{{zxNum}}台</span>
               <span
-                style="width: 100px;height: 80px;background-color: #66CD00;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">启用{{xxNum}}台</span>
+                style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;"
+              >启用{{xxNum}}台</span>
             </div>
           </Col>
           <Col span="5">
@@ -72,7 +79,7 @@
                   </Col>
                   <Col span="12" style="margin-top: 6px">
                     <Tooltip content="删除">
-                      <Button type="warning" icon="ios-trash" size="small" @click="del(item.id)"></Button>
+                      <Button icon="ios-trash" size="small" @click="del(item.id)"></Button>
                     </Tooltip>
                   </Col>
                 </Row>
