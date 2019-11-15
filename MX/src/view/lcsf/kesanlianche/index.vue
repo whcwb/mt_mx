@@ -104,13 +104,13 @@
           <Input size="large" v-model="param.jlXmLike" clearable placeholder="请输入教练姓名"
                  @on-enter="pageSizeChange(param.pageSize)"/>
         </Col>
-        <Col span="1" align="center" style="margin-right: 10px;">
+        <Col span="1" align="center">
           <Button type="primary" @click="pageSizeChange(param.pageSize)">
             <Icon type="md-search"></Icon>
             <!--查询-->
           </Button>
         </Col>
-        <Col span="1" align="center" style="margin-right: 40px">
+        <Col span="1" align="center" style="margin-right: 20px">
           <Button type="primary" @click="plzf">
             确认支付
           </Button>
@@ -321,11 +321,11 @@
               <p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">
                 <Checkbox disabled v-model="ls.ls3">{{ls.ls6}}</Checkbox>
-                现金支付;
+                现金支付
               </p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">
                 <Checkbox disabled v-model="ls.ls2">{{ls.ls6}}</Checkbox>
-                充卡支付(余额:{{QRmess.cardje}}元);
+                充卡支付(余额:{{QRmess.cardje}}元)
               </p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">
                 <Checkbox disabled v-model="ls.ls1">{{ls.ls6}}</Checkbox>
@@ -434,18 +434,46 @@
           {title: '打印', click: 'print'}
         ],
         tableColumns: [
-          {
-            type: 'index2', align: 'center', minWidth: 80,
-            render: (h, params) => {
-              return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
-            }
-          },
+          // {
+          //   type: 'index2', align: 'center', minWidth: 80,
+          //   render: (h, params) => {
+          //     return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
+          //   }
+          // },
+            {type:'index',align: 'center', minWidth: 40,title:'序号'},
           {
             type: 'selection',
-            width: 60,
+            width: 40,
             align: 'center'
           },
-          {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
+            {title: '驾校', key: 'jlJx', minWidth: 90,align: 'center', },
+          {title: '教练员', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90,align: 'center',},
+            {
+                title: '人数',
+                key: 'xySl',
+                minWidth: 60,
+                align: 'center',
+                render: (h, p) => {
+                    if (p.row.xySl!=''&&p.row.xySl!=undefined){
+                        return h('div', p.row.xySl+'人')
+                    }else {
+                        return ''
+                    }
+
+                }
+            },
+            {title: '车型', key: 'jlCx', minWidth: 60,align: 'center',},
+            {
+                title: '类型',
+                minWidth: 120,
+                align: 'center',
+                render: (h, p) => {
+                    if (p.row.zdxm != ''){
+                        return h('div', p.row.zdxm.by9+' '+p.row.zdxm.zdmc)
+                    }
+
+                }
+            },
           // {title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90,},
           // {
           //   title: '状态', minWidth: 120, render: (h, p) => {
@@ -461,14 +489,22 @@
           //   }
           // },
 
-          {title: '开始时间', key: 'kssj', minWidth: 140},
-          {title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 140},
-          {title: '时长(分钟)', key: 'sc', minWidth: 80, defaul: '0'},
+          {title: '开始时间', key: 'kssj', minWidth: 140,align: 'center',},
+          {title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 140,align: 'center',},
+          {title: '时长', key: 'sc', minWidth: 80, defaul: '0',align: 'center',
+              render:(h,p)=>{
+              return h('div',p.row.sc+'分钟')
+              }
+          },
           // {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
-          {title: '练车费用(元)', key: 'lcFy', append: '元', minWidth: 90, defaul: '0'},
+          {title: '费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0',align: 'center',
+              render:(h,p)=>{
+                  return h('div',p.row.lcFy+'元')
+              }
+          },
           {
-            title: '订单状态', key: 'zfzt', minWidth: 80,
+            title: '订单状态', key: 'zfzt', minWidth: 80,align: 'center',
             render: (h, p) => {
               if (p.row.zfzt == '00') {
                 return h('div', '未支付')
@@ -477,9 +513,18 @@
               }
             }
           },
-          {title: '凭证', key: 'pz', minWidth: 180,},
+            {
+                title: '安全员',
+                minWidth: 100,
+                align: 'center',
+                render: (h, p) => {
+                    return h('div', p.row.zgXm)
+                }
+            },
+          {title: '凭证号', key: 'pz', minWidth: 150,align: 'center',},
+
           {
-            title: '操作', minWidth: 60, fixed: 'right', render: (h, p) => {
+            title: '操作', minWidth: 60, fixed: 'right', align: 'center',render: (h, p) => {
               let buttons = [];
               buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
                 this.hisPrintMess = p.row
@@ -602,7 +647,7 @@
                 return h('div',{
                     style:{
                         // height:'30px',width:'30px',
-                        fontSize: '20px',fontWeight:'600',
+                        fontSize: '16px',fontWeight:'600',
                         // backgroundColor:'#ffbb96',borderRadius:"25px",
                         // color:'#ffbb96',
                     }

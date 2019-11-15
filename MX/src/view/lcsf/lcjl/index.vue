@@ -89,7 +89,9 @@
           {title: '驾校', key: 'jlJx', searchKey: 'jlJxLike', minWidth: 90},
           {title: '教练员', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
           // {title: '教练类型', key: 'jlLx', dict: 'jllx',minWidth:120},
-          {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
+          {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0',render:(h,p)=>{
+              return h('div',p.row.xySl+'人')
+              }},
           {
             title: '计费类型', minWidth: 90,
             render: (h, p) => {
@@ -98,7 +100,7 @@
                   return h('div', '计时')
                   break;
                 case '10':
-                  return h('div', '按次')
+                  return h('div', '按把')
                   break;
                 case '20':
                   return h('div', '培优')

@@ -57,6 +57,7 @@
           kssj: ''
         },
         tableColumns: [
+            {title: '序号', type: 'index'},
           {title: '驾校', key: 'jlJx'},
           {title: '教练员', key: 'jlXm'},
           {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},

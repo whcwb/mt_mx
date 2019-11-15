@@ -201,6 +201,7 @@
       },
       GXCar(){
         delete this.params.lcJl;
+        delete this.params.zdxm;
         this.$http.post(this.apis.CLWH.CLGX,this.params).then(res=>{
           if (res.code == 200){
             this.$Message.info(res.message);
