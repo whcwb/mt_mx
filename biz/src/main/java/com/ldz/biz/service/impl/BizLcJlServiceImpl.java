@@ -113,6 +113,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 if (CollectionUtils.isNotEmpty(items)) {
                     SysZdxm management = items.get(0);
                     bizLcJl.setLcDj(Float.parseFloat(StringUtils.isBlank(management.getBy4()) ? "0" : management.getBy4()));
+                    bizLcJl.setZdxm(management);
                 }
             }
             if (StringUtils.isNotEmpty(bizLcJl.getJlId())) {
@@ -385,8 +386,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 String by3 = management.getBy3();
                 // 190
                 String hour = management.getZdmc();
-                if (lcSc > 35) {
-                    v = (int) Math.ceil((lcSc - 35) * Float.parseFloat(by3)) + Integer.parseInt(hour);
+                if (lcSc > management.getQz()) {
+                    v = (int) Math.ceil((lcSc - management.getQz()) * Float.parseFloat(by3)) + Integer.parseInt(hour);
                 } else {
                     v = Integer.parseInt(hour);
                 }
