@@ -23,11 +23,11 @@
             <Input v-model="param.clBh" size="large" placeholder="请输入车辆编号"/>
             <br>
           </Col>
-          <Col span="3" style="margin-right: 10px">
+          <Col span="3" style="margin-right: 5px">
             <Input v-model="param.clHm" size="large" placeholder="请输入车牌号"/>
             <br>
           </Col>
-          <Col span="1" align="center">
+          <Col span="1" align="center" style="margin-right: 10px">
             <Button type="primary" @click="CLCX">
               <Icon type="md-search"></Icon>
               <!--查询-->
