@@ -97,25 +97,32 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         if (CollectionUtils.isEmpty(pageInfo.getList())) {
             return;
         }
+        // 查询所有的教练信息
         Set<String> jlIds = pageInfo.getList().stream().map(BizLcJl::getJlId).collect(Collectors.toSet());
         List<BizLcWxjl> coachs = wxjlService.findIn(BizLcWxjl.InnerColumn.id, jlIds);
+        // 根据教练id 分组
         Map<String, BizLcWxjl> coachMap = coachs.stream().collect(Collectors.toMap(BizLcWxjl::getId, p -> p));
+        // 拿到所有的套餐
+        Set<String> zddms = pageInfo.getList().stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
+        SimpleCondition djcondition = new SimpleCondition(SysZdxm.class);
+        djcondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        djcondition.in(SysZdxm.InnerColumn.zddm, zddms);
+        List<SysZdxm> items = zdxmService.findByCondition(djcondition);
+        // 根据套餐代码分组
+        Map<String, SysZdxm> map = items.stream().collect(Collectors.toMap(SysZdxm::getZddm, p -> p));
+
         pageInfo.getList().forEach(bizLcJl -> {
             SimpleCondition condition = new SimpleCondition(BizLcJlXy.class);
             condition.eq(BizLcJlXy.InnerColumn.lcJlId, bizLcJl.getId());
             List<BizLcJlXy> xies = xyService.findByCondition(condition);
             bizLcJl.setXyList(xies);
-            if (bizLcJl.getLcLx().equals("10")) {
-                SimpleCondition djcondition = new SimpleCondition(SysZdxm.class);
-                djcondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-                djcondition.eq(SysZdxm.InnerColumn.zddm, bizLcJl.getZddm());
-                List<SysZdxm> items = zdxmService.findByCondition(djcondition);
-                if (CollectionUtils.isNotEmpty(items)) {
-                    SysZdxm management = items.get(0);
-                    bizLcJl.setLcDj(Float.parseFloat(StringUtils.isBlank(management.getBy4()) ? "0" : management.getBy4()));
-                    bizLcJl.setZdxm(management);
-                }
+
+            SysZdxm zdxm = map.get(bizLcJl.getZddm());
+            if (zdxm != null) {
+                bizLcJl.setLcDj(Float.parseFloat(StringUtils.isBlank(zdxm.getBy4()) ? "0" : zdxm.getBy4()));
+                bizLcJl.setZdxm(zdxm);
             }
+
             if (StringUtils.isNotEmpty(bizLcJl.getJlId())) {
                 BizLcWxjl coach = coachMap.get(bizLcJl.getJlId());
                 if (coach != null) {
@@ -284,7 +291,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     lcFd.setJlId(wxjl.getId());
                     lcFd.setJlXm(wxjl.getJlXm());
                     lcFd.setLcId(entity.getId());
-                    lcFd.setFdlx("20");
+                    lcFd.setFdlx(entity.getLcLx());
                     lcFd.setLcFy(entity.getLcFy());
                     lcFd.setLcKm(entity.getLcKm());
                     lcFd.setSc(0);
@@ -310,7 +317,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     lcFd.setJlId(wxjl.getId());
                     lcFd.setJlXm(wxjl.getJlXm());
                     lcFd.setLcId(entity.getId());
-                    lcFd.setFdlx("20");
+                    lcFd.setFdlx(entity.getLcLx());
                     lcFd.setLcFy(entity.getLcFy());
                     lcFd.setLcKm(entity.getLcKm());
                     lcFd.setSc(0);
@@ -452,7 +459,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             if (xjje > 0) {
                 fdr = fdr + "3";
             }
-            str += " 应收现金" + xjje+"元";
+            str += " 应收现金" + xjje + "元";
         } else {
             fdr = "3";
             str = " 应收现金: " + lcJl.getLcFy() + "元";
@@ -1136,7 +1143,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fd.setCjr(yh.getZh() + "-" + yh.getXm());
                     fd.setCjsj(DateUtils.getNowTime());
                     fd.setFdje((int) Math.ceil(xjje * rate));
-                    fd.setFdlx("10");
+                    fd.setFdlx(lcJl.getLcLx());
                     fd.setId(pz);
                     fd.setJlXm(wxjl.getJlXm());
                     fd.setJlId(wxjl.getId());
@@ -1161,7 +1168,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                         fd.setCjr(yh.getZh() + "-" + yh.getXm());
                         fd.setCjsj(DateUtils.getNowTime());
                         fd.setFdje((int) Math.ceil(xjje * rate));
-                        fd.setFdlx("00");
+                        fd.setFdlx(lcJl.getLcLx());
                         fd.setId(pz);
                         fd.setJlXm(wxjl.getJlXm());
                         fd.setJlId(wxjl.getId());
@@ -1175,7 +1182,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fd.setCjr(yh.getZh() + "-" + yh.getXm());
                     fd.setCjsj(DateUtils.getNowTime());
                     fd.setFdje((int) Math.ceil(xjje * rate));
-                    fd.setFdlx("00");
+                    fd.setFdlx(lcJl.getLcLx());
                     fd.setId(pz);
                     fd.setJlXm(wxjl.getJlXm());
                     fd.setJlId(wxjl.getId());
@@ -1381,10 +1388,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         }
 
         BizLcFd fd = new BizLcFd();
-        fd.setFdlx("00");
+        fd.setFdlx(jls.get(0).getLcLx());
         if (kfje > 0) {
-            fd.setFdlx("10");
-
             // 采用的是 余额加现金的情况
             // 先算出所有的余额
             int jlye = wxjl.getYe();
@@ -1396,14 +1401,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                         // 余额充足
                         jl.setKfje(jl.getLcFy());
                         jl.setXjje(0);
-                        jl.setCardje(0);
                     } else {
 
                         jl.setXjje(Math.abs(jlye));
                         jl.setKfje(jl.getLcFy() + jlye);
                         jlye = 0;
-                        jl.setCardje(0);
                     }
+                    jl.setCardje(0);
                 } else {
                     jl.setXjje(jl.getLcFy());
                     jl.setCardje(0);
@@ -1524,6 +1528,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         BizLcWxjl wxjl = wxjlService.findById(id);
         BizLcJl jl = new BizLcJl();
         jl.setId(jls.get(0).getPz());
+        jl.setZgXm(jls.get(0).getZgXm());
         jl.setLcFy(sum);
         jl.setJlCx(jls.stream().map(BizLcJl::getJlCx).collect(Collectors.joining(",")));
         jl.setClBh(jls.stream().map(BizLcJl::getClBh).collect(Collectors.joining(",")));
@@ -1551,7 +1556,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
         }
         str += "应付现金" + jl.getXjje();
-        if (fdr.indexOf("2") != -1) {
+        if (fdr.contains("2")) {
             // 计算余额
             str += ",卡上余额" + wxjl.getCardJe() + "元";
         }
