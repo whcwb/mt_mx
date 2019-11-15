@@ -99,8 +99,12 @@
 
       </Row>
 
-      <Row>
-        <Col span="24" align="right">
+      <Row  style="display: flex;align-items: center;height: 36px">
+        <Col span="3" align="left">
+          <i-switch v-model="switch1"></i-switch>
+        </Col>
+        <Col span="21" align="right">
+          <span v-show="switch1">
           <span style="font-size: 24px;font-weight: 600">
             人数：<span style="color: #ed3f14"> {{rs}} </span> 人
           </span>
@@ -108,6 +112,7 @@
           <span style="font-size: 24px;font-weight: 600">
             合计：<span style="color: #ed3f14"> {{hj}} </span> 元
           </span>
+            </span>
         </Col>
       </Row>
 
@@ -324,6 +329,7 @@
         hj: 0,
         rs: 0,
         mxlx: '',
+        switch1: true,
         total: 0,
         giveCar: giveCar,
         v: this,
