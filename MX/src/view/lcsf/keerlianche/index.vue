@@ -557,17 +557,17 @@
         ],
         tableColumns: [
           {
-            type: 'index2', align: 'center', minWidth: 80,
+            type: 'index2', minWidth: 50,align: 'center',title: '序号',
             render: (h, params) => {
               return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
             }
           },
           {
             type: 'selection',
+            align: 'center',
             width: 60,
-            align: 'center'
           },
-          {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
+          {title: '教练员', align: 'center',key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
           // {title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90,},
           // {
           //   title: '状态', minWidth: 120, render: (h, p) => {
@@ -583,22 +583,30 @@
           //   }
           // },
 
-          {title: '开始时间', key: 'kssj', minWidth: 140},
-          {title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 140},
-          {title: '时长(分钟)', key: 'sc', minWidth: 80, defaul: '0'},
+          {title: '开始时间', align: 'center',key: 'kssj', minWidth: 140},
+          {title: '结束时间',align: 'center', key: 'jssj', searchType: 'daterange', minWidth: 140},
+          {title: '时长',align: 'center',  key: 'sc',minWidth: 80, defaul: '0',
+            render: (h, p) => {
+              return h('div', p.row.sc + '分钟');
+            }
+          },
           // {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
-          {title: '练车费用(元)', key: 'lcFy', append: '元', minWidth: 90, defaul: '0'},
+          {title: '费用',  align: 'center', minWidth: 90, defaul: '0',
+            render: (h, p) => {
+              return h('div', p.row.lcFy + '元');
+            }},
           {
-            title: '订单状态', key: 'zfzt', minWidth: 80,
+            title: '订单状态', key: 'zfzt', align: 'center',minWidth: 80,
             render: (h, p) => {
               if (p.row.zfzt == '00') {
 
-                          return h('Tag', {
-                              props: {
-                                  type: 'volcano',
-                              }
-                          }, '未支付')
+                          // return h('Tag', {
+                          //     props: {
+                          //         type: 'volcano',
+                          //     }
+                          // }, '未支付')
+                return h('div', '未支付')
 
 
               } else {
@@ -606,7 +614,7 @@
               }
             }
           },
-          {title: '凭证', key: 'pz', minWidth: 180,},
+          {title: '凭证', key: 'pz',align: 'center', minWidth: 180,},
           {
             title: '操作', minWidth: 60, fixed: 'right', render: (h, p) => {
               let buttons = [];
@@ -1051,6 +1059,14 @@
           //             return h('div',p.row.lcJl.zgXm)
           //     }
           // },
+          {
+            title: '驾校',
+            width: 150,
+            align: 'center',
+            render: (h, p) => {
+              return h('div', p.row.lcJl.jlJx)
+            }
+          },
           {
             title: '教练员',
             key: 'jlXm',

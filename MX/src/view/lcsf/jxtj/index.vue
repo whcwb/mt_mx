@@ -59,7 +59,11 @@
           {title: '序号', type: 'index'},
           {title: '驾校', key: 'jlJx'},
           {title: '时长', key: 'lcSc', minWidth: 80, defaul: '0'},
-          {title: '收费（元）', key: 'lcFy', append: '元', minWidth: 90, defaul: '0'},
+          {title: '费用', minWidth: 90, defaul: '0',
+            render: (h, p) => {
+              return h('div', p.row.lcFy+'元')
+            },
+          },
         ],
         pageData: [],
         pager: false,

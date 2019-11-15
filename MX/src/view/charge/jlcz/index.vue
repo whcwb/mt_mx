@@ -374,7 +374,7 @@
           this.Ch_LcTime()
         }, 1000),
         columns1: [
-          {title: '#', type: 'index', width: 60},
+          {title: '序号',type: 'index', width: 60},
           {
             title: '卡号',
             key: 'cardNo',
@@ -388,13 +388,13 @@
 
           },
           {
-            title: '教练姓名',
+            title: '教练员',
             key: 'jlXm',
             align: 'center',
 
           },
           {
-            title: '联系电话',
+            title: '教练员电话',
             key: 'jlLxdh',
             align: 'center',
 

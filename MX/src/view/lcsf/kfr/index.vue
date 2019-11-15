@@ -39,15 +39,16 @@
           <!--        </Col>-->
 
 
-          <Col span="4">
+          <!--<Col span="4">-->
             <DatePicker v-model="dateRange.cjsj"
                         @on-change="param.cjsjInRange = v.util.dateRangeChange(dateRange.cjsj)"
                         @on-ok="v.util.getPageData(v)"
                         confirm
                         format="yyyy-MM-dd"
+                        style="margin-right: 5px"
                         split-panels
                         type="daterange" :placeholder="'请输入时间'"></DatePicker>
-          </Col>
+          <!--</Col>-->
           <Col span="3">
             <Input size="large" v-model="param.jlXmLike" clearable placeholder="请输入教练姓名"
                    @on-enter="v.util.getPageData(v)"/>
@@ -99,7 +100,7 @@
 
       </Row>
 
-      <Row  style="display: flex;align-items: center;height: 36px">
+      <Row style="display: flex;align-items: center;height: 36px">
         <Col span="3" align="left">
           <i-switch v-model="switch1"></i-switch>
         </Col>
@@ -223,7 +224,7 @@
                    @jxSeljxSel="(val)=>{getCoachList('',true)}"></component>
 
         <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2KF'">
-          <Col span="12">
+          <Col span="11">
             <FormItem label="学员人数" label-position="top">
               <Input v-model="formData.xySl" type="number" @on-enter="save"/>
             </FormItem>
@@ -338,19 +339,23 @@
         tableColumns: [
           {
             title: '序号', align: 'center', minWidth: 80,
-            render: (h, params) => {
-              return h('Tag', {
-                props: {
-                  type: 'volcano',
-                }
-              }, params.index + 1)
-            }
+            // render: (h, params) => {
+            //   return h('div', params.index + 1)
+            // return h('Tag', {
+            //   props: {
+            //     type: 'volcano',
+            //   }
+            // }, params.index + 1)
+            // }
+            render: (h, p) => {
+              return h('div', p.index + 1)
+            },
           },
-          {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
-          {title: '教练电话', key: 'jlDh', minWidth: 90},
-          {title: '驾校', key: 'jlJx', minWidth: 90},
+          {title: '驾校', key: 'jlJx', align: 'center',minWidth: 90},
+          {title: '教练员', key: 'jlXm', align: 'center',searchKey: 'jlXmLike', minWidth: 90},
+          {title: '教练员电话', align: 'center',key: 'jlDh', minWidth: 90},
           {
-            title: '类型', minWidth: 90,
+            title: '类型', minWidth: 90,align: 'center',
             render: (h, p) => {
               return h('div', p.row.lcLx == '20' ? '培优' : '开放日')
             },
@@ -369,13 +374,18 @@
               return row.lcLx == value;
             }
           },
-          {
-            title: '安全员', minWidth: 90,
+          {title: '学员数量',align: 'center', key: 'xySl', minWidth: 90, defaul: '0',
             render: (h, p) => {
-              return h('div', p.row.zgXm == '' ? '/' : p.row.zgXm)
-            }
+              return h('div', p.row.xySl+'人')
+            },
           },
           // {
+          //   title: '安全员', minWidth: 90,
+          //   render: (h, p) => {
+          //     return h('div', p.row.zgXm == '' ? '/' : p.row.zgXm)
+          //   }
+          // },
+          // // {
           //     title: '车辆类型', key: 'jlCx', minWidth: 90, render: (h, p) => {
           //         return h('Button', {
           //             props: {
@@ -388,11 +398,13 @@
           //         }, p.row.jlCx)
           //     }
           // },
-          {title: '创建时间', key: 'kssj', searchType: 'daterange', minWidth: 140},
           // {title: '安全员姓名', key: 'zgXm',minWidth:100},
           // {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
-          {title: '学员数量(人)', key: 'xySl', minWidth: 90, defaul: '0'},
-          {title: '练车费用(元)', key: 'lcFy', minWidth: 90, defaul: '0'},
+          {title: '练车费用',align: 'center', minWidth: 90, defaul: '0',
+            render: (h, p) => {
+              return h('div', p.row.lcFy+'元')
+            },},
+          {title: '创建时间', align: 'center',key: 'kssj', searchType: 'daterange', minWidth: 140},
           // {
           //     title: '状态', minWidth: 120, render: (h, p) => {
           //         let s = '';
@@ -454,18 +466,18 @@
 
               }
 
-              buttons.push(this.util.buildButton(this, h, 'info', 'ios-construct', '更改安全员', () => {
-                if (p.row.zgXm == '') {
-                  this.aqyItem.zgXm = ''
-                  this.updateAQYtitle = '添加'
-                } else {
-                  this.updateAQYtitle = '更改'
-                  this.aqyItem.zgXm = p.row.zgXm
-                }
-                this.aqyItem.id = p.row.id
-                this.updateAQY = true
+                buttons.push(this.util.buildButton(this, h, 'info', 'ios-construct', '更改安全员', () => {
+                  if (p.row.zgXm == '') {
+                    this.aqyItem.zgXm = ''
+                    this.updateAQYtitle = '添加'
+                  } else {
+                    this.updateAQYtitle = '更改'
+                    this.aqyItem.zgXm = p.row.zgXm
+                  }
+                  this.aqyItem.id = p.row.id
+                  this.updateAQY = true
 
-              }));
+                },p.row.lcLx == '20'?false:true));
               return h('div', buttons);
             }
           }

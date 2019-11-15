@@ -9,7 +9,7 @@
     <Row style="margin-bottom: 8px">
       <Col span="24">
         <Row :gutter="6" type="flex" justify="space-bewteen">
-          <Col span="12">
+          <Col span="14">
             <div style="float: left;margin-top: 8px;">
               <span
                 style="width: 100px;height: 80px;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">共{{tabdata.length}}台</span>
@@ -19,15 +19,15 @@
                 style="width: 100px;height: 80px;background-color: #66CD00;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">启用{{xxNum}}台</span>
             </div>
           </Col>
-          <Col span="5" >
+          <Col span="3" style="margin-right: 5px">
             <Input v-model="param.clBh" size="large" placeholder="请输入车辆编号"/>
             <br>
           </Col>
-          <Col span="5">
+          <Col span="3" style="margin-right: 5px">
             <Input v-model="param.clHm" size="large" placeholder="请输入车牌号"/>
             <br>
           </Col>
-          <Col span="1" align="center">
+          <Col span="1" align="center" style="margin-right: 10px">
             <Button type="primary" @click="CLCX">
               <Icon type="md-search"></Icon>
               <!--查询-->
