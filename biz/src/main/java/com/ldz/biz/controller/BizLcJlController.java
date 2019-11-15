@@ -142,8 +142,8 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
     }
 
     @PostMapping("/Tc")
-    public ApiResponse<List<SysZdxm>> getTc(String km , String carType){
-        return service.getTc(km,carType);
+    public ApiResponse<List<SysZdxm>> getTc(String km , String by5){
+        return service.getTc(km,by5);
     }
 
     @PostMapping("/cz")

@@ -37,6 +37,7 @@ public class BizLcJlXy implements Serializable {
 
     @Column(name = "xy_lc_cs")
     private Integer xyLcCs;
+
     @Column(name = "xy_cl_bh")
     private String xyClBh;
 
