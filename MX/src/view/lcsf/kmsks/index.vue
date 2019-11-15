@@ -12,7 +12,7 @@
           <Col span="12">
             <div style="float: left;margin-top: 8px;">
               <span
-                style="width: 100px;height: 80px;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">共{{tabdata.length}}台</span>
+                style="width: 100px;height: 80px;background-color: #ffbb96;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">共{{tabdata.length}}台</span>
               <span
                 style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">停用{{zxNum}}台</span>
               <span
@@ -50,7 +50,7 @@
           <Card style="width:100%">
             <Row justify="center" align="middle">
               <Col span="3" align="left">
-                <Avatar style="color: white;background-color: red;line-height: 38px;font-size: 24px;font-weight: bold">
+                <Avatar style="color: white;background-color: #ffbb96;line-height: 38px;font-size: 24px;font-weight: bold">
                   {{item.clBh}}
                 </Avatar>
               </Col>
@@ -86,10 +86,10 @@
             <div style="padding-top: 5px">
               <div class="box_row" style="padding-top: 6px; ">
                 <div class="box_col_100">
-                  <Button v-if="item.clZt == '00' || item.clZt == '01'" type="success" size="default" long
+                  <Button v-if="item.clZt == '00' || item.clZt == '01'" type="success"  size="default" long ghost
                           @click="changeZT(item,'00')">启用
                   </Button>
-                  <Button v-if="item.clZt == '02' || item.clZt == '03'" type="default" size="default" long
+                  <Button v-if="item.clZt == '02' || item.clZt == '03'" type="default"  size="default" long
                           @click="changeZT(item,'00')">启用
                   </Button>
                 </div>
@@ -97,7 +97,7 @@
                   <Button v-if="item.clZt == '00' || item.clZt == '01'" type="default" size="default" long
                           @click="changeZT(item,'03')">停用
                   </Button>
-                  <Button v-if="item.clZt == '02' || item.clZt == '03'" type="warning" size="default" long
+                  <Button v-if="item.clZt == '02' || item.clZt == '03'" type="warning" size="default" long ghost
                           @click="changeZT(item,'03')">停用
                   </Button>
                 </div>

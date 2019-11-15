@@ -42,6 +42,8 @@
           <Col span="4">
             <DatePicker v-model="dateRange.cjsj"
                         @on-change="param.cjsjInRange = v.util.dateRangeChange(dateRange.cjsj)"
+                        @on-ok="v.util.getPageData(v)"
+                        confirm
                         format="yyyy-MM-dd"
                         split-panels
                         type="daterange" :placeholder="'请输入时间'"></DatePicker>
@@ -97,8 +99,12 @@
 
       </Row>
 
-      <Row>
-        <Col span="24" align="right">
+      <Row  style="display: flex;align-items: center;height: 36px">
+        <Col span="3" align="left">
+          <i-switch v-model="switch1"></i-switch>
+        </Col>
+        <Col span="21" align="right">
+          <span v-show="switch1">
           <span style="font-size: 24px;font-weight: 600">
             人数：<span style="color: #ed3f14"> {{rs}} </span> 人
           </span>
@@ -106,6 +112,7 @@
           <span style="font-size: 24px;font-weight: 600">
             合计：<span style="color: #ed3f14"> {{hj}} </span> 元
           </span>
+            </span>
         </Col>
       </Row>
 
@@ -166,7 +173,8 @@
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
                 <Select v-model="formData.zddm" @on-change="lcFyChange" style="width:200px">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="!it.zddm.includes('K2JS')">{{it.by9}}
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="!it.zddm.includes('K2JS')">
+                    {{it.by9}}
                   </Option>
                 </Select>
                 <!--              <CheckboxGroup v-model="formData.lcFy">-->
@@ -284,13 +292,13 @@
       </div>
       <Row :gutter="32" style="padding-top: 5px">
         <Col span="12">
-            安全员
-            <Input v-model="formData.zgXm"/>
+          安全员
+          <Input v-model="aqyItem.zgXm"/>
         </Col>
       </Row>
       <div slot='footer'>
-        <Button style="margin-right: 8px" @click="updateAQY=false,formData.zgXm=''">取消</Button>
-        <Button type="primary" @click="save">确定</Button>
+        <Button style="margin-right: 8px" @click="updateAQY=false,aqyItem.zgXm=aqyItem.id=''">取消</Button>
+        <Button type="primary" @click="update">确定</Button>
       </div>
     </Modal>
   </div>
@@ -318,9 +326,10 @@
     },
     data() {
       return {
-        hj:0,
-        rs:0,
+        hj: 0,
+        rs: 0,
         mxlx: '',
+        switch1: true,
         total: 0,
         giveCar: giveCar,
         v: this,
@@ -340,23 +349,30 @@
           {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
           {title: '教练电话', key: 'jlDh', minWidth: 90},
           {title: '驾校', key: 'jlJx', minWidth: 90},
-          {title: '安全员',  minWidth: 90,
+          {
+            title: '类型', minWidth: 90,
             render: (h, p) => {
-              return h('Button',{
-                props:{type:'info',size:'small'},
-                on:{
-                  click:()=>{
-                    if(p.row.zgXm==''){
-                      this.formData.zgXm=''
-                      this.updateAQYtitle='添加'
-                    }else {
-                      this.updateAQYtitle='更改'
-                      this.formData.zgXm=p.row.zgXm
-                    }
-                    this.updateAQY=true
-                  }
-                }
-              },p.row.zgXm==''?'+':p.row.zgXm)
+              return h('div', p.row.lcLx == '20' ? '培优' : '开放日')
+            },
+            filters: [
+              {
+                label: '培优',
+                value: '20'
+              },
+              {
+                label: '开放日',
+                value: '30',
+              }
+            ],
+            filterMultiple: false,
+            filterMethod(value, row) {
+              return row.lcLx == value;
+            }
+          },
+          {
+            title: '安全员', minWidth: 90,
+            render: (h, p) => {
+              return h('div', p.row.zgXm == '' ? '/' : p.row.zgXm)
             }
           },
           // {
@@ -437,12 +453,29 @@
                 // }
 
               }
+
+              buttons.push(this.util.buildButton(this, h, 'info', 'ios-construct', '更改安全员', () => {
+                if (p.row.zgXm == '') {
+                  this.aqyItem.zgXm = ''
+                  this.updateAQYtitle = '添加'
+                } else {
+                  this.updateAQYtitle = '更改'
+                  this.aqyItem.zgXm = p.row.zgXm
+                }
+                this.aqyItem.id = p.row.id
+                this.updateAQY = true
+
+              }));
               return h('div', buttons);
             }
           }
         ],
-        updateAQY:false,
-        updateAQYtitle:'更改',
+        updateAQY: false,
+        updateAQYtitle: '更改',
+        aqyItem: {
+          zgXm: '',
+          id: ''
+        },
         DrawerVal: false,
         compName: '',
         componentName: '',
@@ -487,7 +520,7 @@
           // kssjIsNotNull: '1',
           total: 0,
           lcKm: 2,
-          lcLx: '30',
+          lcLxIn: '20,30',
           cjsjInRange: '',
           zhLike: ''
         },
@@ -601,14 +634,14 @@
       },
       afterPager(list) {
         this.hj = 0
-        this.rs=0
+        this.rs = 0
         for (let r of list) {
           r.sc = this.parseTime(r.sc)
           r.kssj = r.kssj.substring(0, 16)
           r.jssj = r.jssj.substring(0, 16)
 
           this.hj = this.hj + r.lcFy;
-          this.rs=this.rs+r.xySl
+          this.rs = this.rs + r.xySl
         }
       },
       ...mapMutations([
@@ -822,6 +855,26 @@
             this.formData.cardNo = mess
             callback && callback(true)
             this.save()
+          }
+        })
+      },
+      update() {
+        if (this.aqyItem.zgXm == '') {
+          this.$Message.info('请输入安全员姓名');
+          return
+        }
+        this.$http.post('/api/lcjl/update', this.aqyItem).then(res => {
+          if (res.code == 200) {
+            this.updateAQY = false
+            this.aqyItem = {}
+            this.util.initTable(this);
+            this.swal({
+              title: '操作成功',
+              type: 'success',
+              confirmButtonText: '确定',
+            })
+          } else {
+            this.$Message.info(res.message);
           }
         })
       },
