@@ -104,13 +104,13 @@
           <Input size="large" v-model="param.jlXmLike" clearable placeholder="请输入教练姓名"
                  @on-enter="pageSizeChange(param.pageSize)"/>
         </Col>
-        <Col span="1" align="center" style="margin-right: 10px;">
+        <Col span="1" align="center">
           <Button type="primary" @click="pageSizeChange(param.pageSize)">
             <Icon type="md-search"></Icon>
             <!--查询-->
           </Button>
         </Col>
-        <Col span="1" align="center" style="margin-right: 40px">
+        <Col span="1" align="center" style="margin-right: 20px">
           <Button type="primary" @click="plzf">
             确认支付
           </Button>
@@ -232,11 +232,13 @@
             </p>
           </Card>
         </Row>
-        <Row :gutter="32" style="padding-top: 5px">
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.lcKm == '3'">
           <Col span="12">
             <FormItem :label="'安全员'" label-position="top">
-              <Select v-model="formData.zgId" filterable>
-                <Option v-for="(item,index) in sfaemanlist" :value="item.value" :key="index">{{ item.label}}</Option>
+              <Select v-model="formData.zgId"  filterable ref="se" @on-query-change="searchJlyaq"
+
+              >
+                <Option v-for="(item) in sfaemanlist" :value="item.value" :key="item.value">{{item.label}}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -319,11 +321,11 @@
               <p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">
                 <Checkbox disabled v-model="ls.ls3">{{ls.ls6}}</Checkbox>
-                现金支付;
+                现金支付
               </p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">
                 <Checkbox disabled v-model="ls.ls2">{{ls.ls6}}</Checkbox>
-                充卡支付(余额:{{QRmess.cardje}}元);
+                充卡支付(余额:{{QRmess.cardje}}元)
               </p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">
                 <Checkbox disabled v-model="ls.ls1">{{ls.ls6}}</Checkbox>
@@ -432,18 +434,46 @@
           {title: '打印', click: 'print'}
         ],
         tableColumns: [
-          {
-            type: 'index2', align: 'center', minWidth: 80,
-            render: (h, params) => {
-              return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
-            }
-          },
+          // {
+          //   type: 'index2', align: 'center', minWidth: 80,
+          //   render: (h, params) => {
+          //     return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
+          //   }
+          // },
+            {type:'index',align: 'center', minWidth: 40,title:'序号'},
           {
             type: 'selection',
-            width: 60,
+            width: 40,
             align: 'center'
           },
-          {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
+            {title: '驾校', key: 'jlJx', minWidth: 90,align: 'center', },
+          {title: '教练员', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90,align: 'center',},
+            {
+                title: '人数',
+                key: 'xySl',
+                minWidth: 60,
+                align: 'center',
+                render: (h, p) => {
+                    if (p.row.xySl!=''&&p.row.xySl!=undefined){
+                        return h('div', p.row.xySl+'人')
+                    }else {
+                        return ''
+                    }
+
+                }
+            },
+            {title: '车型', key: 'jlCx', minWidth: 60,align: 'center',},
+            {
+                title: '类型',
+                minWidth: 120,
+                align: 'center',
+                render: (h, p) => {
+                    if (p.row.zdxm != ''){
+                        return h('div', p.row.zdxm.by9+' '+p.row.zdxm.zdmc)
+                    }
+
+                }
+            },
           // {title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90,},
           // {
           //   title: '状态', minWidth: 120, render: (h, p) => {
@@ -459,14 +489,22 @@
           //   }
           // },
 
-          {title: '开始时间', key: 'kssj', minWidth: 140},
-          {title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 140},
-          {title: '时长(分钟)', key: 'sc', minWidth: 80, defaul: '0'},
+          {title: '开始时间', key: 'kssj', minWidth: 140,align: 'center',},
+          {title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 140,align: 'center',},
+          {title: '时长', key: 'sc', minWidth: 80, defaul: '0',align: 'center',
+              render:(h,p)=>{
+              return h('div',p.row.sc+'分钟')
+              }
+          },
           // {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
-          {title: '练车费用(元)', key: 'lcFy', append: '元', minWidth: 90, defaul: '0'},
+          {title: '费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0',align: 'center',
+              render:(h,p)=>{
+                  return h('div',p.row.lcFy+'元')
+              }
+          },
           {
-            title: '订单状态', key: 'zfzt', minWidth: 80,
+            title: '订单状态', key: 'zfzt', minWidth: 80,align: 'center',
             render: (h, p) => {
               if (p.row.zfzt == '00') {
                 return h('div', '未支付')
@@ -475,9 +513,18 @@
               }
             }
           },
-          {title: '凭证', key: 'pz', minWidth: 180,},
+            {
+                title: '安全员',
+                minWidth: 100,
+                align: 'center',
+                render: (h, p) => {
+                    return h('div', p.row.zgXm)
+                }
+            },
+          {title: '凭证号', key: 'pz', minWidth: 150,align: 'center',},
+
           {
-            title: '操作', minWidth: 60, fixed: 'right', render: (h, p) => {
+            title: '操作', minWidth: 60, fixed: 'right', align: 'center',render: (h, p) => {
               let buttons = [];
               buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
                 this.hisPrintMess = p.row
@@ -534,7 +581,7 @@
           ls3: false,
         },
         QRmodal: false,
-        QRmess: {},
+        QRmess: {jls:[]},
         fylist: [],
         giveCar: giveCar,
         v: this,
@@ -569,6 +616,7 @@
         },
         searchCoachList: [],
         loadingJly: false,
+        loadingJlyaqy: false,
         yyrs: '0',
         bxJL: [],//本校
         wxJL: [],//外校
@@ -596,7 +644,14 @@
             fixed: "left",
               minWidth: 100,
             render: (h, p) => {
-                return h('div',{style:{fontSize: '20px',color:'#ffbb96',fontWeight:'600'}}, p.row.clBh)
+                return h('div',{
+                    style:{
+                        // height:'30px',width:'30px',
+                        fontSize: '16px',fontWeight:'600',
+                        // backgroundColor:'#ffbb96',borderRadius:"25px",
+                        // color:'#ffbb96',
+                    }
+                    }, p.row.clBh)
               // return h('Tag', {
               //   props: {
               //     type: 'volcano',
@@ -655,6 +710,7 @@
                     props: {
                       type: 'success',
                       size: 'small',
+                      ghost:true
                     },
                     style: {margin: '0 10px 0 0'},
                     on: {
@@ -677,9 +733,6 @@
                             }
                           }
                         })
-
-                          this.getSafemanList()
-
                         // console.log(p.row)
                         // console.log(ifCard)
 
@@ -709,8 +762,9 @@
                 buttons.push(
                   h('Button', {
                     props: {
-                      type: 'error',
+                      type: 'warning',
                       size: 'small',
+                        ghost:true
                     },
                     style: {margin: '0 10px 0 0'},
                     on: {
@@ -754,6 +808,7 @@
                                   }
                                   // this.print(res.result)
                                   this.getCarList()
+                                    this.getSafemanList()
                                 } else {
                                   this.swal({
                                     title: res.message,
@@ -922,12 +977,17 @@
           //   }
           // },
           {
-            title: '人数(人)',
+            title: '人数',
             key: 'xySl',
               minWidth: 100,
             align: 'center',
             render: (h, p) => {
-              return h('div', p.row.lcJl.xySl)
+                if (p.row.lcJl.xySl!=''&&p.row.lcJl.xySl!=undefined){
+                    return h('div', p.row.lcJl.xySl+'人')
+                }else {
+                    return ''
+                }
+
             }
           },
           {
@@ -1031,13 +1091,17 @@
             this.AMess.push(a);
         },
         getWXXY(AMess) {
+            if (this.formData.zddm.indexOf('K3PY') == -1){
+                return true
+            }
              AMess = this.AMess
             let arrAMess = AMess.length - 1;
             let messarr = [];
             let dxarr = [];
             let sfzarr = [];
             let a = true
-            for (let i =0;i<=AMess.length; i++){
+            console.log(AMess,'AMess');
+            for (let i =0;i<AMess.length; i++){
                 if(AMess[i].xyXm == undefined ||AMess[i].xyXm == ''||AMess[i].xyXm == null){
                     this.swal({
                         title: '请填写学员姓名',
@@ -1049,7 +1113,7 @@
                     messarr.push(AMess[i].xyXm)
                     dxarr.push(AMess[i].xyDh)
                     sfzarr.push(AMess[i].bz)
-                    if (AMess[i].index == arrAMess) {
+                    if (i == arrAMess) {
                         console.log(dxarr.join(','))
                         console.log(messarr.join(','))
                         this.formData.xyXm = messarr.join(',');
@@ -1080,9 +1144,15 @@
               item.label = item.xm + ' [' + py + ']'
               item.value = item.id
               if (index == res.result.length - 1) {
+                  console.log("--------------")
                 this.sfaemanlist = res.result
+                  console.log(res.result + "====");
+                  console.log(this.sfaemanlist[0].label + "+++++");
               }
             })
+              this.formData.zgId = ''
+              console.log(this.sfaemanlist);
+            // this.$nextTick()
           } else {
             this.$Message.info(res.message);
           }
@@ -1286,6 +1356,9 @@
       getCarItemMess(it, index) {
         this.formData.lcClId = it.id
       },
+        searchJlyaq(query){
+            console.log(query);
+        },
       searchJly(query) {
         if (query !== '') {
           this.loadingJly = true;
@@ -1313,7 +1386,10 @@
       },
       close() {
           this.AMess=[{}];
+          this.formData = {}
         this.DrawerVal = false
+
+          this.$refs.re.clearSingleSelect();
       },
       yyClick(val, cx) {
         console.log(val);
@@ -1536,15 +1612,18 @@
                this.$http.post('/api/lcjl/save', this.formData).then(res => {
                    if (res.code == 200) {
                        this.DrawerVal = false;
-                       this.formData = {};
-                       this.AMess=[{}];
                        this.getCarList();
+
+                       this.formData = {zgId: ''};
+                       this.getSafemanList()
+                       this.AMess=[{}];
                        // this.swal({
                        //   title: '发车成功',
                        //   type: 'success',
                        //   confirmButtonText: '确定',
                        // })
                        this.carMess = null
+                       this.$refs.re.clearSingleSelect();
                    } else {
                        this.formData.cardNo = '';
                        console.log(this.formData.cardNo)

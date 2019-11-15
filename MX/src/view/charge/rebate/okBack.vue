@@ -56,16 +56,16 @@
         MSList:[],
         tableData: [],
         tableColumns: [
-          {title: '#', type: 'index', fixed: 'left', align: 'center', minWidth: 80},
+          {title: '序号', type: 'index', fixed: 'left', align: 'center', minWidth: 80},
+          {title: '操作人', key: 'cjr', align: 'center', minWidth: 120},
+          {title: '驾校', key: 'jx', align: 'center', minWidth: 120},
             {title: '教练员', key: 'jlXm', align: 'center', minWidth: 120},
-          {title: '驾校名称', key: 'jx', align: 'center', minWidth: 120},
           {
             title: '返点时间', key: 'cjsj', align: 'center', minWidth: 120, render: (h, p) => {
               let a = p.row.cjsj.substring(0, 16)
               return h('div', a)
             }
           },
-          {title: '操作人', key: 'cjr', align: 'center', minWidth: 120},
           {title: '返点笔数', key: 'fdsl', align: 'center', minWidth: 120},
           {title: '返点金额', key: 'fdje', align: 'center', minWidth: 120},
           {

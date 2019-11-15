@@ -445,11 +445,11 @@
               <p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">
                 <Checkbox disabled v-model="ls.ls3">{{ls.ls6}}</Checkbox>
-                现金支付;
+                现金支付
               </p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">
                 <Checkbox disabled v-model="ls.ls2">{{ls.ls6}}</Checkbox>
-                充卡支付(余额:{{QRmess.cardje}}元);
+                充卡支付(余额:{{QRmess.cardje}}元)
               </p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">
                 <Checkbox disabled v-model="ls.ls1">{{ls.ls6}}</Checkbox>

@@ -57,10 +57,15 @@
           kssj: ''
         },
         tableColumns: [
-          {title: '姓名', key: 'jlXm'},
+            {title: '序号', type: 'index'},
           {title: '驾校', key: 'jlJx'},
+          {title: '教练员', key: 'jlXm'},
           {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
-          {title: '收费（元）', key: 'zj', append: '元', minWidth: 90, defaul: '0'},
+          {title: '费用', minWidth: 90, defaul: '0',
+            render: (h, p) => {
+              return h('div', p.row.zj+'元')
+            }
+          },
           // {title:'操作',render:(h,p)=>{
           //     let buttons = [];
           //     buttons.push(this.util.buildeditButton(this,h,p));

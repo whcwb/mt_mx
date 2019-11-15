@@ -104,12 +104,12 @@ util.buildeditButton = (v,h,p)=>{
         v.componentName = 'formData'
     })
 }
-util.buildButton = (v,h,type,icon,tip,onClick)=>{
+util.buildButton = (v,h,type,icon,tip,onClick,disabled)=>{
     return h('Tooltip',
         {props: {placement: 'top',content: tip,}},
         [
             h('Button', {
-                props: {type: type,icon: icon,shape: 'circle',size: 'small'},
+                props: {type: type,icon: icon,shape: 'circle',size: 'small',disabled:disabled},
                 style: {margin: '0 8px 0 0'},
                 on: {click: onClick}
             }),
