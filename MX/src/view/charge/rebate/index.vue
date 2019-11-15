@@ -30,7 +30,7 @@
           <Col span="4">
             <Input autofocus v-model="param.jlXmLike" placeholder="教练员姓名" @on-enter="add"/>
           </Col>
-          <Col span="1" style="margin-right: 16px">
+          <Col span="1" style="margin-right: 20px">
           <span style="margin:0 10px;">
             <Button type="primary" @click="getOldData">
               <Icon type="md-search"></Icon>
@@ -125,16 +125,17 @@
         MenuItemName: '1',
         tableData: [],
         tableColumns: [
-          {title: '#', type: 'index', fixed: 'left', minWidth: 80},
+          {title: '序号', type: 'index', fixed: 'left', minWidth: 60,align: 'center'},
           {
             title: '#',
             type: 'selection',
             width: 60,
+            fixed: 'left',
             align: 'center'
           },
-          {title: '凭证号', key: 'id', minWidth: 150},
+          {title: '凭证号', key: 'id', minWidth: 150,align: 'center'},
           {
-            title: '训练科目', key: 'lcKm', minWidth: 120,
+            title: '科目',align: 'center', key: 'lcKm', minWidth: 120,
             render: (h, p) => {
               if (p.row.lcKm == '2') {
                 return h('div', '科目二')
@@ -143,24 +144,24 @@
               }
             }
           },
-          {title: '教练员', key: 'jlXm', minWidth: 120},
-          {title: '驾校名称', key: 'jlJx', minWidth: 120},
+          {title: '驾校',align: 'center',  key: 'jlJx', minWidth: 120},
+          {title: '教练员', align: 'center', key: 'jlXm', minWidth: 120},
           {
-            title: '累计时长', key: 'sc', minWidth: 120,
+            title: '时长',align: 'center',  key: 'sc', minWidth: 120,
             render: (h, p) => {
               return h('div', p.row.sc + '分钟')
             }
 
           },
           {
-            title: '累计费用', key: 'lcFy', minWidth: 120,
+            title: '费用', align: 'center', key: 'lcFy', minWidth: 120,
             render: (h, p) => {
               return h('div', p.row.lcFy + '元')
             }
 
           },
           {
-            title: '返点类型', key: 'fdlx', minWidth: 120,
+            title: '返点类型', align: 'center', key: 'fdlx', minWidth: 120,
             render: (h, p) => {
               if (p.row.fdlx == '00') {
                 return h('div', '计时返点')
@@ -172,14 +173,14 @@
             }
           },
           {
-            title: '返点金额', key: 'fdje', minWidth: 120,
+            title: '返点金额',align: 'center',  key: 'fdje', minWidth: 120,
             render: (h, p) => {
               return h('div', p.row.fdje + '元')
             }
           },
 
           {
-            title: '备注', key: 'bz', minWidth: 80,
+            title: '备注',align: 'center',  key: 'bz', minWidth: 80,
             render: (h, p) => {
               if (p.row.fdlx == '20')
                 return h('div', '人数：' + p.row.xySl)

@@ -31,13 +31,13 @@
         ],
         tableColumns: [
           {
-            type: 'index2', align: 'center', minWidth: 80,
+            type: 'index2', align: 'center', minWidth: 80,title: '序号',
             render: (h, params) => {
               return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
             }
           },
           {
-            title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90, render: (h, p) => {
+            title: '车号', key: 'clBh', searchKey: 'clBh', minWidth: 90, render: (h, p) => {
               return h('Tag', {
                 props: {
                   type: 'volcano',
@@ -46,7 +46,7 @@
             }
           },
           {
-            title: '练车科目', key: 'lcKm', minWidth: 120,
+            title: '科目', key: 'lcKm', minWidth: 120,
             render: (h, p) => {
               switch (p.row.lcKm) {
                 case '2':
@@ -85,9 +85,9 @@
           //     }, s)
           //   }
           // },
-          {title: '安全员姓名', key: 'zgXm', searchKey: 'zgXmLike', minWidth: 100},
-          {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
-          {title: '驾校/队号', key: 'jlJx', searchKey: 'jlJxLike', minWidth: 90},
+          {title: '安全员', key: 'zgXm', searchKey: 'zgXmLike', minWidth: 100},
+          {title: '驾校', key: 'jlJx', searchKey: 'jlJxLike', minWidth: 90},
+          {title: '教练员', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
           // {title: '教练类型', key: 'jlLx', dict: 'jllx',minWidth:120},
           {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           {
