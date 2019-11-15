@@ -168,7 +168,8 @@
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
                 <Select v-model="formData.zddm" @on-change="lcFyChange" style="width:200px">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="!it.zddm.includes('K2JS')">{{it.by9}}
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="!it.zddm.includes('K2JS')">
+                    {{it.by9}}
                   </Option>
                 </Select>
                 <!--              <CheckboxGroup v-model="formData.lcFy">-->
@@ -286,8 +287,8 @@
       </div>
       <Row :gutter="32" style="padding-top: 5px">
         <Col span="12">
-            安全员
-            <Input v-model="aqyItem.zgXm"/>
+          安全员
+          <Input v-model="aqyItem.zgXm"/>
         </Col>
       </Row>
       <div slot='footer'>
@@ -320,8 +321,8 @@
     },
     data() {
       return {
-        hj:0,
-        rs:0,
+        hj: 0,
+        rs: 0,
         mxlx: '',
         total: 0,
         giveCar: giveCar,
@@ -342,9 +343,10 @@
           {title: '教练姓名', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
           {title: '教练电话', key: 'jlDh', minWidth: 90},
           {title: '驾校', key: 'jlJx', minWidth: 90},
-          {title: '类型',  minWidth: 90,
+          {
+            title: '类型', minWidth: 90,
             render: (h, p) => {
-              return h('div',p.row.lcLx=='20'?'培优':'开放日')
+              return h('div', p.row.lcLx == '20' ? '培优' : '开放日')
             },
             filters: [
               {
@@ -357,28 +359,14 @@
               }
             ],
             filterMultiple: false,
-            filterMethod (value, row) {
+            filterMethod(value, row) {
               return row.lcLx == value;
             }
           },
-          {title: '安全员',  minWidth: 90,
+          {
+            title: '安全员', minWidth: 90,
             render: (h, p) => {
-              return h('Button',{
-                props:{type:'info',size:'small'},
-                on:{
-                  click:()=>{
-                    if(p.row.zgXm==''){
-                      this.aqyItem.zgXm=''
-                      this.updateAQYtitle='添加'
-                    }else {
-                      this.updateAQYtitle='更改'
-                      this.aqyItem.zgXm=p.row.zgXm
-                    }
-                    this.aqyItem.id=p.row.id
-                    this.updateAQY=true
-                  }
-                }
-              },p.row.zgXm==''?'+':p.row.zgXm)
+              return h('div', p.row.zgXm == '' ? '/' : p.row.zgXm)
             }
           },
           // {
@@ -459,15 +447,28 @@
                 // }
 
               }
+
+              buttons.push(this.util.buildButton(this, h, 'info', 'ios-construct', '更改安全员', () => {
+                if (p.row.zgXm == '') {
+                  this.aqyItem.zgXm = ''
+                  this.updateAQYtitle = '添加'
+                } else {
+                  this.updateAQYtitle = '更改'
+                  this.aqyItem.zgXm = p.row.zgXm
+                }
+                this.aqyItem.id = p.row.id
+                this.updateAQY = true
+
+              }));
               return h('div', buttons);
             }
           }
         ],
-        updateAQY:false,
-        updateAQYtitle:'更改',
-        aqyItem:{
-          zgXm:'',
-          id:''
+        updateAQY: false,
+        updateAQYtitle: '更改',
+        aqyItem: {
+          zgXm: '',
+          id: ''
         },
         DrawerVal: false,
         compName: '',
@@ -627,14 +628,14 @@
       },
       afterPager(list) {
         this.hj = 0
-        this.rs=0
+        this.rs = 0
         for (let r of list) {
           r.sc = this.parseTime(r.sc)
           r.kssj = r.kssj.substring(0, 16)
           r.jssj = r.jssj.substring(0, 16)
 
           this.hj = this.hj + r.lcFy;
-          this.rs=this.rs+r.xySl
+          this.rs = this.rs + r.xySl
         }
       },
       ...mapMutations([
@@ -851,15 +852,15 @@
           }
         })
       },
-      update(){
-        if(this.aqyItem.zgXm=='') {
+      update() {
+        if (this.aqyItem.zgXm == '') {
           this.$Message.info('请输入安全员姓名');
           return
         }
         this.$http.post('/api/lcjl/update', this.aqyItem).then(res => {
           if (res.code == 200) {
-            this.updateAQY=false
-            this.aqyItem={}
+            this.updateAQY = false
+            this.aqyItem = {}
             this.util.initTable(this);
             this.swal({
               title: '操作成功',
