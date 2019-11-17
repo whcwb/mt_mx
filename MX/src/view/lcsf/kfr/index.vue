@@ -330,7 +330,7 @@
         hj: 0,
         rs: 0,
         mxlx: '',
-        switch1: true,
+        switch1: false,
         total: 0,
         giveCar: giveCar,
         v: this,
