@@ -116,7 +116,7 @@
     },
     created() {
       this.info = JSON.parse(JSON.stringify(this.hisPrintMess))
-      console.log(this.info,'fsdf')
+      console.log(this.hisPrintMess.lcFy,'fsdf')
       // this.info.sc=this.hisPrintMess.sc=='-'?'-':this.parseTime(this.info.sc)
       // this.info.sc = ''
         if (this.info.kssj!='' ){

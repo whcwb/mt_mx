@@ -58,4 +58,6 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
     ApiResponse<String> saveBatch(String ids);
 
     ApiResponse<BizLcJl> getByPz(String pz);
+
+    ApiResponse<BizLcJl> payCNY(String id);
 }

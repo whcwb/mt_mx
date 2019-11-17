@@ -330,7 +330,7 @@
         hj: 0,
         rs: 0,
         mxlx: '',
-        switch1: true,
+        switch1: false,
         total: 0,
         giveCar: giveCar,
         v: this,
@@ -528,7 +528,7 @@
         coachList: [],
         param: {
           notShowLoading: 'true',
-          orderBy: 'jlId asc,jssj desc',
+          orderBy: 'kssj desc',
           // kssjIsNotNull: '1',
           total: 0,
           lcKm: 2,
@@ -543,17 +543,17 @@
         },
         showCAR: false,
         carMess: null,
-        IntervalKE: setInterval(() => {
+        /*IntervalKE: setInterval(() => {
           // this.Ch_LcTime()
-          this.jump()
-        }, 60000),
+          // this.jump()
+        }, 60000),*/
         fylist: []
       }
     },
     watch: {
-      'formData.xySl': function (val, oldVal) {//普通的watch监听
-        this.formData.lcFy = val * 300
-      },
+      // 'formData.xySl': function (val, oldVal) {//普通的watch监听
+      //   this.formData.lcFy = val * 300
+      // },
       DrawerVal: function (n, o) {
         var v = this
         if (n == false) {
@@ -890,18 +890,18 @@
           }
         })
       },
-      print(mess) {//还车
-        this.hisPrintMess = mess
-        // setTimeout(()=>{
-        //   this.$refs['backcar'].doPrint()
-        // },1000)
-        this.componentName = 'print'
-      },
-      printHc(mess) {
-        this.hisPrintMess = mess
-        this.componentName = 'print'
-        // console.log('dayin')
-      },
+      // print(mess) {//还车
+      //   this.hisPrintMess = mess
+      //   // setTimeout(()=>{
+      //   //   this.$refs['backcar'].doPrint()
+      //   // },1000)
+      //   this.componentName = 'print'
+      // },
+      // printHc(mess) {
+      //   this.hisPrintMess = mess
+      //   this.componentName = 'print'
+      //   // console.log('dayin')
+      // },
       his(item) {//历史练车记录
         this.clId = item.id;
         this.componentName = 'carStatistics'
@@ -1009,12 +1009,13 @@
 
           this.formData.lcKm = 2
         }
+        delete this.formData.lcFy
         this.$http.post('/api/lcjl/save', this.formData).then(res => {
           if (res.code == 200) {
             this.DrawerVal = false;
             this.util.initTable(this);
             this.carMess = null
-            console.log(res.message)
+            console.log(res.message, 'resmessage')
             if (this.mxlx == 'py' || this.mxlx == 'kf') {
               //打印票据
               console.log(JSON.parse(res.message));

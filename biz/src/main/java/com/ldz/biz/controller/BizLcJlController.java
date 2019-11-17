@@ -174,4 +174,9 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         return service.getByPz(pz);
     }
 
+    @PostMapping("/payCNY")
+    public ApiResponse<BizLcJl> payCNY(String id){
+        return service.payCNY(id);
+    }
+
 }
