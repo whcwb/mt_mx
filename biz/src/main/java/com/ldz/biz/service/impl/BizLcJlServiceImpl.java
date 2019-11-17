@@ -1,5 +1,6 @@
 package com.ldz.biz.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.ldz.biz.mapper.BizFdConfigMapper;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -39,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,6 +69,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     private BizJlXfMappper xfMappper;
     @Autowired
     private BizJlCzMapper czMapper;
+    @Autowired
+    private StringRedisTemplate redis;
 
     @Override
     protected Mapper<BizLcJl> getBaseMapper() {
@@ -133,6 +138,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
     @Override
     public ApiResponse<String> saveEntity(BizLcJl entity) {
+
+        String s = JSON.toJSONString(entity);
+        String lc = redis.boundValueOps("lcjl").get();
+        if(StringUtils.isNotBlank(lc)){
+            RuntimeCheck.ifTrue(StringUtils.equals(lc,s), "操作频繁,请稍后再试");
+        }
+        redis.boundValueOps("lcjl").set(s, 2 , TimeUnit.SECONDS);
         SysYh currentUser = getCurrentUser();
         //  判断所有必填字段
         RuntimeCheck.ifBlank(entity.getJlId(), "请选择教练");
@@ -219,6 +231,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
 
         if (!StringUtils.equals(entity.getLcLx(), "00") && StringUtils.isNotBlank(entity.getLcLx())) {
+            entity.setPz(entity.getId());
             // 套餐类型不是计时培训 需要在记录的时候就将费用计算出来 , 有返点的直接记录返点
             String jg = zdxm.getZdmc();
             if (StringUtils.equals(entity.getLcLx(), "20")) {
