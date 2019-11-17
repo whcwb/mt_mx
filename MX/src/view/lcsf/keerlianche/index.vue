@@ -248,21 +248,21 @@
                     :options="options2"
                     type="daterange" :placeholder="'请输入时间'"></DatePicker>
         <!--</Col>-->
-        <Col span="3">
-          <Input size="large" v-model="param.clBh" clearable placeholder="请输入车辆编号"
-                 @on-enter="pageSizeChange(param.pageSize)"/>
-        </Col>
+<!--        <Col span="3">-->
+<!--          <Input size="large" v-model="param.clBh" clearable placeholder="请输入车辆编号"-->
+<!--                 @on-enter="pageSizeChange(param.pageSize)"/>-->
+<!--        </Col>-->
         <Col span="3">
           <Input size="large" v-model="param.jlXmLike" clearable placeholder="请输入教练姓名"
                  @on-enter="pageSizeChange(param.pageSize)"/>
         </Col>
-        <Col span="1" align="center" style="margin-right: 10px">
+        <Col span="1" align="center">
           <Button type="primary" @click="pageSizeChange(param.pageSize)">
             <Icon type="md-search"></Icon>
             <!--查询-->
           </Button>
         </Col>
-        <Col span="2" align="center">
+        <Col span="1" align="center" style="margin-right: 30px">
           <Button type="primary" @click="plzf">
             确认支付
           </Button>
@@ -614,7 +614,8 @@
                 ],
                 tableColumns: [
                     {
-                        type: 'index2', minWidth: 50, align: 'center', title: '序号',
+                        type: 'index2', minWidth: 40, align: 'center', title: '序号',
+                        fixed:'left',
                         render: (h, params) => {
                             return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
                         }
@@ -622,9 +623,11 @@
                     {
                         type: 'selection',
                         align: 'center',
-                        width: 60,
+                        minWidth: 15,
+                        fixed:'left',
                     },
-                    {title: '教练员', align: 'center', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
+                    {title: '驾校', align: 'center', key: 'jlJx', minWidth: 90},
+                    {title: '教练员', align: 'center', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 50},
                     // {title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90,},
                     // {
                     //   title: '状态', minWidth: 120, render: (h, p) => {
@@ -658,6 +661,24 @@
                     },
                     {
                         title: '订单状态', key: 'zfzt', align: 'center', minWidth: 80,
+                        filters: [
+                            {
+                                label: '未支付',
+                                value: '00'
+                            },
+                            {
+                                label: '已支付',
+                                value: '10'
+                            },
+                        ],
+                        filterMultiple: false,
+                        filterRemote (value, row) {
+                            var _self = this
+                            console.log(_self.param);
+                            _self.param.zfzt = value;
+                            _self.util.getPageData(_self);
+
+                        },
                         render: (h, p) => {
                             if (p.row.zfzt == '00') {
                                 return h('div',[
@@ -685,7 +706,35 @@
                             }
                         }
                     },
-                    {title: '凭证', key: 'pz', align: 'center', minWidth: 180,},
+                    {title: '类型', align: 'center', minWidth: 150,
+                        filters: [
+                            {
+                                label: '计时',
+                                value: 'JS'
+                            },
+                            {
+                                label: '培优',
+                                value: 'PY'
+                            },
+                            {
+                                label: '开放日',
+                                value: 'KF'
+                            },
+                        ],
+                        filterMultiple: false,
+                        filterRemote (value, row) {
+                             this.param.zddmLike = value;
+                            // var _self = this
+                            this.util.getPageData(this);
+                        },
+                        render: (h, p) => {
+                            if (p.row.zdxm != ''){
+                                return h('div', p.row.zdxm.by9)
+                            }
+
+                        }
+                    },
+                    {title: '凭证', key: 'pz', align: 'center', minWidth: 120,},
                     {
                         title: '操作', minWidth: 60, align: 'center', fixed: 'right', render: (h, p) => {
                             let buttons = [];
@@ -732,6 +781,7 @@
                     lcKm: 2,
                     jssjInRange: '',
                     zhLike: '',
+                    zfzt:'',
                     pageNum: 1,
                     pageSize: 15,
                 },
@@ -1392,7 +1442,7 @@
                 }
                 if (a) {
                     this.swal({
-                        title: '该教练当前所有记录都已结束!是否仍要稍后支付?',
+                        title: '该教练当前所有训练都已结束!是否仍要稍后支付?',
                         type: 'question',
                         showCancelButton: true,
                         confirmButtonText: '确定',
