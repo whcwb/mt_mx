@@ -32,7 +32,6 @@ import tk.mybatis.mapper.common.Mapper;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.stream.events.EndElement;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -229,6 +228,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     entity.setLcFy(Integer.parseInt(jg));
                     entity.setYfJe(Integer.parseInt(jg));
                     entity.setXjje(entity.getLcFy());
+                    entity.setXySl(1);
                 } else {
                     RuntimeCheck.ifBlank(entity.getXyXm(), "请输入学员信息");
                     // 根据学员信息计算学员的数量
@@ -240,6 +240,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     entity.setYfJe(entity.getLcFy());
                     entity.setXjje(entity.getLcFy());
                 }
+                entity.setJssj(nowTime);
             } else if (StringUtils.equals(entity.getLcLx(), "30")) {
                 // 练车费用为 人数 乘以 价格
                 entity.setZfzt("10");
@@ -1565,6 +1566,55 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         jl.setKfje(wxjl.getYe());
         jl.setCardje(wxjl.getCardJe());
         return ApiResponse.success(jl);
+    }
+
+    @Override
+    public ApiResponse<BizLcJl> payCNY(String id) {
+
+        RuntimeCheck.ifBlank(id, "请选择要支付的订单");
+        BizLcJl lcJl = findById(id);
+        RuntimeCheck.ifTrue(!StringUtils.equals(lcJl.getZfzt(),"00"), "订单已支付,请勿重复操作");
+        RuntimeCheck.ifFalse(StringUtils.equals(lcJl.getLcLx(), "00"), "此订单不支持现金支付");
+        SysYh user = getCurrentUser();
+        // 总费用
+        Integer fy = lcJl.getLcFy();
+        lcJl.setZfzt("10");
+        lcJl.setCardje(0);
+        lcJl.setYfJe(fy);
+        lcJl.setXjje(fy);
+        lcJl.setPz(lcJl.getId());
+        update(lcJl);
+
+        // 查询套餐数据
+        SimpleCondition condition = new SimpleCondition(SysZdxm.class);
+        condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        condition.eq(SysZdxm.InnerColumn.zddm, lcJl.getZddm());
+        List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
+        SysZdxm zdxm = zdxms.get(0);
+        // 拿到返点率
+        float fdl = Float.parseFloat(zdxm.getBy4());
+        int fdje = (int) Math.ceil(fy * fdl);
+        if(fdje  > 0 ){
+            BizLcFd fd = new BizLcFd();
+            fd.setJlJx(lcJl.getJlJx());
+            fd.setCjr(user.getZh() + "-" + user.getXm());
+            fd.setCjsj(DateUtils.getNowTime());
+            fd.setFdje(fdje);
+            fd.setFdlx(lcJl.getLcLx());
+            fd.setFdsl(1);
+            fd.setId(genId());
+            fd.setJlId(lcJl.getJlId());
+            fd.setJlXm(lcJl.getJlXm());
+            fd.setLcFy(fy);
+            fd.setLcId(lcJl.getId());
+            fd.setLcKm(lcJl.getLcKm());
+            fd.setSc(lcJl.getSc());
+            fd.setXySl(lcJl.getXySl());
+            fdService.save(fd);
+        }
+
+
+        return ApiResponse.success(lcJl);
     }
 
 
