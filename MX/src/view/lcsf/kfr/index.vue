@@ -317,6 +317,7 @@
   import giveCar from '../comp/readCard'
   import {mapMutations} from 'vuex'
   import moment from 'moment'
+  import Cookies from 'js-cookie'
 
   export default {
     name: "index",
@@ -566,11 +567,16 @@
           //   this.showCAR = true
           // }
         }
+      },
+      switch1:function (val) {
+        Cookies.set('showMess',val)
       }
     },
     mounted() {
     },
     created() {
+      this.switch1=Cookies.get('showMess')
+      console.log(Cookies.get('showMess'))
       this.dateRange.cjsj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
       this.param.cjsjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       this.util.initTable(this);
