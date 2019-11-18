@@ -2,77 +2,23 @@
   <div>
     <Modal
       v-model="showModal"
-      height="600"
-      width="900"
+      height="200"
+      width="600"
       :closable='false'
       :mask-closable="false"
-      :title="'修改车辆信息'">
+      :title="'修改绑定卡片'">
       <Form
         ref="form"
         :rules="ruleInline"
         :label-width="100"
         :styles="{top: '20px'}">
-        <div style="overflow: auto;height: 400px;width:800px">
+        <div style="overflow: auto;height: 100px;width:500px">
           <Row>
-            <Col span="12">
-              <FormItem label="编号">
-                <Input v-model="params.clBh" :maxlength=2 size="large" placeholder="请输入车辆编号" />
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="车牌号码">
-                <Input v-model="params.clHm" size="large" placeholder="请输入车牌号" />
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <FormItem label="车型">
-                <Select v-model="params.clCx">
-                  <Option v-for="item in CX" :value="item.key" :key="item.index">{{ item.val }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="所属考场">
-                <Input v-model="params.clKc" size="large" placeholder="请选择考场" />
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <FormItem label="状态">
-                <Select v-model="params.clZt">
-                  <Option v-for="(item,index) in ZT" :value="item.key" :key="index">{{ item.val }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <!--<Col span="12">-->
-              <!--<FormItem label="卡片绑定">-->
-                <!--<Input v-model="cardNo" size="large" readonly>-->
-                  <!--<span slot="append" style="cursor: pointer" @click="getCardNum">读卡</span>-->
-                <!--</Input>-->
-              <!--</FormItem>-->
-            <!--</Col>-->
-            <Col span="12">
-              <FormItem label="科目">
-                <Select v-model="params.clKm">
-                  <Option v-for="item in KM" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <!--<Col span="12">-->
-              <!--<FormItem label="科目">-->
-                <!--<Select v-model="params.clKm">-->
-                  <!--<Option v-for="item in KM" :value="item.value" :key="item.value">{{ item.label }}</Option>-->
-                <!--</Select>-->
-              <!--</FormItem>-->
-            <!--</Col>-->
-            <Col span="12">
-              <FormItem prop="" label="车辆照片">
-                <up-img :headImg="params.clImg" @txImg="(url)=>{txImg('clImg',url)}"></up-img>
+            <Col span="20">
+              <FormItem label="卡片绑定">
+                <Input v-model="cardNo" size="large" readonly>
+                  <span slot="append" style="cursor: pointer" @click="getCardNum">读卡</span>
+                </Input>
               </FormItem>
             </Col>
           </Row>

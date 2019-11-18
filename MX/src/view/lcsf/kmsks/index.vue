@@ -9,7 +9,7 @@
     <Row style="margin-bottom: 8px">
       <Col span="24">
         <Row :gutter="6" type="flex" justify="start">
-          <Col span="12">
+          <Col span="14">
             <div style="float: left;margin-top: 8px;">
               <span
                 style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;">
@@ -26,15 +26,15 @@
               >启用{{xxNum}}台</span>
             </div>
           </Col>
-          <Col span="5">
+          <Col span="3" style="margin-right: 5px">
             <Input v-model="param.clBh" size="large" placeholder="请输入车辆编号"/>
             <br>
           </Col>
-          <Col span="5">
+          <Col span="3" style="margin-right: 5px">
             <Input v-model="param.clHm" size="large" placeholder="请输入车牌号"/>
             <br>
           </Col>
-          <Col span="1" align="center">
+          <Col span="1" align="center" style="margin-right: 10px">
             <Button type="primary" @click="CLCX">
               <Icon type="md-search"></Icon>
               <!--查询-->
@@ -67,7 +67,7 @@
               <Col span="6" style="padding-top: 6px">
                 <Tag color="cyan" style="font-weight: bold">{{item.clCx}}</Tag>
                 <Tooltip :content="item.cardNo?'卡片已绑定':'卡片_未_绑定'" placement="top">
-                  <Button type="text" :style="{background:item.cardNo?'#47cb89':'#747b8b',color:'#fff'}"  size="small">卡</Button>
+                  <Button type="text" :style="{background:item.cardNo?'#47cb89':'#747b8b',color:'#fff'}"  size="small" @click="bindCard">卡</Button>
                 </Tooltip>
               </Col>
               <Col span="6">
@@ -124,11 +124,12 @@
 <script>
   import clxq from './comp/clxq'
   import cjcar from './comp/cjcar'
+  import bindcard from './comp/bindcard'
 
   export default {
     name: "index",
     components: {
-      clxq, cjcar
+      clxq, cjcar,bindcard
     },
     data() {
       return {
@@ -219,6 +220,10 @@
             })
           }
         })
+      },
+      bindCard(item){
+        this.a = item
+        this.compName = 'bindcard'
       },
       getPagerList() {
         this.zxNum = 0;
