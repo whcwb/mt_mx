@@ -104,15 +104,15 @@
         <Col span="3" align="left">
           <i-switch v-model="switch1"></i-switch>
         </Col>
-        <Col span="21" align="right">
-          <span v-show="switch1">
-          <span style="font-size: 24px;font-weight: 600">
+        <Col span="21" align="right" v-if="switch1">
+          <span>
+            <span style="font-size: 24px;font-weight: 600">
             人数：<span style="color: #ed3f14"> {{rs}} </span> 人
-          </span>
+            </span>
           &nbsp&nbsp&nbsp
-          <span style="font-size: 24px;font-weight: 600">
+            <span style="font-size: 24px;font-weight: 600">
             合计：<span style="color: #ed3f14"> {{hj}} </span> 元
-          </span>
+            </span>
             </span>
         </Col>
       </Row>
@@ -331,7 +331,7 @@
         hj: 0,
         rs: 0,
         mxlx: '',
-        switch1: false,
+        switch1: true,
         total: 0,
         giveCar: giveCar,
         v: this,
@@ -575,10 +575,9 @@
       }
     },
     mounted() {
+      this.switch1=Cookies.get('showMess')==='true'?true:false
     },
     created() {
-      this.switch1=Cookies.get('showMess')
-      console.log(Cookies.get('showMess'))
       this.dateRange.cjsj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
       this.param.cjsjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       this.util.initTable(this);

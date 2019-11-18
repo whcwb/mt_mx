@@ -210,6 +210,7 @@
             };
         },
       doPrint(how, callback) {
+
         var myDoc = {
           documents: document, // 打印页面(div)们在本文档中
           copyrights: '杰创软件拥有版权  www.jatools.com', // 版权声明必须
