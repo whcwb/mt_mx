@@ -331,7 +331,7 @@
         hj: 0,
         rs: 0,
         mxlx: '',
-        switch1: true,
+        switch1: false,
         total: 0,
         giveCar: giveCar,
         v: this,
@@ -466,19 +466,21 @@
                 // }
 
               }
+                if(p.row.lcLx == '20'){
+                    buttons.push(this.util.buildButton(this, h, 'info', 'ios-construct', '更改安全员', () => {
+                        if (p.row.zgXm == '') {
+                            this.aqyItem.zgXm = ''
+                            this.updateAQYtitle = '添加'
+                        } else {
+                            this.updateAQYtitle = '更改'
+                            this.aqyItem.zgXm = p.row.zgXm
+                        }
+                        this.aqyItem.id = p.row.id
+                        this.updateAQY = true
 
-                buttons.push(this.util.buildButton(this, h, 'info', 'ios-construct', '更改安全员', () => {
-                  if (p.row.zgXm == '') {
-                    this.aqyItem.zgXm = ''
-                    this.updateAQYtitle = '添加'
-                  } else {
-                    this.updateAQYtitle = '更改'
-                    this.aqyItem.zgXm = p.row.zgXm
-                  }
-                  this.aqyItem.id = p.row.id
-                  this.updateAQY = true
+                    },p.row.lcLx == '20'?false:true));
+                }
 
-                },p.row.lcLx == '20'?false:true));
               return h('div', buttons);
             }
           }
@@ -529,7 +531,7 @@
         coachList: [],
         param: {
           notShowLoading: 'true',
-          orderBy: 'jlId asc,jssj desc',
+          orderBy: 'kssj desc',
           // kssjIsNotNull: '1',
           total: 0,
           lcKm: 2,
@@ -544,17 +546,17 @@
         },
         showCAR: false,
         carMess: null,
-        IntervalKE: setInterval(() => {
+        /*IntervalKE: setInterval(() => {
           // this.Ch_LcTime()
-          this.jump()
-        }, 60000),
+          // this.jump()
+        }, 60000),*/
         fylist: []
       }
     },
     watch: {
-      'formData.xySl': function (val, oldVal) {//普通的watch监听
-        this.formData.lcFy = val * 300
-      },
+      // 'formData.xySl': function (val, oldVal) {//普通的watch监听
+      //   this.formData.lcFy = val * 300
+      // },
       DrawerVal: function (n, o) {
         var v = this
         if (n == false) {
@@ -587,11 +589,20 @@
       // }, 1000)
       // this.getYYdj()
       this.getzdlist()
+        this.pr()
     },
     beforeDestroy() {
       clearInterval(this.IntervalKE)
     },
     methods: {
+        pr(){
+            var api = 'https://www.baidu.com/s?wd=%E7%99%BE%E5%BA%A6%E7%9A%84%E7%BD%91%E5%9D%80ip&rsv_spt=1&rsv_iqid=0xd41114de00062d0d&issp=1&f=3&rsv_bp=1&rsv_idx=2&ie=utf-8&rqlang=cn&tn=baiduhome_pg&rsv_enter=0&rsv_dl=ts_0&oq=vue%2520%25E6%258C%2587%25E5%25AE%259Aip%25E5%258F%2591%25E9%2580%2581axios&rsv_t=da21ZuhZm7lWkwXiSRKJoP0FazdoiDT9YLFiJfz636%2BAOuzA4nKH%2FNV87xMowp35sUca&inputT=4160&rsv_pq=9fc868c100415bd8&rsv_sug3=125&rsv_sug1=109&rsv_sug7=100&rsv_sug2=0&prefixsug=%25E7%2599%25BE%25E5%25BA%25A6%25E7%259A%2584&rsp=0&rsv_sug4=6824'
+            this.$http.get(api).then((response) => {
+                console.log(response.data)
+            }).catch(function (error) {
+                console.log(error)
+            })
+        },
       getzdlist() {
         this.$http.post('/api/lcjl/Tc', {km: '2'}).then((res) => {
           if (res.code == 200) {
@@ -896,18 +907,18 @@
           }
         })
       },
-      print(mess) {//还车
-        this.hisPrintMess = mess
-        // setTimeout(()=>{
-        //   this.$refs['backcar'].doPrint()
-        // },1000)
-        this.componentName = 'print'
-      },
-      printHc(mess) {
-        this.hisPrintMess = mess
-        this.componentName = 'print'
-        // console.log('dayin')
-      },
+      // print(mess) {//还车
+      //   this.hisPrintMess = mess
+      //   // setTimeout(()=>{
+      //   //   this.$refs['backcar'].doPrint()
+      //   // },1000)
+      //   this.componentName = 'print'
+      // },
+      // printHc(mess) {
+      //   this.hisPrintMess = mess
+      //   this.componentName = 'print'
+      //   // console.log('dayin')
+      // },
       his(item) {//历史练车记录
         this.clId = item.id;
         this.componentName = 'carStatistics'
@@ -1015,12 +1026,13 @@
 
           this.formData.lcKm = 2
         }
+        delete this.formData.lcFy
         this.$http.post('/api/lcjl/save', this.formData).then(res => {
           if (res.code == 200) {
             this.DrawerVal = false;
             this.util.initTable(this);
             this.carMess = null
-            console.log(res.message)
+            console.log(res.message, 'resmessage')
             if (this.mxlx == 'py' || this.mxlx == 'kf') {
               //打印票据
               console.log(JSON.parse(res.message));

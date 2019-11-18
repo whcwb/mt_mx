@@ -1,5 +1,6 @@
 package com.ldz.biz.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.ldz.biz.mapper.BizFdConfigMapper;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -32,7 +34,6 @@ import tk.mybatis.mapper.common.Mapper;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.stream.events.EndElement;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -40,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,6 +69,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     private BizJlXfMappper xfMappper;
     @Autowired
     private BizJlCzMapper czMapper;
+    @Autowired
+    private StringRedisTemplate redis;
 
     @Override
     protected Mapper<BizLcJl> getBaseMapper() {
@@ -97,24 +101,32 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         if (CollectionUtils.isEmpty(pageInfo.getList())) {
             return;
         }
+        // 查询所有的教练信息
         Set<String> jlIds = pageInfo.getList().stream().map(BizLcJl::getJlId).collect(Collectors.toSet());
         List<BizLcWxjl> coachs = wxjlService.findIn(BizLcWxjl.InnerColumn.id, jlIds);
+        // 根据教练id 分组
         Map<String, BizLcWxjl> coachMap = coachs.stream().collect(Collectors.toMap(BizLcWxjl::getId, p -> p));
+        // 拿到所有的套餐
+        Set<String> zddms = pageInfo.getList().stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
+        SimpleCondition djcondition = new SimpleCondition(SysZdxm.class);
+        djcondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        djcondition.in(SysZdxm.InnerColumn.zddm, zddms);
+        List<SysZdxm> items = zdxmService.findByCondition(djcondition);
+        // 根据套餐代码分组
+        Map<String, SysZdxm> map = items.stream().collect(Collectors.toMap(SysZdxm::getZddm, p -> p));
+
         pageInfo.getList().forEach(bizLcJl -> {
             SimpleCondition condition = new SimpleCondition(BizLcJlXy.class);
             condition.eq(BizLcJlXy.InnerColumn.lcJlId, bizLcJl.getId());
             List<BizLcJlXy> xies = xyService.findByCondition(condition);
             bizLcJl.setXyList(xies);
-            if (bizLcJl.getLcLx().equals("10")) {
-                SimpleCondition djcondition = new SimpleCondition(SysZdxm.class);
-                djcondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-                djcondition.eq(SysZdxm.InnerColumn.zddm, bizLcJl.getZddm());
-                List<SysZdxm> items = zdxmService.findByCondition(djcondition);
-                if (CollectionUtils.isNotEmpty(items)) {
-                    SysZdxm management = items.get(0);
-                    bizLcJl.setLcDj(Float.parseFloat(StringUtils.isBlank(management.getBy4()) ? "0" : management.getBy4()));
-                }
+
+            SysZdxm zdxm = map.get(bizLcJl.getZddm());
+            if (zdxm != null) {
+                bizLcJl.setLcDj(Float.parseFloat(StringUtils.isBlank(zdxm.getBy4()) ? "0" : zdxm.getBy4()));
+                bizLcJl.setZdxm(zdxm);
             }
+
             if (StringUtils.isNotEmpty(bizLcJl.getJlId())) {
                 BizLcWxjl coach = coachMap.get(bizLcJl.getJlId());
                 if (coach != null) {
@@ -126,6 +138,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
     @Override
     public ApiResponse<String> saveEntity(BizLcJl entity) {
+
+        String s = JSON.toJSONString(entity);
+        String lc = redis.boundValueOps("lcjl").get();
+        if(StringUtils.isNotBlank(lc)){
+            RuntimeCheck.ifTrue(StringUtils.equals(lc,s), "操作频繁,请稍后再试");
+        }
+        redis.boundValueOps("lcjl").set(s, 2 , TimeUnit.SECONDS);
         SysYh currentUser = getCurrentUser();
         //  判断所有必填字段
         RuntimeCheck.ifBlank(entity.getJlId(), "请选择教练");
@@ -212,6 +231,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
 
         if (!StringUtils.equals(entity.getLcLx(), "00") && StringUtils.isNotBlank(entity.getLcLx())) {
+            entity.setPz(entity.getId());
             // 套餐类型不是计时培训 需要在记录的时候就将费用计算出来 , 有返点的直接记录返点
             String jg = zdxm.getZdmc();
             if (StringUtils.equals(entity.getLcLx(), "20")) {
@@ -221,6 +241,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     entity.setLcFy(Integer.parseInt(jg));
                     entity.setYfJe(Integer.parseInt(jg));
                     entity.setXjje(entity.getLcFy());
+                    entity.setXySl(1);
                 } else {
                     RuntimeCheck.ifBlank(entity.getXyXm(), "请输入学员信息");
                     // 根据学员信息计算学员的数量
@@ -232,6 +253,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     entity.setYfJe(entity.getLcFy());
                     entity.setXjje(entity.getLcFy());
                 }
+                entity.setJssj(nowTime);
             } else if (StringUtils.equals(entity.getLcLx(), "30")) {
                 // 练车费用为 人数 乘以 价格
                 entity.setZfzt("10");
@@ -283,7 +305,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     lcFd.setJlId(wxjl.getId());
                     lcFd.setJlXm(wxjl.getJlXm());
                     lcFd.setLcId(entity.getId());
-                    lcFd.setFdlx("20");
+                    lcFd.setFdlx(entity.getLcLx());
                     lcFd.setLcFy(entity.getLcFy());
                     lcFd.setLcKm(entity.getLcKm());
                     lcFd.setSc(0);
@@ -309,7 +331,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     lcFd.setJlId(wxjl.getId());
                     lcFd.setJlXm(wxjl.getJlXm());
                     lcFd.setLcId(entity.getId());
-                    lcFd.setFdlx("20");
+                    lcFd.setFdlx(entity.getLcLx());
                     lcFd.setLcFy(entity.getLcFy());
                     lcFd.setLcKm(entity.getLcKm());
                     lcFd.setSc(0);
@@ -385,8 +407,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 String by3 = management.getBy3();
                 // 190
                 String hour = management.getZdmc();
-                if (lcSc > 35) {
-                    v = (int) Math.ceil((lcSc - 35) * Float.parseFloat(by3)) + Integer.parseInt(hour);
+                if (lcSc > management.getQz()) {
+                    v = (int) Math.ceil((lcSc - management.getQz()) * Float.parseFloat(by3)) + Integer.parseInt(hour);
                 } else {
                     v = Integer.parseInt(hour);
                 }
@@ -451,7 +473,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             if (xjje > 0) {
                 fdr = fdr + "3";
             }
-            str += " 应收现金" + xjje+"元";
+            str += " 应收现金" + xjje + "元";
         } else {
             fdr = "3";
             str = " 应收现金: " + lcJl.getLcFy() + "元";
@@ -1135,7 +1157,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fd.setCjr(yh.getZh() + "-" + yh.getXm());
                     fd.setCjsj(DateUtils.getNowTime());
                     fd.setFdje((int) Math.ceil(xjje * rate));
-                    fd.setFdlx("10");
+                    fd.setFdlx(lcJl.getLcLx());
                     fd.setId(pz);
                     fd.setJlXm(wxjl.getJlXm());
                     fd.setJlId(wxjl.getId());
@@ -1160,7 +1182,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                         fd.setCjr(yh.getZh() + "-" + yh.getXm());
                         fd.setCjsj(DateUtils.getNowTime());
                         fd.setFdje((int) Math.ceil(xjje * rate));
-                        fd.setFdlx("00");
+                        fd.setFdlx(lcJl.getLcLx());
                         fd.setId(pz);
                         fd.setJlXm(wxjl.getJlXm());
                         fd.setJlId(wxjl.getId());
@@ -1174,7 +1196,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fd.setCjr(yh.getZh() + "-" + yh.getXm());
                     fd.setCjsj(DateUtils.getNowTime());
                     fd.setFdje((int) Math.ceil(xjje * rate));
-                    fd.setFdlx("00");
+                    fd.setFdlx(lcJl.getLcLx());
                     fd.setId(pz);
                     fd.setJlXm(wxjl.getJlXm());
                     fd.setJlId(wxjl.getId());
@@ -1380,10 +1402,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         }
 
         BizLcFd fd = new BizLcFd();
-        fd.setFdlx("00");
+        fd.setFdlx(jls.get(0).getLcLx());
         if (kfje > 0) {
-            fd.setFdlx("10");
-
             // 采用的是 余额加现金的情况
             // 先算出所有的余额
             int jlye = wxjl.getYe();
@@ -1395,14 +1415,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                         // 余额充足
                         jl.setKfje(jl.getLcFy());
                         jl.setXjje(0);
-                        jl.setCardje(0);
                     } else {
 
                         jl.setXjje(Math.abs(jlye));
                         jl.setKfje(jl.getLcFy() + jlye);
                         jlye = 0;
-                        jl.setCardje(0);
                     }
+                    jl.setCardje(0);
                 } else {
                     jl.setXjje(jl.getLcFy());
                     jl.setCardje(0);
@@ -1523,6 +1542,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         BizLcWxjl wxjl = wxjlService.findById(id);
         BizLcJl jl = new BizLcJl();
         jl.setId(jls.get(0).getPz());
+        jl.setZgXm(jls.get(0).getZgXm());
         jl.setLcFy(sum);
         jl.setJlCx(jls.stream().map(BizLcJl::getJlCx).collect(Collectors.joining(",")));
         jl.setClBh(jls.stream().map(BizLcJl::getClBh).collect(Collectors.joining(",")));
@@ -1550,7 +1570,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
         }
         str += "应付现金" + jl.getXjje();
-        if (fdr.indexOf("2") != -1) {
+        if (fdr.contains("2")) {
             // 计算余额
             str += ",卡上余额" + wxjl.getCardJe() + "元";
         }
@@ -1559,6 +1579,55 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         jl.setKfje(wxjl.getYe());
         jl.setCardje(wxjl.getCardJe());
         return ApiResponse.success(jl);
+    }
+
+    @Override
+    public ApiResponse<BizLcJl> payCNY(String id) {
+
+        RuntimeCheck.ifBlank(id, "请选择要支付的订单");
+        BizLcJl lcJl = findById(id);
+        RuntimeCheck.ifTrue(!StringUtils.equals(lcJl.getZfzt(),"00"), "订单已支付,请勿重复操作");
+        RuntimeCheck.ifFalse(StringUtils.equals(lcJl.getLcLx(), "00"), "此订单不支持现金支付");
+        SysYh user = getCurrentUser();
+        // 总费用
+        Integer fy = lcJl.getLcFy();
+        lcJl.setZfzt("10");
+        lcJl.setCardje(0);
+        lcJl.setYfJe(fy);
+        lcJl.setXjje(fy);
+        lcJl.setPz(lcJl.getId());
+        update(lcJl);
+
+        // 查询套餐数据
+        SimpleCondition condition = new SimpleCondition(SysZdxm.class);
+        condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        condition.eq(SysZdxm.InnerColumn.zddm, lcJl.getZddm());
+        List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
+        SysZdxm zdxm = zdxms.get(0);
+        // 拿到返点率
+        float fdl = Float.parseFloat(zdxm.getBy4());
+        int fdje = (int) Math.ceil(fy * fdl);
+        if(fdje  > 0 ){
+            BizLcFd fd = new BizLcFd();
+            fd.setJlJx(lcJl.getJlJx());
+            fd.setCjr(user.getZh() + "-" + user.getXm());
+            fd.setCjsj(DateUtils.getNowTime());
+            fd.setFdje(fdje);
+            fd.setFdlx(lcJl.getLcLx());
+            fd.setFdsl(1);
+            fd.setId(genId());
+            fd.setJlId(lcJl.getJlId());
+            fd.setJlXm(lcJl.getJlXm());
+            fd.setLcFy(fy);
+            fd.setLcId(lcJl.getId());
+            fd.setLcKm(lcJl.getLcKm());
+            fd.setSc(lcJl.getSc());
+            fd.setXySl(lcJl.getXySl());
+            fdService.save(fd);
+        }
+
+
+        return ApiResponse.success(lcJl);
     }
 
 

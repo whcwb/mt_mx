@@ -160,8 +160,8 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
                                     String by3 = management.getBy3();
                                     // 190
                                     String hour = management.getZdmc();
-                                    if(Integer.parseInt(sc) > 35){
-                                        v = (int) Math.ceil((Integer.parseInt(sc) - 35) * Float.parseFloat(by3)) + Integer.parseInt(hour);
+                                    if(Integer.parseInt(sc) > management.getQz()){
+                                        v = (int) Math.ceil((Integer.parseInt(sc) - management.getQz()) * Float.parseFloat(by3)) + Integer.parseInt(hour);
                                     }else{
                                         v = Integer.parseInt(hour);
                                     }
