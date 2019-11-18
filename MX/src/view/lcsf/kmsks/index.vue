@@ -67,7 +67,7 @@
               <Col span="6" style="padding-top: 6px">
                 <Tag color="cyan" style="font-weight: bold">{{item.clCx}}</Tag>
                 <Tooltip :content="item.cardNo?'卡片已绑定':'卡片_未_绑定'" placement="top">
-                  <Button type="text" :style="{background:item.cardNo?'#47cb89':'#747b8b',color:'#fff'}"  size="small" @click="bindCard">卡</Button>
+                  <Button type="text" :style="{background:item.cardNo?'#47cb89':'#747b8b',color:'#fff'}"  size="small" @click="bindCard(item)">卡</Button>
                 </Tooltip>
               </Col>
               <Col span="6">

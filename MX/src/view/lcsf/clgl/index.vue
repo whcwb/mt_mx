@@ -60,7 +60,7 @@
               <Col span="6" style="padding-top: 6px">
                 <Tag color="cyan" style="font-weight: bold">{{item.clCx}}</Tag>
                 <Tooltip :content="item.cardNo?'卡片已绑定':'卡片_未_绑定'" placement="top">
-                  <Button type="text" :style="{background:item.cardNo?'#47cb89':'#747b8b',color:'#fff'}"  size="small">卡</Button>
+                  <Button type="text" :style="{background:item.cardNo?'#47cb89':'#747b8b',color:'#fff'}" @click="bindCard(item)" size="small">卡</Button>
                 </Tooltip>
               </Col>
               <Col span="6">
@@ -117,11 +117,12 @@
 <script>
   import clxq from './comp/clxq'
   import cjcar from './comp/cjcar'
+  import bindcard from './comp/bindcard'
 
   export default {
     name: "index",
     components: {
-      clxq, cjcar
+      clxq, cjcar,bindcard
     },
     data() {
       return {
@@ -167,6 +168,10 @@
       keerkesan(val) {
         this.param.clKm = val;
         this.getPagerList()
+      },
+      bindCard(item){
+        this.a = item
+        this.compName = 'bindcard'
       },
       changeZT(item, ZT) {
         this.$http.post(this.apis.CLWH.CLGX, {id: item.id, clZt: ZT, notShowLoading: 'true'}).then(res => {
