@@ -104,15 +104,15 @@
         <Col span="3" align="left">
           <i-switch v-model="switch1"></i-switch>
         </Col>
-        <Col span="21" align="right">
-          <span v-show="switch1">
-          <span style="font-size: 24px;font-weight: 600">
+        <Col span="21" align="right" v-if="switch1">
+          <span>
+            <span style="font-size: 24px;font-weight: 600">
             人数：<span style="color: #ed3f14"> {{rs}} </span> 人
-          </span>
+            </span>
           &nbsp&nbsp&nbsp
-          <span style="font-size: 24px;font-weight: 600">
+            <span style="font-size: 24px;font-weight: 600">
             合计：<span style="color: #ed3f14"> {{hj}} </span> 元
-          </span>
+            </span>
             </span>
         </Col>
       </Row>
@@ -129,7 +129,7 @@
       title="分配车辆"
       v-model="DrawerVal"
       :closable="false"
-      width="500"
+      width="800"
       :mask-closable="false">
       <div slot="header">
         <div class="box_row">
@@ -185,32 +185,67 @@
             </div>
           </Col>
         </Row>
+        <Row :gutter="32" style="padding-top: 5px"  v-if="formData.zddm == 'K2PY'">
+          <Card>
+            <p slot="title">学员信息</p>
+            <p>
+              <Row v-for="(item,index) in AMess" :key="index">
+                <Col span="3">
+                  <RadioGroup v-model="item.cartype">
+                    <Radio label="C1"></Radio>
+                    <Radio label="C2"></Radio>
+                  </RadioGroup>
+                </Col>
+                <Col span="4" :class-name="'colsty'">
+                  <Input type="text" size="default" v-model="item.xyXm" placeholder="学员姓名"/>
+                </Col>
+                <Col span="4" :class-name="'colsty'">
+                  <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"
+                         size="default" v-model="item.xyDh" placeholder="学员联系电话"/>
+                </Col>
+                <Col span="8" :class-name="'colsty'">
+                  <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"
+                         size="default" v-model="item.bz" placeholder="身份证号码"/>
+                </Col>
+                <Col span="2" v-if="AMess.length>1">
+                  <Button size="default" type="warning" @click="remove(index)">删除</Button>
+                </Col>
+                <Col span="2" align="center">
 
-        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2PY'">
-          <Col span="8">
-            <FormItem label="安全员" label-position="top">
-              <Input v-model="formData.zgXm"/>
-            </FormItem>
-          </Col>
+                  <Button type="info" icon="md-add"
+                          @click="pushmess"
+                  >
+                  </Button>
+                </Col>
+              </Row>
+            </p>
+          </Card>
         </Row>
+<!--        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2PY'">-->
+<!--          <Col span="8">-->
+<!--            <FormItem label="安全员" label-position="top">-->
+<!--              <Input v-model="formData.zgXm"/>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--        </Row>-->
 
-        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2PY'">
-          <Col span="8">
-            <FormItem label="学员姓名" label-position="top">
-              <Input v-model="formData.xyXm"/>
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem label="学员电话" label-position="top">
-              <Input v-model="formData.xyDh"/>
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem label="学员身份证号码" label-position="top">
-              <Input v-model="formData.xyZjhm"/>
-            </FormItem>
-          </Col>
-        </Row>
+<!--        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2PY'">-->
+<!--          <Col span="8">-->
+<!--            <FormItem label="学员姓名" label-position="top">-->
+<!--              <Input v-model="formData.xyXm"/>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--          <Col span="8">-->
+<!--            <FormItem label="学员电话" label-position="top">-->
+<!--              <Input v-model="formData.xyDh"/>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--          <Col span="8">-->
+<!--            <FormItem label="学员身份证号码" label-position="top">-->
+<!--              <Input v-model="formData.xyZjhm"/>-->
+<!--            </FormItem>-->
+<!--          </Col>-->
+<!--        </Row>-->
         <!--<radio-car v-if="carMess == null"-->
         <!--clKm="2"-->
         <!--@getCarItemMess="getCarItemMess"-->
@@ -256,9 +291,9 @@
             </FormItem>
           </Col>
         </Row>
-        <FormItem label="备注" label-position="top">
-          <Input type="textarea" v-model="formData.bz" :rows="4"/>
-        </FormItem>
+<!--        <FormItem label="备注" label-position="top">-->
+<!--          <Input type="textarea" v-model="formData.bz" :rows="4"/>-->
+<!--        </FormItem>-->
       </Form>
       <div slot='footer'>
         <Button style="margin-right: 8px" @click="close">取消</Button>
@@ -317,6 +352,7 @@
   import giveCar from '../comp/readCard'
   import {mapMutations} from 'vuex'
   import moment from 'moment'
+  import Cookies from 'js-cookie'
 
   export default {
     name: "index",
@@ -327,10 +363,14 @@
     },
     data() {
       return {
+          Pmess: {},
+          AMess: [
+              {cartype:'C1'}
+          ],
         hj: 0,
         rs: 0,
         mxlx: '',
-        switch1: false,
+        switch1: true,
         total: 0,
         giveCar: giveCar,
         v: this,
@@ -568,9 +608,13 @@
           //   this.showCAR = true
           // }
         }
+      },
+      switch1:function (val) {
+        Cookies.set('showMess',val)
       }
     },
     mounted() {
+      this.switch1=Cookies.get('showMess')==='true'?true:false
     },
     created() {
       this.dateRange.cjsj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
@@ -589,6 +633,59 @@
       clearInterval(this.IntervalKE)
     },
     methods: {
+        remove(i){
+            this.AMess.splice(i,1)
+        },
+        pushmess() {
+            let a = JSON.parse(JSON.stringify(this.Pmess));
+            this.AMess.push(a);
+        },
+        getWXXY(AMess) {
+            if (this.formData.zddm.indexOf('K2PY') == -1){
+                return true
+            }
+            AMess = this.AMess
+            let arrAMess = AMess.length - 1;
+            let messarr = [];
+            let dxarr = [];
+            let sfzarr = [];
+            let a = true
+            console.log(AMess,'AMess');
+            for (let i =0;i<AMess.length; i++){
+                if(AMess[i].xyXm == undefined ||AMess[i].xyXm == ''||AMess[i].xyXm == null){
+                    this.swal({
+                        title: '请填写学员姓名',
+                        type: 'error'
+                    })
+                    a = false
+                    break
+                }else {
+                    messarr.push(AMess[i].xyXm+'-'+AMess[i].cartype)
+                    dxarr.push(AMess[i].xyDh)
+                    sfzarr.push(AMess[i].bz)
+                    if (i == arrAMess) {
+                        console.log(dxarr.join(','))
+                        console.log(messarr.join(','))
+                        this.formData.xyXm = messarr.join(',');
+                        this.formData.xyDh = dxarr.join(',');
+                        this.formData.xyZjhm = sfzarr.join(',');
+                    }
+                }
+
+            }
+            return a
+            // AMess.forEach((item, index) => {
+            //     console.log(item.xyXm);
+            //
+            // })
+        },
+        scXY(e){
+            this.AMess=[{}];
+            e = parseInt(e);
+            for (let i =1;i<e;i++){
+                this.AMess.push({})
+            }
+        },
         pr(){
             var api = 'https://www.baidu.com/s?wd=%E7%99%BE%E5%BA%A6%E7%9A%84%E7%BD%91%E5%9D%80ip&rsv_spt=1&rsv_iqid=0xd41114de00062d0d&issp=1&f=3&rsv_bp=1&rsv_idx=2&ie=utf-8&rqlang=cn&tn=baiduhome_pg&rsv_enter=0&rsv_dl=ts_0&oq=vue%2520%25E6%258C%2587%25E5%25AE%259Aip%25E5%258F%2591%25E9%2580%2581axios&rsv_t=da21ZuhZm7lWkwXiSRKJoP0FazdoiDT9YLFiJfz636%2BAOuzA4nKH%2FNV87xMowp35sUca&inputT=4160&rsv_pq=9fc868c100415bd8&rsv_sug3=125&rsv_sug1=109&rsv_sug7=100&rsv_sug2=0&prefixsug=%25E7%2599%25BE%25E5%25BA%25A6%25E7%259A%2584&rsp=0&rsv_sug4=6824'
             this.$http.get(api).then((response) => {
@@ -702,6 +799,7 @@
       },
       close() {
         // this.showCAR = false;
+          this.AMess=[{cartype:'C1'}];
         this.carMess = null;
         this.formData = {};
         this.formData.jlCx = 'C1'
@@ -1021,57 +1119,61 @@
           this.formData.lcKm = 2
         }
         delete this.formData.lcFy
-        this.$http.post('/api/lcjl/save', this.formData).then(res => {
-          if (res.code == 200) {
-            this.DrawerVal = false;
-            this.util.initTable(this);
-            this.carMess = null
-            console.log(res.message, 'resmessage')
-            if (this.mxlx == 'py' || this.mxlx == 'kf') {
-              //打印票据
-              console.log(JSON.parse(res.message));
-              this.formData = JSON.parse(res.message)
-              this.formData.sc = ''
-              this.formData.yhsc = '5分钟'
-              this.formData.kc = '科目二'
-              this.formData.clBh = ''
-              this.formData.lcKm = '2'
+          if ( this.getWXXY()){
+              this.$http.post('/api/lcjl/save', this.formData).then(res => {
+                  if (res.code == 200) {
+                      this.DrawerVal = false;
+                      this.util.initTable(this);
+                      this.carMess = null
+                      this.AMess=[{cartype:'C1'}];
+                      console.log(res.message, 'resmessage')
+                      if (this.mxlx == 'py' || this.mxlx == 'kf') {
+                          //打印票据
+                          console.log(JSON.parse(res.message));
+                          this.formData = JSON.parse(res.message)
+                          this.formData.sc = ''
+                          this.formData.yhsc = '5分钟'
+                          this.formData.kc = '科目二'
+                          this.formData.clBh = ''
+                          this.formData.lcKm = '2'
 
-              this.hisPrintMess = this.formData
-              this.componentName = 'print'
+                          this.hisPrintMess = this.formData
+                          this.componentName = 'print'
 
 
-            }
-          } else {
-            this.formData.cardNo = null;
-            this.swal({
-              title: res.message,
-              type: 'warning'
-            })
+                      }
+                  } else {
+                      this.formData.cardNo = null;
+                      this.swal({
+                          title: res.message,
+                          type: 'warning'
+                      })
+                  }
+
+              }).catch(err => {
+                  this.formData = {
+                      zgXm: '',
+                      lcKm: 2,
+                      lcLx: '',
+                      lcFy: '900',
+                      cardNo: '',
+                      clBh: '',
+                      lcClId: '',
+                      jlJx: '',
+                      jlId: "",
+                      jlCx: 'C1',
+                      xyZjhm: '',
+                      xyXm: '',
+                      xyDh: '',
+                      // yhsc:'5',
+                      id: '',
+                      jlXm: '',
+                      jlDh: '',
+                      sc: ''
+                  }
+              })
           }
 
-        }).catch(err => {
-          this.formData = {
-            zgXm: '',
-            lcKm: 2,
-            lcLx: '',
-            lcFy: '900',
-            cardNo: '',
-            clBh: '',
-            lcClId: '',
-            jlJx: '',
-            jlId: "",
-            jlCx: 'C1',
-            xyZjhm: '',
-            xyXm: '',
-            xyDh: '',
-            // yhsc:'5',
-            id: '',
-            jlXm: '',
-            jlDh: '',
-            sc: ''
-          }
-        })
 
         // }
       },

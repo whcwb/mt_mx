@@ -57,6 +57,10 @@
               <span v-if="item.unit">{{item.unit}}</span>
             </td>
           </tr>
+          <tr>
+            <td>备注</td>
+            <td style="font-size: 12px">{{this.info.bz}}</td>
+          </tr>
         </table>
         <div>
           <Row>
@@ -106,7 +110,7 @@
 
               }},
           {title: '累计费用', key: 'lcFy', unit: '元'},
-          {title: '备注', key: 'bz'},
+
 
         ],
         mesTime: 7,
@@ -126,7 +130,12 @@
             this.info.jssj = this.info.jssj.substring(0,16)
         }
       this.info.yhje = 8.33*5
-        this.info.bz = this.info.xySl+'人'
+        if (this.info.zddm.indexOf('PY')>=0){
+            this.info.bz = this.info.xyXm
+        }else {
+            this.info.bz = this.info.xySl+'人'
+        }
+
       let v = this;
       setTimeout(() => {
         let canvas = document.getElementById("barcode");

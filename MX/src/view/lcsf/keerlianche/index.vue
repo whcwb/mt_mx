@@ -490,7 +490,7 @@
         </Row>
         <Row>
           <Col span="12">
-            <Card>
+            <Card style="height: 240px">
               <p slot="title" style="font-size: 20px;font-weight: 600">训练信息</p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">教练员 : {{QRmessxj.jlXm}}</p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">总时长 : {{QRmessxj.sc}}分钟</p>
@@ -498,28 +498,36 @@
             </Card>
           </Col>
           <Col span="12">
-            <Card>
+            <Card style="height: 240px">
               <p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">
-                <Checkbox disabled v-model="ls1.ls3">{{ls1.ls6}}</Checkbox>
-                现金支付
+              <p style="font-size: 18px;font-weight: 500;padding: 5px">
+                <RadioGroup v-model="QRmessxj.zf" vertical @on-change="getRs">
+                  <Radio label="1">
+                    <Icon type="1"></Icon>
+                    <span>现金支付</span>
+                  </Radio>
+                  <Radio label="2" :disabled="QRmessxj.cardje<=0">
+                    <Icon type="social-android"></Icon>
+                    <span>充卡支付(余额:{{QRmessxj.cardje}}元)</span>
+                  </Radio>
+                  <Radio label="3" :disabled="QRmessxj.kfje<=0">
+                    <Icon type="social-windows"></Icon>
+                    <span>抵扣支付(余额:{{QRmessxj.kfje}}元)</span>
+                  </Radio>
+                </RadioGroup>
               </p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">
-                <Checkbox disabled v-model="ls1.ls2">{{ls1.ls6}}</Checkbox>
-                充卡支付
-<!--                (余额:{{QRmess.cardje}}元)-->
-              </p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">
-                <Checkbox disabled v-model="ls1.ls1">{{ls1.ls6}}</Checkbox>
-                抵扣支付
-<!--                (余额:{{QRmess.kfje}}元)-->
+
+              <p style="font-size: 18px;font-weight: 500;padding: 10px"  v-if="b">
+                <Select v-model="QRmessxj.c" style="width:200px"  size="small" @on-change="getysxjA()">
+                  <Option v-for="(item,index) in RS" :value="item" :key="index">{{item}}</Option>
+                </Select>
               </p>
             </Card>
           </Col>
 
         </Row>
         <Row style="text-align: left;padding-left: 10px">
-          <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">{{QRmessxj.bz}}</p>
+          <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">应收现金{{this.ysxzA}}元</p>
         </Row>
       </div>
     </Modal>
@@ -551,6 +559,8 @@
         },
         data() {
             return {
+                b:false,
+                RS:[1,2],
                 tcIndex: 0,
                 columns2: [
                     {
@@ -627,7 +637,7 @@
                         fixed:'left',
                     },
                     {title: '驾校', align: 'center', key: 'jlJx', minWidth: 90},
-                    {title: '教练员', align: 'center', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 50},
+                    {title: '教练员', align: 'center', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 80},
                     // {title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90,},
                     // {
                     //   title: '状态', minWidth: 120, render: (h, p) => {
@@ -646,7 +656,7 @@
                     {title: '开始时间', align: 'center', key: 'kssj', minWidth: 140},
                     {title: '结束时间', align: 'center', key: 'jssj', searchType: 'daterange', minWidth: 140},
                     {
-                        title: '时长', align: 'center', key: 'sc', minWidth: 80, defaul: '0',
+                        title: '时长', align: 'center', key: 'sc', minWidth: 70, defaul: '0',
                         render: (h, p) => {
                             return h('div', p.row.sc + '分钟');
                         }
@@ -654,7 +664,7 @@
                     // {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
                     // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
                     {
-                        title: '费用', align: 'center', minWidth: 90, defaul: '0',
+                        title: '费用', align: 'center', minWidth: 70, defaul: '0',
                         render: (h, p) => {
                             return h('div', p.row.lcFy + '元');
                         }
@@ -706,7 +716,7 @@
                             }
                         }
                     },
-                    {title: '类型', align: 'center', minWidth: 150,
+                    {title: '类型', align: 'center', minWidth: 120,
                         filters: [
                             {
                                 label: '计时',
@@ -734,9 +744,9 @@
 
                         }
                     },
-                    {title: '凭证', key: 'pz', align: 'center', minWidth: 120,},
+                    {title: '凭证', key: 'pz', align: 'center', minWidth: 130,},
                     {
-                        title: '操作', minWidth: 60, align: 'center', fixed: 'right', render: (h, p) => {
+                        title: '操作', minWidth: 50, align: 'center', fixed: 'right', render: (h, p) => {
                             let buttons = [];
                            if (p.row.zfzt!='00'){
                                buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
@@ -834,7 +844,10 @@
                 QRmodal: false,
                 QRmodalxj: false,
                 QRmess: {},
-                QRmessxj: {},
+                QRmessxj: {
+                    zf:'',
+                    c:''
+                },
                 QRmessxjlist:[],
                 fylist: [],
                 giveCar: giveCar,
@@ -1259,6 +1272,7 @@
 
 
                 ],
+                ysxzA:''
             }
         },
         watch: {
@@ -1276,6 +1290,12 @@
                     //   this.showCAR = true
                     // }
                 }
+            },
+            'QRmessxj.zf':function (n,o) {
+                this.getysxjA()
+            },
+            'QRmessxj.c':function (n,o) {
+                this.getysxjA()
             }
         },
         mounted() {
@@ -1295,10 +1315,38 @@
                 'set_LcTime',
                 'Ch_LcTime'
             ]),
+            getysxjA(){
+                if(this.QRmessxj.zf=='1'){
+                   this.ysxzA =  this.QRmessxj.lcFy
+                }else if(this.QRmessxj.zf=='2'){
+                    this.ysxzA =  (this.QRmessxj.lcFy - this.QRmessxj.cardje)>0?(this.QRmessxj.lcFy - this.QRmessxj.cardje):0
+                }else {
+                    this.ysxzA =  (this.QRmessxj.lcFy - (200*this.QRmessxj.c))>0?(this.QRmessxj.lcFy - (200*this.QRmessxj.c)):0
+                }
+            },
+            getRs(we){
+                // this.QRmessxj.zf = we
+                console.log(we,'e');
+                console.log(this.QRmessxj.zf,'this.QRmessxj.zf');
+                if (we == '3'){
+                    this.QRmessxj.c=1
+                    this.b =true
+                    var a = this.QRmessxj.kfje/200
+                    this.RS = new Array(a).toString().split(',').map(function(item,index){
+                        return index+1;
+                    });
+                }else{
+                    this.b = false
+                }
+                this.getysxjA()
+            },
             xjzf(item) {
+                item.zf = '1'
                this.QRmessxj = item
+                // this.QRmessxj.zf = '1'
                this.QRmessxjlist.push(item)
                this.QRmodalxj = true
+                this.getysxjA()
             },
             enter() {
                 var _this = this;
@@ -1414,17 +1462,18 @@
             QRcancelxj() {
                 this.QRmessxj = {}
                 this.QRmessxjlist = []
+                this.b =false
 
             },
             QRokxj() {
-                            this.$http.post('/api/lcjl/payCNY', {id:this.QRmessxj.id}).then((res) => {
+                            this.$http.post('/api/lcjl/payCNY', {id:this.QRmessxj.id,zf:this.QRmessxj.zf,c:this.QRmessxj.c}).then((res) => {
                                 if (res.code == 200) {
                                     // this.$Message.success(res.message)
-                                    this.print(this.QRmessxj)
+                                    this.print(res.result)
                                     this.util.getPageData(this)
                                     this.QRmessxj = {}
                                     this.QRmessxjlist = []
-
+                                    this.b =false
                                 } else {
                                     this.$Message.error(res.message)
                                 }
@@ -1566,6 +1615,7 @@
                 this.sfaemanlist = [];
                 this.formData.lcLx = '00';
                 this.searchCoachList = [];
+                this.b = false
                 //清空下拉框内容
                 this.$refs.jlySelect.clearSingleSelect();
             },

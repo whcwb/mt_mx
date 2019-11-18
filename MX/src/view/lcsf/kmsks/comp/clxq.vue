@@ -47,15 +47,13 @@
                 </Select>
               </FormItem>
             </Col>
-            <Col span="12">
-              <FormItem label="卡片绑定">
-                <Input v-model="cardNo" size="large" readonly>
-                  <span slot="append" style="cursor: pointer" @click="getCardNum">读卡</span>
-                </Input>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
+            <!--<Col span="12">-->
+              <!--<FormItem label="卡片绑定">-->
+                <!--<Input v-model="cardNo" size="large" readonly>-->
+                  <!--<span slot="append" style="cursor: pointer" @click="getCardNum">读卡</span>-->
+                <!--</Input>-->
+              <!--</FormItem>-->
+            <!--</Col>-->
             <Col span="12">
               <FormItem label="科目">
                 <Select v-model="params.clKm">
@@ -63,6 +61,15 @@
                 </Select>
               </FormItem>
             </Col>
+          </Row>
+          <Row>
+            <!--<Col span="12">-->
+              <!--<FormItem label="科目">-->
+                <!--<Select v-model="params.clKm">-->
+                  <!--<Option v-for="item in KM" :value="item.value" :key="item.value">{{ item.label }}</Option>-->
+                <!--</Select>-->
+              <!--</FormItem>-->
+            <!--</Col>-->
             <Col span="12">
               <FormItem prop="" label="车辆照片">
                 <up-img :headImg="params.clImg" @txImg="(url)=>{txImg('clImg',url)}"></up-img>

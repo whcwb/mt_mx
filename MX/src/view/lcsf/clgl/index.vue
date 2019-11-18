@@ -12,11 +12,11 @@
           <Col span="14">
             <div style="float: left;margin-top: 8px;">
               <span
-                style="width: 100px;height: 80px;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">共{{tabdata.length}}台</span>
+                style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;">共{{tabdata.length}}台</span>
               <span
-                style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">停用{{zxNum}}台</span>
+                style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;">停用{{zxNum}}台</span>
               <span
-                style="width: 100px;height: 80px;background-color: #66CD00;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">启用{{xxNum}}台</span>
+                style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;">启用{{xxNum}}台</span>
             </div>
           </Col>
           <Col span="3" style="margin-right: 5px">
@@ -50,7 +50,7 @@
           <Card style="width:100%">
             <Row justify="center" align="middle">
               <Col span="3" align="left">
-                <Avatar style="color: white;background-color: red;line-height: 38px;font-size: 24px;font-weight: bold">
+                <Avatar style="color: white;background-color: #ffbb96;line-height: 38px;font-size: 24px;font-weight: bold">
                   {{item.clBh}}
                 </Avatar>
               </Col>
@@ -60,7 +60,7 @@
               <Col span="6" style="padding-top: 6px">
                 <Tag color="cyan" style="font-weight: bold">{{item.clCx}}</Tag>
                 <Tooltip :content="item.cardNo?'卡片已绑定':'卡片_未_绑定'" placement="top">
-                  <Button type="text" :style="{background:item.cardNo?'#47cb89':'#747b8b',color:'#fff'}"  size="small">卡</Button>
+                  <Button type="text" :style="{background:item.cardNo?'#47cb89':'#747b8b',color:'#fff'}" @click="bindCard(item)" size="small">卡</Button>
                 </Tooltip>
               </Col>
               <Col span="6">
@@ -72,7 +72,7 @@
                   </Col>
                   <Col span="12" style="margin-top: 6px">
                     <Tooltip content="删除">
-                      <Button type="warning" icon="ios-trash" size="small" @click="del(item.id)"></Button>
+                      <Button icon="ios-trash" size="small" @click="del(item.id)"></Button>
                     </Tooltip>
                   </Col>
                 </Row>
@@ -86,10 +86,10 @@
             <div style="padding-top: 5px">
               <div class="box_row" style="padding-top: 6px; ">
                 <div class="box_col_100">
-                  <Button v-if="item.clZt == '00' || item.clZt == '01'" type="success" size="default" long
+                  <Button v-if="item.clZt == '00' || item.clZt == '01'" type="success"  size="default" long ghost
                           @click="changeZT(item,'00')">启用
                   </Button>
-                  <Button v-if="item.clZt == '02' || item.clZt == '03'" type="default" size="default" long
+                  <Button v-if="item.clZt == '02' || item.clZt == '03'" type="default"  size="default" long
                           @click="changeZT(item,'00')">启用
                   </Button>
                 </div>
@@ -117,11 +117,12 @@
 <script>
   import clxq from './comp/clxq'
   import cjcar from './comp/cjcar'
+  import bindcard from './comp/bindcard'
 
   export default {
     name: "index",
     components: {
-      clxq, cjcar
+      clxq, cjcar,bindcard
     },
     data() {
       return {
@@ -167,6 +168,10 @@
       keerkesan(val) {
         this.param.clKm = val;
         this.getPagerList()
+      },
+      bindCard(item){
+        this.a = item
+        this.compName = 'bindcard'
       },
       changeZT(item, ZT) {
         this.$http.post(this.apis.CLWH.CLGX, {id: item.id, clZt: ZT, notShowLoading: 'true'}).then(res => {
