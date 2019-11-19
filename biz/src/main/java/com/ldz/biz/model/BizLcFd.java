@@ -81,6 +81,9 @@ public class BizLcFd implements Serializable {
     @Column(name = "lc_km")
     private String lcKm;
 
+    @Column(name = "bz")
+    private String bz;
+
     @Transient
     private int xySl;
 

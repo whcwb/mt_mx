@@ -180,12 +180,12 @@
           },
 
           {
-            title: '备注',align: 'center',  key: 'bz', minWidth: 80,
+            title: '备注',align: 'center',  key: 'bz', minWidth: 120,
             render: (h, p) => {
-              if (p.row.fdlx == '20')
+             /* if (p.row.fdlx == '20')
                 return h('div', '人数：' + p.row.xySl)
-              else return h('div', '/')
-
+              else*/
+                return h('div', p.row.bz)
             }
           },
           // {
