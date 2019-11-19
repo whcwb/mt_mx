@@ -271,6 +271,7 @@
       <Table :height="680"
              size="small"
              @on-select="tabcheck"
+             @on-select-cancel="tabcheck"
              :columns="tableColumns" :data="pageData"></Table>
       <!--      <table-area :parent="v"></table-area>-->
       <Row class="margin-top-10 pageSty">
@@ -420,7 +421,7 @@
       :mask-closable="false"
       okText="确认支付"
       cancelText="稍后支付"
-      @on-ok="QRok"
+      @on-ok="QRokxj"
       @on-cancel="QRcancel"
     >
       <div>
@@ -445,18 +446,42 @@
           <Col span="12">
             <Card>
               <p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">
-                <Checkbox disabled v-model="ls.ls3">{{ls.ls6}}</Checkbox>
-                现金支付
-              </p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">
-                <Checkbox disabled v-model="ls.ls2">{{ls.ls6}}</Checkbox>
-                充卡支付(余额:{{QRmess.cardje}}元)
-              </p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">
-                <Checkbox disabled v-model="ls.ls1">{{ls.ls6}}</Checkbox>
-                抵扣支付(余额:{{QRmess.kfje}}元)
-              </p>
+              <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
+              <!--<Checkbox v-model="ls.ls3">{{ls.ls6}}</Checkbox>-->
+              <!--现金支付-->
+              <!--</p>-->
+              <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
+              <!--<Checkbox v-model="ls.ls2">{{ls.ls6}}</Checkbox>-->
+              <!--充卡支付(余额:{{QRmess.cardje}}元)-->
+              <!--</p>-->
+              <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
+              <!--<Checkbox v-model="ls.ls1">{{ls.ls6}}</Checkbox>-->
+              <!--抵扣支付(余额:{{QRmess.kfje}}元)-->
+              <!--</p>-->
+              <RadioGroup v-model="QRmessxj.zf" vertical @on-change="getRs">
+                <p style="font-size: 18px;font-weight: 500;padding: 10px">
+                  <Radio label="1">
+                    <Icon type="1"></Icon>
+                    <span style="font-size: 18px;">现金支付</span>
+                  </Radio>
+                </p>
+                <p style="font-size: 18px;font-weight: 500;padding: 10px">
+                  <Radio label="2">
+                    <Icon type="social-android"></Icon>
+                    <span style="font-size: 18px;">充卡支付(余额:{{QRmess.cardje}}元)</span>
+                  </Radio>
+                </p>
+                <p style="font-size: 18px;font-weight: 500;padding: 10px;display: flex;align-items: center">
+                  <Radio label="3">
+                    <Icon type="social-windows"></Icon>
+                    <span style="font-size: 18px;">抵扣支付(余额:{{QRmess.kfje}}元)</span>
+                  </Radio>
+                  <Select v-model="QRmessxj.c" style="width:80px;display: inline-block" size="small"
+                          @on-change="getysxjA()">
+                    <Option v-for="(item,index) in RS" :value="item" :key="index">{{item}}</Option>
+                  </Select>
+                </p>
+              </RadioGroup>
             </Card>
           </Col>
 
@@ -467,70 +492,70 @@
       </div>
     </Modal>
 
-    <Modal
-      title="是否立刻支付?"
-      width="700px"
-      v-model="QRmodalxj"
-      :closable="false"
-      :mask-closable="false"
-      okText="确认支付"
-      cancelText="稍后支付"
-      @on-ok="QRokxj"
-      @on-cancel="QRcancelxj"
-    >
-      <div>
-        <Row>
-          <Col>
-            <Table size="small" :columns="columns2" :data="QRmessxjlist"></Table>
-            <!--                        <Card>-->
-            <!--                          <p slot="title" style="font-size: 20px;font-weight: 600">未支付订单</p>-->
-            <!--                          <p v-for="(item,index) in QRmess.jls" :key="index" style="font-size: 18px;font-weight: 500;padding: 10px">{{item.clBh}}号车,时长{{item.sc}}分钟,费用{{item.lcFy}}元</p>-->
-            <!--                        </Card>-->
-          </Col>
-        </Row>
-        <Row>
-          <Col span="12">
-            <Card style="height: 240px">
-              <p slot="title" style="font-size: 20px;font-weight: 600">训练信息</p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">教练员 : {{QRmessxj.jlXm}}</p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">总时长 : {{QRmessxj.sc}}分钟</p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px;color: red">总费用 : {{QRmessxj.lcFy}}元</p>
-            </Card>
-          </Col>
-          <Col span="12">
-            <Card style="height: 240px">
-              <p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>
-              <p style="font-size: 18px;font-weight: 500;padding: 5px">
-                <RadioGroup v-model="QRmessxj.zf" vertical @on-change="getRs">
-                  <Radio label="1">
-                    <Icon type="1"></Icon>
-                    <span>现金支付</span>
-                  </Radio>
-                  <Radio label="2" :disabled="QRmessxj.cardje<=0">
-                    <Icon type="social-android"></Icon>
-                    <span>充卡支付(余额:{{QRmessxj.cardje}}元)</span>
-                  </Radio>
-                  <Radio label="3" :disabled="QRmessxj.kfje<=0">
-                    <Icon type="social-windows"></Icon>
-                    <span>抵扣支付(余额:{{kfje}}元)</span>
-                  </Radio>
-                </RadioGroup>
-              </p>
+    <!--<Modal-->
+    <!--title="是否立刻支付?"-->
+    <!--width="700px"-->
+    <!--v-model="QRmodalxj"-->
+    <!--:closable="false"-->
+    <!--:mask-closable="false"-->
+    <!--okText="确认支付"-->
+    <!--cancelText="稍后支付"-->
+    <!--@on-ok="QRokxj"-->
+    <!--@on-cancel="QRcancelxj"-->
+    <!--&gt;-->
+    <!--<div>-->
+    <!--<Row>-->
+    <!--<Col>-->
+    <!--<Table size="small" :columns="columns2" :data="QRmessxjlist"></Table>-->
+    <!--&lt;!&ndash;                        <Card>&ndash;&gt;-->
+    <!--&lt;!&ndash;                          <p slot="title" style="font-size: 20px;font-weight: 600">未支付订单</p>&ndash;&gt;-->
+    <!--&lt;!&ndash;                          <p v-for="(item,index) in QRmess.jls" :key="index" style="font-size: 18px;font-weight: 500;padding: 10px">{{item.clBh}}号车,时长{{item.sc}}分钟,费用{{item.lcFy}}元</p>&ndash;&gt;-->
+    <!--&lt;!&ndash;                        </Card>&ndash;&gt;-->
+    <!--</Col>-->
+    <!--</Row>-->
+    <!--<Row>-->
+    <!--<Col span="12">-->
+    <!--<Card style="height: 240px">-->
+    <!--<p slot="title" style="font-size: 20px;font-weight: 600">训练信息</p>-->
+    <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">教练员 : {{QRmessxj.jlXm}}</p>-->
+    <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">总时长 : {{QRmessxj.sc}}分钟</p>-->
+    <!--<p style="font-size: 18px;font-weight: 500;padding: 10px;color: red">总费用 : {{QRmessxj.lcFy}}元</p>-->
+    <!--</Card>-->
+    <!--</Col>-->
+    <!--<Col span="12">-->
+    <!--<Card style="height: 240px">-->
+    <!--<p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>-->
+    <!--<p style="font-size: 18px;font-weight: 500;padding: 5px">-->
+    <!--<RadioGroup v-model="QRmessxj.zf" vertical @on-change="getRs">-->
+    <!--<Radio label="1">-->
+    <!--<Icon type="1"></Icon>-->
+    <!--<span>现金支付</span>-->
+    <!--</Radio>-->
+    <!--<Radio label="2" :disabled="QRmessxj.cardje<=0">-->
+    <!--<Icon type="social-android"></Icon>-->
+    <!--<span>充卡支付(余额:{{QRmessxj.cardje}}元)</span>-->
+    <!--</Radio>-->
+    <!--<Radio label="3" :disabled="QRmessxj.kfje<=0">-->
+    <!--<Icon type="social-windows"></Icon>-->
+    <!--<span>抵扣支付(余额:{{kfje}}元)</span>-->
+    <!--</Radio>-->
+    <!--</RadioGroup>-->
+    <!--</p>-->
 
-              <p style="font-size: 18px;font-weight: 500;padding: 10px" v-if="b">
-                <Select v-model="QRmessxj.c" style="width:200px" size="small" @on-change="getysxjA()">
-                  <Option v-for="(item,index) in RS" :value="item" :key="index">{{item}}</Option>
-                </Select>
-              </p>
-            </Card>
-          </Col>
+    <!--<p style="font-size: 18px;font-weight: 500;padding: 10px" v-if="b">-->
+    <!--<Select v-model="QRmessxj.c" style="width:200px" size="small" @on-change="getysxjA()">-->
+    <!--<Option v-for="(item,index) in RS" :value="item" :key="index">{{item}}</Option>-->
+    <!--</Select>-->
+    <!--</p>-->
+    <!--</Card>-->
+    <!--</Col>-->
 
-        </Row>
-        <Row style="text-align: left;padding-left: 10px">
-          <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">应收现金{{this.ysxzA}}元</p>
-        </Row>
-      </div>
-    </Modal>
+    <!--</Row>-->
+    <!--<Row style="text-align: left;padding-left: 10px">-->
+    <!--<p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">应收现金{{this.ysxzA}}元</p>-->
+    <!--</Row>-->
+    <!--</div>-->
+    <!--</Modal>-->
     <component :is="componentName" :printClose="printClose" :hisPrintMess="hisPrintMess"></component>
   </div>
 </template>
@@ -543,6 +568,7 @@
   import carStatistics from '../statistics/carStatistics'
   import keyypd from '../comp/keyypd'
   import print from '../comp/print'
+  import printNew from '../comp/printNew'
   import yydrawer from './yydrawer'
   import yyModel from './yyModel'
   import radioCar from '../comp/RadioCar'
@@ -553,7 +579,7 @@
   export default {
     name: "index",
     components: {
-      carCard, jlwh, addjl,
+      carCard, jlwh, addjl, printNew,
       print, radioCar, carStatistics,
       keyypd, yydrawer, yyModel
     },
@@ -624,7 +650,7 @@
         ],
         tableColumns: [
           {
-            type: 'index2', minWidth: 40, align: 'center', title: '序号',
+            type: 'index2', minWidth: 60, align: 'center', title: '序号',
             fixed: 'left',
             render: (h, params) => {
               return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
@@ -633,7 +659,7 @@
           {
             type: 'selection',
             align: 'center',
-            minWidth: 15,
+            minWidth: 50,
             fixed: 'left',
           },
           {title: '驾校', align: 'center', key: 'jlJx', minWidth: 90},
@@ -767,7 +793,7 @@
               if (p.row.zfzt != '00') {
                 buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
                   this.hisPrintMess = p.row
-                  this.componentName = 'print'
+                  this.componentName = 'printNew'
                 }));
               }
               // if(p.row.zfzt == '00'){
@@ -1053,15 +1079,16 @@
                                   this.QRmess = res.result
                                   // this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
                                   // this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
-                                  if (this.QRmess.fdr.indexOf('1') != -1) {
-                                    this.ls.ls1 = true
-                                  }
-                                  if (this.QRmess.fdr.indexOf('2') != -1) {
-                                    this.ls.ls2 = true
-                                  }
-                                  if (this.QRmess.fdr.indexOf('3') != -1) {
-                                    this.ls.ls3 = true
-                                  }
+                                  // if (this.QRmess.fdr.indexOf('1') != -1) {
+                                  //   this.ls.ls1 = true
+                                  // }
+                                  // if (this.QRmess.fdr.indexOf('2') != -1) {
+                                  //   this.ls.ls2 = true
+                                  // }
+                                  // if (this.QRmess.fdr.indexOf('3') != -1) {
+                                  //   this.ls.ls3 = true
+                                  // }
+                                  this.QRmessxj.zf = this.QRmess.fdr
                                   if (p.row.lcJl.lcLx == '00') {
                                     this.QRmodal = true
                                   } else {
@@ -1289,8 +1316,8 @@
 
         ],
         ysxzA: '',
-        kfje:0,
-        bfinfo:{}
+        kfje: 0,
+        bfinfo: {}
       }
     },
     watch: {
@@ -1347,18 +1374,28 @@
       },
       getRs(we) {
         // this.QRmessxj.zf = we
-        console.log(we, 'e');
-        console.log(this.QRmessxj.zf, 'this.QRmessxj.zf');
+        // console.log(we, 'e');
+        // console.log(this.QRmessxj.zf, 'this.QRmessxj.zf');
+        // if (we == '3') {
+        //
+        //   this.b = true
+        //   var a = this.QRmessxj.kfje / 200
+        //   this.RS = new Array(a).toString().split(',').map(function (item, index) {
+        //     return index + 1;
+        //   });
+        //   this.QRmessxj.c = this.RS.length
+        // } else {
+        //   this.b = false
+        // }
+        // this.getysxjA()
         if (we == '3') {
-
           this.b = true
-          var a = this.QRmessxj.kfje / 200
-          this.RS = new Array(a).toString().split(',').map(function (item, index) {
-            return index + 1;
-          });
-          this.QRmessxj.c = this.RS.length
-        } else {
-          this.b = false
+          var a = this.QRmess.kfje / 200
+          this.RS=[]
+          for(let i=0;i<a;i++){
+            this.RS.push(i+1)
+          }
+          this.QRmessxj.c = this.QRmess.kfje / 200
         }
         this.getysxjA()
       },
@@ -1396,16 +1433,15 @@
         this.$http.post('/api/lcjl/getBatchPay', {ids: this.qrids}).then((res) => {
           if (res.code == 200) {
             this.QRmess = res.result
-            // this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
-            // this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
-            if (this.QRmess.fdr.indexOf('1') != -1) {
-              this.ls.ls1 = true
-            }
-            if (this.QRmess.fdr.indexOf('2') != -1) {
-              this.ls.ls2 = true
-            }
-            if (this.QRmess.fdr.indexOf('3') != -1) {
-              this.ls.ls3 = true
+            this.QRmessxj.zf = this.QRmess.fdr
+            if (this.QRmessxj.zf == '3') {
+              // this.getRs('3')
+              this.QRmessxj.c = this.QRmess.kfje / 200
+              var a = this.QRmess.kfje / 200
+              this.RS=[]
+              for(let i=0;i<a;i++){
+                this.RS.push(i+1)
+              }
             }
             this.QRmodal = true
           } else {
@@ -1490,7 +1526,7 @@
       },
       QRokxj() {
         this.$http.post('/api/lcjl/payCNY', {
-          id: this.QRmessxj.id,
+          id: this.QRmess.id,
           zf: this.QRmessxj.zf,
           c: this.QRmessxj.c
         }).then((res) => {
@@ -1525,7 +1561,7 @@
             cancelButtonText: '取消'
           }).then(p => {
             if (p.value) {
-
+              this.QRmess.id=''
             } else {
               this.QRmodal = true
             }
@@ -1887,18 +1923,8 @@
           }).catch(err => {
           })
         } else {
-
-          if (!!window.ActiveXObject || "ActiveXObject" in window) {
-          } else {
-            this.swal({
-              title: '该套餐已启用刷卡模式，请使用IE10以上的浏览器',
-              type: 'warning',
-              confirmButtonText: '关闭'
-            })
-            return
-          }
           var v = this
-          this.giveCar.readCard((key, mess) => {
+          this.giveCar.readCardChrome((key, mess) => {
 
             console.log(key, mess)
             if (!key) {

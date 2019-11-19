@@ -35,12 +35,13 @@
 <script>
   import upImg from '../../../../components/Upload/UploadImg'
   import readCard from '../../comp/readCard'
+
   export default {
     name: '',
-    components:{
+    components: {
       upImg
     },
-    props:{
+    props: {
       param: {
         type: Object,
         default: {},
@@ -49,12 +50,12 @@
     },
     data() {
       return {
-        params:{
-          cardNo:''
+        params: {
+          cardNo: ''
         },
-        cardNo:'',
-        ZT:[],
-        CX:[],
+        cardNo: '',
+        ZT: [],
+        CX: [],
         KM: [
           {
             value: '2',
@@ -72,10 +73,10 @@
         //新增数据
         showPsd: false,
         ruleInline: {},
-        chCarNum:{
-          id:'',
-          cardNo:'',
-          th:''
+        chCarNum: {
+          // id: '',
+          cardNo: '',
+          // th: ''
         }
       }
     },
@@ -83,15 +84,15 @@
       this.params = JSON.parse(JSON.stringify(this.param))
       this.param.id = this.params.id
       this.chCarNum.id = this.params.id
-      if(this.param.cardNo){
-        this.cardNo = this.param.cardNo.substring(0,2)+'******'
+      if (this.param.cardNo) {
+        this.cardNo = this.param.cardNo.substring(0, 2) + '******'
       }
       this.getCLZT()
     },
     methods: {
-      getCardNum(){
-        readCard.getCardNum((key,res)=>{
-          if(key){
+      getCardNum() {
+        readCard.readCardChrome((key,res)=>{
+          if(res){
             this.chCarNum.cardNo = res
             this.changeNum(res)
           }else {
@@ -102,69 +103,70 @@
           }
         })
       },
-      changeNum(num){
+      changeNum(num) {
         var v = this
-        this.$http.post('/api/lccl/updateCardNo',this.chCarNum).then(res=>{
-          if (res.code == 200){
+        this.$http.post('/api/lccl/updateCardNo', this.chCarNum).then(res => {
+          if (res.code == 200) {
             this.params.cardNo = num
-            this.cardNo = num.substring(0,2)+ '******'
+            this.cardNo = num.substring(0, 2) + '******'
             v.swal({
-              title:res.message,
-              type:'warning',
+              title: res.message,
+              type: 'warning',
               confirmButtonText: '确认',
             })
-          }else if(res.code == 505){
+          } else if (res.code == 505) {
             this.swal({
-              title:res.message,
-              type:'warning',
+              title: res.message,
+              type: 'warning',
               showCancelButton: true,
               confirmButtonText: '替换',
               cancelButtonText: '取消',
-            }).then((p)=>{
-              if(p.value){
+            }).then((p) => {
+              if (p.value) {
                 v.chCarNum.th = '****'
                 v.changeNum(num)
               }
             })
-          }else {
+          } else {
             this.swal({
-              title:res.message,
-              type:'error'
+              title: res.message,
+              type: 'error'
             })
           }
-        }).catch((err)=>{})
+        }).catch((err) => {
+        })
       },
-      txImg(A, url){
+      txImg(A, url) {
         this.param[A] = url
       },
-      getCLZT(){
-        this.ZT = this.dictUtil.getByCode(this,'ZDCLK1044');
-        for (var i=0; i<this.ZT.length; i++) {
-            let val = this.ZT[i]
-            if(val.key === '01'){
-              this.ZT.splice(i,1)
-              break
+      getCLZT() {
+        this.ZT = this.dictUtil.getByCode(this, 'ZDCLK1044');
+        for (var i = 0; i < this.ZT.length; i++) {
+          let val = this.ZT[i]
+          if (val.key === '01') {
+            this.ZT.splice(i, 1)
+            break
           }
         }
-        this.CX = this.dictUtil.getByCode(this,'ZDCLK0040');
+        this.CX = this.dictUtil.getByCode(this, 'ZDCLK0040');
       },
-      close(){
+      close() {
         this.$parent.compName = '';
         this.$parent.getPagerList()
       },
-      GXCar(){
+      GXCar() {
         delete this.params.lcJl;
         delete this.params.zdxm;
-        this.$http.post(this.apis.CLWH.CLGX,this.params).then(res=>{
-          if (res.code == 200){
+        this.$http.post(this.apis.CLWH.CLGX, this.params).then(res => {
+          if (res.code == 200) {
             this.$Message.info(res.message);
             // this.showModal = false;
             this.$parent.compName = '';
             this.$parent.getPagerList();
-          }else {
+          } else {
             this.swal({
-              title:res.message,
-              type:'warning',
+              title: res.message,
+              type: 'warning',
               showCancelButton: false,
               confirmButtonText: '确定',
             })

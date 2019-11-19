@@ -2,6 +2,27 @@ import $http from '@/axios/index'
 import swal from 'sweetalert2';
 
 var obj = {}
+
+obj.readCardChrome = (callback) => {
+  $.ajax({
+    type: "get",
+    url: "http://127.0.0.1:39999/readCard",
+    dataType: "json",
+    beforeSend: function () { },
+    success: function (data) {
+      alert("读取卡号结果："+data);
+      callback && callback(true, data)
+    },
+    error:function(data){
+      // alert("服务未启动，请先启动监听服务");
+      // callback && callback(false)
+      callback && callback(true, data.responseText)
+    }
+  });
+
+}
+
+
 obj.readCard = (callback) => {
   var LotusCardDriver = document.getElementById('LotusCardDriver')
   var nHandle = 0; //设备句柄

@@ -358,13 +358,14 @@
   //还车
   import giveCar from '../comp/readCard'
   import {mapMutations} from 'vuex'
+  import printNew from '../comp/printNew'
 
   export default {
     name: "index",
     components: {
       carCard, jlwh, addjl,
       print, radioCar, carStatistics,
-      keyypd, yydrawer, yyModel
+      keyypd, yydrawer, yyModel,printNew
     },
     data() {
       return {
@@ -528,7 +529,7 @@
               let buttons = [];
               buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
                 this.hisPrintMess = p.row
-                this.componentName = 'print'
+                this.componentName = 'printNew'
               }));
               // if(p.row.zfzt == '00'){
               //     buttons.push(this.util.buildButton(this, h, 'error', 'logo-yen', '结算', () => {
