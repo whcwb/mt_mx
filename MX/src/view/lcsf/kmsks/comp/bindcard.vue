@@ -90,8 +90,20 @@
     },
     methods: {
       getCardNum(){
-        readCard.getCardNum((key,res)=>{
-          if(key){
+        // readCard.getCardNum((key,res)=>{
+        //   if(key){
+        //     this.chCarNum.cardNo = res
+        //     this.changeNum(res)
+        //   }else {
+        //     this.swal({
+        //       title:'请重新放置卡片',
+        //       type:'error'
+        //     })
+        //   }
+        // })
+
+        readCard.readCardChrome((key,res)=>{
+          if(res){
             this.chCarNum.cardNo = res
             this.changeNum(res)
           }else {

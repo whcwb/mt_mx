@@ -7,6 +7,7 @@ import store from './store'
 import iView from 'iview'
 import i18n from '@/locale'
 import config from '@/config'
+// import $ from 'jquery'
 import importDirective from '@/directive'
 import 'iview/dist/styles/iview.css'
 import './index.less'
@@ -89,7 +90,6 @@ import tableArea from './view/components/tableArea'
 Vue.component('tableArea',tableArea)
 import formItems from './view/components/formItems'
 Vue.component('formItems',formItems)
-
 
 Date.prototype.format = function (format) {
     var o = {

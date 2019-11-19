@@ -535,6 +535,7 @@
     import carStatistics from '../statistics/carStatistics'
     import keyypd from '../comp/keyypd'
     import print from '../comp/print'
+    import printNew from '../comp/printNew'
     import yydrawer from './yydrawer'
     import yyModel from './yyModel'
     import radioCar from '../comp/RadioCar'
@@ -546,7 +547,7 @@
         name: "index",
         components: {
             carCard, jlwh, addjl,
-            print, radioCar, carStatistics,
+            print, radioCar, carStatistics,printNew,
             keyypd, yydrawer, yyModel
         },
         data() {
@@ -741,7 +742,7 @@
                            if (p.row.zfzt!='00'){
                                buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
                                    this.hisPrintMess = p.row
-                                   this.componentName = 'print'
+                                   this.componentName = 'printNew'
                                }));
                            }
                             // if(p.row.zfzt == '00'){

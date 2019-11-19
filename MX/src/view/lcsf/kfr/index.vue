@@ -318,12 +318,13 @@
   import {mapMutations} from 'vuex'
   import moment from 'moment'
   import Cookies from 'js-cookie'
+  import printNew from './comp/printNew'
 
   export default {
     name: "index",
     components: {
       carCard, jlwh, addjl,
-      print, radioCar, carStatistics,
+      print, radioCar, carStatistics,printNew,
       keyypd,
     },
     data() {
@@ -447,7 +448,7 @@
               else {
                 buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '打印票据', () => {
                   this.hisPrintMess = p.row
-                  this.componentName = 'print'
+                  this.componentName = 'printNew'
                 }));
                 // if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')){
                 //     buttons.push(this.util.buildButton(this, h, 'error', 'md-card', '结束训练', () => {
