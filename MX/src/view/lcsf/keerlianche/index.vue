@@ -466,17 +466,17 @@
                   </Radio>
                 </p>
                 <p style="font-size: 18px;font-weight: 500;padding: 10px">
-                  <Radio label="2">
+                  <Radio label="2" :disabled="QRmess.cardje<=0">
                     <Icon type="social-android"></Icon>
                     <span style="font-size: 18px;">充卡支付(余额:{{QRmess.cardje}}元)</span>
                   </Radio>
                 </p>
                 <p style="font-size: 18px;font-weight: 500;padding: 10px;display: flex;align-items: center">
-                  <Radio label="3">
+                  <Radio label="3" :disabled="QRmess.kfje<=0">
                     <Icon type="social-windows"></Icon>
                     <span style="font-size: 18px;">抵扣支付(余额:{{QRmess.kfje}}元)</span>
                   </Radio>
-                  <Select v-model="QRmessxj.c" style="width:80px;display: inline-block" size="small"
+                  <Select v-if="QRmessxj.zf==='3'" v-model="QRmessxj.c" style="width:80px;display: inline-block" size="small"
                           @on-change="getysxjA()">
                     <Option v-for="(item,index) in RS" :value="item" :key="index">{{item}}</Option>
                   </Select>
@@ -1104,21 +1104,12 @@
                                 }
                               })
                             } else {
-                              if (!!window.ActiveXObject || "ActiveXObject" in window) {
-                              } else {
-                                this.swal({
-                                  title: '请使用IE10以上的浏览器',
-                                  type: 'warning',
-                                  confirmButtonText: '关闭'
-                                })
-                                return
-                              }
                               var v = this
-                              this.giveCar.readCard((key, mess) => {
+                              this.giveCar.readCardChrome((key, mess) => {
                                 console.log(key, mess)
-                                if (!key) {
+                                if (mess==='None') {
                                   v.swal({
-                                    title: mess,
+                                    title: '未放置卡片！',
                                     type: 'error',
                                     confirmButtonText: '确定',
                                   })
@@ -1143,19 +1134,17 @@
                                       this.QRmess = res.result
                                       this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
                                       this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
-                                      if (this.QRmess.fdr.indexOf('1') != -1) {
-                                        this.ls.ls1 = true
-                                      }
-                                      if (this.QRmess.fdr.indexOf('2') != -1) {
-                                        this.ls.ls2 = true
-                                      }
-                                      if (this.QRmess.fdr.indexOf('3') != -1) {
-                                        this.ls.ls3 = true
-                                      }
+                                      this.QRmessxj.zf = this.QRmess.fdr
                                       if (p.row.lcJl.lcLx == '00') {
                                         this.QRmodal = true
                                       } else {
 
+                                      }
+
+                                      var a = this.QRmess.kfje / 200
+                                      this.RS=[]
+                                      for(let i=0;i<a;i++){
+                                        this.RS.push(i+1)
                                       }
                                       // this.print(res.result)
                                       this.getCarList()
@@ -1389,7 +1378,6 @@
         // }
         // this.getysxjA()
         if (we == '3') {
-          this.b = true
           var a = this.QRmess.kfje / 200
           this.RS=[]
           for(let i=0;i<a;i++){
@@ -1926,22 +1914,18 @@
           var v = this
           this.giveCar.readCardChrome((key, mess) => {
 
-            console.log(key, mess)
-            if (!key) {
-              // if (this.DrawerVal) {
-              //   let v = this
-              //   setTimeout(() => {
-              //     if (v.DrawerVal) {
-              //       v.save()
-              //     }
-              //   }, 200)
-              // }
+            console.log(mess)
+            if (mess==='None') {
+              this.swal({
+                title:'请重新放置卡片',
+                type:'error'
+              })
               if (v.showFQfzkp) {
                 return;
               }
               v.showFQfzkp = true;
               v.swal({
-                title: mess,
+                title: '是否继续发车？',
                 type: 'error',
                 confirmButtonText: '发车',
                 cancelButtonText: '取消',
