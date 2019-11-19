@@ -725,12 +725,12 @@
                       ghost: true,
                     },
                     style: {},
-                    on: {
+                    /*on: {
                       click: () => {
                         console.log("现金支付");
                         this.xjzf(p.row)
                       }
-                    }
+                    }*/
                   }, '未支付')
                 ])
 
