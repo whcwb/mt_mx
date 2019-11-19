@@ -131,7 +131,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 BizLcWxjl coach = coachMap.get(bizLcJl.getJlId());
                 if (coach != null) {
                     bizLcJl.setJlDh(coach.getJlLxdh());
-                    if(bizLcJl.getZfzt().equals("00")){
+                    if(StringUtils.equals(bizLcJl.getZfzt(),"00")){
                         bizLcJl.setKfje(coach.getYe());
                         bizLcJl.setCardje(coach.getCardJe());
                     }
@@ -318,6 +318,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     lcFd.setLcFy(entity.getLcFy());
                     lcFd.setLcKm(entity.getLcKm());
                     lcFd.setSc(0);
+                    lcFd.setBz( "(" + entity.getXySl() + " * " + zdxm.getBy3() + ")");
                     fdService.save(lcFd);
                     entity.setPz(lcFd.getId());
                 }
@@ -344,6 +345,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     lcFd.setLcFy(entity.getLcFy());
                     lcFd.setLcKm(entity.getLcKm());
                     lcFd.setSc(0);
+                    lcFd.setBz("(" + entity.getXySl() + " * " + fdje + ")");
                     fdService.save(lcFd);
                     entity.setPz(lcFd.getId());
                 }
@@ -1171,6 +1173,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fd.setJlXm(wxjl.getJlXm());
                     fd.setJlId(wxjl.getId());
                     fd.setLcId(lcJl.getId());
+                    fd.setBz("(" + (ye/200) + " * 200 - " + lcJl.getLcFy() + ") * "+ zdxm.getBy4());
                     fdService.save(fd);
                 } else {
                     // 此时已经支付完成
@@ -1381,6 +1384,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         if (StringUtils.equals(jls.get(0).getLcKm(), "3")) {
             ye = 0;
         }
+        BizLcFd fd = new BizLcFd();
         if (ye > 0) {
             // 有开放日抵扣余额 查询开放日返点率
             SimpleCondition zdcondition = new SimpleCondition(SysZdxm.class);
@@ -1393,7 +1397,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 // 扣除开发日余额后 剩下的是现金金额
                 kfje = ye;
                 xjje = Math.abs(sfje);
-
             } else {
                 kfje = sum;
             }
@@ -1411,7 +1414,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             }
         }
 
-        BizLcFd fd = new BizLcFd();
+
         fd.setFdlx(jls.get(0).getLcLx());
         if (kfje > 0) {
             // 采用的是 余额加现金的情况
@@ -1536,6 +1539,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         fd.setLcKm(jls.get(0).getLcKm());
         fd.setSc(jls.stream().mapToInt(BizLcJl::getSc).sum());
         if (fd.getFdje() > 0) {
+            if(kfje > 0){
+                fd.setBz("(" + (ye/200) + " * 200 - "  + lcJl.getLcFy() + ") * " + rate);
+            }else if(card > 0 ) {
+                fd.setBz("(" + cardJe + " - " + lcJl.getLcFy() + ") * " + rate);
+            }else{
+                fd.setBz( "(" + xjje + " * " + rate + ")");
+            }
             fdService.save(fd);
         }
         return ApiResponse.success(fd.getId());
@@ -1632,7 +1642,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 fd.setFdje(fdje);
                 fd.setFdlx(lcJl.getLcLx());
                 fd.setFdsl(1);
-                fd.setId(genId());
+                fd.setId(lcJl.getId());
                 fd.setJlId(lcJl.getJlId());
                 fd.setJlXm(lcJl.getJlXm());
                 fd.setLcFy(fy);
@@ -1640,6 +1650,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 fd.setLcKm(lcJl.getLcKm());
                 fd.setSc(lcJl.getSc());
                 fd.setXySl(lcJl.getXySl());
+                fd.setBz("(" + fy + " * " + fdl + ")");
                 fdService.save(fd);
             }
             lcJl.setBz("应收现金" + lcJl.getXjje() +"元");
@@ -1684,7 +1695,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fd.setFdje(v);
                     fd.setFdlx(lcJl.getLcLx());
                     fd.setFdsl(1);
-                    fd.setId(genId());
+                    fd.setId(lcJl.getId());
                     fd.setJlId(lcJl.getJlId());
                     fd.setJlXm(lcJl.getJlXm());
                     fd.setLcFy(abs);
@@ -1692,6 +1703,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fd.setLcKm(lcJl.getLcKm());
                     fd.setSc(lcJl.getSc());
                     fd.setXySl(lcJl.getXySl());
+                    fd.setBz("(" + cardJe + " - " + lcJl.getLcFy() + ") * " + aFloat);
                     fdService.save(fd);
                 }
             }else{
@@ -1770,7 +1782,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fd.setFdje(v);
                     fd.setFdlx(lcJl.getLcLx());
                     fd.setFdsl(1);
-                    fd.setId(genId());
+                    fd.setId(lcJl.getId());
                     fd.setJlId(lcJl.getJlId());
                     fd.setJlXm(lcJl.getJlXm());
                     fd.setLcFy(abs);
@@ -1778,6 +1790,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fd.setLcKm(lcJl.getLcKm());
                     fd.setSc(lcJl.getSc());
                     fd.setXySl(lcJl.getXySl());
+                    fd.setBz("(" + xySl + " * " +  dkdj + " - " + lcJl.getLcFy() + ") * " + aFloat);
                     fdService.save(fd);
                 }
             }
