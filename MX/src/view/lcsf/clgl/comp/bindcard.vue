@@ -92,7 +92,7 @@
     methods: {
       getCardNum() {
         readCard.readCardChrome((key,res)=>{
-          if(res){
+          if(res!=='None'){
             this.chCarNum.cardNo = res
             this.changeNum(res)
           }else {
