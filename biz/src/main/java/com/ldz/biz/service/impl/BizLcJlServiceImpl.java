@@ -131,7 +131,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 BizLcWxjl coach = coachMap.get(bizLcJl.getJlId());
                 if (coach != null) {
                     bizLcJl.setJlDh(coach.getJlLxdh());
-                    if(StringUtils.equals(bizLcJl.getZfzt(),"00")){
+                    if (StringUtils.equals(bizLcJl.getZfzt(), "00")) {
                         bizLcJl.setKfje(coach.getYe());
                         bizLcJl.setCardje(coach.getCardJe());
                     }
@@ -145,10 +145,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
         String s = JSON.toJSONString(entity);
         String lc = redis.boundValueOps("lcjl").get();
-        if(StringUtils.isNotBlank(lc)){
-            RuntimeCheck.ifTrue(StringUtils.equals(lc,s), "操作频繁,请稍后再试");
+        if (StringUtils.isNotBlank(lc)) {
+            RuntimeCheck.ifTrue(StringUtils.equals(lc, s), "操作频繁,请稍后再试");
         }
-        redis.boundValueOps("lcjl").set(s, 2 , TimeUnit.SECONDS);
+        redis.boundValueOps("lcjl").set(s, 2, TimeUnit.SECONDS);
         SysYh currentUser = getCurrentUser();
         //  判断所有必填字段
         RuntimeCheck.ifBlank(entity.getJlId(), "请选择教练");
@@ -318,7 +318,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     lcFd.setLcFy(entity.getLcFy());
                     lcFd.setLcKm(entity.getLcKm());
                     lcFd.setSc(0);
-                    lcFd.setBz( "(" + entity.getXySl() + " * " + zdxm.getBy3() + ")");
+                    lcFd.setBz("(" + entity.getXySl() + " * " + zdxm.getBy3() + ")");
                     fdService.save(lcFd);
                     entity.setPz(lcFd.getId());
                 }
@@ -474,15 +474,15 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 }
             }
             if (kfje > 0) {
-                fdr = fdr + "1" + ",";
+               fdr = "3";
 //                str += " 抵扣余额: " +  wxjl.getYe();
             }
             if (card > 0) {
 //                str += " 卡上余额: " +  wxjl.getCardJe();
-                fdr = fdr + "2" + ",";
+                fdr = "2";
             }
-            if (xjje > 0) {
-                fdr = fdr + "3";
+            if (StringUtils.isBlank(fdr)) {
+                fdr = "1";
             }
             str += " 应收现金" + xjje + "元";
         } else {
@@ -1173,7 +1173,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fd.setJlXm(wxjl.getJlXm());
                     fd.setJlId(wxjl.getId());
                     fd.setLcId(lcJl.getId());
-                    fd.setBz("(" + (ye/200) + " * 200 - " + lcJl.getLcFy() + ") * "+ zdxm.getBy4());
+                    fd.setBz("(" + (ye / 200) + " * 200 - " + lcJl.getLcFy() + ") * " + zdxm.getBy4());
                     fdService.save(fd);
                 } else {
                     // 此时已经支付完成
@@ -1313,18 +1313,17 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String fdr = "";
         if (kfje > 0) {
 //            str += " 开放日余额: " + wxjl.getYe();
-            fdr += "1,";
+            fdr = "3";
         }
         if (card > 0) {
 //            str += " 卡上余额: " + wxjl.getCardJe();
-            fdr += "2,";
+            fdr = "2";
         }
-        if (xjje > 0) {
-
-            fdr += "3";
+        if (StringUtils.isBlank(fdr)) {
+            fdr = "1";
         }
         str += "应收现金" + xjje + "元";
-        if (fdr.indexOf("2") != -1) {
+        if (fdr.contains("2")) {
             // 计算余额
             str += ",卡上余额" + (wxjl.getCardJe() - card) + "元";
         }
@@ -1354,8 +1353,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     }
 
     @Override
-    public ApiResponse<String>
-    saveBatch(String ids) {
+    public ApiResponse<String> saveBatch(String ids) {
         SysYh yh = getCurrentUser();
         RuntimeCheck.ifBlank(ids, "请选择要支付的订单");
         double rate = 0;
@@ -1539,12 +1537,12 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         fd.setLcKm(jls.get(0).getLcKm());
         fd.setSc(jls.stream().mapToInt(BizLcJl::getSc).sum());
         if (fd.getFdje() > 0) {
-            if(kfje > 0){
-                fd.setBz("(" + (ye/200) + " * 200 - "  + lcJl.getLcFy() + ") * " + rate);
-            }else if(card > 0 ) {
+            if (kfje > 0) {
+                fd.setBz("(" + (ye / 200) + " * 200 - " + lcJl.getLcFy() + ") * " + rate);
+            } else if (card > 0) {
                 fd.setBz("(" + cardJe + " - " + lcJl.getLcFy() + ") * " + rate);
-            }else{
-                fd.setBz( "(" + xjje + " * " + rate + ")");
+            } else {
+                fd.setBz("(" + xjje + " * " + rate + ")");
             }
             fdService.save(fd);
         }
@@ -1590,7 +1588,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             fdr += "3";
 
         }
-        str += "应付现金" + jl.getXjje() +"元";
+        str += "应付现金" + jl.getXjje() + "元";
         if (fdr.contains("2")) {
             // 计算余额
             str += ",卡上余额" + wxjl.getCardJe() + "元";
@@ -1607,130 +1605,148 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
         RuntimeCheck.ifBlank(id, "请选择要支付的订单");
         RuntimeCheck.ifBlank(zf, "请选择支付方式");
-        BizLcJl lcJl = findById(id);
-        RuntimeCheck.ifTrue(!StringUtils.equals(lcJl.getZfzt(),"00"), "订单已支付,请勿重复操作");
-        RuntimeCheck.ifFalse(StringUtils.equals(lcJl.getLcLx(), "00"), "此订单不支持此操作");
+        SimpleCondition jlCondition = new SimpleCondition(BizLcJl.class);
+        jlCondition.in(BizLcJl.InnerColumn.id, Arrays.asList(id.split(",")));
+        jlCondition.eq(BizLcJl.InnerColumn.zfzt, "00");
+        List<BizLcJl> jls = findByCondition(jlCondition);
+        Set<String> set = jls.stream().map(BizLcJl::getLcLx).collect(Collectors.toSet());
+        RuntimeCheck.ifEmpty(jls, "请选择要支付的订单");
+        set.forEach(s -> {
+            RuntimeCheck.ifFalse(StringUtils.equals(s, "00"), "所选订单不支持此操作");
+        });
 
+        Set<String> zddms = jls.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
+        String pz = genId();
+        BizLcWxjl wxjl = wxjlService.findById(jls.get(0).getJlId());
         // 查询套餐数据
         SimpleCondition condition = new SimpleCondition(SysZdxm.class);
         condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-        condition.eq(SysZdxm.InnerColumn.zddm, lcJl.getZddm());
+        condition.in(SysZdxm.InnerColumn.zddm, zddms);
         List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
+        int sum = jls.stream().mapToInt(BizLcJl::getLcFy).sum();
         SysZdxm zdxm = zdxms.get(0);
         SysYh user = getCurrentUser();
-        // 根据支付方式来判断扣款顺序
-        if(StringUtils.equals(zf, "1")){
-            // 现金支付
-            // 总费用
-            Integer fy = lcJl.getLcFy();
-            lcJl.setZfzt("10");
-            lcJl.setCardje(0);
-            lcJl.setYfJe(fy);
-            lcJl.setXjje(fy);
-            lcJl.setPz(lcJl.getId());
-            update(lcJl);
-
-
+        BizLcJl lcJl = new BizLcJl();
+        lcJl.setId(pz);
+        lcJl.setKfje(wxjl.getYe());
+        lcJl.setCardje(wxjl.getCardJe());
+        lcJl.setZdxm(zdxm);
+        lcJl.setLcFy(sum);
+        lcJl.setSc(jls.stream().mapToInt(BizLcJl::getSc).sum());
+        lcJl.setClBh(jls.stream().map(BizLcJl::getClBh).collect(Collectors.joining(",")));
+        lcJl.setJlCx(jls.stream().map(BizLcJl::getJlCx).collect(Collectors.joining(",")));
+        lcJl.setJlJx(wxjl.getJlJx());
+        lcJl.setJlXm(wxjl.getJlXm());
+        if (StringUtils.equals(zf, "1")) {
+            for (BizLcJl jl : jls) {
+                // 总费用
+                Integer fy = jl.getLcFy();
+                jl.setZfzt("10");
+                jl.setCardje(0);
+                jl.setYfJe(fy);
+                jl.setXjje(fy);
+                jl.setPz(pz);
+                update(jl);
+            }
             // 拿到返点率
             float fdl = Float.parseFloat(zdxm.getBy4());
-            int fdje = (int) Math.ceil(fy * fdl);
-            if(fdje  > 0 ){
+            int fdje = (int) Math.ceil(sum * fdl);
+            if (fdje > 0) {
                 BizLcFd fd = new BizLcFd();
-                fd.setJlJx(lcJl.getJlJx());
+                fd.setJlJx(jls.get(0).getJlJx());
                 fd.setCjr(user.getZh() + "-" + user.getXm());
                 fd.setCjsj(DateUtils.getNowTime());
                 fd.setFdje(fdje);
-                fd.setFdlx(lcJl.getLcLx());
+                fd.setFdlx(jls.get(0).getLcLx());
                 fd.setFdsl(1);
-                fd.setId(lcJl.getId());
-                fd.setJlId(lcJl.getJlId());
-                fd.setJlXm(lcJl.getJlXm());
-                fd.setLcFy(fy);
-                fd.setLcId(lcJl.getId());
-                fd.setLcKm(lcJl.getLcKm());
-                fd.setSc(lcJl.getSc());
-                fd.setXySl(lcJl.getXySl());
-                fd.setBz("(" + fy + " * " + fdl + ")");
+                fd.setId(pz);
+                fd.setJlId(jls.get(0).getJlId());
+                fd.setJlXm(jls.get(0).getJlXm());
+                fd.setLcFy(sum);
+                fd.setLcId(jls.stream().map(BizLcJl::getId).collect(Collectors.joining(",")));
+                fd.setLcKm(jls.get(0).getLcKm());
+                fd.setSc(jls.stream().mapToInt(BizLcJl::getSc).sum());
+                fd.setBz("(" + sum + " * " + fdl + ")");
                 fdService.save(fd);
             }
-            lcJl.setBz("应收现金" + lcJl.getXjje() +"元");
-        }else if(StringUtils.equals(zf, "2")){
+            lcJl.setBz("应收现金" + sum + "元");
+        } else if (StringUtils.equals(zf, "2")) {
             // 卡上余额支付
             // 1. 先计算卡上余额是否充足 , 如果充足 则 直接扣款 , 不返点
-            BizLcWxjl wxjl = wxjlService.findById(lcJl.getJlId());
-            int cardJe = wxjl.getCardJe();
 
-            int sfje = cardJe - lcJl.getLcFy();
+            // 卡上余额
+            int cardJe = wxjl.getCardJe();
+            int sfje = cardJe - sum;
+
             // 判断剩余余额是否小于0 , 如果小于0 就说明还需要支付现金
-            if(sfje < 0 ){
+
+            int czqye = cardJe;
+            for (BizLcJl jl : jls) {
+                if (cardJe != 0) {
+                    cardJe = cardJe - jl.getLcFy();
+                    if (cardJe > 0) {
+                        // 余额充足
+                        jl.setKfje(0);
+                        jl.setXjje(0);
+                        jl.setCardje(jl.getLcFy());
+                    } else {
+                        jl.setXjje(Math.abs(cardJe));
+                        jl.setKfje(jl.getLcFy() + cardJe);
+                        cardJe = 0;
+                        jl.setCardje(0);
+                    }
+                } else {
+                    jl.setXjje(jl.getLcFy());
+                    jl.setCardje(0);
+                    jl.setKfje(0);
+                }
+                jl.setZfzt("10");
+                jl.setPz(pz);
+                update(jl);
+            }
+            if (cardJe < 0) {
+                cardJe = 0;
+            }
+            BizJlCz bizJlCz = new BizJlCz();
+            bizJlCz.setJlId(wxjl.getId());
+            bizJlCz.setSfje(sfje < 0 ? cardJe : sum);
+            bizJlCz.setId(genId());
+            bizJlCz.setCzqje(czqye);
+            wxjl.setCardJe(Math.max(sfje, 0));
+            bizJlCz.setCzhje(Math.max(sfje, 0));
+            bizJlCz.setCjsj(DateUtils.getNowTime());
+            bizJlCz.setJe(sfje < 0 ? cardJe : sum);
+            bizJlCz.setType("20");
+            czMapper.insert(bizJlCz);
+            wxjlService.update(wxjl);
+            // 需要支付现金 , 此时需要返点
+            if (sfje < 0) {
                 int abs = Math.abs(sfje);
-                wxjl.setCardJe(0);
-                BizJlCz cz = new BizJlCz();
-                cz.setId(genId());
-                cz.setCjsj(DateUtils.getNowTime());
-                cz.setCzhje(0);
-                cz.setCzqje(cardJe);
-                cz.setJe(cardJe);
-                cz.setJlId(wxjl.getId());
-                cz.setJx(wxjl.getJlJx());
-                cz.setSfje(cardJe);
-                cz.setType("20");
-                cz.setXm(wxjl.getJlXm());
-                czMapper.insert(cz);
-                wxjlService.update(wxjl);
-                // 需要支付现金 , 此时需要返点
-                lcJl.setXjje(abs);
-                lcJl.setKfje(0);
-                lcJl.setCardje(cardJe);
-                lcJl.setZfzt("10");
-                lcJl.setPz(lcJl.getId());
-                update(lcJl);
                 float aFloat = Float.parseFloat(zdxm.getBy4());
                 int v = (int) Math.ceil(abs * aFloat);
-                if(v > 0 ){
+                if (v > 0) {
                     BizLcFd fd = new BizLcFd();
-                    fd.setJlJx(lcJl.getJlJx());
+                    fd.setJlJx(jls.get(0).getJlJx());
                     fd.setCjr(user.getZh() + "-" + user.getXm());
                     fd.setCjsj(DateUtils.getNowTime());
                     fd.setFdje(v);
-                    fd.setFdlx(lcJl.getLcLx());
+                    fd.setFdlx(jls.get(0).getLcLx());
                     fd.setFdsl(1);
-                    fd.setId(lcJl.getId());
-                    fd.setJlId(lcJl.getJlId());
-                    fd.setJlXm(lcJl.getJlXm());
+                    fd.setId(jls.get(0).getId());
+                    fd.setJlId(jls.get(0).getJlId());
+                    fd.setJlXm(jls.get(0).getJlXm());
                     fd.setLcFy(abs);
-                    fd.setLcId(lcJl.getId());
-                    fd.setLcKm(lcJl.getLcKm());
-                    fd.setSc(lcJl.getSc());
-                    fd.setXySl(lcJl.getXySl());
-                    fd.setBz("(" + cardJe + " - " + lcJl.getLcFy() + ") * " + aFloat);
+                    fd.setLcId(jls.stream().map(BizLcJl::getId).collect(Collectors.joining(",")));
+                    fd.setLcKm(jls.get(0).getLcKm());
+                    fd.setSc(jls.stream().mapToInt(BizLcJl::getSc).sum());
+                    fd.setBz("(" + cardJe + " - " + sum + ") * " + aFloat);
                     fdService.save(fd);
                 }
+                lcJl.setBz("应收现金" + abs + "元,卡上余额" + wxjl.getCardJe() + "元");
             }else{
-                wxjl.setCardJe(sfje);
-                lcJl.setXjje(0);
-                lcJl.setKfje(0);
-                lcJl.setCardje(lcJl.getLcFy());
-                lcJl.setZfzt("10");
-                lcJl.setPz(lcJl.getId());
-                update(lcJl);
-                BizJlCz cz = new BizJlCz();
-                cz.setId(genId());
-                cz.setCjsj(DateUtils.getNowTime());
-                cz.setCzhje(sfje);
-                cz.setCzqje(cardJe);
-                cz.setJe(lcJl.getLcFy());
-                cz.setJlId(wxjl.getId());
-                cz.setJx(wxjl.getJlJx());
-                cz.setSfje(cardJe);
-                cz.setType("20");
-                cz.setXm(wxjl.getJlXm());
-                czMapper.insert(cz);
-                wxjlService.update(wxjl);
-
+                lcJl.setBz("应收现金" + 0 + "元,卡上余额" + wxjl.getCardJe() + "元");
             }
-            lcJl.setBz("应收现金" + lcJl.getXjje() + "元,卡上余额" + wxjl.getCardJe()+"元" );
-        }else if(StringUtils.equals(zf,"3")){
+        } else if (StringUtils.equals(zf, "3")) {
             String c = getRequestParamterAsString("c");
             RuntimeCheck.ifBlank(c, "请填写学员人数");
             // 抵扣支付 不够的按现金结算
@@ -1738,63 +1754,83 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             simpleCondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
             simpleCondition.eq(SysZdxm.InnerColumn.zddm, "K2KF");
             List<SysZdxm> sysZdxms = zdxmService.findByCondition(simpleCondition);
-            BizLcWxjl wxjl = wxjlService.findById(lcJl.getJlId());
             String by4 = sysZdxms.get(0).getBy4();
             int xySl = Integer.parseInt(c);
             // 计算单个学员的保底费用
             int dkdj = Integer.parseInt(sysZdxms.get(0).getZdmc()) - Integer.parseInt(sysZdxms.get(0).getBy3());
             int i = wxjl.getYe() / dkdj;
-            RuntimeCheck.ifTrue( i < xySl , "抵扣人数不能大于开放日学员人数");
+            RuntimeCheck.ifTrue(i < xySl, "抵扣人数不能大于开放日学员人数");
             // 总抵扣额度
             int kfje = xySl * dkdj;
             // 教练总开放余额 减去开放日金额
 
-            int syje = kfje - lcJl.getLcFy();
-            if(syje > 0 ){
+            int syje = kfje - sum;
+            int abs = 0;
+            if (syje > 0) {
                 // 还有金额 , 直接抵扣完 , 不产生费用
                 wxjl.setYe(wxjl.getYe() - kfje);
                 wxjlService.update(wxjl);
-                lcJl.setZfzt("10");
-                lcJl.setXjje(0);
-                lcJl.setKfje(kfje);
-                lcJl.setCardje(0);
-                lcJl.setPz(lcJl.getId());
-                update(lcJl);
-            }else{
+                for (BizLcJl jl : jls) {
+                    jl.setZfzt("10");
+                    jl.setXjje(0);
+                    jl.setKfje(jl.getLcFy());
+                    jl.setXjje(0);
+                    jl.setPz(pz);
+                    update(jl);
+                }
+            } else {
                 // 不够部分按现金计算
                 wxjl.setYe(wxjl.getYe() - kfje);
                 wxjlService.update(wxjl);
-                int abs = Math.abs(syje);
-                lcJl.setZfzt("10");
-                lcJl.setXjje(abs);
-                lcJl.setKfje(kfje);
-                lcJl.setCardje(0);
-                lcJl.setPz(lcJl.getId());
-                update(lcJl);
+                abs = Math.abs(syje);
+                for (BizLcJl jl : jls) {
+                    if (kfje != 0) {
+                        kfje = kfje - jl.getLcFy();
+                        if (kfje > 0) {
+                            // 余额充足
+                            jl.setKfje(jl.getLcFy());
+                            jl.setXjje(0);
+                        } else {
+
+                            jl.setXjje(Math.abs(kfje));
+                            jl.setKfje(jl.getLcFy() + kfje);
+                            kfje = 0;
+                        }
+                        jl.setCardje(0);
+                    } else {
+                        jl.setXjje(jl.getLcFy());
+                        jl.setCardje(0);
+                        jl.setKfje(0);
+                    }
+                    jl.setYfJe(jl.getXjje());
+                    jl.setZfzt("10");
+                    jl.setPz(pz);
+                    update(jl);
+                }
+
                 // 生成返点金额
                 float aFloat = Float.parseFloat(by4);
                 int v = (int) Math.ceil(abs * aFloat);
-                if(v > 0 ){
+                if (v > 0) {
                     BizLcFd fd = new BizLcFd();
-                    fd.setJlJx(lcJl.getJlJx());
+                    fd.setJlJx(jls.get(0).getJlJx());
                     fd.setCjr(user.getZh() + "-" + user.getXm());
                     fd.setCjsj(DateUtils.getNowTime());
                     fd.setFdje(v);
-                    fd.setFdlx(lcJl.getLcLx());
+                    fd.setFdlx(jls.get(0).getLcLx());
                     fd.setFdsl(1);
-                    fd.setId(lcJl.getId());
-                    fd.setJlId(lcJl.getJlId());
-                    fd.setJlXm(lcJl.getJlXm());
+                    fd.setId(pz);
+                    fd.setJlId(jls.get(0).getJlId());
+                    fd.setJlXm(jls.get(0).getJlXm());
                     fd.setLcFy(abs);
-                    fd.setLcId(lcJl.getId());
-                    fd.setLcKm(lcJl.getLcKm());
-                    fd.setSc(lcJl.getSc());
-                    fd.setXySl(lcJl.getXySl());
-                    fd.setBz("(" + xySl + " * " +  dkdj + " - " + lcJl.getLcFy() + ") * " + aFloat);
+                    fd.setLcId(jls.stream().map(BizLcJl::getId).collect(Collectors.joining(",")));
+                    fd.setLcKm(jls.get(0).getLcKm());
+                    fd.setSc(jls.stream().mapToInt(BizLcJl::getSc).sum());
+                    fd.setBz("(" + xySl + " * " + dkdj + " - " + sum + ") * " + aFloat);
                     fdService.save(fd);
                 }
             }
-            lcJl.setBz("应收现金" + lcJl.getXjje() + "元" );
+            lcJl.setBz("应收现金" + abs + "元");
 
         }
 
