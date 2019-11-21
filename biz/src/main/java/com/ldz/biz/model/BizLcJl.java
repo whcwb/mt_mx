@@ -207,9 +207,11 @@ public class BizLcJl implements Serializable {
 
     @Column(name = "pz")
     private String pz;
-
+    @Transient
     private SysZdxm zdxm;
 
+    @Transient
+    private String zdmc;
 
     private static final long serialVersionUID = 1L;
 

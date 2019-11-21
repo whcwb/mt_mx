@@ -262,7 +262,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     entity.setYfJe(entity.getLcFy());
                     entity.setXjje(entity.getLcFy());
                 }
-                entity.setJssj(nowTime);
+                if(StringUtils.equals(entity.getLcKm(),"2")){
+                    entity.setJssj(nowTime);
+                }
             } else if (StringUtils.equals(entity.getLcLx(), "30")) {
                 // 练车费用为 人数 乘以 价格
                 entity.setZfzt("10");
@@ -359,7 +361,19 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         entity.setJlJx(wxjl.getJlJx());
         entity.setJlDh(wxjl.getJlLxdh());
         entity.setFdZt("30");
+        if(!StringUtils.equals(entity.getLcLx(), "00") && StringUtils.equals(entity.getLcKm(), "2")){
+            entity.setJlCx("");
+        }
         save(entity);
+        if(StringUtils.equals(entity.getLcLx(), "20")){
+            entity.setClBh("培优");
+        }else if(StringUtils.equals(entity.getLcLx(), "30")){
+            entity.setClBh("开放日");
+            entity.setBz(entity.getXySl() +  "人");
+        }
+        if(StringUtils.isBlank(entity.getZgXm())){
+            entity.setZgXm(" ");
+        }
         return ApiResponse.success(JsonUtil.toJson(entity));
     }
 
@@ -475,10 +489,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             }
             if (kfje > 0) {
                fdr = "3";
-//                str += " 抵扣余额: " +  wxjl.getYe();
             }
             if (card > 0) {
-//                str += " 卡上余额: " +  wxjl.getCardJe();
                 fdr = "2";
             }
             if (StringUtils.isBlank(fdr)) {
@@ -503,7 +515,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             }
         }
 
-
         lcJl.setSc((int) (end.getTime() - start.getTime()) / (1000 * 60));
         lcJl.setJssj(s);
         lcJl.setXgr(yh.getZh() + "-" + yh.getXm());
@@ -515,7 +526,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         }
         if (StringUtils.equals(lcJl.getLcLx(), "00")) {
             lcJl.setZfzt("00");
-
             update(lcJl);
             lcJl.setXjje(xjje);
             lcJl.setCardje(cardye);
@@ -548,7 +558,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 //        condition1.eq(SysZdxm.InnerColumn.by5, bizLcJl.getLcLx());
             List<SysZdxm> zdxms = zdxmService.findByCondition(condition1);
             Map<String, List<SysZdxm>> map = zdxms.stream().collect(Collectors.groupingBy(SysZdxm::getZddm));
-
 
             bizLcJls.forEach(bizLcJl -> {
                 if (StringUtils.equals(bizLcJl.getLcLx(), "00")) {
@@ -1546,7 +1555,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             }
             fdService.save(fd);
         }
-        return ApiResponse.success(fd.getId());
+        return ApiResponse.success(pz);
 
     }
 
@@ -1558,19 +1567,26 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         int sum = jls.stream().mapToInt(BizLcJl::getXjje).sum();
         int lcfy = jls.stream().mapToInt(BizLcJl::getLcFy).sum();
         String id = jls.get(0).getJlId();
+        String zddm = jls.get(0).getZddm();
+        SimpleCondition simpleCondition  = new SimpleCondition(SysZdxm.class);
+        simpleCondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        simpleCondition.eq(SysZdxm.InnerColumn.zddm, zddm);
+        List<SysZdxm> zdxms = zdxmService.findByCondition(simpleCondition);
+        String by9 = zdxms.get(0).getBy9();
         BizLcWxjl wxjl = wxjlService.findById(id);
         BizLcJl jl = new BizLcJl();
         jl.setId(jls.get(0).getPz());
+        jl.setZdmc(by9);
         jl.setZgXm(jls.get(0).getZgXm());
         jl.setLcFy(lcfy);
         jl.setJlCx(jls.stream().map(BizLcJl::getJlCx).collect(Collectors.joining(",")));
-        jl.setClBh(jls.stream().map(BizLcJl::getClBh).collect(Collectors.joining(",")));
+        jl.setClBh(jls.stream().map(BizLcJl::getClBh).filter(StringUtils::isNotBlank).collect(Collectors.joining(",")));
         jl.setYfJe(sum);
         jl.setXjje(sum);
         jl.setLcLx(jls.get(0).getLcLx());
         jl.setSc(jls.stream().mapToInt(BizLcJl::getSc).sum());
         jl.setKm(jls.get(0).getLcKm());
-        jl.setLcKm(jl.getKm());
+        jl.setLcKm(jls.get(0).getLcKm());
         jl.setJlJx(wxjl.getJlJx());
         jl.setJlXm(wxjl.getJlXm());
         jl.setKfje(jls.stream().mapToInt(BizLcJl::getKfje).sum());
@@ -1597,8 +1613,12 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         jl.setFdr(fdr);
         jl.setKfje(wxjl.getYe());
         jl.setCardje(wxjl.getCardJe());
+        if(StringUtils.equals(jl.getLcLx(),"30")){
+            jl.setBz(jls.get(0).getXySl() + "人");
+        }
         return ApiResponse.success(jl);
     }
+
 
     @Override
     public ApiResponse<BizLcJl> payCNY(String id, String zf) {
@@ -1833,7 +1853,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             lcJl.setBz("应收现金" + abs + "元");
 
         }
-
+        lcJl.setPz(pz);
         return ApiResponse.success(lcJl);
     }
 
