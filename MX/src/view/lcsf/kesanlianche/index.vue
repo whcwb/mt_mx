@@ -187,8 +187,9 @@
           <Col span="12">
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
-                <Select v-model="formData.zddm" style="width:200px" placeholder="计时500/小时" @on-change="lcFyChange">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm!='K2KF'">{{it.by9}}-{{it.zdmc}}元
+                <Select v-model="formData.zddm" style="width:280px" placeholder="计时500/小时" @on-change="lcFyChange">
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm!='K2KF'">
+                    {{it.by9}}-{{it.zdmc}}元
                   </Option>
                 </Select>
               </FormItem>
@@ -202,7 +203,7 @@
             </FormItem>
           </Col>
         </Row>
-        <Row :gutter="32" style="padding-top: 5px"  v-if="formData.zddm!=undefined && formData.zddm.includes('K3PY')">
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && formData.zddm.includes('K3PY')">
           <Card>
             <p slot="title">学员信息</p>
             <p>
@@ -235,7 +236,7 @@
         <Row :gutter="32" style="padding-top: 5px" v-if="formData.lcKm == '3'">
           <Col span="12">
             <FormItem :label="'安全员'" label-position="top">
-              <Select v-model="formData.zgId"  filterable ref="se" @on-query-change="searchJlyaq"
+              <Select v-model="formData.zgId" filterable ref="se" @on-query-change="searchJlyaq" style="width: 280px"
 
               >
                 <Option v-for="(item) in sfaemanlist" :value="item.value" :key="item.value">{{item.label}}</Option>
@@ -316,27 +317,60 @@
               <p style="font-size: 18px;font-weight: 500;padding: 10px;color: red">总费用 : {{QRmess.lcFy}}元</p>
             </Card>
           </Col>
+          <!--<Col span="12">-->
+          <!--<Card>-->
+          <!--<p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>-->
+          <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
+          <!--<Checkbox disabled v-model="ls.ls3">{{ls.ls6}}</Checkbox>-->
+          <!--现金支付-->
+          <!--</p>-->
+          <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
+          <!--<Checkbox disabled v-model="ls.ls2">{{ls.ls6}}</Checkbox>-->
+          <!--充卡支付(余额:{{QRmess.cardje}}元)-->
+          <!--</p>-->
+          <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
+          <!--<Checkbox disabled v-model="ls.ls1">{{ls.ls6}}</Checkbox>-->
+          <!--抵扣支付(余额:{{QRmess.kfje}}元)-->
+          <!--</p>-->
+          <!--</Card>-->
+          <!--</Col>-->
+
           <Col span="12">
             <Card>
               <p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">
-                <Checkbox disabled v-model="ls.ls3">{{ls.ls6}}</Checkbox>
-                现金支付
-              </p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">
-                <Checkbox disabled v-model="ls.ls2">{{ls.ls6}}</Checkbox>
-                充卡支付(余额:{{QRmess.cardje}}元)
-              </p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">
-                <Checkbox disabled v-model="ls.ls1">{{ls.ls6}}</Checkbox>
-                抵扣支付(余额:{{QRmess.kfje}}元)
-              </p>
+              <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
+              <!--<Checkbox v-model="ls.ls3">{{ls.ls6}}</Checkbox>-->
+              <!--现金支付-->
+              <!--</p>-->
+              <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
+              <!--<Checkbox v-model="ls.ls2">{{ls.ls6}}</Checkbox>-->
+              <!--充卡支付(余额:{{QRmess.cardje}}元)-->
+              <!--</p>-->
+              <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
+              <!--<Checkbox v-model="ls.ls1">{{ls.ls6}}</Checkbox>-->
+              <!--抵扣支付(余额:{{QRmess.kfje}}元)-->
+              <!--</p>-->
+              <RadioGroup v-model="QRmess.zf" vertical @on-change="getRs">
+                <p style="font-size: 18px;font-weight: 500;padding: 10px">
+                  <Radio label="1">
+                    <Icon type="1"></Icon>
+                    <span style="font-size: 18px;">现金支付</span>
+                  </Radio>
+                </p>
+                <p style="font-size: 18px;font-weight: 500;padding: 10px">
+                  <Radio label="2" :disabled="QRmess.cardje<=0">
+                    <Icon type="social-android"></Icon>
+                    <span style="font-size: 18px;">充卡支付(余额:{{QRmess.cardje}}元)</span>
+                  </Radio>
+                </p>
+              </RadioGroup>
             </Card>
           </Col>
 
         </Row>
         <Row style="text-align: left;padding-left: 10px">
-          <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">{{QRmess.bz}}</p>
+          <!--<p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">{{QRmess.bz}}</p>-->
+          <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">应收现金{{this.ysxzA}}元</p>
         </Row>
       </div>
     </Modal>
@@ -358,21 +392,21 @@
   //还车
   import giveCar from '../comp/readCard'
   import {mapMutations} from 'vuex'
-  import printNew from '../comp/printNew'
+  import printNew from '../../../components/printNew'
 
   export default {
     name: "index",
     components: {
       carCard, jlwh, addjl,
       print, radioCar, carStatistics,
-      keyypd, yydrawer, yyModel,printNew
+      keyypd, yydrawer, yyModel, printNew
     },
     data() {
       return {
-          Pmess: {},
-          AMess: [
-              {}
-          ],
+        Pmess: {},
+        AMess: [
+          {}
+        ],
         tcIndex: 0,
         columns2: [
           {
@@ -441,40 +475,40 @@
           //     return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
           //   }
           // },
-            {type:'index',align: 'center', minWidth: 40,title:'序号'},
+          {type: 'index', align: 'center', minWidth: 40, title: '序号'},
           {
             type: 'selection',
             width: 40,
             align: 'center'
           },
-            {title: '驾校', key: 'jlJx', minWidth: 90,align: 'center', },
-          {title: '教练员', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90,align: 'center',},
-            {
-                title: '人数',
-                key: 'xySl',
-                minWidth: 60,
-                align: 'center',
-                render: (h, p) => {
-                    if (p.row.xySl!=''&&p.row.xySl!=undefined){
-                        return h('div', p.row.xySl+'人')
-                    }else {
-                        return ''
-                    }
+          {title: '驾校', key: 'jlJx', minWidth: 90, align: 'center',},
+          {title: '教练员', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90, align: 'center',},
+          {
+            title: '人数',
+            key: 'xySl',
+            minWidth: 60,
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.xySl != '' && p.row.xySl != undefined) {
+                return h('div', p.row.xySl + '人')
+              } else {
+                return ''
+              }
 
-                }
-            },
-            {title: '车型', key: 'jlCx', minWidth: 60,align: 'center',},
-            {
-                title: '类型',
-                minWidth: 120,
-                align: 'center',
-                render: (h, p) => {
-                    if (p.row.zdxm != ''){
-                        return h('div', p.row.zdxm.by9+' '+p.row.zdxm.zdmc)
-                    }
+            }
+          },
+          {title: '车型', key: 'jlCx', minWidth: 60, align: 'center',},
+          {
+            title: '类型',
+            minWidth: 120,
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.zdxm != '') {
+                return h('div', p.row.zdxm.by9 + ' ' + p.row.zdxm.zdmc)
+              }
 
-                }
-            },
+            }
+          },
           // {title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90,},
           // {
           //   title: '状态', minWidth: 120, render: (h, p) => {
@@ -490,22 +524,24 @@
           //   }
           // },
 
-          {title: '开始时间', key: 'kssj', minWidth: 140,align: 'center',},
-          {title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 140,align: 'center',},
-          {title: '时长', key: 'sc', minWidth: 80, defaul: '0',align: 'center',
-              render:(h,p)=>{
-              return h('div',p.row.sc+'分钟')
-              }
+          {title: '开始时间', key: 'kssj', minWidth: 140, align: 'center',},
+          {title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 140, align: 'center',},
+          {
+            title: '时长', key: 'sc', minWidth: 80, defaul: '0', align: 'center',
+            render: (h, p) => {
+              return h('div', p.row.sc + '分钟')
+            }
           },
           // {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
-          {title: '费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0',align: 'center',
-              render:(h,p)=>{
-                  return h('div',p.row.lcFy+'元')
-              }
+          {
+            title: '费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0', align: 'center',
+            render: (h, p) => {
+              return h('div', p.row.lcFy + '元')
+            }
           },
           {
-            title: '订单状态', key: 'zfzt', minWidth: 80,align: 'center',
+            title: '订单状态', key: 'zfzt', minWidth: 80, align: 'center',
             render: (h, p) => {
               if (p.row.zfzt == '00') {
                 return h('div', '未支付')
@@ -514,23 +550,26 @@
               }
             }
           },
-            {
-                title: '安全员',
-                minWidth: 100,
-                align: 'center',
-                render: (h, p) => {
-                    return h('div', p.row.zgXm)
-                }
-            },
-          {title: '凭证号', key: 'pz', minWidth: 150,align: 'center',},
+          {
+            title: '安全员',
+            minWidth: 100,
+            align: 'center',
+            render: (h, p) => {
+              return h('div', p.row.zgXm)
+            }
+          },
+          {title: '凭证号', key: 'pz', minWidth: 150, align: 'center',},
 
           {
-            title: '操作', minWidth: 60, fixed: 'right', align: 'center',render: (h, p) => {
+            title: '操作', minWidth: 60, fixed: 'right', align: 'center', render: (h, p) => {
               let buttons = [];
-              buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
-                this.hisPrintMess = p.row
-                this.componentName = 'printNew'
-              }));
+              if (p.row.zfzt !== '00') {
+                buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
+                  this.hisPrintMess = p.row
+                  this.printClose = false
+                  this.componentName = 'printNew'
+                }));
+              }
               // if(p.row.zfzt == '00'){
               //     buttons.push(this.util.buildButton(this, h, 'error', 'logo-yen', '结算', () => {
               //         this.$http.post('/api/lcjl/getBatchPay',{ids:p.row.id}).then((res)=>{
@@ -582,8 +621,9 @@
           ls3: false,
         },
         QRmodal: false,
-        QRmess: {jls:[]},
+        QRmess: {jls: [], zf: ''},
         fylist: [],
+        ysxzA: 0,
         giveCar: giveCar,
         v: this,
         DrawerVal: false,
@@ -594,9 +634,10 @@
         clId: '',
         showFQfzkp: false,
         sfaemanlist: [],
-        pyxyInfo:[      //培优学员信息
+        pyxyInfo: [      //培优学员信息
 
         ],
+        ifFinish: false,
         formData: {
           zgId: '',
           xyZjhm: '',
@@ -643,16 +684,16 @@
             key: 'clBh',
             align: 'center',
             fixed: "left",
-              minWidth: 100,
+            minWidth: 100,
             render: (h, p) => {
-                return h('div',{
-                    style:{
-                        // height:'30px',width:'30px',
-                        fontSize: '16px',fontWeight:'600',
-                        // backgroundColor:'#ffbb96',borderRadius:"25px",
-                        // color:'#ffbb96',
-                    }
-                    }, p.row.clBh)
+              return h('div', {
+                style: {
+                  // height:'30px',width:'30px',
+                  fontSize: '16px', fontWeight: '600',
+                  // backgroundColor:'#ffbb96',borderRadius:"25px",
+                  // color:'#ffbb96',
+                }
+              }, p.row.clBh)
               // return h('Tag', {
               //   props: {
               //     type: 'volcano',
@@ -680,7 +721,7 @@
             title: '车型',
             key: 'clCx',
             align: 'center',
-              minWidth: 80,
+            minWidth: 80,
             fixed: "left",
           },
           // {
@@ -700,7 +741,7 @@
           {
             title: '操作',
             align: 'center',
-              minWidth: 150,
+            minWidth: 150,
             fixed: "left",
             render: (h, p) => {
               let buttons = [];
@@ -711,7 +752,7 @@
                     props: {
                       type: 'success',
                       size: 'small',
-                      ghost:true
+                      ghost: true
                     },
                     style: {margin: '0 10px 0 0'},
                     on: {
@@ -721,7 +762,7 @@
                         this.formData.lcKm = '3';
                         this.$http.post('/api/lcjl/Tc', {km: '3'}).then((res) => {
                           if (res.code == 200) {
-                            this.fylist=[]
+                            this.fylist = []
                             let fyArr = res.result
                             for (let r of fyArr) {
                               if (r.by8.includes(p.row.clCx)) {
@@ -765,7 +806,7 @@
                     props: {
                       type: 'warning',
                       size: 'small',
-                        ghost:true
+                      ghost: true
                     },
                     style: {margin: '0 10px 0 0'},
                     on: {
@@ -803,13 +844,14 @@
                                     this.ls.ls3 = true
                                   }
                                   if (p.row.lcJl.lcLx == '00') {
+                                    this.ifFinish = true
                                     this.QRmodal = true
                                   } else {
-                                    this.print(res.result)
+                                    this.print(res.result,true)
                                   }
                                   // this.print(res.result)
                                   this.getCarList()
-                                    this.getSafemanList()
+                                  this.getSafemanList()
                                 } else {
                                   this.swal({
                                     title: res.message,
@@ -818,21 +860,12 @@
                                 }
                               })
                             } else {
-                              if (!!window.ActiveXObject || "ActiveXObject" in window) {
-                              } else {
-                                this.swal({
-                                  title: '请使用IE10以上的浏览器',
-                                  type: 'warning',
-                                  confirmButtonText: '关闭'
-                                })
-                                return
-                              }
                               var v = this
-                              this.giveCar.readCard((key, mess) => {
+                              this.giveCar.readCardChrome((key, mess) => {
                                 console.log(key, mess)
-                                if (!key) {
+                                if (mess === 'None') {
                                   v.swal({
-                                    title: mess,
+                                    title: '未放置卡片！',
                                     type: 'error',
                                     confirmButtonText: '确定',
                                   })
@@ -857,16 +890,26 @@
                                       this.QRmess = res.result
                                       this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
                                       this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
-                                      if (this.QRmess.fdr.indexOf('1') != -1) {
-                                        this.ls.ls1 = true
-                                      }
-                                      if (this.QRmess.fdr.indexOf('2') != -1) {
-                                        this.ls.ls2 = true
-                                      }
-                                      if (this.QRmess.fdr.indexOf('3') != -1) {
-                                        this.ls.ls3 = true
-                                      }
+                                      // if (this.QRmess.fdr.indexOf('1') != -1) {
+                                      //   this.ls.ls1 = true
+                                      // }
+                                      // if (this.QRmess.fdr.indexOf('2') != -1) {
+                                      //   this.ls.ls2 = true
+                                      // }
+
+                                      this.QRmess.zf = this.QRmess.fdr
+
+
                                       if (p.row.lcJl.lcLx == '00') {
+                                        this.ifFinish = true
+                                        if (this.QRmess.fdr == '1') {     //如果是现金支付，应收现金为总费用
+                                          this.ysxzA = this.QRmess.lcFy
+                                        }
+                                        else {
+                                          this.ysxzA = this.QRmess.cardje - this.QRmess.lcFy < 0 ? this.QRmess.cardje - this.QRmess.lcFy : 0
+                                        }
+
+                                        this.ifFinish = true
                                         this.QRmodal = true
                                       } else {
 
@@ -963,7 +1006,7 @@
           {
             title: '教练员',
             key: 'jlXm',
-              minWidth: 150,
+            minWidth: 150,
             align: 'center',
             render: (h, p) => {
               return h('div', p.row.lcJl.jlXm)
@@ -980,20 +1023,20 @@
           {
             title: '人数',
             key: 'xySl',
-              minWidth: 100,
+            minWidth: 100,
             align: 'center',
             render: (h, p) => {
-                if (p.row.lcJl.xySl!=''&&p.row.lcJl.xySl!=undefined){
-                    return h('div', p.row.lcJl.xySl+'人')
-                }else {
-                    return ''
-                }
+              if (p.row.lcJl.xySl != '' && p.row.lcJl.xySl != undefined) {
+                return h('div', p.row.lcJl.xySl + '人')
+              } else {
+                return ''
+              }
 
             }
           },
           {
             title: '开始时间',
-              minWidth: 180,
+            minWidth: 180,
             align: 'center',
             render: (h, p) => {
               if (p.row.lcJl != [] && p.row.lcJl.kssj != '')
@@ -1017,7 +1060,7 @@
           {
             title: '费用',
             align: 'center',
-              minWidth: 120,
+            minWidth: 120,
             render: (h, p) => {
               if (p.row.zj != '') {
                 return h('div', p.row.zj + '元')
@@ -1025,25 +1068,25 @@
 
             }
           },
-            {
-                title: '类型',
-                minWidth: 180,
-                align: 'center',
-                render: (h, p) => {
-                    if (p.row.zdxm != ''){
-                        return h('div', p.row.zdxm.by9+' '+p.row.zdxm.zdmc)
-                    }
+          {
+            title: '类型',
+            minWidth: 180,
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.zdxm != '') {
+                return h('div', p.row.zdxm.by9 + ' ' + p.row.zdxm.zdmc)
+              }
 
-                }
-            },
-            {
-                title: '安全员',
-                minWidth: 120,
-                align: 'center',
-                render: (h, p) => {
-                        return h('div', p.row.lcJl.zgXm)
-                }
-            },
+            }
+          },
+          {
+            title: '安全员',
+            minWidth: 120,
+            align: 'center',
+            render: (h, p) => {
+              return h('div', p.row.lcJl.zgXm)
+            }
+          },
 
 
         ],
@@ -1084,59 +1127,59 @@
         'set_LcTime',
         'Ch_LcTime'
       ]),
-        remove(i){
-            this.AMess.splice(i,1)
-        },
-        pushmess() {
-            let a = JSON.parse(JSON.stringify(this.Pmess));
-            this.AMess.push(a);
-        },
-        getWXXY(AMess) {
-            if (this.formData.zddm.indexOf('K3PY') == -1){
-                return true
+      remove(i) {
+        this.AMess.splice(i, 1)
+      },
+      pushmess() {
+        let a = JSON.parse(JSON.stringify(this.Pmess));
+        this.AMess.push(a);
+      },
+      getWXXY(AMess) {
+        if (this.formData.zddm.indexOf('K3PY') == -1) {
+          return true
+        }
+        AMess = this.AMess
+        let arrAMess = AMess.length - 1;
+        let messarr = [];
+        let dxarr = [];
+        let sfzarr = [];
+        let a = true
+        console.log(AMess, 'AMess');
+        for (let i = 0; i < AMess.length; i++) {
+          if (AMess[i].xyXm == undefined || AMess[i].xyXm == '' || AMess[i].xyXm == null) {
+            this.swal({
+              title: '请填写学员姓名',
+              type: 'error'
+            })
+            a = false
+            break
+          } else {
+            messarr.push(AMess[i].xyXm)
+            dxarr.push(AMess[i].xyDh)
+            sfzarr.push(AMess[i].bz)
+            if (i == arrAMess) {
+              console.log(dxarr.join(','))
+              console.log(messarr.join(','))
+              this.formData.xyXm = messarr.join(',');
+              this.formData.xyDh = dxarr.join(',');
+              this.formData.xyZjhm = sfzarr.join(',');
             }
-             AMess = this.AMess
-            let arrAMess = AMess.length - 1;
-            let messarr = [];
-            let dxarr = [];
-            let sfzarr = [];
-            let a = true
-            console.log(AMess,'AMess');
-            for (let i =0;i<AMess.length; i++){
-                if(AMess[i].xyXm == undefined ||AMess[i].xyXm == ''||AMess[i].xyXm == null){
-                    this.swal({
-                        title: '请填写学员姓名',
-                        type: 'error'
-                    })
-                    a = false
-                    break
-                }else {
-                    messarr.push(AMess[i].xyXm)
-                    dxarr.push(AMess[i].xyDh)
-                    sfzarr.push(AMess[i].bz)
-                    if (i == arrAMess) {
-                        console.log(dxarr.join(','))
-                        console.log(messarr.join(','))
-                        this.formData.xyXm = messarr.join(',');
-                        this.formData.xyDh = dxarr.join(',');
-                        this.formData.xyZjhm = sfzarr.join(',');
-                    }
-                }
+          }
 
-            }
-            return a
-            // AMess.forEach((item, index) => {
-            //     console.log(item.xyXm);
-            //
-            // })
-        },
-        scXY(e){
-            this.AMess=[{}];
-            e = parseInt(e);
-            for (let i =1;i<e;i++){
-                this.AMess.push({})
-            }
-        },
+        }
+        return a
+        // AMess.forEach((item, index) => {
+        //     console.log(item.xyXm);
+        //
+        // })
+      },
+      scXY(e) {
+        this.AMess = [{}];
+        e = parseInt(e);
+        for (let i = 1; i < e; i++) {
+          this.AMess.push({})
+        }
+      },
       getSafemanList() {
         this.$http.post('/api/zgjbxx/getAqy', {notShowLoading: 'true'}).then((res) => {
           if (res.code == 200) {
@@ -1145,14 +1188,14 @@
               item.label = item.xm + ' [' + py + ']'
               item.value = item.id
               if (index == res.result.length - 1) {
-                  console.log("--------------")
+                console.log("--------------")
                 this.sfaemanlist = res.result
-                  console.log(res.result + "====");
-                  console.log(this.sfaemanlist[0].label + "+++++");
+                console.log(res.result + "====");
+                console.log(this.sfaemanlist[0].label + "+++++");
               }
             })
-              this.formData.zgId = ''
-              console.log(this.sfaemanlist);
+            this.formData.zgId = ''
+            console.log(this.sfaemanlist);
             // this.$nextTick()
           } else {
             this.$Message.info(res.message);
@@ -1186,15 +1229,12 @@
             this.QRmess = res.result
             // this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
             // this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
-            if (this.QRmess.fdr.indexOf('1') != -1) {
-              this.ls.ls1 = true
-            }
-            if (this.QRmess.fdr.indexOf('2') != -1) {
-              this.ls.ls2 = true
-            }
-            if (this.QRmess.fdr.indexOf('3') != -1) {
-              this.ls.ls3 = true
-            }
+            // if (this.QRmess.fdr.indexOf('1') != -1) {
+            //
+            // }
+            this.QRmess.zf = this.QRmess.fdr
+            console.log(this.QRmess.fdr)
+            this.ifFinish = true
             this.QRmodal = true
           } else {
             this.$Message.error(res.message)
@@ -1256,6 +1296,14 @@
           r.jssj = r.jssj.substring(0, 16)
         }
       },
+      getRs() {
+        if (this.QRmess.zf == '1') {
+          this.ysxzA = this.QRmess.lcFy
+        }
+        else {
+          this.ysxzA = this.QRmess.cardje - this.QRmess.lcFy < 0 ? this.QRmess.cardje - this.QRmess.lcFy : 0
+        }
+      },
       QRcancel() {
         var a = true
         if (this.QRmess.jls) {
@@ -1297,7 +1345,9 @@
                 if (res.code == 200) {
                   // this.$Message.success(res.message)
                   this.QRmess.id = res.message
-                  this.print(this.QRmess)
+                  if (this.ifFinish)
+                    this.print(this.QRmess, true)
+                  else this.print(this.QRmess, false)
                   this.qrids = ''
                   this.util.getPageData(this)
                 } else {
@@ -1313,7 +1363,9 @@
             if (res.code == 200) {
               // this.$Message.success(res.message)
               this.QRmess.id = res.message
-              this.print(this.QRmess)
+              if (this.ifFinish)
+                this.print(this.QRmess, true)
+              else this.print(this.QRmess, false)
               this.qrids = ''
               this.util.getPageData(this)
             } else {
@@ -1357,9 +1409,9 @@
       getCarItemMess(it, index) {
         this.formData.lcClId = it.id
       },
-        searchJlyaq(query){
-            console.log(query);
-        },
+      searchJlyaq(query) {
+        console.log(query);
+      },
       searchJly(query) {
         if (query !== '') {
           this.loadingJly = true;
@@ -1386,11 +1438,11 @@
         this.formData.jlId = row.id
       },
       close() {
-          this.AMess=[{}];
-          this.formData = {}
+        this.AMess = [{}];
+        this.formData = {}
         this.DrawerVal = false
 
-          this.$refs.re.clearSingleSelect();
+        this.$refs.re.clearSingleSelect();
       },
       yyClick(val, cx) {
         console.log(val);
@@ -1524,12 +1576,15 @@
           }
         })
       },
-      print(mess) {//还车
+      print(mess, ifPrint) {//还车
         this.hisPrintMess = mess
+        this.hisPrintMess.pz = this.QRmess.id
+        console.log(this.hisPrintMess)
+        this.printClose = ifPrint ? true : false
         // setTimeout(()=>{
         //   this.$refs['backcar'].doPrint()
         // },1000)
-        this.componentName = 'print'
+        this.componentName = 'printNew'
       },
       his(item) {//历史练车记录
         this.clId = item.id;
@@ -1608,66 +1663,54 @@
         console.log(this.formData.cardNo, '455')
 
         if (!ifCard || (ifCard && (this.formData.cardNo != '' && this.formData.cardNo != undefined && this.formData.cardNo != null))) {
-            //判断是否需要刷卡 by2 0不刷 1刷
-           if ( this.getWXXY()){
-               this.$http.post('/api/lcjl/save', this.formData).then(res => {
-                   if (res.code == 200) {
-                       this.DrawerVal = false;
-                       this.getCarList();
+          //判断是否需要刷卡 by2 0不刷 1刷
+          console.log('xxxxxxxxxxxxx')
+          if (this.getWXXY()) {
+            this.$http.post('/api/lcjl/save', this.formData).then(res => {
+              if (res.code == 200) {
+                this.DrawerVal = false;
+                this.getCarList();
 
-                       this.formData = {zgId: ''};
-                       this.getSafemanList()
-                       this.AMess=[{}];
-                       // this.swal({
-                       //   title: '发车成功',
-                       //   type: 'success',
-                       //   confirmButtonText: '确定',
-                       // })
-                       this.carMess = null
-                       this.$refs.re.clearSingleSelect();
-                   } else {
-                       this.formData.cardNo = '';
-                       console.log(this.formData.cardNo)
-                       this.swal({
-                           title: res.message,
-                           type: 'warning'
-                       })
-                   }
-               }).catch(err => {
-               })
-           }
+                this.formData = {zgId: ''};
+                this.getSafemanList()
+                this.AMess = [{}];
+                // this.swal({
+                //   title: '发车成功',
+                //   type: 'success',
+                //   confirmButtonText: '确定',
+                // })
+                this.carMess = null
+                this.$refs.re.clearSingleSelect();
+              } else {
+                this.formData.cardNo = '';
+                console.log(this.formData.cardNo)
+                this.swal({
+                  title: res.message,
+                  type: 'warning'
+                })
+              }
+            }).catch(err => {
+            })
+          }
 
         }
         else {
-
-          if (!!window.ActiveXObject || "ActiveXObject" in window) {
-          } else {
-            this.swal({
-              title: '该套餐已启用刷卡模式，请使用IE10以上的浏览器',
-              type: 'warning',
-              confirmButtonText: '关闭'
-            })
-            return
-          }
           var v = this
-          this.giveCar.readCard((key, mess) => {
+          console.log('yyyyyyyyyyyyy')
+          this.giveCar.readCardChrome((key, mess) => {
 
             console.log(key, mess)
-            if (!key) {
-              // if (this.DrawerVal) {
-              //   let v = this
-              //   setTimeout(() => {
-              //     if (v.DrawerVal) {
-              //       v.save()
-              //     }
-              //   }, 200)
-              // }
+            if (mess === 'None') {
+              this.swal({
+                title: '请重新放置卡片',
+                type: 'error'
+              })
               if (v.showFQfzkp) {
                 return;
               }
               v.showFQfzkp = true;
               v.swal({
-                title: mess,
+                title: '未识别卡片，是否继续发车？',
                 type: 'error',
                 confirmButtonText: '发车',
                 cancelButtonText: '取消',

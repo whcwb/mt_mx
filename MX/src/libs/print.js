@@ -8,19 +8,19 @@ obj.print = (id,item,time,callback) => {
     {'x': 10, 'y': 30, 'w': 250, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '车辆租赁凭据', 'font_size': 12},
     {'x': 10, 'y': 60, 'w': 250, 'h': 80, 'isbar': 'T', 'border': 1, 'text': id, 'font_size': 15},
     {'x': 10, 'y': 140, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '训练科目', 'font_size': 12},
-    {'x': 110, 'y': 140, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '科目二', 'font_size': 12},
+    {'x': 110, 'y': 140, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '科目二', 'font_size': 9},
     {'x': 10, 'y': 170, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '车辆编号', 'font_size': 12},
-    {'x': 110, 'y': 170, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '', 'font_size': 12},
+    {'x': 110, 'y': 170, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '', 'font_size': 9},
     {'x': 10, 'y': 200, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '训练车型', 'font_size': 12},
-    {'x': 110, 'y': 200, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '', 'font_size': 12},
+    {'x': 110, 'y': 200, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '', 'font_size': 9},
     {'x': 10, 'y': 230, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '教练员', 'font_size': 12},
-    {'x': 110, 'y': 230, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '张平', 'font_size': 12},
+    {'x': 110, 'y': 230, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '张平', 'font_size': 9},
     {'x': 10, 'y': 260, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '安全员', 'font_size': 12},
-    {'x': 110, 'y': 260, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '', 'font_size': 12},
+    {'x': 110, 'y': 260, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '', 'font_size': 9},
     {'x': 10, 'y': 290, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '累计时长', 'font_size': 12},
-    {'x': 110, 'y': 290, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '', 'font_size': 12},
+    {'x': 110, 'y': 290, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '', 'font_size': 9},
     {'x': 10, 'y': 320, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '累计费用', 'font_size': 12},
-    {'x': 110, 'y': 320, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '300元', 'font_size': 12},
+    {'x': 110, 'y': 320, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '300元', 'font_size': 9},
     {'x': 10, 'y': 350, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '备注', 'font_size': 12},
     {'x': 110, 'y': 350, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '1人', 'font_size': 9},
     {'x': 10, 'y': 380, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 0, 'text': '本票据遗失不补', 'font_size': 9},
@@ -34,6 +34,9 @@ obj.print = (id,item,time,callback) => {
       itemIndex++;
     }
   })
+
+  console.log(item)
+  console.log(printJson,'sssss')
 
   $.ajax({
     type: "POST",

@@ -9,23 +9,23 @@
 
       <div slot="header">
         <Row>
-          <Col span="4 ">
+          <!--<Col span="4 ">-->
             <!--<Col span="4">-->
             <!--            <p>车单打印</p>-->
-          </Col>
+          <!--</Col>-->
           <!--<Col span="4" align="center">
             <span v-if="printClose">
             {{ mesTime }}s后关闭
             </span>
           </Col>-->
-          <Col offset="4" span="16" align="right">
+          <Col span="24" align="center">
             <Button type="default" size="large" style="margin: 0 12px"
                     @click="close">关闭
             </Button>
-            <Button type="success" size="large" style="margin: 0 12px"
-                    @click="doPrint('打印预览')">打印预览
-            </Button>
-            <Button type="success" size="large"
+            <!--<Button type="success" size="large" style="margin: 0 12px"-->
+                    <!--@click="doPrint('打印预览')">打印预览-->
+            <!--</Button>-->
+            <Button type="success" size="large" :disabled="isDone"
                     @click="doPrint('')">打印
             </Button>
           </Col>
@@ -49,12 +49,13 @@
               <div style="text-align: center"><span>{{info.id}}</span></div>
             </td>
           </tr>
-          <tr v-for="(item,index) in mess" :key="index">
+          <tr v-for="(item,index) in displayItem" :key="index">
             <td>{{item.title}}</td>
             <td>
-              {{getDict(info[item.key],item.dict)}}
-              <span v-if="item.key2">{{info[item.key2]}}</span>
-              <span v-if="item.unit">{{item.unit}}2</span>
+              {{item.val}}
+              <!--{{getDict(info[item.key],item.dict)}}-->
+              <!--<span v-if="item.key2">{{info[item.key2]}}</span>-->
+              <!--<span v-if="item.unit">{{item.unit}}2</span>-->
             </td>
           </tr>
         </table>
@@ -78,7 +79,7 @@
   import {Printd} from 'printd'
   import barcode from '@xkeshi/vue-barcode';
   import {mapMutations} from 'vuex'
-  import print from '../../../../libs/print'
+  import print from '../libs/print'
 
   export default {
     components: {barcode},
@@ -100,9 +101,11 @@
         showModal: true,
         showCode: false,
         codeSrc: '',
+        isDone:true,
+        displayItem:{},
         mess: [
           // {title: '训练科目', key: 'km'},
-          {title: '训练科目', key: 'lcKm', dict: 'km'},
+          {title: '训练科目', key: 'zddm', dict: 'ZDCLK1045'},
           {title: '车辆编号', key: 'clBh'},
           {title: '训练车型', key: 'jlCx'},
           {title: '教练员', key: 'jlJx', key2: 'jlXm'},
@@ -122,46 +125,88 @@
     created() {
       this.info = JSON.parse(JSON.stringify(this.hisPrintMess))
       console.log(this.info, 'fsdf')
-      if (this.info.pz != '') {
+      console.log(this.info)
+      // if (this.info.pz != '') {
         this.$http.post('/api/lcjl/getByPz', {pz: this.info.pz}).then((res) => {
           if (res.code == 200) {
             this.info = res.result
-            this.info.sc += '分钟'
+            this.info.sc=this.info.sc=='0'?'': this.info.sc+'分钟'
             if (this.info.fdr.indexOf('1') >= 0) {
               this.info.lcFy = ''
             }
             if (this.info.lcFy == '') {
-
+              this.info.lcFy = ''
             } else {
-              this.info.lcFy = this.info.lcFy + ' 元'
+              this.info.lcFy = this.info.lcFy + '元'
             }
 
-            // if (this.info.fdr.indexOf('1')>=0){
-            //     this.info.bz += ',余额'+this.info.cardje
-            // }
+            if(this.info.lcFy == 0) this.info.lcFy='0'
+
+            this.displayItem = [
+              {
+                title:'训练科目',
+                val:this.info.zdmc
+              },
+              {
+                title:'车辆编号',
+                val:this.info.clBh,
+              },
+              {
+                title:'训练车型',
+                val:this.info.jlCx,
+              },
+              {
+                title:'教练员',
+                val:this.info.jlJx+' '+this.info.jlXm,
+              },
+              {
+                title:'安全员',
+                val:this.info.zgXm
+              },
+              {
+                title:'累计时长',
+                val:this.info.sc,
+              },
+              {
+                title:'累计费用',
+                val:this.info.lcFy,
+              },
+              {
+                title:'备注',
+                val:this.info.bz,
+              },
+            ]
+
+            if (this.printClose) {
+              this.doPrint('')
+              this.showModal=false
+            }
+
+            this.isDone=false
           }
         })
-      } else {
-        this.info.sc = this.parseTime(this.info.sc)
-        // this.info.kssj = this.info.kssj.substr(0, 16)
-        this.info.jssj = this.info.jssj.substring(0, 16)
-        if (this.info.fdr.indexOf('1') >= 0) {
-          this.info.lcFy = ''
-        }
-        if (this.info.lcLx == '20') {
-          this.info.bz = this.info.xyXm + "-" + this.info.xyDh
-        }
-        // if(this.info.lcLx == '00' && (this.info.cardje - this.info.lcFy)>=0){
-        //     this.info.bz = this.info.bz + ' 元,余额'+(this.info.cardje-this.info.lcFy) +' 元'
-        // }else {
-        //     this.info.bz = this.info.bz + '元'
-        // }
-        if (this.info.lcFy != '' || this.info.lcFy == 0) {
-          this.info.lcFy = this.info.lcFy + '元'
-        } else {
-          this.info.lcFy = ''
-        }
-      }
+      // }
+      // else {
+      //   this.info.sc = this.parseTime(this.info.sc)
+      //   // this.info.kssj = this.info.kssj.substr(0, 16)
+      //   this.info.jssj = this.info.jssj.substring(0, 16)
+      //   if (this.info.fdr.indexOf('1') >= 0) {
+      //     this.info.lcFy = ''
+      //   }
+      //   if (this.info.lcLx == '20') {
+      //     this.info.bz = this.info.xyXm + "-" + this.info.xyDh
+      //   }
+      //   // if(this.info.lcLx == '00' && (this.info.cardje - this.info.lcFy)>=0){
+      //   //     this.info.bz = this.info.bz + ' 元,余额'+(this.info.cardje-this.info.lcFy) +' 元'
+      //   // }else {
+      //   //     this.info.bz = this.info.bz + '元'
+      //   // }
+      //   if (this.info.lcFy != '' || this.info.lcFy == 0) {
+      //     this.info.lcFy = this.info.lcFy + '元'
+      //   } else {
+      //     this.info.lcFy = ''
+      //   }
+      // }
       if (this.info.lcFy == '元') {
         this.info.lcFy = " "
       }
@@ -169,10 +214,11 @@
       let v = this;
       setTimeout(() => {
         let canvas = document.getElementById("barcode");
-        v.codeSrc = canvas.toDataURL()
+        if(this.showModal) {
+          v.codeSrc = canvas.toDataURL()
         setTimeout(() => {
           this.SetPprintInnerHTML(this.$refs.printDiv.innerHTML)
-        }, 300)
+        }, 300)}
       }, 200)
       // this.enter()
     },
@@ -181,26 +227,27 @@
     },
     mounted() {
       var v = this
-      /*this.$nextTick(() => {
+      this.$nextTick(() => {
         // document.getElementById("page1").innerHTML = this.$refs.printDiv.innerHTML;
 
-        if (this.printClose) {
-          this.Interval = setInterval(() => {
-            this.mesTime--
-            if (this.mesTime <= 0){
-              clearInterval(this.Interval)
-            }
-          }, 1000)
 
-          setTimeout(() => {
-            this.doPrint('', () => {
-              setTimeout(() => {
-                v.close()
-              }, 5000)
-            })
-          }, 1000)
-        }
-      })*/
+
+          // this.Interval = setInterval(() => {
+          //   this.mesTime--
+          //   if (this.mesTime <= 0){
+          //     clearInterval(this.Interval)
+          //   }
+          // }, 1000)
+          //
+          // setTimeout(() => {
+          //   this.doPrint('', () => {
+          //     setTimeout(() => {
+          //       v.close()
+          //     }, 5000)
+          //   })
+          // }, 1000)
+
+      })
     },
     methods: {
       ...mapMutations([
@@ -216,56 +263,12 @@
         };
       },
       doPrint(how, callback) {
-        // var printJson = [
-        //   {'x': 10, 'y': 30, 'w': 240, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '车辆租赁凭据', 'font_size': 12},
-        //   {'x': 10, 'y': 60, 'w': 240, 'h': 80, 'isbar': 'T', 'border': 1, 'text': '641685236228292608', 'font_size': 15},
-        //   {'x': 10, 'y': 140, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '训练科目', 'font_size': 12},
-        //   {'x': 110, 'y': 140, 'w': 140, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '科目二', 'font_size': 12},
-        //   {'x': 10, 'y': 170, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '车辆编号', 'font_size': 12},
-        //   {'x': 110, 'y': 170, 'w': 140, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '', 'font_size': 12},
-        //   {'x': 10, 'y': 200, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '教练员', 'font_size': 12},
-        //   {'x': 110, 'y': 200, 'w': 140, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '张平', 'font_size': 12},
-        //   {'x': 10, 'y': 230, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '安全员', 'font_size': 12},
-        //   {'x': 110, 'y': 230, 'w': 140, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '', 'font_size': 12},
-        //   {'x': 10, 'y': 260, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '累计时长', 'font_size': 12},
-        //   {'x': 110, 'y': 260, 'w': 140, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '', 'font_size': 12},
-        //   {'x': 10, 'y': 290, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '累计费用', 'font_size': 12},
-        //   {'x': 110, 'y': 290, 'w': 140, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '300元', 'font_size': 12},
-        //   {'x': 10, 'y': 320, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '备注', 'font_size': 12},
-        //   {'x': 110, 'y': 320, 'w': 140, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '1人', 'font_size': 12},
-        //   {'x': 10, 'y': 350, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 0, 'text': '本票据遗失不补', 'font_size': 9},
-        //   {'x': 125, 'y': 350, 'w': 140, 'h': 30, 'isbar': 'F', 'border': 0, 'text': '2019-11-07 09:01', 'font_size': 9}
-        // ];
-        // $.ajax({
-        //   type: "POST",
-        //   url: "http://127.0.0.1:39999/print",
-        //   data: JSON.stringify(printJson),
-        //   contentType: "application/json",
-        //   dataType: "json",
-        //   beforeSend: function () { },
-        //   success: function (data) {
-        //     // alert("打印成功="+data);
-        //     console.log(data)
-        //   },
-        //   error:function(data){
-        //     console.log(data)
-        //     // alert("服务未启动，请先启动监听服务");
-        //   }
-        // });
-
-        let item = []
-        this.mess.map((val, index, arr) => {
-          let v = this.getDict(this.info[val.key], val.dict)
-          if (val.key2) {
-            v = v + ' ' + this.info[val.key2]
-          }
-          if (val.unit) {
-            v = v + ' ' + this.info[val.unit]
-          }
-          item.push(v)
+        let item=[]
+        this.displayItem.map((val, index, arr)=>{
+          item[index]=val.val
         })
 
-        print.print(this.info.id, item, this.info.jssj.substring(0, 16))
+        print.print(this.info.id,item, this.info.jssj.substring(0, 16))
 
         this.close()
 
