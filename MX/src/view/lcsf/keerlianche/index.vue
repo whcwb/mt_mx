@@ -476,11 +476,11 @@
                 <p style="font-size: 18px;font-weight: 500;padding: 10px;display: flex;align-items: center">
                   <Radio label="3" :disabled="QRmess.kfje<=0">
                     <Icon type="social-windows"></Icon>
-                    <span style="font-size: 18px;">抵扣支付(余额:{{QRmess.kfje-(rs*200)}}元)</span>
+                    <span style="font-size: 18px;">抵扣支付(余额:{{QRmess.kfje}}元)</span>
                   </Radio>
                   <Select v-if="QRmessxj.zf==='3'" v-model="QRmessxj.c" style="width:80px;display: inline-block"
                           size="small"
-                          @on-change="ccc=false,getysxjA()">
+                          @on-change="getysxjA()">
                     <Option v-for="(item,index) in RS" :value="item" :key="index">{{item}}</Option>
                   </Select>
                 </p>
@@ -591,7 +591,6 @@
         b: false,
         RS: [1, 2],
         tcIndex: 0,
-        ccc:true,
         columns2: [
           {
             type: 'index',
@@ -942,7 +941,6 @@
         QRmodal: false,
         QRmodalxj: false,
         QRmess: {},
-        rs: 0,
         QRmessxj: {
           zf: '',
           c: ''
@@ -1385,17 +1383,11 @@
       'QRmessxj.zf': function (n, o) {
         if(n=='3'){
           this.QRmessxj.c=this.QRmess.kfje / 200
-          this.ccc==true
-          this.rs=0
         }
         this.getysxjA()
       },
       'QRmessxj.c': function (n, o) {
         this.getysxjA()
-      },
-      QRmodal:function (n,o) {
-          this.ccc=true
-          this.rs=0
       }
     },
     mounted() {
@@ -1416,35 +1408,18 @@
         'Ch_LcTime'
       ]),
       getysxjA() {
-        console.log(this.ccc)
-        if(this.ccc==false){
-          this.rs=this.QRmessxj.c
-        }
-        else  this.rs=this.QRmessxj.c
         if (this.QRmessxj.zf == '1') {
           this.ysxzA = this.QRmess.lcFy
           this.kfje = this.QRmess.kfje
           this.QRmessxj.c=0
-          this.rs=0
-          this.ccc=true
-          console.log(this.ysxzA,this.QRmess.lcFy)
         } else if (this.QRmessxj.zf == '2') {
           this.ysxzA = (this.QRmess.lcFy - this.QRmess.cardje) > 0 ? (this.QRmess.lcFy - this.QRmess.cardje) : 0
           this.kfje = this.QRmess.kfje
           this.QRmessxj.c=0
-          this.ccc=true
-          this.rs=0
         } else {
           this.ysxzA = (this.QRmess.lcFy - (200 * this.QRmessxj.c)) > 0 ? (this.QRmess.lcFy - (200 * this.QRmessxj.c)) : 0
           this.kfje = this.QRmess.kfje - 200 * this.QRmessxj.c
-          if(this.ccc==true){
-            this.ysxzA=this.QRmess.lcFy
-            this.rs=0
-          }
-
         }
-
-        console.log(this.rs)
       },
       getRs(we) {
         // this.QRmessxj.zf = we
