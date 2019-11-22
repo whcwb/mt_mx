@@ -480,7 +480,7 @@
                   </Radio>
                   <Select v-if="QRmessxj.zf==='3'" v-model="QRmessxj.c" style="width:80px;display: inline-block"
                           size="small"
-                          @on-change="ccc=false,getysxjA()">
+                          @on-change="getysxjA()">
                     <Option v-for="(item,index) in RS" :value="item" :key="index">{{item}}</Option>
                   </Select>
                 </p>
@@ -591,7 +591,6 @@
         b: false,
         RS: [1, 2],
         tcIndex: 0,
-        ccc:true,
         columns2: [
           {
             type: 'index',
@@ -942,7 +941,6 @@
         QRmodal: false,
         QRmodalxj: false,
         QRmess: {},
-        rs: 0,
         QRmessxj: {
           zf: '',
           c: ''
@@ -1488,7 +1486,6 @@
           if (res.code == 200) {
             this.QRmess = res.result
             this.QRmessxj.zf = this.QRmess.fdr
-            this.rs = this.QRmess.kfje
             if (this.QRmessxj.zf == '3') {
               // this.getRs('3')
               this.QRmessxj.c = this.QRmess.kfje / 200
