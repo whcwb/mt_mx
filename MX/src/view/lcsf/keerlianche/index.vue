@@ -480,7 +480,7 @@
                   </Radio>
                   <Select v-if="QRmessxj.zf==='3'" v-model="QRmessxj.c" style="width:80px;display: inline-block"
                           size="small"
-                          @on-change="getysxjA()">
+                          @on-change="ccc=false,getysxjA()">
                     <Option v-for="(item,index) in RS" :value="item" :key="index">{{item}}</Option>
                   </Select>
                 </p>
@@ -591,6 +591,7 @@
         b: false,
         RS: [1, 2],
         tcIndex: 0,
+        ccc:true,
         columns2: [
           {
             type: 'index',
@@ -941,6 +942,7 @@
         QRmodal: false,
         QRmodalxj: false,
         QRmess: {},
+        rs: 0,
         QRmessxj: {
           zf: '',
           c: ''
@@ -1387,6 +1389,10 @@
         this.getysxjA()
       },
       'QRmessxj.c': function (n, o) {
+        this.getysxjA()
+      },
+      QRmodal:function (n,o) {
+        if(n==true)
         this.getysxjA()
       }
     },
