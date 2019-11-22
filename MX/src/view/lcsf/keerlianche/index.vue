@@ -228,7 +228,7 @@
     </Row>
 
     <Row v-show="activeName=='1'">
-      <Table ref="table" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
+      <Table ref="table" :height="AF.getPageHeight()-210" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
     </Row>
 
     <div class="boxbackborder box_col" v-if="activeName=='2'">
@@ -268,7 +268,7 @@
           </Button>
         </Col>
       </Row>
-      <Table :height="680"
+      <Table :height="AF.getPageHeight()-240"
              size="small"
              @on-select="tabcheck"
              @on-select-cancel="tabcheck"
@@ -655,7 +655,7 @@
         tableColumns: [
           {
             type: 'index2', minWidth: 60, align: 'center', title: '序号',
-            fixed: 'left',
+            // fixed: 'left',
             render: (h, params) => {
               return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
             }
@@ -664,7 +664,7 @@
             type: 'selection',
             align: 'center',
             minWidth: 50,
-            fixed: 'left',
+            // fixed: 'left',
           },
           {title: '驾校', align: 'center', key: 'jlJx', minWidth: 90},
           {title: '教练员', align: 'center', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 80},
@@ -693,20 +693,46 @@
           },
           // {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
+          // {
+          //   title: '费用', align: 'center', minWidth: 70, defaul: '0',
+          //   render: (h, p) => {
+          //     if (p.row.zfzt == '00') {
+          //       return h('div', p.row.yfJe + '元');
+          //     }
+          //
+          //     if (p.row.zfzt !== '00') {    //为已支付的，就显示现金
+          //       return h('div', p.row.xjje + '元');
+          //     }
+          //   }
+          // },
           {
-            title: '费用', align: 'center', minWidth: 70, defaul: '0',
+            title: '应收', align: 'center', minWidth: 70, defaul: '0',
             render: (h, p) => {
-              if (p.row.zfzt == '00') {
-                return h('div', p.row.yfJe + '元');
-              }
-
-              if (p.row.zfzt !== '00') {    //为已支付的，就显示现金
+                return h('div', p.row.lcFy + '元');
+            }
+          },
+          {
+            title: '实收', align: 'center', minWidth: 70, defaul: '0',
+            render: (h, p) => {
+              if (p.row.zfzt == '00') {    //为已支付的，就显示现金
+                return h('div', '');
+              }else{
                 return h('div', p.row.xjje + '元');
               }
             }
           },
           {
-            title: '订单状态', key: 'zfzt', align: 'center', minWidth: 80,
+            title: '支付方式', align: 'center', minWidth: 100, defaul: '0',
+            render: (h, p) => {
+              if (p.row.zfzt == '00') {
+                return h('div', '');
+              }else{
+                return h('div', p.row.zffs);
+              }
+            }
+          },
+          {
+            title: '状态', key: 'zfzt', align: 'center', minWidth: 80,
             filters: [
               {
                 label: '未支付',
@@ -754,7 +780,7 @@
             }
           },
           {
-            title: '类型', align: 'center', minWidth: 120,
+            title: '类型', align: 'center', minWidth: 100,
             filters: [
               {
                 label: '计时',
@@ -798,25 +824,25 @@
           //     }
           //   }
           // },
+          // {
+          //   title: '备注', align: 'center', minWidth: 50,
+          //   render: (h, p) => {
+          //     return h('Tooltip',
+          //       {
+          //         props:
+          //           {
+          //             placement: 'top',
+          //             content: p.row.zfzt === '10' ? p.row.lcLx === '00' ? p.row.kfje > 0 ? "应收:" + p.row.lcFy + "元,抵扣:" + p.row.kfje + "元,实收:" + p.row.xjje + "元" : '/' : "应收:" + p.row.lcFy + "元,实收:" + p.row.xjje + "元" : '/'
+          //           }
+          //       },
+          //       [
+          //         h('div', '/')
+          //       ]
+          //     )
+          //   }
+          // },
           {
-            title: '备注', align: 'center', minWidth: 50,
-            render: (h, p) => {
-              return h('Tooltip',
-                {
-                  props:
-                    {
-                      placement: 'top',
-                      content: p.row.zfzt === '10' ? p.row.lcLx === '00' ? p.row.kfje > 0 ? "应收:" + p.row.lcFy + "元,抵扣:" + p.row.kfje + "元,实收:" + p.row.xjje + "元" : '/' : "应收:" + p.row.lcFy + "元,实收:" + p.row.xjje + "元" : '/'
-                    }
-                },
-                [
-                  h('div', '/')
-                ]
-              )
-            }
-          },
-          {
-            title: '操作', minWidth: 50, align: 'center', fixed: 'right', render: (h, p) => {
+            title: '操作', minWidth: 70, align: 'center',  render: (h, p) => {
               let buttons = [];
               if (p.row.zfzt != '00') {
                 buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
@@ -1138,7 +1164,7 @@
                                 console.log(key, mess)
                                 if (mess === 'None') {
                                   v.swal({
-                                    title: '未放置卡片！',
+                                    title: '请放置卡片结束！',
                                     type: 'error',
                                     confirmButtonText: '确定',
                                   })
@@ -1357,6 +1383,11 @@
         }
       },
       'QRmessxj.zf': function (n, o) {
+        if(n=='3'){
+          this.QRmessxj.c=this.QRmess.kfje / 200
+          this.ccc==true
+          this.rs=0
+        }
         this.getysxjA()
       },
       'QRmessxj.c': function (n, o) {
@@ -1393,21 +1424,27 @@
         if (this.QRmessxj.zf == '1') {
           this.ysxzA = this.QRmess.lcFy
           this.kfje = this.QRmess.kfje
+          this.QRmessxj.c=0
+          this.rs=0
+          this.ccc=true
           console.log(this.ysxzA,this.QRmess.lcFy)
         } else if (this.QRmessxj.zf == '2') {
           this.ysxzA = (this.QRmess.lcFy - this.QRmess.cardje) > 0 ? (this.QRmess.lcFy - this.QRmess.cardje) : 0
           this.kfje = this.QRmess.kfje
-          if(this.ccc==true){
-            this.ysxzA=this.QRmess.lcFy
-          }
+          this.QRmessxj.c=0
+          this.ccc=true
+          this.rs=0
         } else {
           this.ysxzA = (this.QRmess.lcFy - (200 * this.QRmessxj.c)) > 0 ? (this.QRmess.lcFy - (200 * this.QRmessxj.c)) : 0
           this.kfje = this.QRmess.kfje - 200 * this.QRmessxj.c
           if(this.ccc==true){
             this.ysxzA=this.QRmess.lcFy
+            this.rs=0
           }
 
         }
+
+        console.log(this.rs)
       },
       getRs(we) {
         // this.QRmessxj.zf = we
@@ -1865,7 +1902,6 @@
       print(mess, ifPrint) {//还车     ifPrint:直接打印
         this.hisPrintMess = mess
         this.printClose = ifPrint ? true : false
-
         // setTimeout(()=>{
         //   this.$refs['backcar'].doPrint()
         // },1000)
@@ -1978,16 +2014,16 @@
 
             console.log(mess)
             if (mess === 'None') {
-              this.swal({
-                title: '请重新放置卡片',
-                type: 'error'
-              })
+              // this.swal({
+              //   title: '请重新放置卡片',
+              //   type: 'error'
+              // })
               if (v.showFQfzkp) {
                 return;
               }
               v.showFQfzkp = true;
               v.swal({
-                title: '未识别卡片，请放置卡片',
+                title: '请放置卡片发车！',
                 type: 'error',
                 confirmButtonText: '发车',
                 cancelButtonText: '取消',

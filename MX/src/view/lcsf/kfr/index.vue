@@ -73,7 +73,7 @@
     </Row>
     <div>
       <Row>
-        <table-area :pager="false" :parent="v"></table-area>
+        <table-area :pager="false" :TabHeight="AF.getPageHeight()-230" :parent="v"></table-area>
 
 
         <!--          <Row style="padding: 5px 10px">-->
@@ -106,11 +106,11 @@
         </Col>
         <Col span="21" align="right" v-if="switch1">
           <span>
-            <span style="font-size: 24px;font-weight: 600">
+            <span style="font-size: 15px;font-weight: 600">
             人数：<span style="color: #ed3f14"> {{rs}} </span> 人
             </span>
           &nbsp&nbsp&nbsp
-            <span style="font-size: 24px;font-weight: 600">
+            <span style="font-size: 15px;font-weight: 600">
             合计：<span style="color: #ed3f14"> {{hj}} </span> 元
             </span>
             </span>
@@ -605,6 +605,7 @@
         if (n == false) {
           this.compName = ''
           this.formData = {}
+          this.formData.xySl=''
           this.formData.jlCx = 'C1'
           this.jlJx = ''
         } else {

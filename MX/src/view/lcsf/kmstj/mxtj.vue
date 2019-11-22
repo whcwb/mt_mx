@@ -19,7 +19,7 @@
           <!--<div @click="AnWeekTJ" style="padding: 10px;border-radius: 35px;background-color: #10AEFF;color: white;font-size: 28px">周</div>-->
         <!--</Col>-->
       <Col span="24" align="right">
-        <div style="font-size: 24px;font-weight: 600">
+        <div style="font-size: 15px;font-weight: 600">
           合计：<span style="color: #ed3f14"> {{addmoney}} </span> 元
         </div>
       </Col>

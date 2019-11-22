@@ -19,7 +19,7 @@
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
     <Row>
       <Col span="24" align="right">
-        <div style="font-size: 24px;font-weight: 600">
+        <div style="font-size: 15px;font-weight: 600">
           合计：<span style="color: #ed3f14"> {{addmoney}} </span> 元
         </div>
       </Col>

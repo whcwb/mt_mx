@@ -77,7 +77,7 @@
     </Row>
 
     <Row v-show="activeName=='1'">
-      <Table ref="table" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
+      <Table ref="table" :height="AF.getPageHeight()-210" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
     </Row>
 
     <div class="boxbackborder box_col" v-if="activeName=='2'">
@@ -116,7 +116,8 @@
           </Button>
         </Col>
       </Row>
-      <Table :height="680" stripe
+      <Table :height="AF.getPageHeight()-240"
+             stripe
              size="small"
              @on-select="tabcheck"
              :columns="tableColumns" :data="pageData"></Table>
@@ -126,7 +127,7 @@
           <Page :total=param.total
                 :current=param.pageNum
                 :page-size=param.pageSize
-                :page-size-opts=[8,10,20,30,40,50]
+                :page-size-opts=[10,15,20,30,40,50]
                 show-total
                 show-elevator
                 show-sizer
@@ -196,10 +197,11 @@
             </div>
           </Col>
         </Row>
-        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined&&formData.zddm.includes('K3AB')">
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && !formData.zddm.includes('K3PY')">
           <Col span="12">
-            <FormItem :label="'人数'" label-position="top">
-              <Input v-model="formData.xySl"></Input>
+            <FormItem :label="'人数'" label-position="top" >
+              <!--<Input v-model="formData.xySl"></Input>-->
+              <InputNumber style="width:280px" :min="1" v-model="formData.xySl"></InputNumber>
             </FormItem>
           </Col>
         </Row>
@@ -274,9 +276,9 @@
             </FormItem>
           </Col>
         </Row>
-        <FormItem label="备注" label-position="top">
-          <Input type="textarea" v-model="formData.bz" :rows="4"/>
-        </FormItem>
+        <!--<FormItem label="备注" label-position="top">-->
+          <!--<Input type="textarea" v-model="formData.bz" :rows="4"/>-->
+        <!--</FormItem>-->
       </Form>
       <div slot='footer'>
         <Button style="margin-right: 8px" @click="close">取消</Button>
@@ -475,10 +477,10 @@
           //     return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
           //   }
           // },
-          {type: 'index', align: 'center', minWidth: 40, title: '序号'},
+          {type: 'index', align: 'center', minWidth: 60, title: '序号'},
           {
             type: 'selection',
-            width: 40,
+            width: 50,
             align: 'center'
           },
           {title: '驾校', key: 'jlJx', minWidth: 90, align: 'center',},
@@ -544,6 +546,18 @@
             title: '订单状态', key: 'zfzt', minWidth: 80, align: 'center',
             render: (h, p) => {
               if (p.row.zfzt == '00') {
+                return h('div',
+                  [
+                    h('Button', {
+                      props: {
+                        type: 'error',
+                        size: 'small',
+                        ghost: true,
+                      },
+                      style: {},
+                    }, '未支付')
+                  ])
+
                 return h('div', '未支付')
               } else {
                 return h('div', '已支付')
@@ -558,7 +572,7 @@
               return h('div', p.row.zgXm)
             }
           },
-          {title: '凭证号', key: 'pz', minWidth: 150, align: 'center',},
+          // {title: '凭证号', key: 'pz', minWidth: 150, align: 'center',},
 
           {
             title: '操作', minWidth: 60, fixed: 'right', align: 'center', render: (h, p) => {
@@ -685,23 +699,30 @@
             align: 'center',
             fixed: "left",
             minWidth: 100,
+            // render: (h, p) => {
+            //   return h('div', {
+            //     style: {
+            //       // height:'30px',width:'30px',
+            //       fontSize: '16px', fontWeight: '600',
+            //       // backgroundColor:'#ffbb96',borderRadius:"25px",
+            //       // color:'#ffbb96',
+            //     }
+            //   }, p.row.clBh)
+            //   // return h('Tag', {
+            //   //   props: {
+            //   //     type: 'volcano',
+            //   //   },
+            //   //   style:{
+            //   //       font_size:'24px'
+            //   //   }
+            //   // }, p.row.clBh)
+            // }
             render: (h, p) => {
-              return h('div', {
-                style: {
-                  // height:'30px',width:'30px',
-                  fontSize: '16px', fontWeight: '600',
-                  // backgroundColor:'#ffbb96',borderRadius:"25px",
-                  // color:'#ffbb96',
+              return h('Tag', {
+                props: {
+                  type: 'volcano',
                 }
               }, p.row.clBh)
-              // return h('Tag', {
-              //   props: {
-              //     type: 'volcano',
-              //   },
-              //   style:{
-              //       font_size:'24px'
-              //   }
-              // }, p.row.clBh)
             }
           },
           // {
@@ -752,7 +773,6 @@
                     props: {
                       type: 'success',
                       size: 'small',
-                      ghost: true
                     },
                     style: {margin: '0 10px 0 0'},
                     on: {
@@ -804,9 +824,8 @@
                 buttons.push(
                   h('Button', {
                     props: {
-                      type: 'warning',
+                      type: 'error',
                       size: 'small',
-                      ghost: true
                     },
                     style: {margin: '0 10px 0 0'},
                     on: {
@@ -832,17 +851,18 @@
                                 if (res.code == 200) {
                                   // this.$Message.success(res.message)
                                   this.QRmess = res.result
+                                  this.QRmess.zf = this.QRmess.fdr
                                   // this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
                                   // this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
-                                  if (this.QRmess.fdr.indexOf('1') != -1) {
-                                    this.ls.ls1 = true
-                                  }
-                                  if (this.QRmess.fdr.indexOf('2') != -1) {
-                                    this.ls.ls2 = true
-                                  }
-                                  if (this.QRmess.fdr.indexOf('3') != -1) {
-                                    this.ls.ls3 = true
-                                  }
+                                  // if (this.QRmess.fdr.indexOf('1') != -1) {
+                                  //   this.ls.ls1 = true
+                                  // }
+                                  // if (this.QRmess.fdr.indexOf('2') != -1) {
+                                  //   this.ls.ls2 = true
+                                  // }
+                                  // if (this.QRmess.fdr.indexOf('3') != -1) {
+                                  //   this.ls.ls3 = true
+                                  // }
                                   if (p.row.lcJl.lcLx == '00') {
                                     this.ifFinish = true
                                     this.QRmodal = true
@@ -912,7 +932,7 @@
                                         this.ifFinish = true
                                         this.QRmodal = true
                                       } else {
-
+                                        this.print(res.result,true)
                                       }
                                       // this.print(res.result)
                                       this.getCarList()
@@ -1261,7 +1281,7 @@
         } else if (name == '2') {
           this.dateRange.jssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59'];
           this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
-          v.param.pageSize = 10;
+          v.param.pageSize = 15;
           console.log(this.param);
           v.util.getPageData(v)
         } else {
@@ -1331,34 +1351,35 @@
         }
       },
       QRok() {
-        if (this.QRmess.xjje == 0 && this.QRmess.fdr.indexOf("1") != -1) {
+        // if (this.QRmess.xjje == 0 && this.QRmess.fdr.indexOf("1") != -1) {
           // 如果此时不需要支付现金 并且是抵扣支付 则需要弹出是否继续确认支付
-          this.swal({
-            title: '开放日预存训练费(' + this.QRmess.kfje + ")元,需一次性使用完,是否强制结算!",
-            type: 'question',
-            showCancelButton: true,
-            confirmButtonText: '确定',
-            cancelButtonText: '取消'
-          }).then(p => {
-            if (p.value) {
-              this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
-                if (res.code == 200) {
-                  // this.$Message.success(res.message)
-                  this.QRmess.id = res.message
-                  if (this.ifFinish)
-                    this.print(this.QRmess, true)
-                  else this.print(this.QRmess, false)
-                  this.qrids = ''
-                  this.util.getPageData(this)
-                } else {
-                  this.$Message.error(res.message)
-                }
-              })
-            } else {
-              this.QRmodal = true
-            }
-          })
-        } else {
+          // this.swal({
+            // title: '开放日预存训练费(' + this.QRmess.kfje + ")元,需一次性使用完,是否强制结算!",
+            // type: 'question',
+            // showCancelButton: true,
+            // confirmButtonText: '确定',
+            // cancelButtonText: '取消'
+          // }).then(p => {
+            // if (p.value) {
+            //   this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
+            //     if (res.code == 200) {
+            //       // this.$Message.success(res.message)
+            //       this.QRmess.id = res.message
+            //       if (this.ifFinish)
+            //         this.print(this.QRmess, true)
+            //       else this.print(this.QRmess, false)
+            //       this.qrids = ''
+            //       this.util.getPageData(this)
+            //     } else {
+            //       this.$Message.error(res.message)
+            //     }
+            //   })
+            // } else {
+            //   this.QRmodal = true
+            // }
+          // })
+        // }
+        // else {
           this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
             if (res.code == 200) {
               // this.$Message.success(res.message)
@@ -1372,7 +1393,7 @@
               this.$Message.error(res.message)
             }
           })
-        }
+        // }
 
       },
       lcFyChange(v) {

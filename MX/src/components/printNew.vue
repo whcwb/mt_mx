@@ -10,8 +10,8 @@
       <div slot="header">
         <Row>
           <!--<Col span="4 ">-->
-            <!--<Col span="4">-->
-            <!--            <p>车单打印</p>-->
+          <!--<Col span="4">-->
+          <!--            <p>车单打印</p>-->
           <!--</Col>-->
           <!--<Col span="4" align="center">
             <span v-if="printClose">
@@ -23,7 +23,7 @@
                     @click="close">关闭
             </Button>
             <!--<Button type="success" size="large" style="margin: 0 12px"-->
-                    <!--@click="doPrint('打印预览')">打印预览-->
+            <!--@click="doPrint('打印预览')">打印预览-->
             <!--</Button>-->
             <Button type="success" size="large" :disabled="isDone"
                     @click="doPrint('')">打印
@@ -101,8 +101,8 @@
         showModal: true,
         showCode: false,
         codeSrc: '',
-        isDone:true,
-        displayItem:{},
+        isDone: true,
+        displayItem: {},
         mess: [
           // {title: '训练科目', key: 'km'},
           {title: '训练科目', key: 'zddm', dict: 'ZDCLK1045'},
@@ -125,66 +125,74 @@
     created() {
       this.info = JSON.parse(JSON.stringify(this.hisPrintMess))
       console.log(this.info, 'fsdf')
-      console.log(this.info)
       // if (this.info.pz != '') {
-        this.$http.post('/api/lcjl/getByPz', {pz: this.info.pz}).then((res) => {
-          if (res.code == 200) {
-            this.info = res.result
-            this.info.sc=this.info.sc=='0'?'': this.info.sc+'分钟'
-            if (this.info.fdr.indexOf('1') >= 0) {
-              this.info.lcFy = ''
-            }
-            if (this.info.lcFy == '') {
-              this.info.lcFy = ''
-            } else {
-              this.info.lcFy = this.info.lcFy + '元'
-            }
+      if (this.printClose) {
+        this.showModal = false
+      }
+      this.$http.post('/api/lcjl/getByPz', {pz: this.info.pz}).then((res) => {
+        if (res.code == 200) {
+          this.info = res.result
+          // if (this.info.fdr.indexOf('1') >= 0) {
+          //   this.info.lcFy = ''
+          // }
+          // if (this.info.lcFy == '') {
+          //   this.info.lcFy = ''
+          // } else {
+          //   this.info.lcFy = this.info.lcFy + '元'
+          // }
 
-            if(this.info.lcFy == 0) this.info.lcFy='0'
+          //有任何需要处理的打印参数，在这里处理
+          this.info.sc = this.info.sc == '0' ? '' : this.info.sc + '分钟'
+          if (this.info.xjje == 0) this.info.xjje = '0元'
+          else this.info.xjje += '元'
 
-            this.displayItem = [
-              {
-                title:'训练科目',
-                val:this.info.zdmc
-              },
-              {
-                title:'车辆编号',
-                val:this.info.clBh,
-              },
-              {
-                title:'训练车型',
-                val:this.info.jlCx,
-              },
-              {
-                title:'教练员',
-                val:this.info.jlJx+' '+this.info.jlXm,
-              },
-              {
-                title:'安全员',
-                val:this.info.zgXm
-              },
-              {
-                title:'累计时长',
-                val:this.info.sc,
-              },
-              {
-                title:'累计费用',
-                val:this.info.lcFy,
-              },
-              {
-                title:'备注',
-                val:this.info.bz,
-              },
-            ]
+          // console.log(this.info.xjje)
 
-            if (this.printClose) {
-              this.doPrint('')
-              this.showModal=false
-            }
 
-            this.isDone=false
+          //赋值打印参数，该打印对象仅限于print固定模板
+          this.displayItem = [
+            {
+              title: '训练科目',
+              val: this.info.zdmc
+            },
+            {
+              title: '车辆编号',
+              val: this.info.clBh,
+            },
+            {
+              title: '训练车型',
+              val: this.info.jlCx,
+            },
+            {
+              title: '教练员',
+              val: this.info.jlJx + ' ' + this.info.jlXm,
+            },
+            {
+              title: '安全员',
+              val: this.info.zgXm
+            },
+            {
+              title: '累计时长',
+              val: this.info.sc,
+            },
+            {
+              title: '累计费用',
+              val: this.info.xjje,
+            },
+            {
+              title: '备注',
+              val: this.info.bz,
+            },
+          ]
+
+          if (this.printClose) {
+            this.doPrint('')
+            // this.showModal=false
           }
-        })
+
+          this.isDone = false
+        }
+      })
       // }
       // else {
       //   this.info.sc = this.parseTime(this.info.sc)
@@ -214,11 +222,12 @@
       let v = this;
       setTimeout(() => {
         let canvas = document.getElementById("barcode");
-        if(this.showModal) {
+        if (this.showModal) {
           v.codeSrc = canvas.toDataURL()
-        setTimeout(() => {
-          this.SetPprintInnerHTML(this.$refs.printDiv.innerHTML)
-        }, 300)}
+          setTimeout(() => {
+            this.SetPprintInnerHTML(this.$refs.printDiv.innerHTML)
+          }, 300)
+        }
       }, 200)
       // this.enter()
     },
@@ -231,21 +240,20 @@
         // document.getElementById("page1").innerHTML = this.$refs.printDiv.innerHTML;
 
 
-
-          // this.Interval = setInterval(() => {
-          //   this.mesTime--
-          //   if (this.mesTime <= 0){
-          //     clearInterval(this.Interval)
-          //   }
-          // }, 1000)
-          //
-          // setTimeout(() => {
-          //   this.doPrint('', () => {
-          //     setTimeout(() => {
-          //       v.close()
-          //     }, 5000)
-          //   })
-          // }, 1000)
+        // this.Interval = setInterval(() => {
+        //   this.mesTime--
+        //   if (this.mesTime <= 0){
+        //     clearInterval(this.Interval)
+        //   }
+        // }, 1000)
+        //
+        // setTimeout(() => {
+        //   this.doPrint('', () => {
+        //     setTimeout(() => {
+        //       v.close()
+        //     }, 5000)
+        //   })
+        // }, 1000)
 
       })
     },
@@ -263,12 +271,12 @@
         };
       },
       doPrint(how, callback) {
-        let item=[]
-        this.displayItem.map((val, index, arr)=>{
-          item[index]=val.val
+        let item = []
+        this.displayItem.map((val, index, arr) => {
+          item[index] = val.val
         })
 
-        print.print(this.info.id,item, this.info.jssj.substring(0, 16))
+        print.print(this.info.id, item, this.info.jssj.substring(0, 16))
 
         this.close()
 
