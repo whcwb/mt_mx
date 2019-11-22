@@ -29,6 +29,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import sun.tools.jar.Manifest;
 import tk.mybatis.mapper.common.Mapper;
 
 import javax.servlet.ServletOutputStream;
@@ -1023,45 +1024,63 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
         String fileName = time + "-明细统计";
         LimitedCondition condition = getQueryCondition();
+        condition.and().andCondition(" jssj is not null and jssj != ''");
         PageInfo<BizLcJl> info = findPage(page, condition);
         List<BizLcJl> list = info.getList();
         List<Map<Integer, String>> data = new ArrayList<>();
         Map<Integer, String> map = new HashMap<>();
         map.put(0, "#");
-        map.put(1, "车辆编号");
-        map.put(2, "开始时间");
-        map.put(3, "结束时间");
-        map.put(4, "安全员姓名");
-        map.put(5, "教练姓名");
-        map.put(6, "时长");
-        map.put(7, "驾校/队号");
-        map.put(8, "学员数量");
-        map.put(9, "计费类型");
-        map.put(10, "练车费用");
+        map.put(1, "驾校");
+        map.put(2, "教练员");
+        map.put(3, "开始时间");
+        map.put(4, "结束时间");
+        map.put(5, "时长");
+        map.put(6, "应收");
+        map.put(7, "实收");
+        map.put(8, "支付方式");
+        map.put(9, "类型");
         data.add(map);
+        Set<String> collect = list.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
+        SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
+        condition1.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        condition1.in(SysZdxm.InnerColumn.zddm, collect);
+        List<SysZdxm> zdxms= new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(collect)){
+             zdxms = zdxmService.findByCondition(condition1);
+        }
+
+        Map<String, String> stringMap = zdxms.stream().collect(Collectors.toMap(SysZdxm::getZddm, SysZdxm::getBy9));
         for (int i = 0; i < list.size(); i++) {
             BizLcJl jl = list.get(i);
             Map<Integer, String> dataMap = new HashMap<>();
             dataMap.put(0, i + 1 + "");
-            dataMap.put(1, jl.getClBh());
+            dataMap.put(1, jl.getJlJx());
+            dataMap.put(2, jl.getJlXm());
             if (StringUtils.isNotBlank(jl.getKssj())) {
-                dataMap.put(2, jl.getKssj().substring(0, jl.getKssj().length() - 3));
-            } else {
-                dataMap.put(2, " - ");
-            }
-            if (StringUtils.isNotBlank(jl.getJssj())) {
-                dataMap.put(3, jl.getJssj().substring(0, jl.getJssj().length() - 3));
+                dataMap.put(3, jl.getKssj().substring(0, jl.getJssj().length() - 3));
             } else {
                 dataMap.put(3, "-");
             }
+            if (StringUtils.isNotBlank(jl.getJssj())) {
+                dataMap.put(4, jl.getJssj().substring(0, jl.getJssj().length() - 3));
+            } else {
+                dataMap.put(4, "-");
+            }
 
-            dataMap.put(4, jl.getZgXm());
-            dataMap.put(5, jl.getJlXm());
-            dataMap.put(6, jl.getSc() + "");
-            dataMap.put(7, jl.getJlJx());
-            dataMap.put(8, jl.getXySl() + "");
-            dataMap.put(9, lxMap.get(jl.getLcLx()));
-            dataMap.put(10, jl.getLcFy() == null ? "0" : jl.getLcFy() + "");
+
+            dataMap.put(5, jl.getSc() +"");
+            dataMap.put(6, jl.getLcFy() + "");
+            dataMap.put(7, jl.getXjje() + "");
+            // 计算下支付方式
+            if(jl.getKfje() != null && jl.getKfje() > 0) {
+                dataMap.put(8,"开放日·" + (int)(Math.ceil(jl.getKfje()*1.0 / 200)) + "人");
+            }else if(jl.getCardje() != null && jl.getCardje() > 0) {
+                dataMap.put(8,"充值卡");
+            }else if(StringUtils.equals(jl.getZfzt(), "10")){
+                dataMap.put(8,"现金");
+            }
+
+            dataMap.put(9, stringMap.get(jl.getZddm()));
             data.add(dataMap);
         }
         Map<Integer, String> dataMap = new HashMap<>();
@@ -1071,11 +1090,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         dataMap.put(3, "");
         dataMap.put(4, "");
         dataMap.put(5, "");
-        dataMap.put(6, "");
-        dataMap.put(7, "");
+        dataMap.put(7, list.stream().filter(jl -> jl.getXjje() != null).mapToInt(BizLcJl::getXjje).sum() + "");
         dataMap.put(8, "");
         dataMap.put(9, "");
-        dataMap.put(10, list.size() == 0 ? "0" : list.stream().filter(bizLcJl -> bizLcJl.getLcFy() != null).mapToInt(BizLcJl::getLcFy).sum() + "");
+        dataMap.put(6, list.size() == 0 ? "0" : list.stream().filter(bizLcJl -> bizLcJl.getLcFy() != null).mapToInt(BizLcJl::getLcFy).sum() + "");
         data.add(dataMap);
 
         response.setContentType("application/msexcel");
