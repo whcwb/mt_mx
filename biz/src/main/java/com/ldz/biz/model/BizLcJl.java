@@ -133,7 +133,7 @@ public class BizLcJl implements Serializable {
      * 练车单价
      */
     @Column(name = "lc_dj")
-    private float lcDj;
+    private Float lcDj;
     /**
      * 卡号
      */
@@ -170,7 +170,7 @@ public class BizLcJl implements Serializable {
      * 实际应付金额
      */
     @Column(name = "yf_je")
-    private int yfJe;
+    private Integer yfJe;
 
     private String xyXm;
 
@@ -194,13 +194,13 @@ public class BizLcJl implements Serializable {
     private String zfzt;
 
     @Column(name = "xjje")
-    private int xjje;
+    private Integer xjje;
 
     @Column(name = "cardje")
-    private int cardje;
+    private Integer cardje;
 
     @Column(name = "kfje")
-    private int kfje;
+    private Integer kfje;
 
     @Transient
     private List<BizLcJl> jls;
@@ -212,6 +212,9 @@ public class BizLcJl implements Serializable {
 
     @Transient
     private String zdmc;
+
+    @Transient
+    private String zffs;
 
     private static final long serialVersionUID = 1L;
 
