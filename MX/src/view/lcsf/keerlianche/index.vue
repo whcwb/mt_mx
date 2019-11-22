@@ -228,7 +228,7 @@
     </Row>
 
     <Row v-show="activeName=='1'">
-      <Table ref="table" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
+      <Table ref="table" :height="AF.getPageHeight()-210" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
     </Row>
 
     <div class="boxbackborder box_col" v-if="activeName=='2'">
@@ -268,10 +268,12 @@
           </Button>
         </Col>
       </Row>
-      <Table :height="680"
+      <Table :height="AF.getPageHeight()-240"
              size="small"
              @on-select="tabcheck"
              @on-select-cancel="tabcheck"
+             @on-select-all="tabcheck"
+             @on-select-all-cancel="tabcheck"
              :columns="tableColumns" :data="pageData"></Table>
       <!--      <table-area :parent="v"></table-area>-->
       <Row class="margin-top-10 pageSty">
@@ -474,10 +476,11 @@
                 <p style="font-size: 18px;font-weight: 500;padding: 10px;display: flex;align-items: center">
                   <Radio label="3" :disabled="QRmess.kfje<=0">
                     <Icon type="social-windows"></Icon>
-                    <span style="font-size: 18px;">抵扣支付(余额:{{QRmess.kfje}}元)</span>
+                    <span style="font-size: 18px;">抵扣支付(余额:{{QRmess.kfje-(rs*200)}}元)</span>
                   </Radio>
-                  <Select v-if="QRmessxj.zf==='3'" v-model="QRmessxj.c" style="width:80px;display: inline-block" size="small"
-                          @on-change="getysxjA()">
+                  <Select v-if="QRmessxj.zf==='3'" v-model="QRmessxj.c" style="width:80px;display: inline-block"
+                          size="small"
+                          @on-change="ccc=false,getysxjA()">
                     <Option v-for="(item,index) in RS" :value="item" :key="index">{{item}}</Option>
                   </Select>
                 </p>
@@ -487,7 +490,7 @@
 
         </Row>
         <Row style="text-align: left;padding-left: 10px">
-          <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">{{QRmess.bz}}</p>
+          <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">应收现金{{this.ysxzA}}元</p>
         </Row>
       </div>
     </Modal>
@@ -568,7 +571,7 @@
   import carStatistics from '../statistics/carStatistics'
   import keyypd from '../comp/keyypd'
   import print from '../comp/print'
-  import printNew from '../comp/printNew'
+  import printNew from '../../../components/printNew'
   import yydrawer from './yydrawer'
   import yyModel from './yyModel'
   import radioCar from '../comp/RadioCar'
@@ -588,6 +591,7 @@
         b: false,
         RS: [1, 2],
         tcIndex: 0,
+        ccc:true,
         columns2: [
           {
             type: 'index',
@@ -651,7 +655,7 @@
         tableColumns: [
           {
             type: 'index2', minWidth: 60, align: 'center', title: '序号',
-            fixed: 'left',
+            // fixed: 'left',
             render: (h, params) => {
               return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
             }
@@ -660,7 +664,7 @@
             type: 'selection',
             align: 'center',
             minWidth: 50,
-            fixed: 'left',
+            // fixed: 'left',
           },
           {title: '驾校', align: 'center', key: 'jlJx', minWidth: 90},
           {title: '教练员', align: 'center', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 80},
@@ -679,8 +683,8 @@
           //   }
           // },
 
-          {title: '开始时间', align: 'center', key: 'kssj', minWidth: 140},
-          {title: '结束时间', align: 'center', key: 'jssj', searchType: 'daterange', minWidth: 140},
+          {title: '开始时间', align: 'center', key: 'kssj', minWidth: 135},
+          {title: '结束时间', align: 'center', key: 'jssj', searchType: 'daterange', minWidth: 135},
           {
             title: '时长', align: 'center', key: 'sc', minWidth: 70, defaul: '0',
             render: (h, p) => {
@@ -689,14 +693,46 @@
           },
           // {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
+          // {
+          //   title: '费用', align: 'center', minWidth: 70, defaul: '0',
+          //   render: (h, p) => {
+          //     if (p.row.zfzt == '00') {
+          //       return h('div', p.row.yfJe + '元');
+          //     }
+          //
+          //     if (p.row.zfzt !== '00') {    //为已支付的，就显示现金
+          //       return h('div', p.row.xjje + '元');
+          //     }
+          //   }
+          // },
           {
-            title: '费用', align: 'center', minWidth: 70, defaul: '0',
+            title: '应收', align: 'center', minWidth: 70, defaul: '0',
             render: (h, p) => {
-              return h('div', p.row.lcFy + '元');
+                return h('div', p.row.lcFy + '元');
             }
           },
           {
-            title: '订单状态', key: 'zfzt', align: 'center', minWidth: 80,
+            title: '实收', align: 'center', minWidth: 70, defaul: '0',
+            render: (h, p) => {
+              if (p.row.zfzt == '00') {    //为已支付的，就显示现金
+                return h('div', '');
+              }else{
+                return h('div', p.row.xjje + '元');
+              }
+            }
+          },
+          {
+            title: '支付方式', align: 'center', minWidth: 100, defaul: '0',
+            render: (h, p) => {
+              if (p.row.zfzt == '00') {
+                return h('div', '');
+              }else{
+                return h('div', p.row.zffs);
+              }
+            }
+          },
+          {
+            title: '状态', key: 'zfzt', align: 'center', minWidth: 80,
             filters: [
               {
                 label: '未支付',
@@ -717,24 +753,25 @@
             },
             render: (h, p) => {
               if (p.row.zfzt == '00') {
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'error',
-                      size: 'small',
-                      ghost: true,
-                    },
-                    style: {},
-                    /*on: {
-                      click: () => {
-                        console.log("现金支付");
-                        this.xjzf(p.row)
-                      }
-                    }*/
-                  }, '未支付')
-                ])
+                return h('div',
+                  [
+                    h('Button', {
+                      props: {
+                        type: 'error',
+                        size: 'small',
+                        ghost: true,
+                      },
+                      style: {},
+                      // on: {
+                      //   click: () => {
+                      //     console.log("现金支付");
+                      //     this.xjzf(p.row)
+                      //   }
+                      // }
+                    }, '未支付')
+                  ])
 
-                // return h('div', '未支付')
+                return h('div', '未支付')
 
 
               } else {
@@ -743,7 +780,7 @@
             }
           },
           {
-            title: '类型', align: 'center', minWidth: 120,
+            title: '类型', align: 'center', minWidth: 100,
             filters: [
               {
                 label: '计时',
@@ -772,27 +809,45 @@
             }
           },
           // {title: '凭证', key: 'pz', align: 'center', minWidth: 130,},
+          // {
+          //   title: '备注', align: 'center', minWidth: 130,
+          //   render: (h, p) => {
+          //     if (p.row.zfzt == '10') {
+          //       if (p.row.lcLx == '00') {
+          //         // 计时培训
+          //         if (p.row.kfje > 0) {
+          //           let a = "应收:" + p.row.lcFy + "元,抵扣:" + p.row.kfje + "元,实收:" + p.row.xjje + "元";
+          //           return h('div', a)
+          //         }
+          //       }
+          //       return h('div', "应收:" + p.row.lcFy + "元,实收:" + p.row.xjje + "元");
+          //     }
+          //   }
+          // },
+          // {
+          //   title: '备注', align: 'center', minWidth: 50,
+          //   render: (h, p) => {
+          //     return h('Tooltip',
+          //       {
+          //         props:
+          //           {
+          //             placement: 'top',
+          //             content: p.row.zfzt === '10' ? p.row.lcLx === '00' ? p.row.kfje > 0 ? "应收:" + p.row.lcFy + "元,抵扣:" + p.row.kfje + "元,实收:" + p.row.xjje + "元" : '/' : "应收:" + p.row.lcFy + "元,实收:" + p.row.xjje + "元" : '/'
+          //           }
+          //       },
+          //       [
+          //         h('div', '/')
+          //       ]
+          //     )
+          //   }
+          // },
           {
-            title: '备注', align: 'center', minWidth: 130,
-            render: (h, p) => {
-              if (p.row.zfzt == '10') {
-                if (p.row.lcLx == '00') {
-                  // 计时培训
-                  if (p.row.kfje > 0) {
-                    let a = "应收金额:" + p.row.lcFy + "元,抵扣金额:" + p.row.kfje + "元,实收金额:" + p.row.xjje + "元";
-                    return h('div', a)
-                  }
-                }
-                return h('div', "应收金额:" + p.row.lcFy + "元,实收金额:" + p.row.xjje + "元");
-              }
-            }
-          },
-          {
-            title: '操作', minWidth: 50, align: 'center', fixed: 'right', render: (h, p) => {
+            title: '操作', minWidth: 70, align: 'center',  render: (h, p) => {
               let buttons = [];
               if (p.row.zfzt != '00') {
                 buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
                   this.hisPrintMess = p.row
+                  this.printClose = false
                   this.componentName = 'printNew'
                 }));
               }
@@ -826,6 +881,7 @@
 
         ],
         pageData: [],
+        ifFinish: false,   //是否为结束训练，用于判断是否直接打印
         param: {
           orderBy: 'jssj desc',
           jssjIsNotNull: '1',
@@ -886,6 +942,7 @@
         QRmodal: false,
         QRmodalxj: false,
         QRmess: {},
+        rs: 0,
         QRmessxj: {
           zf: '',
           c: ''
@@ -1079,20 +1136,18 @@
                                   this.QRmess = res.result
                                   // this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
                                   // this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
-                                  // if (this.QRmess.fdr.indexOf('1') != -1) {
-                                  //   this.ls.ls1 = true
-                                  // }
-                                  // if (this.QRmess.fdr.indexOf('2') != -1) {
-                                  //   this.ls.ls2 = true
-                                  // }
-                                  // if (this.QRmess.fdr.indexOf('3') != -1) {
-                                  //   this.ls.ls3 = true
-                                  // }
+                                  var a = this.QRmess.kfje / 200
+                                  this.RS = []
+                                  for (let i = 0; i < a; i++) {
+                                    this.RS.push(i + 1)
+                                  }
+                                  this.QRmessxj.c = this.QRmess.kfje / 200
                                   this.QRmessxj.zf = this.QRmess.fdr
                                   if (p.row.lcJl.lcLx == '00') {
+                                    this.ifFinish = true
                                     this.QRmodal = true
                                   } else {
-                                    this.print(res.result)
+                                    this.print(res.result, true)
                                   }
                                   // this.print(res.result)
                                   this.getCarList()
@@ -1107,9 +1162,9 @@
                               var v = this
                               this.giveCar.readCardChrome((key, mess) => {
                                 console.log(key, mess)
-                                if (mess==='None') {
+                                if (mess === 'None') {
                                   v.swal({
-                                    title: '未放置卡片！',
+                                    title: '请放置卡片结束！',
                                     type: 'error',
                                     confirmButtonText: '确定',
                                   })
@@ -1135,17 +1190,19 @@
                                       this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
                                       this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
                                       this.QRmessxj.zf = this.QRmess.fdr
+                                      var a = this.QRmess.kfje / 200
+                                      this.RS = []
+                                      for (let i = 0; i < a; i++) {
+                                        this.RS.push(i + 1)
+                                      }
+                                      this.QRmessxj.c = a
                                       if (p.row.lcJl.lcLx == '00') {
+                                        this.ifFinish = true
                                         this.QRmodal = true
                                       } else {
 
                                       }
 
-                                      var a = this.QRmess.kfje / 200
-                                      this.RS=[]
-                                      for(let i=0;i<a;i++){
-                                        this.RS.push(i+1)
-                                      }
                                       // this.print(res.result)
                                       this.getCarList()
                                     } else {
@@ -1326,10 +1383,19 @@
         }
       },
       'QRmessxj.zf': function (n, o) {
+        if(n=='3'){
+          this.QRmessxj.c=this.QRmess.kfje / 200
+          this.ccc==true
+          this.rs=0
+        }
         this.getysxjA()
       },
       'QRmessxj.c': function (n, o) {
         this.getysxjA()
+      },
+      QRmodal:function (n,o) {
+          this.ccc=true
+          this.rs=0
       }
     },
     mounted() {
@@ -1350,16 +1416,35 @@
         'Ch_LcTime'
       ]),
       getysxjA() {
-        if (this.QRmessxj.zf == '1') {
-          this.ysxzA = this.QRmessxj.lcFy
-          this.kfje = this.QRmessxj.kfje
-        } else if (this.QRmessxj.zf == '2') {
-          this.ysxzA = (this.QRmessxj.lcFy - this.QRmessxj.cardje) > 0 ? (this.QRmessxj.lcFy - this.QRmessxj.cardje) : 0
-          this.kfje = this.QRmessxj.kfje
-        } else {
-          this.ysxzA = (this.QRmessxj.lcFy - (200 * this.QRmessxj.c)) > 0 ? (this.QRmessxj.lcFy - (200 * this.QRmessxj.c)) : 0
-          this.kfje = this.QRmessxj.kfje - 200 * this.QRmessxj.c
+        console.log(this.ccc)
+        if(this.ccc==false){
+          this.rs=this.QRmessxj.c
         }
+        else  this.rs=this.QRmessxj.c
+        if (this.QRmessxj.zf == '1') {
+          this.ysxzA = this.QRmess.lcFy
+          this.kfje = this.QRmess.kfje
+          this.QRmessxj.c=0
+          this.rs=0
+          this.ccc=true
+          console.log(this.ysxzA,this.QRmess.lcFy)
+        } else if (this.QRmessxj.zf == '2') {
+          this.ysxzA = (this.QRmess.lcFy - this.QRmess.cardje) > 0 ? (this.QRmess.lcFy - this.QRmess.cardje) : 0
+          this.kfje = this.QRmess.kfje
+          this.QRmessxj.c=0
+          this.ccc=true
+          this.rs=0
+        } else {
+          this.ysxzA = (this.QRmess.lcFy - (200 * this.QRmessxj.c)) > 0 ? (this.QRmess.lcFy - (200 * this.QRmessxj.c)) : 0
+          this.kfje = this.QRmess.kfje - 200 * this.QRmessxj.c
+          if(this.ccc==true){
+            this.ysxzA=this.QRmess.lcFy
+            this.rs=0
+          }
+
+        }
+
+        console.log(this.rs)
       },
       getRs(we) {
         // this.QRmessxj.zf = we
@@ -1379,9 +1464,9 @@
         // this.getysxjA()
         if (we == '3') {
           var a = this.QRmess.kfje / 200
-          this.RS=[]
-          for(let i=0;i<a;i++){
-            this.RS.push(i+1)
+          this.RS = []
+          for (let i = 0; i < a; i++) {
+            this.RS.push(i + 1)
           }
           this.QRmessxj.c = this.QRmess.kfje / 200
         }
@@ -1422,15 +1507,21 @@
           if (res.code == 200) {
             this.QRmess = res.result
             this.QRmessxj.zf = this.QRmess.fdr
+            this.rs = this.QRmess.kfje
             if (this.QRmessxj.zf == '3') {
               // this.getRs('3')
               this.QRmessxj.c = this.QRmess.kfje / 200
               var a = this.QRmess.kfje / 200
-              this.RS=[]
-              for(let i=0;i<a;i++){
-                this.RS.push(i+1)
+              this.RS = []
+              for (let i = 0; i < a; i++) {
+                this.RS.push(i + 1)
               }
+              this.ysxzA=this.QRmess.lcFy
             }
+            else{
+              this.ysxzA=this.QRmess.lcFy
+            }
+            this.ifFinish = true
             this.QRmodal = true
           } else {
             this.$Message.error(res.message)
@@ -1445,9 +1536,11 @@
           ids.push(r.id)
           console.log(r);
         }
-        ids.push(row.id)
+        // ids.push(row.id)
         let a = ids.join(',')
         this.qrids = a
+        if (selection.length === 0) this.qrids = ''
+        console.log(this.qrids)
       },
       MenuClick(name) {
         var v = this
@@ -1509,8 +1602,6 @@
       QRcancelxj() {
         this.QRmessxj = {};
         this.QRmessxjlist = [];
-        this.b = false
-
       },
       QRokxj() {
         this.$http.post('/api/lcjl/payCNY', {
@@ -1520,11 +1611,15 @@
         }).then((res) => {
           if (res.code == 200) {
             // this.$Message.success(res.message)
-            this.print(res.result)
+            if (this.ifFinish)
+              this.print(res.result, true)
+            else this.print(res.result, false)
+            this.QRmodal=false
+            this.ysxzA=0
+            this.ifFinish = false
             this.util.getPageData(this)
             this.QRmessxj = {}
             this.QRmessxjlist = []
-            this.b = false
           } else {
             this.$Message.error(res.message)
           }
@@ -1548,9 +1643,11 @@
             confirmButtonText: '确定',
             cancelButtonText: '取消'
           }).then(p => {
+            console.log(p)
             if (p.value) {
-              this.QRmess.id=''
+              this.QRmess.id = ''
             } else {
+              this.ysxzA=this.QRmess.lcFy
               this.QRmodal = true
             }
           })
@@ -1802,12 +1899,13 @@
           }
         })
       },
-      print(mess) {//还车
+      print(mess, ifPrint) {//还车     ifPrint:直接打印
         this.hisPrintMess = mess
+        this.printClose = ifPrint ? true : false
         // setTimeout(()=>{
         //   this.$refs['backcar'].doPrint()
         // },1000)
-        this.componentName = 'print'
+        this.componentName = 'printNew'
       },
       his(item) {//历史练车记录
         this.clId = item.id;
@@ -1915,17 +2013,17 @@
           this.giveCar.readCardChrome((key, mess) => {
 
             console.log(mess)
-            if (mess==='None') {
-              this.swal({
-                title:'请重新放置卡片',
-                type:'error'
-              })
+            if (mess === 'None') {
+              // this.swal({
+              //   title: '请重新放置卡片',
+              //   type: 'error'
+              // })
               if (v.showFQfzkp) {
                 return;
               }
               v.showFQfzkp = true;
               v.swal({
-                title: '是否继续发车？',
+                title: '请放置卡片发车！',
                 type: 'error',
                 confirmButtonText: '发车',
                 cancelButtonText: '取消',

@@ -60,7 +60,7 @@
             </Button>
           </Col>
           <Col span="1" align="center">
-            <Button type="primary" @click="formData.zddm='K2KF';faCar('kf')">
+            <Button type="primary" @click="ifFinish=true,formData.zddm='K2KF';faCar('kf')">
               <Icon type="md-add"></Icon>
               <!--查询-->
             </Button>
@@ -73,7 +73,7 @@
     </Row>
     <div>
       <Row>
-        <table-area :pager="false" :parent="v"></table-area>
+        <table-area :pager="false" :TabHeight="AF.getPageHeight()-230" :parent="v"></table-area>
 
 
         <!--          <Row style="padding: 5px 10px">-->
@@ -106,11 +106,11 @@
         </Col>
         <Col span="21" align="right" v-if="switch1">
           <span>
-            <span style="font-size: 24px;font-weight: 600">
+            <span style="font-size: 15px;font-weight: 600">
             人数：<span style="color: #ed3f14"> {{rs}} </span> 人
             </span>
           &nbsp&nbsp&nbsp
-            <span style="font-size: 24px;font-weight: 600">
+            <span style="font-size: 15px;font-weight: 600">
             合计：<span style="color: #ed3f14"> {{hj}} </span> 元
             </span>
             </span>
@@ -173,7 +173,7 @@
           <Col span="12">
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
-                <Select v-model="formData.zddm" @on-change="lcFyChange" style="width:200px">
+                <Select v-model="formData.zddm" @on-change="lcFyChange" style="width:250px">
                   <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="!it.zddm.includes('K2JS')">
                     {{it.by9}}
                   </Option>
@@ -261,7 +261,7 @@
         <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2KF'">
           <Col span="11">
             <FormItem label="学员人数" label-position="top">
-              <Input v-model="formData.xySl" type="number" @on-enter="save"/>
+              <InputNumber :min="1" v-model="formData.xySl" @keyup.enter.native="save"  style="width: 250px"></InputNumber>
             </FormItem>
           </Col>
         </Row>
@@ -353,7 +353,7 @@
   import {mapMutations} from 'vuex'
   import moment from 'moment'
   import Cookies from 'js-cookie'
-  import printNew from './comp/printNew'
+  import printNew from '../../../components/printNew'
 
   export default {
     name: "index",
@@ -373,6 +373,7 @@
         mxlx: '',
         switch1: true,
         total: 0,
+        ifFinish:false,
         giveCar: giveCar,
         v: this,
         apiRoot: this.apis.lcjl,
@@ -487,6 +488,8 @@
               else {
                 buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '打印票据', () => {
                   this.hisPrintMess = p.row
+                  console.log(this.hisPrintMess)
+                  this.printClose=false
                   this.componentName = 'printNew'
                 }));
                 // if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')){
@@ -602,6 +605,7 @@
         if (n == false) {
           this.compName = ''
           this.formData = {}
+          this.formData.xySl=''
           this.formData.jlCx = 'C1'
           this.jlJx = ''
         } else {
@@ -863,15 +867,6 @@
       },
       faCar(name) {
         if (name === 'kk') {
-          if (!!window.ActiveXObject || "ActiveXObject" in window) {
-          } else {
-            this.swal({
-              title: '请使用IE10以上的浏览器',
-              type: 'warning',
-              confirmButtonText: '关闭'
-            })
-            return
-          }
           var v = this
 
           this.giveCar.readCard((key, mess) => {
@@ -1130,7 +1125,6 @@
                       console.log(res.message, 'resmessage')
                       if (this.mxlx == 'py' || this.mxlx == 'kf') {
                           //打印票据
-                          console.log(JSON.parse(res.message));
                           this.formData = JSON.parse(res.message)
                           this.formData.sc = ''
                           this.formData.yhsc = '5分钟'
@@ -1139,8 +1133,9 @@
                           this.formData.lcKm = '2'
 
                           this.hisPrintMess = this.formData
-                          this.componentName = 'print'
-
+                          this.printClose=this.ifFinish?true:false
+                          this.componentName = 'printNew'
+                          this.ifFinish=false
 
                       }
                   } else {
