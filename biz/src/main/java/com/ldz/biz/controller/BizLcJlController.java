@@ -30,6 +30,8 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         return service;
     }
 
+
+
     /**
      * 新增一条练车记录
      * @param entity

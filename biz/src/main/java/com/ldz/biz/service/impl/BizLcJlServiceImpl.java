@@ -29,6 +29,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import sun.tools.jar.Manifest;
 import tk.mybatis.mapper.common.Mapper;
 
 import javax.servlet.ServletOutputStream;
@@ -121,6 +122,15 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             List<BizLcJlXy> xies = xyService.findByCondition(condition);
             bizLcJl.setXyList(xies);
 
+            // 计算下支付方式
+            if(bizLcJl.getKfje() != null && bizLcJl.getKfje() > 0) {
+                bizLcJl.setZffs("开放日·" + (int)(Math.ceil(bizLcJl.getKfje()*1.0 / 200)) + "人");
+            }else if(bizLcJl.getCardje() != null && bizLcJl.getCardje() > 0) {
+                bizLcJl.setZffs("充值卡");
+            }else if(StringUtils.equals(bizLcJl.getZfzt(), "10")){
+                bizLcJl.setZffs("现金");
+            }
+
             SysZdxm zdxm = map.get(bizLcJl.getZddm());
             if (zdxm != null) {
                 bizLcJl.setLcDj(Float.parseFloat(StringUtils.isBlank(zdxm.getBy4()) ? "0" : zdxm.getBy4()));
@@ -168,7 +178,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             lcCl = clService.findById(entity.getLcClId());
             RuntimeCheck.ifTrue(lcCl.getClZt().equalsIgnoreCase("01"), lcCl.getClBh() + "号车辆已经在训练中");
             if (StringUtils.isNotBlank(entity.getKm())) {
-                RuntimeCheck.ifFalse(lcCl.getClKm().equalsIgnoreCase(entity.getKm()), "此车辆已绑定科目" + (lcCl.getClKm().equals("2") ? "二" : "三") + "-" + lcCl.getClBh() + "车,不能在科目" + (entity.getKm().equals("2") ? "二" : "三") + "窗口发车");
+                String mess = "此车辆已绑定科目" + (lcCl.getClKm().equals("2") ? "二" : "三") + "-" + lcCl.getClBh() + "车,不能在科目" + (entity.getKm().equals("2") ? "二" : "三") + "窗口发车";
+                RuntimeCheck.ifFalse(lcCl.getClKm().equalsIgnoreCase(entity.getKm()), mess);
             }
             entity.setLcClId(lcCl.getId());
             entity.setClBh(lcCl.getClBh());
@@ -183,6 +194,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             lcCl.setZgId(entity.getZgId());
         }
         if (StringUtils.equals(zdxm.getBy2(), "1")) {
+            RuntimeCheck.ifNull(lcCl, "请选择车辆");
             // 0 为不启用打卡 1 为启用打卡
             RuntimeCheck.ifBlank(entity.getCardNo(), " 请刷卡");
             // 查询此卡是否为在训状态
@@ -190,12 +202,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             condition.eq(BizLcJl.InnerColumn.cardNo, entity.getCardNo());
             condition.and().andCondition(" jssj is null or jssj = ''");
             List<BizLcJl> jls = findByCondition(condition);
-            RuntimeCheck.ifTrue(CollectionUtils.isNotEmpty(jls), "此卡正在训练中 , 请先结束训练");
+            RuntimeCheck.ifTrue(CollectionUtils.isNotEmpty(jls), "此卡正在训练中!");
             // 此套餐是否需要充值卡绑定车辆
             if (StringUtils.equals(zdxm.getBy6(), "1")) {
                 List<BizLcCl> cls = clService.findEq(BizLcCl.InnerColumn.cardNo, entity.getCardNo());
                 RuntimeCheck.ifEmpty(cls, "此卡未绑定车辆");
-                RuntimeCheck.ifFalse(lcCl.getCardNo().equals(entity.getCardNo()), "充值卡绑定车辆与当前车辆不匹配,该卡绑定车辆为" + cls.get(0).getClBh());
+                String clBh = cls.get(0).getClBh();
+                RuntimeCheck.ifFalse(StringUtils.equals(lcCl.getCardNo(),entity.getCardNo()), "卡号与车号不匹配,该卡已绑定" +clBh + "号车!" );
             }
         }
         entity.setLcLx(zdxm.getBy5());
@@ -397,7 +410,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         jlCondition.eq(BizLcJl.InnerColumn.lcKm, km);
         jlCondition.setOrderByClause(" kssj desc ");
         List<BizLcJl> jls = findByCondition(jlCondition);
-        RuntimeCheck.ifTrue(CollectionUtils.isEmpty(jls), StringUtils.isNotBlank(cardNo) ? "发车卡与结束卡不一致" : "没有找到练车记录");
+        RuntimeCheck.ifTrue(CollectionUtils.isEmpty(jls), StringUtils.isNotBlank(cardNo) ? "发车卡与结束卡不一致!" : "未找到练车记录");
         BizLcJl lcJl = jls.get(0);
 
         // 计算练车费用
@@ -1011,45 +1024,63 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
         String fileName = time + "-明细统计";
         LimitedCondition condition = getQueryCondition();
+        condition.and().andCondition(" jssj is not null and jssj != ''");
         PageInfo<BizLcJl> info = findPage(page, condition);
         List<BizLcJl> list = info.getList();
         List<Map<Integer, String>> data = new ArrayList<>();
         Map<Integer, String> map = new HashMap<>();
         map.put(0, "#");
-        map.put(1, "车辆编号");
-        map.put(2, "开始时间");
-        map.put(3, "结束时间");
-        map.put(4, "安全员姓名");
-        map.put(5, "教练姓名");
-        map.put(6, "时长");
-        map.put(7, "驾校/队号");
-        map.put(8, "学员数量");
-        map.put(9, "计费类型");
-        map.put(10, "练车费用");
+        map.put(1, "驾校");
+        map.put(2, "教练员");
+        map.put(3, "开始时间");
+        map.put(4, "结束时间");
+        map.put(5, "时长");
+        map.put(6, "应收");
+        map.put(7, "实收");
+        map.put(8, "支付方式");
+        map.put(9, "类型");
         data.add(map);
+        Set<String> collect = list.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
+        SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
+        condition1.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        condition1.in(SysZdxm.InnerColumn.zddm, collect);
+        List<SysZdxm> zdxms= new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(collect)){
+             zdxms = zdxmService.findByCondition(condition1);
+        }
+
+        Map<String, String> stringMap = zdxms.stream().collect(Collectors.toMap(SysZdxm::getZddm, SysZdxm::getBy9));
         for (int i = 0; i < list.size(); i++) {
             BizLcJl jl = list.get(i);
             Map<Integer, String> dataMap = new HashMap<>();
             dataMap.put(0, i + 1 + "");
-            dataMap.put(1, jl.getClBh());
+            dataMap.put(1, jl.getJlJx());
+            dataMap.put(2, jl.getJlXm());
             if (StringUtils.isNotBlank(jl.getKssj())) {
-                dataMap.put(2, jl.getKssj().substring(0, jl.getKssj().length() - 3));
-            } else {
-                dataMap.put(2, " - ");
-            }
-            if (StringUtils.isNotBlank(jl.getJssj())) {
-                dataMap.put(3, jl.getJssj().substring(0, jl.getJssj().length() - 3));
+                dataMap.put(3, jl.getKssj().substring(0, jl.getJssj().length() - 3));
             } else {
                 dataMap.put(3, "-");
             }
+            if (StringUtils.isNotBlank(jl.getJssj())) {
+                dataMap.put(4, jl.getJssj().substring(0, jl.getJssj().length() - 3));
+            } else {
+                dataMap.put(4, "-");
+            }
 
-            dataMap.put(4, jl.getZgXm());
-            dataMap.put(5, jl.getJlXm());
-            dataMap.put(6, jl.getSc() + "");
-            dataMap.put(7, jl.getJlJx());
-            dataMap.put(8, jl.getXySl() + "");
-            dataMap.put(9, lxMap.get(jl.getLcLx()));
-            dataMap.put(10, jl.getLcFy() == null ? "0" : jl.getLcFy() + "");
+
+            dataMap.put(5, jl.getSc() +"");
+            dataMap.put(6, jl.getLcFy() + "");
+            dataMap.put(7, jl.getXjje() + "");
+            // 计算下支付方式
+            if(jl.getKfje() != null && jl.getKfje() > 0) {
+                dataMap.put(8,"开放日·" + (int)(Math.ceil(jl.getKfje()*1.0 / 200)) + "人");
+            }else if(jl.getCardje() != null && jl.getCardje() > 0) {
+                dataMap.put(8,"充值卡");
+            }else if(StringUtils.equals(jl.getZfzt(), "10")){
+                dataMap.put(8,"现金");
+            }
+
+            dataMap.put(9, stringMap.get(jl.getZddm()));
             data.add(dataMap);
         }
         Map<Integer, String> dataMap = new HashMap<>();
@@ -1059,11 +1090,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         dataMap.put(3, "");
         dataMap.put(4, "");
         dataMap.put(5, "");
-        dataMap.put(6, "");
-        dataMap.put(7, "");
+        dataMap.put(7, list.stream().filter(jl -> jl.getXjje() != null).mapToInt(BizLcJl::getXjje).sum() + "");
         dataMap.put(8, "");
         dataMap.put(9, "");
-        dataMap.put(10, list.size() == 0 ? "0" : list.stream().filter(bizLcJl -> bizLcJl.getLcFy() != null).mapToInt(BizLcJl::getLcFy).sum() + "");
+        dataMap.put(6, list.size() == 0 ? "0" : list.stream().filter(bizLcJl -> bizLcJl.getLcFy() != null).mapToInt(BizLcJl::getLcFy).sum() + "");
         data.add(dataMap);
 
         response.setContentType("application/msexcel");
@@ -1589,15 +1619,15 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         jl.setLcKm(jls.get(0).getLcKm());
         jl.setJlJx(wxjl.getJlJx());
         jl.setJlXm(wxjl.getJlXm());
-        jl.setKfje(jls.stream().mapToInt(BizLcJl::getKfje).sum());
-        jl.setCardje(jls.stream().mapToInt(BizLcJl::getCardje).sum());
+        jl.setKfje(jls.stream().filter(lcJl -> lcJl.getKfje() != null ).mapToInt(BizLcJl::getKfje).sum());
+        jl.setCardje(jls.stream().filter(lcJl -> lcJl.getCardje() != null ).mapToInt(BizLcJl::getCardje).sum());
         jl.setJssj(jls.stream().map(BizLcJl::getJssj).sorted(Comparator.reverseOrder()).collect(Collectors.toList()).get(0));
         String fdr = "";
         String str = "";
-        if (jl.getKfje() > 0) {
+        if (jl.getKfje() != null && jl.getKfje() > 0) {
             fdr += "1,";
         }
-        if (jl.getCardje() > 0) {
+        if (jl.getCardje() != null && jl.getCardje() > 0) {
             fdr += "2,";
         }
         if (jl.getXjje() > 0) {
@@ -1615,6 +1645,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         jl.setCardje(wxjl.getCardJe());
         if(StringUtils.equals(jl.getLcLx(),"30")){
             jl.setBz(jls.get(0).getXySl() + "人");
+        }
+        if(StringUtils.equals(jl.getLcLx(), "20")){
+            // 培优展示姓名加车型
+            jl.setBz(jls.stream().map(BizLcJl::getXyXm).collect(Collectors.joining(",")));
         }
         return ApiResponse.success(jl);
     }
@@ -1696,6 +1730,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
             // 卡上余额
             int cardJe = wxjl.getCardJe();
+            RuntimeCheck.ifTrue(cardJe <= 0, "卡上余额为0 , 请选择其他支付方式");
             int sfje = cardJe - sum;
 
             // 判断剩余余额是否小于0 , 如果小于0 就说明还需要支付现金
@@ -1708,7 +1743,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                         // 余额充足
                         jl.setKfje(0);
                         jl.setXjje(0);
-                        jl.setCardje(jl.getLcFy());
+
                     } else {
                         jl.setXjje(Math.abs(cardJe));
                         jl.setKfje(jl.getLcFy() + cardJe);
@@ -1717,8 +1752,12 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     }
                 } else {
                     jl.setXjje(jl.getLcFy());
-                    jl.setCardje(0);
                     jl.setKfje(0);
+                }
+                if(sfje < 0 ){
+                    jl.setCardje(cardJe);
+                }else{
+                    jl.setCardje(sum);
                 }
                 jl.setZfzt("10");
                 jl.setPz(pz);
@@ -1793,7 +1832,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 for (BizLcJl jl : jls) {
                     jl.setZfzt("10");
                     jl.setXjje(0);
-                    jl.setKfje(jl.getLcFy());
+                    jl.setKfje(kfje);
                     jl.setXjje(0);
                     jl.setPz(pz);
                     update(jl);
@@ -1856,6 +1895,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         lcJl.setPz(pz);
         return ApiResponse.success(lcJl);
     }
+
+
 
 
 }
