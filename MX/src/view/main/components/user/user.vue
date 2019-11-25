@@ -50,6 +50,13 @@
         <!--<Icon type="md-print" size="24" color="#fff"/>-->
       <!--</Button>-->
     <!--</Tooltip>-->
+    <Tooltip content="驱动下载" style="margin-right: 16px">
+      <Button type="warning"
+              size="small"
+              @click="xzhs">
+        <Icon type="ios-card-outline" size="24" color="#fff"/>
+      </Button>
+    </Tooltip>
     <Tooltip content="读卡器驱动(练车)" style="margin-right: 16px">
       <Button type="warning"
               size="small"
@@ -131,6 +138,9 @@
       },
       xzx(){
         window.open('../SynCardReader.exe', '_blank');
+      },
+      xzhs(){
+        window.open('../驱动.exe', '_blank');
       },
       ...mapActions([
         'handleLogOut'

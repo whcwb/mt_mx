@@ -11,6 +11,7 @@ import com.ldz.util.bean.ApiResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,8 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
 
     void pagerExcel(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
+    void pagerExcelK3(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException;
+
     ApiResponse<String> updateXysl(String id, Integer xySl);
 
     ApiResponse<BizLcJl> getLatestJl(String id);
@@ -60,5 +63,4 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
     ApiResponse<BizLcJl> getByPz(String pz);
 
     ApiResponse<BizLcJl> payCNY(String id, String zf);
-
 }

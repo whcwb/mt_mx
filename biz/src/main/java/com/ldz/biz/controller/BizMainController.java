@@ -579,11 +579,19 @@ public class BizMainController {
 
 
     /**
-     * 明细统计 Excel导出
+     * 明细统计 Excel导出(科二)
      */
     @GetMapping("/pagerExcel")
     public void pagerExcel(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
         jlService.pagerExcel(page, request, response);
+    }
+
+    /**
+     * 明细统计 Exclel导出 (科三)
+     */
+    @GetMapping("/pagerExcelK3")
+    public void pagerExcelK3(Page<BizLcJl> page , HttpServletRequest request , HttpServletResponse response) throws IOException {
+        jlService.pagerExcelK3(page, request, response);
     }
 
     /**

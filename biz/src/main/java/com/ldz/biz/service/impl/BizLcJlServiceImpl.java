@@ -36,6 +36,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -173,6 +174,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
         RuntimeCheck.ifEmpty(zdxms, "未找到套餐信息");
         SysZdxm zdxm = zdxms.get(0);
+        if(StringUtils.equals(entity.getLcKm(), "3")){
+            RuntimeCheck.ifNull(entity.getXySl(), "请填写学员人数");
+            RuntimeCheck.ifTrue(entity.getXySl() <= 0, "学员数量必须大于0");
+        }
         BizLcCl lcCl = null;
         if (StringUtils.isNotBlank(entity.getLcClId())) {
             lcCl = clService.findById(entity.getLcClId());
@@ -1105,6 +1110,104 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     }
 
     @Override
+    public void pagerExcelK3(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
+        String fileName = time + "-明细统计";
+        LimitedCondition condition = getQueryCondition();
+        condition.and().andCondition(" jssj is not null and jssj != ''");
+        PageInfo<BizLcJl> info = findPage(page, condition);
+        List<BizLcJl> list = info.getList();
+        List<Map<Integer, String>> data = new ArrayList<>();
+        Map<Integer, String> map = new HashMap<>();
+        map.put(0, "#");
+        map.put(1, "驾校");
+        map.put(2, "教练员");
+        map.put(3, "车号");
+        map.put(4, "人数");
+        map.put(5, "车型");
+        map.put(6, "类型");
+        map.put(7, "开始时间");
+        map.put(8, "结束时间");
+        map.put(9, "时长");
+        map.put(10, "应收");
+        map.put(11, "实收");
+        map.put(12, "订单状态");
+        map.put(13, "支付方式");
+        map.put(14, "安全员");
+        data.add(map);
+        Set<String> collect = list.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
+        SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
+        condition1.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        condition1.in(SysZdxm.InnerColumn.zddm, collect);
+        List<SysZdxm> zdxms= new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(collect)){
+            zdxms = zdxmService.findByCondition(condition1);
+        }
+
+        Map<String, String> stringMap = zdxms.stream().collect(Collectors.toMap(SysZdxm::getZddm, SysZdxm::getBy9));
+        for (int i = 0; i < list.size(); i++) {
+            BizLcJl jl = list.get(i);
+            Map<Integer, String> dataMap = new HashMap<>();
+            dataMap.put(0, i + 1 + "");
+            dataMap.put(1, jl.getJlJx());
+            dataMap.put(2, jl.getJlXm());
+            dataMap.put(3, jl.getClBh());
+            dataMap.put(4,jl.getXySl()+"");
+            dataMap.put(5, jl.getJlCx());
+            dataMap.put(6, stringMap.get(jl.getZddm()));
+            if (StringUtils.isNotBlank(jl.getKssj())) {
+                dataMap.put(7, jl.getKssj().substring(0, jl.getJssj().length() - 3));
+            } else {
+                dataMap.put(7, "-");
+            }
+            if (StringUtils.isNotBlank(jl.getJssj())) {
+                dataMap.put(8, jl.getJssj().substring(0, jl.getJssj().length() - 3));
+            } else {
+                dataMap.put(8, "-");
+            }
+
+
+            dataMap.put(9, jl.getSc() +"");
+            dataMap.put(10, jl.getLcFy() + "");
+            dataMap.put(11, jl.getXjje() + "");
+            dataMap.put(12, StringUtils.equals(jl.getZfzt(), "10")?"已支付":"未支付");
+            // 计算下支付方式
+             if(jl.getCardje() != null && jl.getCardje() > 0) {
+                dataMap.put(13,"充值卡");
+            }else if(StringUtils.equals(jl.getZfzt(), "10")){
+                dataMap.put(13,"现金");
+            }
+             dataMap.put(14, jl.getZgXm());
+
+            dataMap.put(9, stringMap.get(jl.getZddm()));
+            data.add(dataMap);
+        }
+        Map<Integer, String> dataMap = new HashMap<>();
+        dataMap.put(0, data.size() + "");
+        dataMap.put(1, "合计:");
+        dataMap.put(2, "");
+        dataMap.put(3, "");
+        dataMap.put(4, "");
+        dataMap.put(5, "");
+        dataMap.put(6,"");
+        dataMap.put(7,"");
+        dataMap.put(11, list.stream().filter(jl -> jl.getXjje() != null).mapToInt(BizLcJl::getXjje).sum() + "");
+        dataMap.put(8, "");
+        dataMap.put(9, "");
+        dataMap.put(10, list.size() == 0 ? "0" : list.stream().filter(bizLcJl -> bizLcJl.getLcFy() != null).mapToInt(BizLcJl::getLcFy).sum() + "");
+        dataMap.put(12,"");
+        dataMap.put(13,"");
+        data.add(dataMap);
+
+        response.setContentType("application/msexcel");
+        request.setCharacterEncoding("UTF-8");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xls");
+        ServletOutputStream outputStream = response.getOutputStream();
+        ExcelUtil.createSheet(outputStream, "明细统计", data);
+    }
+
+    @Override
     public ApiResponse<String> updateXysl(String id, Integer xySl) {
         BizLcJl jl = findById(id);
         RuntimeCheck.ifNull(jl, "未找到练车记录");
@@ -1117,7 +1220,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     public ApiResponse<BizLcJl> getLatestJl(String id) {
         RuntimeCheck.ifBlank(id, "请选择车辆");
         BizLcJl jl = baseMapper.findByClid(id);
-
         return ApiResponse.success(jl);
 
     }
@@ -1464,12 +1566,12 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     jlye = jlye - jl.getLcFy();
                     if (jlye > 0) {
                         // 余额充足
-                        jl.setKfje(jl.getLcFy());
+                        jl.setKfje(ye);
                         jl.setXjje(0);
                     } else {
 
                         jl.setXjje(Math.abs(jlye));
-                        jl.setKfje(jl.getLcFy() + jlye);
+                        jl.setKfje(ye);
                         jlye = 0;
                     }
                     jl.setCardje(0);
