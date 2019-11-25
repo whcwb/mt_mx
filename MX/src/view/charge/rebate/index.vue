@@ -25,10 +25,10 @@
         </Col>
         <Col span="18" style="display: flex;justify-content: flex-end">
           <Col span="4" style="margin-right: 10px">
-            <Input id="code" autofocus v-model="param.idLike" placeholder="请扫描条形码" @on-enter="add"/>
+            <Input id="code" autofocus v-model="param.idLike" placeholder="请扫描条形码" @on-enter="getOldData"/>
           </Col>
           <Col span="4">
-            <Input autofocus v-model="param.jlXmLike" placeholder="教练员姓名" @on-enter="add"/>
+            <Input autofocus v-model="param.jlXmLike" placeholder="教练员姓名" @on-enter="getOldData"/>
           </Col>
           <Col span="1" style="margin-right: 20px">
           <span style="margin:0 10px;">
@@ -76,10 +76,10 @@
       <div v-if="false">
         <Row style="padding: 12px 0" :gutter="12">
           <Col span="4">
-            <Input id="code" autofocus v-model="param.idLik" placeholder="请扫描条形码" @on-enter="add"/>
+            <Input id="code" autofocus v-model="param.idLik" placeholder="请扫描条形码" @on-enter="getOldData"/>
           </Col>
           <Col span="4">
-            <Input autofocus v-model="param.jlXmLike" placeholder="教练员姓名" @on-enter="add"/>
+            <Input autofocus v-model="param.jlXmLike" placeholder="教练员姓名" @on-enter="getOldData"/>
           </Col>
           <Col span="8">
           <span style="margin-left: 16px;">
@@ -133,7 +133,7 @@
             fixed: 'left',
             align: 'center'
           },
-          {title: '凭证号', key: 'id', minWidth: 150,align: 'center'},
+          {title: '凭证号', key: 'id', minWidth: 170,align: 'center'},
           {
             title: '科目',align: 'center', key: 'lcKm', minWidth: 120,
             render: (h, p) => {
