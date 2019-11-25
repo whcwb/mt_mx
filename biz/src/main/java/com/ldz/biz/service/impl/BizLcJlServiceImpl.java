@@ -1371,7 +1371,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         condition1.eq(BizLcJl.InnerColumn.jlId, jls.get(0).getJlId());
         condition1.and().andCondition(" kssj like '%" + DateTime.now().toString("yyyy-MM-dd") + "%' or zfzt = '00'");
         condition1.and().andNotEqualTo(BizLcJl.InnerColumn.lcLx.name(), "30");
-        condition.eq(BizLcJl.InnerColumn.lcKm, jls.get(0).getLcKm());
+        condition1.eq(BizLcJl.InnerColumn.lcKm, jls.get(0).getLcKm());
+        condition1.in(BizLcJl.InnerColumn.id, list);
         List<BizLcJl> lcJls = findByCondition(condition1);
         BizLcJl lcJl = new BizLcJl();
         lcJl.setId(ids);
