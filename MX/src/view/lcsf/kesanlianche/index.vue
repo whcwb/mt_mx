@@ -120,6 +120,9 @@
              stripe
              size="small"
              @on-select="tabcheck"
+             @on-select-cancel="tabcheck"
+             @on-select-all="tabcheck"
+             @on-select-all-cancel="tabcheck"
              :columns="tableColumns" :data="pageData"></Table>
       <!--      <table-area :parent="v"></table-area>-->
       <Row class="margin-top-10 pageSty">
@@ -485,10 +488,11 @@
           },
           {title: '驾校', key: 'jlJx', minWidth: 90, align: 'center',},
           {title: '教练员', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90, align: 'center',},
+          {title: '车号', key: 'clBh', minWidth: 60, align: 'center',},
           {
             title: '人数',
             key: 'xySl',
-            minWidth: 60,
+            minWidth: 80,
             align: 'center',
             render: (h, p) => {
               if (p.row.xySl != '' && p.row.xySl != undefined) {
@@ -502,13 +506,33 @@
           {title: '车型', key: 'jlCx', minWidth: 60, align: 'center',},
           {
             title: '类型',
-            minWidth: 120,
+            minWidth: 140,
             align: 'center',
             render: (h, p) => {
               if (p.row.zdxm != '') {
                 return h('div', p.row.zdxm.by9 + ' ' + p.row.zdxm.zdmc)
               }
 
+            },
+            filters: [
+              {
+                label: '计时',
+                value: 'JS'
+              },
+              {
+                label: '培优',
+                value: 'PY'
+              },
+              {
+                label: '按把',
+                value: 'AB'
+              },
+            ],
+            filterMultiple: false,
+            filterRemote(value, row) {
+              this.param.zddmLike = value;
+              // var _self = this
+              this.util.getPageData(this);
             }
           },
           // {title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90,},
@@ -527,7 +551,11 @@
           // },
 
           {title: '开始时间', key: 'kssj', minWidth: 140, align: 'center',},
-          {title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 140, align: 'center',},
+          {title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 90, align: 'center',
+            render: (h, p) => {
+              return h('div', p.row.jssj.substring(10,16))
+            }
+          },
           {
             title: '时长', key: 'sc', minWidth: 80, defaul: '0', align: 'center',
             render: (h, p) => {
@@ -537,13 +565,23 @@
           // {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
           {
-            title: '费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0', align: 'center',
+            title: '应收',  minWidth: 90, defaul: '0', align: 'center',
             render: (h, p) => {
-              return h('div', p.row.lcFy + '元')
+              return h('div', p.row.lcFy + '元');
             }
           },
           {
-            title: '订单状态', key: 'zfzt', minWidth: 80, align: 'center',
+            title: '实收',minWidth: 90, defaul: '0', align: 'center',
+            render: (h, p) => {
+              if (p.row.zfzt == '00') {    //为已支付的，就显示现金
+                return h('div', '');
+              }else{
+                return h('div', p.row.xjje + '元');
+              }
+            }
+          },
+          {
+            title: '订单状态', key: 'zfzt', minWidth: 100, align: 'center',
             render: (h, p) => {
               if (p.row.zfzt == '00') {
                 return h('div',
@@ -562,6 +600,34 @@
               } else {
                 return h('div', '已支付')
               }
+            },
+            filters: [
+              {
+                label: '未支付',
+                value: '00'
+              },
+              {
+                label: '已支付',
+                value: '10'
+              },
+            ],
+            filterMultiple: false,
+            filterRemote(value, row) {
+              var _self = this
+              console.log(_self.param);
+              _self.param.zfzt = value;
+              _self.util.getPageData(_self);
+
+            },
+          },
+          {
+            title: '支付方式', align: 'center', minWidth: 100, defaul: '0',
+            render: (h, p) => {
+              if (p.row.zfzt == '00') {
+                return h('div', '');
+              }else{
+                return h('div', p.row.zffs);
+              }
             }
           },
           {
@@ -575,7 +641,7 @@
           // {title: '凭证号', key: 'pz', minWidth: 150, align: 'center',},
 
           {
-            title: '操作', minWidth: 60, fixed: 'right', align: 'center', render: (h, p) => {
+            title: '补打', minWidth: 60, align: 'center', render: (h, p) => {
               let buttons = [];
               if (p.row.zfzt !== '00') {
                 buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
@@ -1024,9 +1090,18 @@
           //     }
           // },
           {
+            title: '驾校',
+            key: 'jlJx',
+            minWidth: 100,
+            align: 'center',
+            render: (h, p) => {
+              return h('div', p.row.lcJl.jlJx)
+            }
+          },
+          {
             title: '教练员',
             key: 'jlXm',
-            minWidth: 150,
+            minWidth: 80,
             align: 'center',
             render: (h, p) => {
               return h('div', p.row.lcJl.jlXm)
@@ -1043,7 +1118,7 @@
           {
             title: '人数',
             key: 'xySl',
-            minWidth: 100,
+            minWidth: 80,
             align: 'center',
             render: (h, p) => {
               if (p.row.lcJl.xySl != '' && p.row.lcJl.xySl != undefined) {
@@ -1056,7 +1131,7 @@
           },
           {
             title: '开始时间',
-            minWidth: 180,
+            minWidth: 100,
             align: 'center',
             render: (h, p) => {
               if (p.row.lcJl != [] && p.row.lcJl.kssj != '')
@@ -1066,7 +1141,7 @@
           {
             title: '时长',
             key: 'sc',
-            width: 150,
+            width: 80,
             align: 'center',
             render: (h, p) => {
               if (p.row.dqsc == '') {
@@ -1080,7 +1155,7 @@
           {
             title: '费用',
             align: 'center',
-            minWidth: 120,
+            minWidth: 80,
             render: (h, p) => {
               if (p.row.zj != '') {
                 return h('div', p.row.zj + '元')
@@ -1089,26 +1164,43 @@
             }
           },
           {
-            title: '类型',
-            minWidth: 180,
-            align: 'center',
-            render: (h, p) => {
-              if (p.row.zdxm != '') {
-                return h('div', p.row.zdxm.by9 + ' ' + p.row.zdxm.zdmc)
-              }
-
-            }
-          },
-          {
             title: '安全员',
-            minWidth: 120,
+            minWidth: 80,
             align: 'center',
             render: (h, p) => {
               return h('div', p.row.lcJl.zgXm)
             }
           },
-
-
+          {
+            title: '类型',
+            minWidth: 140,
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.zdxm != '') {
+                return h('div', p.row.zdxm.by9 + ' ' + p.row.zdxm.zdmc)
+              }
+            },
+            // filters: [
+            //   {
+            //     label: '计时',
+            //     value: 'JS'
+            //   },
+            //   {
+            //     label: '培优',
+            //     value: 'PY'
+            //   },
+            //   {
+            //     label: '开放日',
+            //     value: 'KF'
+            //   },
+            // ],
+            // filterMultiple: false,
+            // filterRemote(value, row) {
+            //   this.param.zddmLike = value;
+            //   // var _self = this
+            //   this.util.getPageData(this);
+            // },
+          },
         ],
       }
     },
@@ -1123,6 +1215,7 @@
           this.formData = {}
           this.jlJx = ''
         } else {
+          this.formData.xySl=''
           // if (this.formData.lcClId == '') {
           //   this.showCAR = true
           // }
@@ -1269,7 +1362,7 @@
           ids.push(r.id)
           console.log(r);
         }
-        ids.push(row.id)
+        // ids.push(row.id)
         let a = ids.join(',')
         this.qrids = a
       },
@@ -1279,8 +1372,18 @@
         if (name == '1') {
           this.getCarList()
         } else if (name == '2') {
-          this.dateRange.jssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59'];
-          this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
+          const end = new Date();
+          const start = new Date();
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          this.dateRange.jssj = [start, end]
+          var d = start;
+          var c = end;
+          var datetimed = this.AF.trimDate(start) + ' ' + '00:00:00';
+          var datetimec = this.AF.trimDate() + ' 23:59:59';
+          this.param.jssjInRange = datetimed + ',' + datetimec
+
+          // this.dateRange.jssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59'];
+          // this.param.jssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
           v.param.pageSize = 15;
           console.log(this.param);
           v.util.getPageData(v)
@@ -1672,6 +1775,7 @@
         })
       },
       save() {//发车
+
         this.formData.notShowLoading = 'true'
 
         var ifCard = false;
@@ -1691,7 +1795,7 @@
               if (res.code == 200) {
                 this.DrawerVal = false;
                 this.getCarList();
-
+                this.formData.xySl=''
                 this.formData = {zgId: ''};
                 this.getSafemanList()
                 this.AMess = [{}];
