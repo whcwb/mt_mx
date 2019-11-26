@@ -174,10 +174,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
         RuntimeCheck.ifEmpty(zdxms, "未找到套餐信息");
         SysZdxm zdxm = zdxms.get(0);
-        if(StringUtils.equals(entity.getLcKm(), "3")){
-            RuntimeCheck.ifNull(entity.getXySl(), "请填写学员人数");
-            RuntimeCheck.ifTrue(entity.getXySl() <= 0, "学员数量必须大于0");
-        }
+
         BizLcCl lcCl = null;
         if (StringUtils.isNotBlank(entity.getLcClId())) {
             lcCl = clService.findById(entity.getLcClId());
@@ -218,7 +215,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         }
         entity.setLcLx(zdxm.getBy5());
         entity.setJlJx(wxjl.getJlJx());
-        if (!StringUtils.equals(entity.getLcLx(), "30") && !(StringUtils.equals(entity.getLcKm(), "2") && StringUtils.equals(entity.getLcLx(), "20"))) {
+        if (!StringUtils.equals(entity.getLcLx(), "30") && ! StringUtils.equals(entity.getLcLx(), "20")) {
             RuntimeCheck.ifNull(lcCl, "请选择车辆");
             // 查询卡号记录 判断是否在训练中
             SimpleCondition jlCondition = new SimpleCondition(BizLcJl.class);
@@ -232,7 +229,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             // 修改车辆为使用中
             clService.update(lcCl);
         }
-        if (StringUtils.equals(entity.getLcKm(), "3") || StringUtils.isNotBlank(entity.getZgId())) {
+        if ((StringUtils.equals(entity.getLcKm(), "3") && !StringUtils.equals(entity.getLcLx(),"20"))  || StringUtils.isNotBlank(entity.getZgId())) {
             // 科目三需要选定安全员
             RuntimeCheck.ifBlank(entity.getZgId(), "请选择安全员");
             SimpleCondition aqyCondition = new SimpleCondition(BizLcJl.class);
@@ -250,8 +247,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String nowTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         entity.setCjsj(nowTime);
         entity.setKssj(nowTime);
-
-
         if (!StringUtils.equals(entity.getLcLx(), "00") && StringUtils.isNotBlank(entity.getLcLx())) {
             entity.setPz(entity.getId());
             // 套餐类型不是计时培训 需要在记录的时候就将费用计算出来 , 有返点的直接记录返点
@@ -299,6 +294,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 entity.setLcFy(Integer.parseInt(jg) * entity.getXySl());
                 entity.setXjje(entity.getLcFy());
             }
+            if(StringUtils.equals(entity.getLcKm(), "3")){
+                RuntimeCheck.ifNull(entity.getXySl(), "请填写学员人数");
+                RuntimeCheck.ifTrue(entity.getXySl() <= 0, "学员数量必须大于0");
+            }
             // 科目二开放日类型直接返点
             if (StringUtils.equals(entity.getLcLx(), "30") && StringUtils.equals(entity.getLcKm(), "2")) {
                 entity.setXjje(entity.getYfJe());
@@ -307,7 +306,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 entity.setJssj(nowTime);
                 // 类型为开放练习 此时需要直接返点
                 RuntimeCheck.ifFalse(entity.getXySl() > 0, "开放训练必须填学员人数");
-
                 // 充值余额
                 int czje = entity.getLcFy() - fdje;
                 // 新增充值余额记录
@@ -369,6 +367,31 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fdService.save(lcFd);
                     entity.setPz(lcFd.getId());
                 }
+            }
+        }
+
+        // 科三培优可能要返点
+        if(StringUtils.equals(entity.getLcKm(), "3") && StringUtils.equals(entity.getLcLx(), "20")){
+            entity.setJssj(nowTime);
+            double v = Double.parseDouble(zdxm.getBy4());
+            int v1 = (int)Math.ceil(entity.getLcFy() * v);
+            if(v1 > 0 ){
+                // 新增返点记录
+                BizLcFd lcFd = new BizLcFd();
+                lcFd.setCjr(currentUser.getZh() + "-" + currentUser.getXm());
+                lcFd.setCjsj(nowTime);
+                lcFd.setFdje(v1);
+                lcFd.setId(entity.getId());
+                lcFd.setJlId(wxjl.getId());
+                lcFd.setJlXm(wxjl.getJlXm());
+                lcFd.setLcId(entity.getId());
+                lcFd.setFdlx(entity.getLcLx());
+                lcFd.setLcFy(entity.getLcFy());
+                lcFd.setLcKm(entity.getLcKm());
+                lcFd.setSc(0);
+                lcFd.setBz("(" + entity.getXySl() + " * " + v1 + ")");
+                fdService.save(lcFd);
+                entity.setPz(lcFd.getId());
             }
         }
 
@@ -904,7 +927,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         List<BizLcJl> jls = findByCondition(condition);
         if (CollectionUtils.isNotEmpty(jls)) {
             // 根据安全员分组
-            Map<String, List<BizLcJl>> collect = jls.stream().filter(bizLcJl -> StringUtils.isNotBlank(bizLcJl.getJssj())).collect(Collectors.groupingBy(BizLcJl::getZgId));
+            Map<String, List<BizLcJl>> collect = jls.stream().filter(bizLcJl -> StringUtils.isNotBlank(bizLcJl.getJssj())).filter(lcJl ->  StringUtils.isNotBlank(lcJl.getZgId())).collect(Collectors.groupingBy(BizLcJl::getZgId));
             for (String s : collect.keySet()) {
                 List<BizLcJl> bizLcJls = collect.get(s);
                 Map<String, List<BizLcJl>> listMap = bizLcJls.stream().collect(Collectors.groupingBy(BizLcJl::getClBh));

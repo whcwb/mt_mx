@@ -66,6 +66,7 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
         SimpleCondition condition = new SimpleCondition(BizLcCl.class);
         condition.eq(BizLcCl.InnerColumn.clBh, entity.getClBh());
         condition.eq(BizLcCl.InnerColumn.clKm, entity.getClKm());
+        condition.eq(BizLcCl.InnerColumn.clCx, entity.getClCx());
         List<BizLcCl> bizLcClList = findByCondition(condition);
         RuntimeCheck.ifTrue(CollectionUtils.isNotEmpty(bizLcClList), "该科目的车辆编号已经存在,请勿重复添加");
         if (StringUtils.isNotBlank(entity.getCardNo())) {
