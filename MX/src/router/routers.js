@@ -210,6 +210,15 @@ export default [
         component: () => import('@/view/lcsf/kmsks')
       },
       {
+        path: 'kmspy',
+        name: 'kmspy',
+        meta: {
+          icon: '_bear',
+          title: '科目三培优'
+        },
+        component: () => import('@/view/lcsf/kesanpeiyou')
+      },
+      {
         path: 'k3kfr',
         name: 'k3kfr',
         meta: {
