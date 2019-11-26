@@ -174,7 +174,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
         RuntimeCheck.ifEmpty(zdxms, "未找到套餐信息");
         SysZdxm zdxm = zdxms.get(0);
-
+        if(StringUtils.equals(entity.getLcKm(), "3") && !StringUtils.equals(entity.getLcLx(), "20")){
+            RuntimeCheck.ifNull(entity.getXySl(), "请填写学员人数");
+            RuntimeCheck.ifTrue(entity.getXySl() <= 0, "学员数量必须大于0");
+        }
         BizLcCl lcCl = null;
         if (StringUtils.isNotBlank(entity.getLcClId())) {
             lcCl = clService.findById(entity.getLcClId());
@@ -247,6 +250,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String nowTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         entity.setCjsj(nowTime);
         entity.setKssj(nowTime);
+
         if (!StringUtils.equals(entity.getLcLx(), "00") && StringUtils.isNotBlank(entity.getLcLx())) {
             entity.setPz(entity.getId());
             // 套餐类型不是计时培训 需要在记录的时候就将费用计算出来 , 有返点的直接记录返点
@@ -294,10 +298,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 entity.setLcFy(Integer.parseInt(jg) * entity.getXySl());
                 entity.setXjje(entity.getLcFy());
             }
-            if(StringUtils.equals(entity.getLcKm(), "3")){
-                RuntimeCheck.ifNull(entity.getXySl(), "请填写学员人数");
-                RuntimeCheck.ifTrue(entity.getXySl() <= 0, "学员数量必须大于0");
-            }
+
             // 科目二开放日类型直接返点
             if (StringUtils.equals(entity.getLcLx(), "30") && StringUtils.equals(entity.getLcKm(), "2")) {
                 entity.setXjje(entity.getYfJe());
