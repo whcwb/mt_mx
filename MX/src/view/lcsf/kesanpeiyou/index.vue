@@ -173,9 +173,14 @@
           <Col>
             <div style="float: left">
               <FormItem label="选择车型" label-position="top">
-                <Select v-model="formData.jlCx" @on-change="cxChange" style="width:70px">
-                  <Option v-for="(it,index) in cxlist" :value="it.key" :key="it.key">
-                    {{it.key}}
+                <!--<Select v-model="formData.jlCx" @on-change="cxChange" style="width:70px">-->
+                  <!--<Option v-for="(it,index) in cxlist" :value="it.key" :key="it.key">-->
+                    <!--{{it.key}}-->
+                  <!--</Option>-->
+                <!--</Select>-->
+                <Select v-model="cx" @on-change="cxChange" style="width:70px">
+                  <Option v-for="(it,index) in ['C','A','B']" :value="it" :key="it">
+                    {{it}}
                   </Option>
                 </Select>
               </FormItem>
@@ -185,7 +190,7 @@
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
                 <Select v-model="formData.zddm" @on-change="lcFyChange" style="width:165px">
-                  <Option v-for="(it,index) in fy" :value="it.zddm" :key="index" v-if="it.zddm.includes('K3PY')">
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm.includes('K3PY')&&it.by8.includes(cx)">
                     {{it.by9}}-{{it.zdmc}}元
                   </Option>
                 </Select>
@@ -197,17 +202,22 @@
           <Card>
             <p slot="title">学员信息</p>
             <p>
-              <Row v-for="(item,index) in AMess" :key="index">
+              <Row v-for="(item,index) in AMess" :key="index" style="display: flex;align-items: center;">
+                <Col>
+                  <RadioGroup v-model="item.cartype">
+                    <Radio :label="item.key" v-for="item in cxlist" v-if="item.key.includes(cx)"></Radio>
+                  </RadioGroup>
+                </Col>
                 <Col span="4" :class-name="'colsty'">
                   <Input type="text" size="default" v-model="item.xyXm" placeholder="学员姓名"/>
+                </Col>
+                <Col span="6" :class-name="'colsty'">
+                  <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"
+                         size="default" v-model="item.bz" placeholder="身份证号码"/>
                 </Col>
                 <Col span="4" :class-name="'colsty'">
                   <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"
                          size="default" v-model="item.xyDh" placeholder="学员联系电话"/>
-                </Col>
-                <Col span="8" :class-name="'colsty'">
-                  <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"
-                         size="default" v-model="item.bz" placeholder="身份证号码"/>
                 </Col>
                 <Col span="2" v-if="AMess.length>1">
                   <Button size="default" type="warning" @click="remove(index)">删除</Button>
@@ -345,7 +355,7 @@
       return {
         Pmess: {},
         AMess: [
-          {cartype: 'C1'}
+          {cartype: ''}
         ],
         hj: 0,
         rs: 0,
@@ -404,7 +414,7 @@
           {
             title: '类型', minWidth: 110, align: 'center',
             render: (h, p) => {
-              return h('div', p.row.jlCx + '-培优' + p.row.zdxm.zdmc + '元')
+              return h('div', '培优' + p.row.zdxm.zdmc + '元')
             }
           },
           {title: '创建时间', align: 'center', key: 'kssj', searchType: 'daterange', minWidth: 140},
@@ -491,6 +501,7 @@
         hisPrintMess: '',
         clId: '',
         showFQfzkp: false,
+        cx:'C',
         formData: {
           zddm: 'K3PY',
           zgXm: '',
@@ -501,7 +512,7 @@
           lcClId: '',
           jlJx: '',
           jlId: "",
-          jlCx: 'C1',
+          jlCx: '',
           xyZjhm: '',
           xyXm: '',
           xyDh: '',
@@ -558,9 +569,10 @@
           this.compName = ''
           this.formData = {}
           this.formData.xySl = ''
-          this.formData.jlCx = 'C1'
-          this.jlJx = ''
+          // this.formData.jlCx = 'C1'
+          this.formData.jlJx = ''
         } else {
+          this.cx='C'
           // if (this.formData.lcClId == '') {
           //   this.showCAR = true
           // }
@@ -620,7 +632,7 @@
             a = false
             break
           } else {
-            messarr.push(AMess[i].xyXm)
+            messarr.push(AMess[i].xyXm+'-'+AMess[i].cartype)
             dxarr.push(AMess[i].xyDh)
             sfzarr.push(AMess[i].bz)
             if (i == arrAMess) {
@@ -664,7 +676,7 @@
               r.by3 = parseFloat(r.by3)
               r.by4 = parseFloat(r.by4)
             }
-            this.formData.jlCx = 'C1'
+            // this.formData.jlCx = 'C1'
             this.cxChange()
           }
         })
@@ -751,7 +763,7 @@
         this.AMess = [{cartype: 'C1'}];
         this.carMess = null;
         this.formData = {};
-        this.formData.jlCx = 'C1'
+        // this.formData.jlCx = 'C1'
         this.XY = [];
         this.compName = '';
         this.DrawerVal = false;
@@ -810,12 +822,12 @@
 
       },
       cxChange() {
-        this.fy = []
-        this.fylist.map((val, index, arr) => {
-          if (val.by8.includes(this.formData.jlCx)) {
-            this.fy.push(val)
-          }
-        })
+        // this.fy = []
+        // this.fylist.map((val, index, arr) => {
+        //   if (val.by8.includes(this.formData.jlCx)) {
+        //     this.fy.push(val)
+        //   }
+        // })
       },
       faCar(name) {
         if (name === 'kk') {
@@ -1072,8 +1084,10 @@
         if (this.mxlx == 'py') {
           this.formData.lcLx = '20'
 
-          this.formData.lcKm = 3
+
         }
+        this.formData.jlCx=''
+        this.formData.lcKm = 3
 
         delete this.formData.lcFy
         if (this.getWXXY()) {
@@ -1118,7 +1132,7 @@
               lcClId: '',
               jlJx: '',
               jlId: "",
-              jlCx: 'C1',
+              jlCx: '',
               xyZjhm: '',
               xyXm: '',
               xyDh: '',
