@@ -47,7 +47,7 @@
       </Col>
     </Row>
         <!--<search-bar :parent="v" :show-create-button="false" :showDownLoadButton="false"></search-bar>-->
-        <table-area :parent="v"></table-area>
+        <table-area :parent="v" :TabHeight="AF.getPageHeight()-260"></table-area>
         <component :is="componentName"></component>
   </div>
 </template>

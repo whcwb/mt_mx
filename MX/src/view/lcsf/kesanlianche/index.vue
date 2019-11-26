@@ -14,7 +14,7 @@
     </Menu>
     <Row type="flex" style="padding: 10px 0" v-if="activeName=='1'">
       <Col span="24">
-        <Row type="flex" justify="end" :gutter="8">
+        <Row type="flex" style="justify-content: space-between;align-items: center" :gutter="8">
           <!--          <Col  span="12" align="right" style="font-size: 24px;color: #2baee9">-->
           <!--            <div @click="compName='keyypd'"> 当前排队中-->
           <!--              <Button style="font-size: 20px;font-weight: 600" type="error">{{yyrs}}</Button>-->
@@ -51,6 +51,11 @@
           <!--            </Button>-->
           <!--          </Col>-->
           <!--        <pager-tit title="科二模训" style="float: left"></pager-tit>-->
+          <div style="float: left;cursor: pointer;margin-right: 12px">
+    <span
+      style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
+      @click="toPY">培优训练</span>
+          </div>
           <div style="float: left;margin-top: 8px;cursor: pointer;margin-right: 12px">
     <span
       style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
@@ -65,19 +70,19 @@
               style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;cursor: pointer;"
               @click="formData.clZt = '00',getCarList()"
             >空闲{{xxNum}}台</span>
+            <Button type="primary" @click="getCarList" style="margin-right: 10px">
+              <Icon type="md-refresh"/>
+              <!--查询-->
+            </Button>
           </div>
-
-          <Button type="primary" @click="getCarList" style="margin-right: 10px">
-            <Icon type="md-refresh"/>
-            <!--查询-->
-          </Button>
 
         </Row>
       </Col>
     </Row>
 
     <Row v-show="activeName=='1'">
-      <Table ref="table" :height="AF.getPageHeight()-210" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
+      <Table ref="table" :height="AF.getPageHeight()-210" size="small" :columns="columns1" :data="carList"
+             :highlight-row="true"></Table>
     </Row>
 
     <div class="boxbackborder box_col" v-if="activeName=='2'">
@@ -192,7 +197,8 @@
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
                 <Select v-model="formData.zddm" style="width:280px" placeholder="计时500/小时" @on-change="lcFyChange">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm!='K2KF'">
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index"
+                          v-if="it.zddm!='K2KF'&&!it.zddm.includes('K3PY')">
                     {{it.by9}}-{{it.zdmc}}元
                   </Option>
                 </Select>
@@ -202,42 +208,42 @@
         </Row>
         <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && !formData.zddm.includes('K3PY')">
           <Col span="12">
-            <FormItem :label="'人数'" label-position="top" >
+            <FormItem :label="'人数'" label-position="top">
               <!--<Input v-model="formData.xySl"></Input>-->
               <InputNumber style="width:280px" :min="1" v-model="formData.xySl"></InputNumber>
             </FormItem>
           </Col>
         </Row>
-        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && formData.zddm.includes('K3PY')">
-          <Card>
-            <p slot="title">学员信息</p>
-            <p>
-              <Row v-for="(item,index) in AMess" :key="index">
-                <Col span="5" :class-name="'colsty'">
-                  <Input type="text" size="default" v-model="item.xyXm" placeholder="学员姓名"/>
-                </Col>
-                <Col span="5" :class-name="'colsty'">
-                  <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"
-                         size="default" v-model="item.xyDh" placeholder="学员联系电话"/>
-                </Col>
-                <Col span="8" :class-name="'colsty'">
-                  <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"
-                         size="default" v-model="item.bz" placeholder="身份证号码"/>
-                </Col>
-                <Col span="2" v-if="AMess.length>1">
-                  <Button size="default" type="warning" @click="remove(index)">删除</Button>
-                </Col>
-                <Col span="2" align="center">
+        <!--<Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && formData.zddm.includes('K3PY')">-->
+        <!--<Card>-->
+        <!--<p slot="title">学员信息</p>-->
+        <!--<p>-->
+        <!--<Row v-for="(item,index) in AMess" :key="index">-->
+        <!--<Col span="5" :class-name="'colsty'">-->
+        <!--<Input type="text" size="default" v-model="item.xyXm" placeholder="学员姓名"/>-->
+        <!--</Col>-->
+        <!--<Col span="5" :class-name="'colsty'">-->
+        <!--<Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"-->
+        <!--size="default" v-model="item.xyDh" placeholder="学员联系电话"/>-->
+        <!--</Col>-->
+        <!--<Col span="8" :class-name="'colsty'">-->
+        <!--<Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"-->
+        <!--size="default" v-model="item.bz" placeholder="身份证号码"/>-->
+        <!--</Col>-->
+        <!--<Col span="2" v-if="AMess.length>1">-->
+        <!--<Button size="default" type="warning" @click="remove(index)">删除</Button>-->
+        <!--</Col>-->
+        <!--<Col span="2" align="center">-->
 
-                  <Button type="info" icon="md-add"
-                          @click="pushmess"
-                  >
-                  </Button>
-                </Col>
-              </Row>
-            </p>
-          </Card>
-        </Row>
+        <!--<Button type="info" icon="md-add"-->
+        <!--@click="pushmess"-->
+        <!--&gt;-->
+        <!--</Button>-->
+        <!--</Col>-->
+        <!--</Row>-->
+        <!--</p>-->
+        <!--</Card>-->
+        <!--</Row>-->
         <Row :gutter="32" style="padding-top: 5px" v-if="formData.lcKm == '3'">
           <Col span="12">
             <FormItem :label="'安全员'" label-position="top">
@@ -262,25 +268,8 @@
                    @JLRowClick="JLRowClick"
                    @jxSeljxSel="(val)=>{getCoachList('',true)}"></component>
 
-        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2PY'">
-          <Col span="8">
-            <FormItem label="学员姓名" label-position="top">
-              <Input v-model="formData.xyXm"/>
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem label="学员电话" label-position="top">
-              <Input v-model="formData.xyDh"/>
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem label="学员身份证号码" label-position="top">
-              <Input v-model="formData.xyZjhm"/>
-            </FormItem>
-          </Col>
-        </Row>
         <!--<FormItem label="备注" label-position="top">-->
-          <!--<Input type="textarea" v-model="formData.bz" :rows="4"/>-->
+        <!--<Input type="textarea" v-model="formData.bz" :rows="4"/>-->
         <!--</FormItem>-->
       </Form>
       <div slot='footer'>
@@ -398,6 +387,7 @@
   import giveCar from '../comp/readCard'
   import {mapMutations} from 'vuex'
   import printNew from '../../../components/printNew'
+  import Cookies from 'js-cookie'
 
   export default {
     name: "index",
@@ -551,9 +541,10 @@
           // },
 
           {title: '开始时间', key: 'kssj', minWidth: 140, align: 'center',},
-          {title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 90, align: 'center',
+          {
+            title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 90, align: 'center',
             render: (h, p) => {
-              return h('div', p.row.jssj.substring(10,16))
+              return h('div', p.row.jssj.substring(10, 16))
             }
           },
           {
@@ -565,17 +556,17 @@
           // {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
           {
-            title: '应收',  minWidth: 90, defaul: '0', align: 'center',
+            title: '应收', minWidth: 90, defaul: '0', align: 'center',
             render: (h, p) => {
               return h('div', p.row.lcFy + '元');
             }
           },
           {
-            title: '实收',minWidth: 90, defaul: '0', align: 'center',
+            title: '实收', minWidth: 90, defaul: '0', align: 'center',
             render: (h, p) => {
               if (p.row.zfzt == '00') {    //为已支付的，就显示现金
                 return h('div', '');
-              }else{
+              } else {
                 return h('div', p.row.xjje + '元');
               }
             }
@@ -625,7 +616,7 @@
             render: (h, p) => {
               if (p.row.zfzt == '00') {
                 return h('div', '');
-              }else{
+              } else {
                 return h('div', p.row.zffs);
               }
             }
@@ -933,7 +924,7 @@
                                     this.ifFinish = true
                                     this.QRmodal = true
                                   } else {
-                                    this.print(res.result,true)
+                                    this.print(res.result, true)
                                   }
                                   // this.print(res.result)
                                   this.getCarList()
@@ -998,7 +989,7 @@
                                         this.ifFinish = true
                                         this.QRmodal = true
                                       } else {
-                                        this.print(res.result,true)
+                                        this.print(res.result, true)
                                       }
                                       // this.print(res.result)
                                       this.getCarList()
@@ -1215,7 +1206,7 @@
           this.formData = {}
           this.jlJx = ''
         } else {
-          this.formData.xySl=''
+          this.formData.xySl = ''
           // if (this.formData.lcClId == '') {
           //   this.showCAR = true
           // }
@@ -1246,6 +1237,12 @@
       pushmess() {
         let a = JSON.parse(JSON.stringify(this.Pmess));
         this.AMess.push(a);
+      },
+      toPY(){
+        Cookies.set('showModal','true')
+        this.$router.push({
+          name: 'kmspy'
+        })
       },
       getWXXY(AMess) {
         if (this.formData.zddm.indexOf('K3PY') == -1) {
@@ -1455,47 +1452,47 @@
       },
       QRok() {
         // if (this.QRmess.xjje == 0 && this.QRmess.fdr.indexOf("1") != -1) {
-          // 如果此时不需要支付现金 并且是抵扣支付 则需要弹出是否继续确认支付
-          // this.swal({
-            // title: '开放日预存训练费(' + this.QRmess.kfje + ")元,需一次性使用完,是否强制结算!",
-            // type: 'question',
-            // showCancelButton: true,
-            // confirmButtonText: '确定',
-            // cancelButtonText: '取消'
-          // }).then(p => {
-            // if (p.value) {
-            //   this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
-            //     if (res.code == 200) {
-            //       // this.$Message.success(res.message)
-            //       this.QRmess.id = res.message
-            //       if (this.ifFinish)
-            //         this.print(this.QRmess, true)
-            //       else this.print(this.QRmess, false)
-            //       this.qrids = ''
-            //       this.util.getPageData(this)
-            //     } else {
-            //       this.$Message.error(res.message)
-            //     }
-            //   })
-            // } else {
-            //   this.QRmodal = true
-            // }
-          // })
+        // 如果此时不需要支付现金 并且是抵扣支付 则需要弹出是否继续确认支付
+        // this.swal({
+        // title: '开放日预存训练费(' + this.QRmess.kfje + ")元,需一次性使用完,是否强制结算!",
+        // type: 'question',
+        // showCancelButton: true,
+        // confirmButtonText: '确定',
+        // cancelButtonText: '取消'
+        // }).then(p => {
+        // if (p.value) {
+        //   this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
+        //     if (res.code == 200) {
+        //       // this.$Message.success(res.message)
+        //       this.QRmess.id = res.message
+        //       if (this.ifFinish)
+        //         this.print(this.QRmess, true)
+        //       else this.print(this.QRmess, false)
+        //       this.qrids = ''
+        //       this.util.getPageData(this)
+        //     } else {
+        //       this.$Message.error(res.message)
+        //     }
+        //   })
+        // } else {
+        //   this.QRmodal = true
+        // }
+        // })
         // }
         // else {
-          this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
-            if (res.code == 200) {
-              // this.$Message.success(res.message)
-              this.QRmess.id = res.message
-              if (this.ifFinish)
-                this.print(this.QRmess, true)
-              else this.print(this.QRmess, false)
-              this.qrids = ''
-              this.util.getPageData(this)
-            } else {
-              this.$Message.error(res.message)
-            }
-          })
+        this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
+          if (res.code == 200) {
+            // this.$Message.success(res.message)
+            this.QRmess.id = res.message
+            if (this.ifFinish)
+              this.print(this.QRmess, true)
+            else this.print(this.QRmess, false)
+            this.qrids = ''
+            this.util.getPageData(this)
+          } else {
+            this.$Message.error(res.message)
+          }
+        })
         // }
 
       },
@@ -1795,7 +1792,7 @@
               if (res.code == 200) {
                 this.DrawerVal = false;
                 this.getCarList();
-                this.formData.xySl=''
+                this.formData.xySl = ''
                 this.formData = {zgId: ''};
                 this.getSafemanList()
                 this.AMess = [{}];
