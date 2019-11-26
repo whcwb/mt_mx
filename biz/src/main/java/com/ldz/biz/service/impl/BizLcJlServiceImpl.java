@@ -1735,7 +1735,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         jl.setZdmc(by9);
         jl.setZgXm(jls.get(0).getZgXm());
         jl.setLcFy(lcfy);
-        jl.setJlCx(jls.stream().map(BizLcJl::getJlCx).collect(Collectors.joining(",")));
+        jl.setJlCx(jls.stream().map(BizLcJl::getJlCx).filter(StringUtils::isNotBlank).filter(s -> !StringUtils.equals(s, "null")).collect(Collectors.joining(",")));
         jl.setClBh(jls.stream().map(BizLcJl::getClBh).filter(StringUtils::isNotBlank).collect(Collectors.joining(",")));
         jl.setYfJe(sum);
         jl.setXjje(sum);
