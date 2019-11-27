@@ -995,9 +995,6 @@
         IntervalKE: setInterval(() => {
           this.Ch_LcTime()
         }, 1000),
-        IntervalCar: setInterval(()=> {
-          this.getCarList()
-        },3000),
         columns1: [
           {
             title: '车号',

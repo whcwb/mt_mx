@@ -2150,7 +2150,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             Map<String, List<BizLcJl>> map = list.stream().collect(Collectors.groupingBy(BizLcJl::getJlId));
             for (Map.Entry<String, List<BizLcJl>> entry : map.entrySet()) {
                 List<BizLcJl> jls = entry.getValue();
-                String jlxm = jls.get(0).getJlXm();
+                String jlxm =jls.get(0).getJlJx() + "_" + jls.get(0).getJlXm();
                 int i = 1;
                 for (BizLcJl jl : jls) {
                     String[] split = jl.getXyXm().split(",");
