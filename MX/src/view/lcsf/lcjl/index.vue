@@ -210,7 +210,7 @@
         pageData: [],
         param: {
           orderBy: 'jssj desc',
-          kssjIsNotNull: '1',
+          jssjIsNotNull: '1',
           total: 0,
           kssjInRange: '',
           zhLike: '',

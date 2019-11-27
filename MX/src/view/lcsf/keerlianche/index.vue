@@ -205,7 +205,7 @@
           <div style="float: left;margin-top: 8px;cursor: pointer;margin-right: 12px">
     <span
       style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
-      @click="formData.clZt = '',getCarList()">总计{{carList.length}}台</span>
+      @click="formData.clZt = '',getCarList()">总计{{zj}}台</span>
             <span
               style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;"
             <span
@@ -981,6 +981,7 @@
         jlJx: '',
         zxNum: 0,
         xxNum: 0,
+        zj:0,
         carList: [],
         coachList: [],
         param1: {
@@ -1899,8 +1900,6 @@
       },
       getCarList() {//获取车辆
         this.param1.clBh = this.formData.clBh
-        this.zxNum = 0;
-        this.xxNum = 0;
         this.$http.post('/api/lccl/getCar', {
           notShowLoading: 'true',
           pagerNum: 1,
@@ -1913,13 +1912,18 @@
         }).then((res) => {
           if (res.code == 200) {
             this.carList = res.page.list
-            for (let r of this.carList) {
-              if (r.clZt === '01') {
-                this.zxNum++;
-              } else if (r.clZt === '00') {
-                this.xxNum++;
+            if(this.formData.clZt == ''||this.formData.clZt==undefined) {
+              this.zxNum = this.xxNum =this.zj=0;
+              for (let r of this.carList) {
+                if (r.clZt === '01') {
+                  this.zxNum++;
+                } else if (r.clZt === '00') {
+                  this.xxNum++;
+                }
+                this.zj++;
               }
             }
+
 
             this.AF.Get_SERVER_Time((res) => {
               this.set_LcTime(res)
