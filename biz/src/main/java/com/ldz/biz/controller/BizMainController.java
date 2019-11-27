@@ -1,6 +1,7 @@
 package com.ldz.biz.controller;
 
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
 import com.ldz.biz.constant.Status;
 import com.ldz.biz.model.BizLcJl;
@@ -35,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -862,5 +864,12 @@ public class BizMainController {
         OutputStream out = response.getOutputStream();
         ExcelUtil.createSheet(out, "今日招生", dataList);
     }
+
+    @GetMapping("/exportXymx")
+    public void exportXymx(Page<BizLcJl> page, HttpServletRequest request , HttpServletResponse response) throws IOException {
+        jlService.exportXymx(page,request,response);
+
+    }
+
 
 }

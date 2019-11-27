@@ -103,11 +103,13 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		try {
 			// 验证访问者是否合法
 			String userId = JwtUtil.getClaimAsString(token, "userId");
+			log.info("userId-->" + userId);
 			if (!userid.equals(userId)){
 				request.getRequestDispatcher("/authFiled").forward(request, response);
 				return false;
 			}
 			String value = redisDao.boundValueOps(userid).get();
+			log.info("TOKEN-->" + value);
 			if (StringUtils.isEmpty(value) || !value.equals(token)){
 				request.getRequestDispatcher("/authFiled").forward(request, response);
 				return false;

@@ -36,6 +36,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -167,6 +168,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         // 本校外校没有了   jlLx 这个字段暂时没用 , 全部默认为外校
         entity.setJlLx("10");
         entity.setId(genId());
+        if(StringUtils.equals(entity.getZddm(), "K2JS-S")){
+            RuntimeCheck.ifNull(entity.getXySl(), "此套餐需要填写学员数量");
+            RuntimeCheck.ifTrue(entity.getXySl()<=0, "学员数量不能小于0");
+        }
         RuntimeCheck.ifBlank(entity.getZddm(), "请选择套餐");
         SimpleCondition condition = new SimpleCondition(SysZdxm.class);
         condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
@@ -343,6 +348,50 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 }
                 wxjlService.update(wxjl);
             }
+            // 科目二可能返点,跟培优一致
+            if(StringUtils.equals(entity.getLcKm(), "2") &&StringUtils.equals(entity.getLcLx(),"20")){
+                entity.setXjje(entity.getYfJe());
+                // 开放日返点金额
+                int fdje = Integer.parseInt(zdxm.getBy3()) * entity.getXySl();
+                entity.setJssj(nowTime);
+                // 类型为开放练习 此时需要直接返点
+                RuntimeCheck.ifFalse(entity.getXySl() > 0, "培优需要填写学员信息");
+                // 充值余额
+                int czje = entity.getLcFy() - fdje;
+                // 新增充值余额记录
+                BizJlCz jlCz = new BizJlCz();
+                jlCz.setCjsj(nowTime);
+                jlCz.setCzqje(wxjl.getYe());
+                // 教练添加余额
+                wxjl.setYe(czje + wxjl.getYe());
+                jlCz.setCzhje(wxjl.getYe());
+                jlCz.setId(genId());
+                jlCz.setJe(czje);
+                jlCz.setJlId(wxjl.getId());
+                jlCz.setType("00");
+                // 新增充值记录
+                czMapper.insert(jlCz);
+
+                if (fdje > 0) {
+                    // 新增返点记录
+                    BizLcFd lcFd = new BizLcFd();
+                    lcFd.setCjr(currentUser.getZh() + "-" + currentUser.getXm());
+                    lcFd.setCjsj(nowTime);
+                    lcFd.setFdje(fdje);
+                    lcFd.setId(entity.getId());
+                    lcFd.setJlId(wxjl.getId());
+                    lcFd.setJlXm(wxjl.getJlXm());
+                    lcFd.setLcId(entity.getId());
+                    lcFd.setFdlx(entity.getLcLx());
+                    lcFd.setLcFy(entity.getLcFy());
+                    lcFd.setLcKm(entity.getLcKm());
+                    lcFd.setSc(0);
+                    lcFd.setBz("(" + entity.getXySl() + " * " + zdxm.getBy3() + ")");
+                    fdService.save(lcFd);
+                    entity.setPz(lcFd.getId());
+                }
+                wxjlService.update(wxjl);
+            }
             //  科目三 按把练车需要返点
             if (StringUtils.equals(entity.getLcKm(), "3") && StringUtils.equals(entity.getLcLx(), "10")) {
                 // 不同于开放日 , 没有余额充值, 直接返点就行
@@ -474,8 +523,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 String by3 = management.getBy3();
                 // 190
                 String hour = management.getZdmc();
-                if (lcSc > management.getQz()) {
-                    v = (int) Math.ceil((lcSc - management.getQz()) * Float.parseFloat(by3)) + Integer.parseInt(hour);
+                if (lcSc > (management.getQz() * lcJl.getXySl())) {
+                    v = (int) Math.ceil((lcSc - (management.getQz() * lcJl.getXySl())) * Float.parseFloat(by3)) + Integer.parseInt(hour);
                 } else {
                     v = Integer.parseInt(hour);
                 }
@@ -2023,7 +2072,126 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         return ApiResponse.success(lcJl);
     }
 
+    @Override
+    public ApiResponse<String> revokeJl(String id) {
+        RuntimeCheck.ifBlank(id, "请选择作废记录");
+        BizLcJl jl = findById(id);
+        jl.setZfzt("20");
+        jl.setYfJe(0);
+        jl.setXjje(0);
+        jl.setCardje(0);
+        jl.setKfje(0);
+        update(jl);
+        return ApiResponse.success();
+    }
 
+    @Override
+    public ApiResponse<String> getCarEnd() {
+        String clbhs = "";
+        List<String> bhList = new ArrayList<>();
+        List<BizLcJl> info = baseMapper.getAllInfo();
+        Map<String, List<BizLcJl>> collect = info.stream().collect(Collectors.groupingBy(BizLcJl::getJlId));
+        // 先过滤掉已经没有在训的教练名单 , 主要针对正在训练的教练
+        List<BizLcJl> lcJls = info.stream().filter(lcJl -> StringUtils.isBlank(lcJl.getJssj())).collect(Collectors.toList());
+//        Map<String, List<BizLcJl>> collect = lcJls.stream().collect(Collectors.groupingBy(BizLcJl::getJlId));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Set<String> set = lcJls.stream().map(BizLcJl::getJlId).collect(Collectors.toSet());
+        SimpleCondition condition = new SimpleCondition(BizLcWxjl.class);
+        condition.gt(BizLcWxjl.InnerColumn.ye, 0);
+        condition.in(BizLcWxjl.InnerColumn.id, set);
+        List<BizLcWxjl> list = wxjlService.findByCondition(condition);
+        list.forEach(bizLcWxjl -> {
+            List<BizLcJl> jls = collect.get(bizLcWxjl.getId());
+            // 已经训练完的记录总费用
+            int sum = jls.stream().filter(lcJl -> StringUtils.isNotBlank(lcJl.getJssj())).mapToInt(BizLcJl::getLcFy).sum();
+            // 未训练完的当前费用
+            List<BizLcJl> jlList = jls.stream().filter(lcJl -> StringUtils.isBlank(lcJl.getJssj())).collect(Collectors.toList());
+            int sc=0;
+            for (BizLcJl lcJl : jlList) {
+                String kssj = lcJl.getKssj();
+
+                Date ks = null;
+                try {
+                    ks = dateFormat.parse(kssj);
+                } catch (ParseException ignored) {
+                }
+                Date js = new Date();
+                sc += (int) ((js.getTime() - ks.getTime()) / (60 * 1000));
+            }
+            int zfy = sum + (int)Math.ceil(sc * 8.33);
+            int ye = bizLcWxjl.getYe();
+            if((ye - (5*8.33)) < zfy){
+                // 记录下所有的在训车辆 , 这些车辆即将超出费用
+                List<String> strings = jlList.stream().map(BizLcJl::getClBh).collect(Collectors.toList());
+                bhList.addAll(strings);
+            }
+        });
+        clbhs = String.join(",",bhList);
+        return ApiResponse.success(clbhs);
+    }
+
+    @Override
+    public void exportXymx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        LimitedCondition condition = getQueryCondition();
+        condition.setOrderByClause(" kssj desc");
+        PageInfo<BizLcJl> info = findPage(page, condition);
+        List<Map<Integer,String>> data = new ArrayList<>();
+        Map<Integer,String> titleMap = new HashMap<>();
+        titleMap.put(0,"教练员");
+        titleMap.put(1,"序号");
+        titleMap.put(2, "学员姓名");
+        titleMap.put(3, "学员证件号码");
+        titleMap.put(4,"学员联系方式");
+        titleMap.put(5, "培训车型");
+        data.add(titleMap);
+        List<BizLcJl> list = info.getList();
+        if(CollectionUtils.isNotEmpty(list)){
+            Map<String, List<BizLcJl>> map = list.stream().collect(Collectors.groupingBy(BizLcJl::getJlId));
+            for (Map.Entry<String, List<BizLcJl>> entry : map.entrySet()) {
+                List<BizLcJl> jls = entry.getValue();
+                String jlxm = jls.get(0).getJlXm();
+                int i = 1;
+                for (BizLcJl jl : jls) {
+                    String[] split = jl.getXyXm().split(",");
+                    String[] dhs = jl.getXyDh().split(",");
+                    String[] zjhms = jl.getXyZjhm().split(",");
+                    for (int i1 = 0; i1 < split.length; i1++) {
+                        Map<Integer,String> dataMap = new HashMap<>();
+                        if(i == 1) {
+                            dataMap.put(0, jlxm);
+                        }else{
+                            dataMap.put(0,"");
+                        }
+                        dataMap.put(1, i + "");
+                        dataMap.put(2, split[i1].split("-")[0]);
+                        if(i1 <= zjhms.length){
+                            dataMap.put(3, zjhms[i1]);
+                        }else{
+                            dataMap.put(3,"");
+                        }
+                        if(i1 <= dhs.length -1){
+                            dataMap.put(4,dhs[i1]);
+                        }else{
+                            dataMap.put(4,"");
+                        }
+                        dataMap.put(5,split[i1].split("-")[1]);
+                        data.add(dataMap);
+                        i++;
+                    }
+                }
+            }
+        }
+        String json = JsonUtil.toJson(data);
+
+        response.setContentType("application/msexcel");
+        request.setCharacterEncoding("UTF-8");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String(( "培优明细").getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xls");
+        OutputStream out = response.getOutputStream();
+        ExcelUtil.createSheet(out, "今日招生", data);
+
+    }
 
 
 }

@@ -63,4 +63,10 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
     ApiResponse<BizLcJl> getByPz(String pz);
 
     ApiResponse<BizLcJl> payCNY(String id, String zf);
+
+    ApiResponse<String> revokeJl(String id);
+
+    ApiResponse<String> getCarEnd();
+
+    void exportXymx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException;
 }
