@@ -1088,6 +1088,7 @@
         }
         this.formData.jlCx=''
         this.formData.lcKm = 3
+        this.formData.lcLx = '20'
 
         delete this.formData.lcFy
         if (this.getWXXY()) {
