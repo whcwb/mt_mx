@@ -373,6 +373,14 @@
           </Col>
         </Row>
 
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm =='K2JS-S'">
+          <Col span="12">
+            <FormItem label="人数" label-position="top" style="width:200px">
+              <InputNumber style="width: 100%" :max="1000" :min="1" v-model="formData.xySl"></InputNumber>
+            </FormItem>
+          </Col>
+        </Row>
+
         <!--        <radio-car v-if="carMess == null"-->
         <!--                   clKm="2"-->
         <!--                   @getCarItemMess="getCarItemMess"-->
@@ -402,9 +410,10 @@
             </FormItem>
           </Col>
         </Row>
-        <FormItem label="备注" label-position="top">
-          <Input type="textarea" v-model="formData.bz" :rows="4"/>
-        </FormItem>
+
+        <!--<FormItem label="备注" label-position="top">-->
+          <!--<Input type="textarea" v-model="formData.bz" :rows="4"/>-->
+        <!--</FormItem>-->
       </Form>
       <div slot='footer'>
         <Button style="margin-right: 8px" @click="close">取消</Button>
@@ -1376,6 +1385,7 @@
           this.formData = {}
           this.jlJx = ''
         } else {
+          this.formData.xySl=1
           // if (this.formData.lcClId == '') {
           //   this.showCAR = true
           // }

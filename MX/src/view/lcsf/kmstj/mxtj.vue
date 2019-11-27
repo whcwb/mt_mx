@@ -4,7 +4,7 @@
                   @print="componentName = 'print'"
                   @exportExcel="exportExcel"
       ></search-bar>
-    <table-area :parent="v" :TabHeight="AF.getPageHeight()-220" :pager="false"></table-area>
+    <table-area :parent="v" :TabHeight="AF.getPageHeight()-230" :pager="false"></table-area>
     <Row>
         <!--<Col span="1" align="center" >-->
           <!--<div @click="AnYearTJ" style="padding: 10px;border-radius: 35px;background-color: #10AEFF;color: white;font-size: 28px">年</div>-->

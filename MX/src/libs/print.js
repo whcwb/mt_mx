@@ -38,6 +38,54 @@ obj.print = (id,item,time,callback) => {
   console.log(item)
   console.log(printJson,'sssss')
 
+
+  item.map((val,index,arr)=>{
+    if(index===item.length-1){               //若备注超出13个字符，以,分隔，按每行两个人处理
+      // if(val.length)
+      if(val.length>14){
+        let arr=val.split(',')
+        let arr1=[]
+        for (let i=0;i<arr.length/2+1;i=i+2){
+          let arr2=[]
+          for (let a=0;a<2;a++){
+            arr2.push(arr[i+a])
+          }
+          arr1.push(arr2.join(','))
+        }
+        if(arr.length%2!=0){
+          arr1.push(arr[arr.length-1])
+        }
+        console.log(arr1)
+
+        printJson.splice(16, 4)
+
+        var firstY=320
+
+        for (let c=0;c<arr1.length;c++){
+          let bz=c==0?'备注':'备注'+c
+          let fontsize=c==0?12:9
+          let gz={'x': 10, 'y': firstY+30, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': bz, 'font_size': fontsize}
+            printJson.push(gz)
+          let obj={'x': 110, 'y': firstY+30, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': arr1[c], 'font_size': 9}
+            printJson.push(obj)
+          firstY+=30
+        }
+
+        let textObj1={'x': 10, 'y': 380, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 0, 'text': '本票据遗失不补', 'font_size': 9}
+        let textObj2={'x': 125, 'y': 380, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 0, 'text': time, 'font_size': 9}
+
+        textObj1.y=textObj2.y=printJson[printJson.length-1].y+30
+
+        printJson.push(textObj1)
+        printJson.push(textObj2)
+
+        console.log(printJson)
+      }
+
+    }
+  })
+
+
   $.ajax({
     type: "POST",
     url: "http://127.0.0.1:39999/print",

@@ -49,7 +49,7 @@
         </Row>
       </Col>
     </Row>
-    <div class="box_col_auto">
+    <div class="box_col_auto" :style="{height:AF.getPageHeight()-220+'px',flex:'unset'}">
       <!--<Row>-->
         <!--<Col span="6" v-for="(item,index) in tabdata" :key="index">-->
       <div class="box_row_list">
