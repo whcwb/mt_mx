@@ -4,7 +4,7 @@
                   @print="componentName = 'print'"
                   @exportExcel="exportExcel"
       ></search-bar>
-    <table-area :parent="v" :TabHeight="AF.getPageHeight()-220" :pager="false"></table-area>
+    <table-area :parent="v" :TabHeight="AF.getPageHeight()-230" :pager="false"></table-area>
     <Row>
         <!--<Col span="1" align="center" >-->
           <!--<div @click="AnYearTJ" style="padding: 10px;border-radius: 35px;background-color: #10AEFF;color: white;font-size: 28px">年</div>-->
@@ -88,7 +88,7 @@
         tableColumns: [
           {type: 'index', align: 'center', minWidth: 60, title: '序号'},
           {title: '驾校', key: 'jlJx', minWidth: 90, align: 'center',},
-          {title: '教练员', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90, align: 'center',},
+          {title: '教练员', key: 'jlXm', minWidth: 90, align: 'center',},
           {title: '车号', key: 'clBh', minWidth: 60, align: 'center',},
           {
             title: '人数',
@@ -115,29 +115,29 @@
               }
 
             },
-            filters: [
-              {
-                label: '计时',
-                value: 'JS'
-              },
-              {
-                label: '培优',
-                value: 'PY'
-              },
-              {
-                label: '按把',
-                value: 'AB'
-              },
-            ],
-            filterMultiple: false,
-            filterRemote(value, row) {
-              this.param.zddmLike = value;
-              // var _self = this
-              this.util.getPageData(this);
-            }
+            // filters: [
+            //   {
+            //     label: '计时',
+            //     value: 'JS'
+            //   },
+            //   {
+            //     label: '培优',
+            //     value: 'PY'
+            //   },
+            //   {
+            //     label: '按把',
+            //     value: 'AB'
+            //   },
+            // ],
+            // filterMultiple: false,
+            // filterRemote(value, row) {
+            //   this.param.zddmLike = value;
+            //   // var _self = this
+            //   this.util.getPageData(this);
+            // }
           },
-          {title: '开始时间', key: 'kssj', minWidth: 140, align: 'center',},
-          {title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 90, align: 'center',
+          {title: '开始时间', key: 'kssj', searchType: 'daterange',minWidth: 140, align: 'center',},
+          {title: '结束时间', key: 'jssj',  minWidth: 90, align: 'center',
             render: (h, p) => {
               return h('div', p.row.jssj.substring(10,16))
             }

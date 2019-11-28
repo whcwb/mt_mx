@@ -33,7 +33,7 @@
       </div>
       <div class="printSty" ref="printDiv">
         <!--        <div style="font-weight: 500;font-size: 16px">{{info.jssj}}</div>-->
-        <table border="1" cellpadding="0" cellspacing="0" style="width: 100%;font-family: 黑体;color:#000">
+        <table border="1" cellpadding="0" cellspacing="0" style="table-layout: fixed;width: 100%;font-family: 黑体;color:#000">
           <tr>
             <td colspan="2" style="text-align: center"><span style="font-size: 20px;">车辆租赁凭据</span></td>
           </tr>
@@ -51,7 +51,7 @@
           </tr>
           <tr v-for="(item,index) in displayItem" :key="index">
             <td>{{item.title}}</td>
-            <td>
+            <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
               {{item.val}}
               <!--{{getDict(info[item.key],item.dict)}}-->
               <!--<span v-if="item.key2">{{info[item.key2]}}</span>-->

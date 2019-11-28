@@ -8,7 +8,7 @@
         <Icon type="md-search"></Icon>
         <!--查询-->
       </Button>
-      <Button type="primary" @click="doPrint" style="margin-left: 10px;">打印</Button>
+      <!--<Button type="primary" @click="doPrint" style="margin-left: 10px;">打印</Button>-->
       <Button type="primary" @click="exportExcel" style="margin-left: 10px;"><Icon type="ios-cloud-download" /></Button>
     </div>
     <div class="box_col_100" id="page1" style="width: 100%">

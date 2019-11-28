@@ -164,7 +164,7 @@
     <Row type="flex" style="padding: 10px 0" v-if="activeName=='1'">
 
       <Col span="24">
-        <Row type="flex" justify="end" :gutter="8">
+        <Row type="flex" style="justify-content: space-between;align-items: center" :gutter="8">
           <!--          <Col  span="12" align="right" style="font-size: 24px;color: #2baee9">-->
           <!--            <div @click="compName='keyypd'"> 当前排队中-->
           <!--              <Button style="font-size: 20px;font-weight: 600" type="error">{{yyrs}}</Button>-->
@@ -201,34 +201,44 @@
           <!--            </Button>-->
           <!--          </Col>-->
           <!--        <pager-tit title="科二模训" style="float: left"></pager-tit>-->
-
-          <div style="float: left;margin-top: 8px;cursor: pointer;margin-right: 12px">
+          <div style="display: flex;align-items: center">
+            <span
+              style="cursor:pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
+              @click="yjChange">{{yj?'停止预警':'开启预警'}}</span>
+            <span v-if="yj" style="margin-left: 10px" :class="yjclass">
+              <!--<img src="../../../assets/images/loading3.gif" style="width:50px" v-if="yjnr==''||yjnr=='操作成功'">-->
+              {{yjnr==''||yjnr=='操作成功'?'预警中......':yjnr+'号车即将超时，请提醒......'}}
+            </span>
+          </div>
+          <div>
+            <div style="float: left;margin-top: 8px;cursor: pointer;margin-right: 12px">
     <span
       style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
       @click="formData.clZt = '',getCarList()">总计{{zj}}台</span>
-            <span
-              style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;"
-            <span
-              style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;"
-              @click="formData.clZt = '01',getCarList()">
+              <span
+                style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;"
+              <span
+                style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;"
+                @click="formData.clZt = '01',getCarList()">
     在训{{zxNum}}台</span>
-            <span
-              style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;cursor: pointer;"
-              @click="formData.clZt = '00',getCarList()"
-            >空闲{{xxNum}}台</span>
+              <span
+                style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 10px;cursor: pointer;"
+                @click="formData.clZt = '00',getCarList()"
+              >空闲{{xxNum}}台</span>
+            </div>
+
+            <Button type="primary" @click="getCarList" style="margin-right: 10px">
+              <Icon type="md-refresh"/>
+              <!--查询-->
+            </Button>
           </div>
-
-          <Button type="primary" @click="getCarList" style="margin-right: 10px">
-            <Icon type="md-refresh"/>
-            <!--查询-->
-          </Button>
-
         </Row>
       </Col>
     </Row>
 
     <Row v-show="activeName=='1'">
-      <Table ref="table" :height="AF.getPageHeight()-210" size="small" :columns="columns1" :data="carList" :highlight-row="true"></Table>
+      <Table ref="table" :height="AF.getPageHeight()-210" size="small" :columns="columns1" :data="carList"></Table>
+      <!--<Table :row-class-name="rowClassName" :columns="columns1" :data="carList"></Table>-->
     </Row>
 
     <div class="boxbackborder box_col" v-if="activeName=='2'">
@@ -373,6 +383,15 @@
           </Col>
         </Row>
 
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm =='K2JS-S'">
+          <Col span="12">
+            <FormItem label="人数" label-position="top" style="width:200px">
+              <!--<InputNumber style="width: 100%" :max="1000" :min="1" :autofocus="true" v-model="formData.xySl"></InputNumber>-->
+              <Input ref="inputRS" style="width: 100%" :autofocus="true" v-focus v-model="formData.xySl"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+
         <!--        <radio-car v-if="carMess == null"-->
         <!--                   clKm="2"-->
         <!--                   @getCarItemMess="getCarItemMess"-->
@@ -402,9 +421,10 @@
             </FormItem>
           </Col>
         </Row>
-        <FormItem label="备注" label-position="top">
-          <Input type="textarea" v-model="formData.bz" :rows="4"/>
-        </FormItem>
+
+        <!--<FormItem label="备注" label-position="top">-->
+        <!--<Input type="textarea" v-model="formData.bz" :rows="4"/>-->
+        <!--</FormItem>-->
       </Form>
       <div slot='footer'>
         <Button style="margin-right: 8px" @click="close">取消</Button>
@@ -559,6 +579,42 @@
     <!--</Row>-->
     <!--</div>-->
     <!--</Modal>-->
+
+    <Modal
+      title="确认作废"
+      width="700px"
+      v-model="ZFmodal"
+      :closable="false"
+      :mask-closable="false"
+      okText="作废"
+      cancelText="取消"
+      @on-ok="zf"
+      @on-cancel=""
+    >
+      <div>
+        <Row>
+          <Col>
+            <Table size="small" :columns="columns3" :data="ZFItem"></Table>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="24">
+            <Card>
+              <p slot="title" style="font-size: 20px;font-weight: 600">训练信息</p>
+              <p style="font-size: 18px;font-weight: 500;padding: 10px">教练员 :
+                {{ZFItem[0].jlXm===undefined?'':ZFItem[0].jlXm}}</p>
+              <p style="font-size: 18px;font-weight: 500;padding: 10px">总时长 :
+                {{ZFItem[0].sc===undefined?'':ZFItem[0].sc}}分钟</p>
+              <p style="font-size: 18px;font-weight: 500;padding: 10px;color: red">总费用 : {{ZFItem[0].lcFy}}元</p>
+            </Card>
+          </Col>
+
+        </Row>
+        <Row style="text-align: left;padding-left: 10px">
+          <!--<p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">应收现金{{this.ysxzA}}元</p>-->
+        </Row>
+      </div>
+    </Modal>
     <component :is="componentName" :printClose="printClose" :hisPrintMess="hisPrintMess"></component>
   </div>
 </template>
@@ -707,7 +763,7 @@
           {
             title: '应收', align: 'center', minWidth: 70, defaul: '0',
             render: (h, p) => {
-                return h('div', p.row.lcFy + '元');
+              return h('div', p.row.lcFy + '元');
             }
           },
           {
@@ -715,7 +771,7 @@
             render: (h, p) => {
               if (p.row.zfzt == '00') {    //为已支付的，就显示现金
                 return h('div', '');
-              }else{
+              } else {
                 return h('div', p.row.xjje + '元');
               }
             }
@@ -725,7 +781,7 @@
             render: (h, p) => {
               if (p.row.zfzt == '00') {
                 return h('div', '');
-              }else{
+              } else {
                 return h('div', p.row.zffs);
               }
             }
@@ -740,6 +796,10 @@
               {
                 label: '已支付',
                 value: '10'
+              },
+              {
+                label: '已作废',
+                value: '20'
               },
             ],
             filterMultiple: false,
@@ -756,26 +816,35 @@
                   [
                     h('Button', {
                       props: {
+                        type: 'warning',
+                        size: 'small',
+                        ghost: true,
+                      },
+                      style: {},
+                      on: {
+                        click: () => {
+                          this.ZFmodal = true
+                          this.ZFItem = []
+                          this.ZFItem.push(p.row)
+                        }
+                      }
+                    }, '未支付')
+                  ])
+
+                return h('div', '未支付')
+              } else if (p.row.zfzt == '20') {
+                return h('div',
+                  [
+                    h('Button', {
+                      props: {
                         type: 'error',
                         size: 'small',
                         ghost: true,
                       },
                       style: {},
-                      // on: {
-                      //   click: () => {
-                      //     console.log("现金支付");
-                      //     this.xjzf(p.row)
-                      //   }
-                      // }
-                    }, '未支付')
+                    }, '已作废')
                   ])
-
-                return h('div', '未支付')
-
-
-              } else {
-                return h('div', '已支付')
-              }
+              } else return h('div', '已支付')
             }
           },
           {
@@ -841,7 +910,7 @@
           //   }
           // },
           {
-            title: '操作', minWidth: 70, align: 'center',  render: (h, p) => {
+            title: '操作', minWidth: 70, align: 'center', render: (h, p) => {
               let buttons = [];
               if (p.row.zfzt != '00') {
                 buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
@@ -956,6 +1025,7 @@
         hisPrintMess: '',
         clId: '',
         showFQfzkp: false,
+        focus: false,
         formData: {
           xyZjhm: '',
           xyXm: '',
@@ -973,6 +1043,72 @@
           lcFy: '',
           zddm: 'K2JS'
         },
+        ZFmodal: false,
+        ZFItem: [
+          {
+            jlXm: '',
+            sc: ''
+          }
+        ],
+        yjnr: '',
+        yjYS:'',
+        yjclass: '',
+        yj: false,
+        yjTimeOut: '',
+        columns3: [
+          {
+            type: 'index',
+            width: 60,
+            align: 'center'
+          },
+          {
+            title: '车辆编号',
+            key: 'clBh',
+            align: 'center'
+          },
+          {
+            title: '时长(分钟)',
+            key: 'sc',
+            align: 'center'
+          },
+          {
+            title: '费用(元)',
+            key: 'lcFy',
+            align: 'center'
+          },
+          {
+            title: '支付状态',
+            key: 'zfzt',
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.zfzt == '00' || p.row.jssj == '') {
+                return h('Tag', {
+                  props: {
+                    type: 'volcano',
+                  },
+                }, '未支付')
+              } else {
+                return h('div', '已支付')
+              }
+            }
+          },
+          {
+            title: '训练状态',
+            key: 'clZt',
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.jssj == '') {
+                return h('Tag', {
+                  props: {
+                    type: 'blue',
+                  }
+                }, '在训')
+              } else {
+                return h('div', '结束')
+              }
+            }
+          }
+        ],
         searchCoachList: [],
         loadingJly: false,
         yyrs: '0',
@@ -981,7 +1117,7 @@
         jlJx: '',
         zxNum: 0,
         xxNum: 0,
-        zj:0,
+        zj: 0,
         carList: [],
         coachList: [],
         param1: {
@@ -1376,23 +1512,24 @@
           this.formData = {}
           this.jlJx = ''
         } else {
+          this.formData.xySl = ''
           // if (this.formData.lcClId == '') {
           //   this.showCAR = true
           // }
         }
       },
       'QRmessxj.zf': function (n, o) {
-        if(n=='3'){
-          this.QRmessxj.c=this.QRmess.kfje / 200
+        if (n == '3') {
+          this.QRmessxj.c = this.QRmess.kfje / 200
         }
         this.getysxjA()
       },
       'QRmessxj.c': function (n, o) {
         this.getysxjA()
       },
-      QRmodal:function (n,o) {
-        if(n==true)
-        this.getysxjA()
+      QRmodal: function (n, o) {
+        if (n == true)
+          this.getysxjA()
       }
     },
     mounted() {
@@ -1403,9 +1540,18 @@
       this.getzdlist();
       // this.getYYdj();
       this.enter()
+      window.clearInterval(this.yjTimeOut);
+
     },
     beforeDestroy() {
       clearInterval(this.IntervalKE)
+      clearInterval(this.yjTimeOut);
+      clearInterval(this.yjYS)
+    },
+    directives: {
+      focus: function (el) {
+        el.focus();
+      }
     },
     methods: {
       ...mapMutations([
@@ -1416,11 +1562,11 @@
         if (this.QRmessxj.zf == '1') {
           this.ysxzA = this.QRmess.lcFy
           this.kfje = this.QRmess.kfje
-          this.QRmessxj.c=0
+          this.QRmessxj.c = 0
         } else if (this.QRmessxj.zf == '2') {
           this.ysxzA = (this.QRmess.lcFy - this.QRmess.cardje) > 0 ? (this.QRmess.lcFy - this.QRmess.cardje) : 0
           this.kfje = this.QRmess.kfje
-          this.QRmessxj.c=0
+          this.QRmessxj.c = 0
         } else {
           this.ysxzA = (this.QRmess.lcFy - (200 * this.QRmessxj.c)) > 0 ? (this.QRmess.lcFy - (200 * this.QRmessxj.c)) : 0
           this.kfje = this.QRmess.kfje - 200 * this.QRmessxj.c
@@ -1451,6 +1597,35 @@
           this.QRmessxj.c = this.QRmess.kfje / 200
         }
         this.getysxjA()
+      },
+      carYJ() {        //车辆预警
+        this.$http.post('/api/lcjl/getCarEnd').then((res) => {
+          if (res.code == 200) {
+            this.yjnr = res.message
+            var v = this
+            clearInterval(this.yjYS)
+            // if (res.message !== '' && res.message !== '操作成功') {
+              // this.yjclass='yjRed'
+              this.yjYS = setInterval(() => {
+                console.log(v.yjclass)
+                if (v.yjclass == 'yjRed') {
+                  v.yjclass = 'yjBlack'
+                }
+                else{
+                  v.yjclass = 'yjRed'
+                }
+              }, 1000)
+
+              setTimeout(() => {
+                clearInterval(this.yjYS)
+                this.yjnr=''
+              }, 60000)
+            // } else
+            //   v.yjclass = ''
+          } else {
+            this.$Message.error(res.message)
+          }
+        })
       },
       xjzf(item) {
         item.zf = '1';
@@ -1495,10 +1670,10 @@
               for (let i = 0; i < a; i++) {
                 this.RS.push(i + 1)
               }
-              this.ysxzA=this.QRmess.lcFy
+              this.ysxzA = this.QRmess.lcFy
             }
-            else{
-              this.ysxzA=this.QRmess.lcFy
+            else {
+              this.ysxzA = this.QRmess.lcFy
             }
             this.ifFinish = true
             this.QRmodal = true
@@ -1543,6 +1718,21 @@
           v.util.getPageData(v)
         } else {
 
+        }
+      },
+      yjChange() {
+        this.yj = !this.yj
+        window.clearInterval(this.yjTimeOut)
+        if (this.yj) {
+          var v = this
+          v.carYJ()
+          this.yjTimeOut = setInterval(function () {
+              v.carYJ()
+            },
+            60000);
+        } else {
+          clearInterval(this.yjYS)
+          window.clearInterval(this.yjTimeOut);
         }
       },
       tabClick(name) {
@@ -1593,14 +1783,37 @@
             if (this.ifFinish)
               this.print(res.result, true)
             else this.print(res.result, false)
-            this.QRmodal=false
-            this.ysxzA=0
+            this.QRmodal = false
+            this.ysxzA = 0
             this.ifFinish = false
             this.util.getPageData(this)
             this.QRmessxj = {}
             this.QRmessxjlist = []
           } else {
             this.$Message.error(res.message)
+          }
+        })
+      },
+      zf() {
+        this.swal({
+          title: '确认作废该记录?',
+          type: 'warning',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          showCancelButton: true
+        }).then((res) => {
+          if (res.value) {
+            this.$http.post('/api/lcjl/revokeJl', {id: this.ZFItem[0].id}).then((res) => {
+              if (res.code == 200) {
+                this.ZFmodal = false
+                this.util.getPageData(this)
+                this.$Message.info(res.message);
+              } else {
+                this.$Message.info(res.message);
+              }
+            })
+          } else {
+
           }
         })
       },
@@ -1626,7 +1839,7 @@
             if (p.value) {
               this.QRmess.id = ''
             } else {
-              this.ysxzA=this.QRmess.lcFy
+              this.ysxzA = this.QRmess.lcFy
               this.QRmodal = true
             }
           })
@@ -1675,6 +1888,11 @@
       },
       lcFyChange(v) {
         this.formData.zddm = v
+        if (this.formData.zddm == 'K2JS-S') {
+          this.$nextTick(() => {
+            this.$refs['inputRS'].focus();
+          })
+        }
         console.log(v)
         console.log(this.formData.zddm);
 
@@ -1912,8 +2130,8 @@
         }).then((res) => {
           if (res.code == 200) {
             this.carList = res.page.list
-            if(this.formData.clZt == ''||this.formData.clZt==undefined) {
-              this.zxNum = this.xxNum =this.zj=0;
+            if (this.formData.clZt == '' || this.formData.clZt == undefined) {
+              this.zxNum = this.xxNum = this.zj = 0;
               for (let r of this.carList) {
                 if (r.clZt === '01') {
                   this.zxNum++;
@@ -2066,4 +2284,13 @@
     text-align: right;
     background: #fff;
   }
+
+  .yjRed {
+    color: red;
+  }
+
+  .yjBlack {
+    color: black
+  }
+
 </style>

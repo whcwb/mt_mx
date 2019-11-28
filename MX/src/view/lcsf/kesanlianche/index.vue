@@ -368,6 +368,43 @@
         </Row>
       </div>
     </Modal>
+
+
+
+
+    <Modal
+      title="确认作废"
+      width="700px"
+      v-model="ZFmodal"
+      :closable="false"
+      :mask-closable="false"
+      okText="作废"
+      cancelText="取消"
+      @on-ok="zf"
+      @on-cancel=""
+    >
+      <div>
+        <Row>
+          <Col>
+            <Table size="small" :columns="columns3" :data="ZFItem"></Table>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="24">
+            <Card>
+              <p slot="title" style="font-size: 20px;font-weight: 600">训练信息</p>
+              <p style="font-size: 18px;font-weight: 500;padding: 10px">教练员 : {{ZFItem[0].jlXm===undefined?'':ZFItem[0].jlXm}}</p>
+              <p style="font-size: 18px;font-weight: 500;padding: 10px">总时长 : {{ZFItem[0].sc===undefined?'':ZFItem[0].sc}}分钟</p>
+              <p style="font-size: 18px;font-weight: 500;padding: 10px;color: red">总费用 : {{ZFItem[0].lcFy}}元</p>
+            </Card>
+          </Col>
+
+        </Row>
+        <Row style="text-align: left;padding-left: 10px">
+          <!--<p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">应收现金{{this.ysxzA}}元</p>-->
+        </Row>
+      </div>
+    </Modal>
     <component :is="componentName" :printClose="printClose" :hisPrintMess="hisPrintMess"></component>
   </div>
 </template>
@@ -433,7 +470,61 @@
                 return h('Tag', {
                   props: {
                     type: 'volcano',
+                  },
+                }, '未支付')
+              } else {
+                return h('div', '已支付')
+              }
+            }
+          },
+          {
+            title: '训练状态',
+            key: 'clZt',
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.jssj == '') {
+                return h('Tag', {
+                  props: {
+                    type: 'blue',
                   }
+                }, '在训')
+              } else {
+                return h('div', '结束')
+              }
+            }
+          }
+        ],
+        columns3: [
+          {
+            type: 'index',
+            width: 60,
+            align: 'center'
+          },
+          {
+            title: '车辆编号',
+            key: 'clBh',
+            align: 'center'
+          },
+          {
+            title: '时长(分钟)',
+            key: 'sc',
+            align: 'center'
+          },
+          {
+            title: '费用(元)',
+            key: 'lcFy',
+            align: 'center'
+          },
+          {
+            title: '支付状态',
+            key: 'zfzt',
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.zfzt == '00' || p.row.jssj == '') {
+                return h('Tag', {
+                  props: {
+                    type: 'volcano',
+                  },
                 }, '未支付')
               } else {
                 return h('div', '已支付')
@@ -548,7 +639,7 @@
             }
           },
           {
-            title: '时长', key: 'sc', minWidth: 80, defaul: '0', align: 'center',
+            title: '时长', key: 'sc', minWidth: 100, defaul: '0', align: 'center',
             render: (h, p) => {
               return h('div', p.row.sc + '分钟')
             }
@@ -579,18 +670,35 @@
                   [
                     h('Button', {
                       props: {
+                        type: 'warning',
+                        size: 'small',
+                        ghost: true,
+                      },
+                      style: {},
+                      on:{
+                        click: () =>{
+                          this.ZFmodal=true
+                          this.ZFItem=[]
+                          this.ZFItem.push(p.row)
+                        }
+                      }
+                    }, '未支付')
+                  ])
+
+                return h('div', '未支付')
+              } else if(p.row.zfzt == '20'){
+                return h('div',
+                  [
+                    h('Button', {
+                      props: {
                         type: 'error',
                         size: 'small',
                         ghost: true,
                       },
                       style: {},
-                    }, '未支付')
+                    }, '已作废')
                   ])
-
-                return h('div', '未支付')
-              } else {
-                return h('div', '已支付')
-              }
+              }else return h('div', '已支付')
             },
             filters: [
               {
@@ -600,6 +708,10 @@
               {
                 label: '已支付',
                 value: '10'
+              },
+              {
+                label: '已作废',
+                value: '20'
               },
             ],
             filterMultiple: false,
@@ -1133,7 +1245,7 @@
           {
             title: '时长',
             key: 'sc',
-            width: 80,
+            width: 90,
             align: 'center',
             render: (h, p) => {
               if (p.row.dqsc == '') {
@@ -1165,7 +1277,7 @@
           },
           {
             title: '类型',
-            minWidth: 140,
+            minWidth: 130,
             align: 'center',
             render: (h, p) => {
               if (p.row.zdxm != '') {
@@ -1194,6 +1306,13 @@
             // },
           },
         ],
+        ZFmodal:false,
+        ZFItem:[
+          {
+            jlXm:'',
+            sc:''
+          }
+        ]
       }
     },
     watch: {
@@ -1586,6 +1705,29 @@
             } else {
               this.yyrs = 0
             }
+          }
+        })
+      },
+      zf(){
+        this.swal({
+          title: '确认作废该记录?',
+          type: 'warning',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          showCancelButton: true
+        }).then((res) => {
+          if (res.value) {
+            this.$http.post('/api/lcjl/revokeJl', {id:this.ZFItem[0].id}).then((res) => {
+              if (res.code == 200) {
+                this.ZFmodal=false
+                this.util.getPageData(this)
+                this.$Message.info(res.message);
+              }else{
+                this.$Message.info(res.message);
+              }
+            })
+          } else {
+
           }
         })
       },

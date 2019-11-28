@@ -33,41 +33,39 @@
       <!--        </div>-->
       <!--      </Col>-->
       <Col span="24">
-        <Row type="flex" justify="end" :gutter="8">
-          <!--        <Col span="6" style="padding: 10px 20px">-->
-          <!--          <Button type="warning" @click="plzf">批量结算</Button>-->
-          <!--        </Col>-->
-
-
-          <!--<Col span="4">-->
-          <DatePicker v-model="dateRange.cjsj"
-                      @on-change="param.cjsjInRange = v.util.dateRangeChange(dateRange.cjsj)"
-                      @on-ok="v.util.getPageData(v)"
-                      confirm
-                      format="yyyy-MM-dd"
-                      style="margin-right: 5px"
-                      split-panels
-                      type="daterange" :placeholder="'请输入时间'"></DatePicker>
-          <!--</Col>-->
-          <Col span="3">
-            <Input size="large" v-model="param.jlXmLike" clearable placeholder="请输入教练姓名"
-                   @on-enter="v.util.getPageData(v)"/>
+        <Row type="flex" style="justify-content: space-between;align-items: center" :gutter="8">
+          <Col span="2" align="center">
+            <span
+              style="cursor: pointer;width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
+              @click="mxShow">培优明细</span>
           </Col>
-          <Col span="1" align="center" style="margin-right: 5px">
-            <Button type="primary" @click="v.util.getPageData(v)">
-              <Icon type="md-search"></Icon>
-              <!--查询-->
-            </Button>
+          <Col span="22" style="display: flex;justify-content: flex-end">
+            <DatePicker v-model="dateRange.cjsj"
+                        @on-change="param.cjsjInRange = v.util.dateRangeChange(dateRange.cjsj)"
+                        @on-ok="v.util.getPageData(v)"
+                        confirm
+                        format="yyyy-MM-dd"
+                        style="margin-right: 5px"
+                        split-panels
+                        type="daterange" :placeholder="'请输入时间'"></DatePicker>
+            <!--</Col>-->
+            <Col span="3">
+              <Input size="large" v-model="param.jlXmLike" clearable placeholder="请输入教练姓名"
+                     @on-enter="v.util.getPageData(v)"/>
+            </Col>
+            <Col span="1" align="center" style="margin-right: 5px">
+              <Button type="primary" @click="v.util.getPageData(v)">
+                <Icon type="md-search"></Icon>
+                <!--查询-->
+              </Button>
+            </Col>
+            <Col span="1" align="center">
+              <Button type="primary" @click="ifFinish=true,faCar('kf')">
+                <Icon type="md-add"></Icon>
+              </Button>
+            </Col>
           </Col>
-          <Col span="1" align="center">
-            <Button type="primary" @click="ifFinish=true,formData.zddm='K2KF';faCar('kf')">
-              <Icon type="md-add"></Icon>
-              <!--查询-->
-            </Button>
-          </Col>
-          <!--          <Col span="1" align="center" style="margin-right: 10px">-->
 
-          <!--          </Col>-->
         </Row>
       </Col>
     </Row>
@@ -174,9 +172,9 @@
             <div style="float: left">
               <FormItem label="选择车型" label-position="top">
                 <!--<Select v-model="formData.jlCx" @on-change="cxChange" style="width:70px">-->
-                  <!--<Option v-for="(it,index) in cxlist" :value="it.key" :key="it.key">-->
-                    <!--{{it.key}}-->
-                  <!--</Option>-->
+                <!--<Option v-for="(it,index) in cxlist" :value="it.key" :key="it.key">-->
+                <!--{{it.key}}-->
+                <!--</Option>-->
                 <!--</Select>-->
                 <Select v-model="cx" @on-change="cxChange" style="width:70px">
                   <Option v-for="(it,index) in ['C','A','B']" :value="it" :key="it">
@@ -190,7 +188,8 @@
             <div style="float: left">
               <FormItem label="计费套餐" label-position="top">
                 <Select v-model="formData.zddm" @on-change="lcFyChange" style="width:165px">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm.includes('K3PY')&&it.by8.includes(cx)">
+                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index"
+                          v-if="it.zddm.includes('K3PY')&&it.by8.includes(cx)">
                     {{it.by9}}-{{it.zdmc}}元
                   </Option>
                 </Select>
@@ -278,9 +277,6 @@
             </FormItem>
           </Col>
         </Row>
-        <!--        <FormItem label="备注" label-position="top">-->
-        <!--          <Input type="textarea" v-model="formData.bz" :rows="4"/>-->
-        <!--        </FormItem>-->
       </Form>
       <div slot='footer'>
         <Button style="margin-right: 8px" @click="close">取消</Button>
@@ -324,6 +320,33 @@
       <div slot='footer'>
         <Button style="margin-right: 8px" @click="updateAQY=false,aqyItem.zgXm=aqyItem.zgId=aqyItem.id=''">取消</Button>
         <Button type="primary" @click="update">确定</Button>
+      </div>
+    </Modal>
+
+
+    <Modal
+      v-model="mx"
+      :closable="false"
+      width="1000"
+      :mask-closable="false">
+      <div slot="header">
+        <div class="box_row">
+          <div style="font-size: 16px;margin-right: 28px;width: 100%;margin-top: 7px;display: flex;justify-content: space-between">
+            <h2>培优明细</h2>
+            <div>
+              <Button type="primary" @click="download">下载</Button>
+              <Button style="margin-left: 8px" @click="mx=false">关闭</Button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Row :gutter="32" style="padding-top: 5px">
+        <Col span="24">
+          <Table size="small" :columns="mxColumns" :data="mxList"></Table>
+        </Col>
+      </Row>
+      <div slot='footer'>
+
       </div>
     </Modal>
   </div>
@@ -418,7 +441,7 @@
             }
           },
           {title: '创建时间', align: 'center', key: 'kssj', searchType: 'daterange', minWidth: 140},
-          {title: '安全员', align: 'center', key: 'zgXm',minWidth:100},
+          {title: '安全员', align: 'center', key: 'zgXm', minWidth: 100},
           // {
           //     title: '状态', minWidth: 120, render: (h, p) => {
           //         let s = '';
@@ -476,7 +499,7 @@
                     this.aqyItem.zgXm = p.row.zgXm
                   }
                   this.aqyItem.zgId = p.row.zgId
-                  this.aqyItem.id =p.row.id
+                  this.aqyItem.id = p.row.id
                   this.updateAQY = true
 
                 }, p.row.lcLx == '20' ? false : true));
@@ -495,13 +518,36 @@
         },
         sfaemanlist: [],
         DrawerVal: false,
+        mx: false,
+        mxList: [],
+        mxColumns: [
+          {title: '教练员', key: 'jlXm', align: 'center', minWidth: 90},
+          {
+            title: '序号', align: 'center', minWidth: 80,
+            render: (h, p) => {
+              return h('div', p.row.index + 1)
+            },
+          },
+          {
+            title: '学员姓名', minWidth: 110, align: 'center', key: 'xyXm'
+          },
+          {
+            title: '学员证件号码', minWidth: 110, align: 'center', key: 'xyZjhm'
+          },
+          {
+            title: '学员联系方式', minWidth: 110, align: 'center', key: 'xyDh'
+          },
+          {
+            title: '培训车型', minWidth: 110, align: 'center', key: 'xyCx'
+          },
+        ],
         compName: '',
         componentName: '',
         printClose: false,
         hisPrintMess: '',
         clId: '',
         showFQfzkp: false,
-        cx:'C',
+        cx: 'C',
         formData: {
           zddm: 'K3PY',
           zgXm: '',
@@ -572,7 +618,7 @@
           // this.formData.jlCx = 'C1'
           this.formData.jlJx = ''
         } else {
-          this.cx='C'
+          this.cx = 'C'
           // if (this.formData.lcClId == '') {
           //   this.showCAR = true
           // }
@@ -584,9 +630,9 @@
     },
     mounted() {
       this.switch1 = Cookies.get('showMess') === 'true' ? true : false
-      if(Cookies.get('showModal')==='true') {
-        this.DrawerVal=true
-        Cookies.set('showModal','false')
+      if (Cookies.get('showModal') === 'true') {
+        this.DrawerVal = true
+        Cookies.set('showModal', 'false')
       }
     },
     created() {
@@ -632,7 +678,7 @@
             a = false
             break
           } else {
-            messarr.push(AMess[i].xyXm+'-'+AMess[i].cartype)
+            messarr.push(AMess[i].xyXm + '-' + AMess[i].cartype)
             dxarr.push(AMess[i].xyDh)
             sfzarr.push(AMess[i].bz)
             if (i == arrAMess) {
@@ -986,6 +1032,31 @@
       searchJlyaq(query) {
         console.log(query);
       },
+      mxShow() {
+        this.mx = true
+        this.mxList = []
+        this.pageData.map((val, index, arr) => {
+          let valArrLength = val.xyXm.split(',').length
+          let xmArr = val.xyXm.split(',')
+          let zjhmArr = val.xyZjhm.split(',')
+          let dhArr = val.xyDh.split(',')
+          for (let i = 0; i < valArrLength; i++) {
+
+            let obj = {index: i}
+            obj.jlXm = i == 0 ? val.jlJx+' '+val.jlXm : ''
+            obj.xyXm = xmArr[i].split('-')[0]
+            obj.xyCx = xmArr[i].split('-')[1]
+            obj.xyZjhm = zjhmArr[i]
+            obj.xyDh = dhArr[i]
+
+            this.mxList.push(obj)
+          }
+
+
+        })
+
+        console.log(this.mxList)
+      },
       // print(mess) {//还车
       //   this.hisPrintMess = mess
       //   // setTimeout(()=>{
@@ -1079,6 +1150,9 @@
           }
         })
       },
+      download(){
+        window.open(this.apis.url + '/pub/exportXymx?'+`notShowLoading=${this.param.notShowLoading}&total=${this.param.total}&lcKm=${this.param.lcKm}&lcLxIn=${this.param.lcLxIn}&cjsjInRange=${this.param.cjsjInRange}&zhLike=${this.param.zhLike}&pageSize=${this.param.pageSize}&clBh=${this.param.clBh}`);
+      },
       save() {//发车
 
         if (this.mxlx == 'py') {
@@ -1086,7 +1160,7 @@
 
 
         }
-        this.formData.jlCx=''
+        this.formData.jlCx = this.cx
         this.formData.lcKm = 3
         this.formData.lcLx = '20'
 
