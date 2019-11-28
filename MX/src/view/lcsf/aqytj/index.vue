@@ -95,7 +95,8 @@
           total: 0,
           zhLike: '',
           pageNum: 1,
-          pageSize: 8
+          pageSize: 8,
+          zfzt: '10'
         },
         total: 0,
       }
@@ -136,6 +137,7 @@
           if (res.code == 200) {
             if (res.result) {
               this.list = res.result;
+              this.total = 0;
               for (let r of this.list) {
                 this.total += parseInt(r.zj)
               }

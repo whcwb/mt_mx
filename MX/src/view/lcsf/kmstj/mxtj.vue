@@ -230,7 +230,8 @@
           orderBy: 'jssj desc',
           total: 0,
           lcKm: '3',
-          zhLike: ''
+          zhLike: '',
+          zfzt:'10'
         },
       }
     },

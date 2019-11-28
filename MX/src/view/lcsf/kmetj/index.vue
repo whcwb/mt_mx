@@ -80,12 +80,13 @@
         pageData: [],
         param: {
             notShowLoading:'true',
-          orderBy: 'jssj desc',
-          total: 0,
-          lcKm: '2',
-          zhLike: '',
-          pageNum: 1,
-          pageSize: 8
+            orderBy: 'jssj desc',
+            total: 0,
+            lcKm: '2',
+            zhLike: '',
+            pageNum: 1,
+            pageSize: 8,
+            zfzt:'10'
         },
       }
     },
