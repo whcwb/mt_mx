@@ -9,12 +9,16 @@ import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.sys.model.SysZdxm;
 import com.ldz.util.bean.ApiResponse;
+import jxl.write.WriteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
@@ -191,9 +195,33 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         return service.revokeJl(id);
    }
 
+    /**
+     * 获取需要预警的车辆编号
+     * @return
+     */
    @PostMapping("/getCarEnd")
    public ApiResponse<String> getCarEnd(){
         return service.getCarEnd();
+   }
+
+    /**
+     * 收支统计
+     * @param start
+     * @param end
+     * @return
+     */
+   @PostMapping("/statisSec")
+    public ApiResponse<List<String>> staticSec(String start, String end){
+       return service.statisSec(start,end);
+   }
+
+   @PostMapping("/statisMain")
+   public ApiResponse<Map<String, Integer>> statisMain(){
+       return service.statisMain();
+   }
+
+   public void exportSec(String start, String end, HttpServletRequest request, HttpServletResponse response) throws Exception {
+       service.exportSec(start, end, request, response);
    }
 
 }

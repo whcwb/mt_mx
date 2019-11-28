@@ -7,6 +7,7 @@ import com.ldz.biz.model.LcJlModel;
 import com.ldz.sys.base.BaseService;
 import com.ldz.sys.model.SysZdxm;
 import com.ldz.util.bean.ApiResponse;
+import jxl.write.WriteException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -69,4 +70,10 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
     ApiResponse<String> getCarEnd();
 
     void exportXymx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException;
+
+    ApiResponse<List<String>> statisSec(String start, String end);
+
+    ApiResponse<Map<String, Integer>> statisMain();
+
+    void exportSec(String start, String end, HttpServletRequest request, HttpServletResponse response) throws WriteException, IOException;
 }
