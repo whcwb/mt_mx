@@ -52,10 +52,14 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
         return baseMapper;
     }
 
+
+
     @Override
     public ApiResponse<String> saveEntity(Zgjbxx entity) {
         entity.setAqyQdzt("00");
         entity.setId(genId());
+        entity.setZzzt("10");
+        entity.setJlZt("20");
         SysYh currentUser = getCurrentUser();
         if(entity.getxRs() == null){
             entity.setxRs(0);
@@ -139,6 +143,15 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
 
     @Override
     public ApiResponse<List<Zgjbxx>> getAqy() {
+        String all = getRequestParamterAsString("all");
+        if(StringUtils.equals(all, "1")){
+            SimpleCondition condition = new SimpleCondition(Zgjbxx.class);
+            condition.eq(Zgjbxx.InnerColumn.gzgw,"0005");
+            condition.eq(Zgjbxx.InnerColumn.aqyQdzt,"10");
+            condition.setOrderByClause(" CONVERT(xm using gbk) asc ");
+            List<Zgjbxx> zgjbxxes = findByCondition(condition);
+            return ApiResponse.success(zgjbxxes);
+        }
         // 先找下在车上的安全员
         SimpleCondition simpleCondition = new SimpleCondition(BizLcJl.class);
         simpleCondition.and().andIsNotNull(BizLcJl.InnerColumn.zgId.name());
@@ -154,6 +167,7 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
         }
         condition.eq(Zgjbxx.InnerColumn.gzgw,"0005");
         condition.eq(Zgjbxx.InnerColumn.aqyQdzt,"10");
+        condition.setOrderByClause(" CONVERT(xm using gbk) asc ");
         List<Zgjbxx> zgjbxxes = findByCondition(condition);
 
         return ApiResponse.success(zgjbxxes);
@@ -178,7 +192,6 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
         }
 
         List<Zgjbxx> list = resultPage.getList();
-
         for (Zgjbxx zgjbxx : list) {
             if(zgjbxx.getsRs()==null){
                 zgjbxx.setsRs(0);
@@ -187,51 +200,6 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
                 zgjbxx.setxRs(0);
             }
         }
-        // 上半年
-//        for (Zgjbxx zgjbxx : list) {
-//            if(zgjbxx.getsRs()==null){
-//                zgjbxx.setsRs(0);
-//            }
-//            if(zgjbxx.getxRs()==null){
-//                zgjbxx.setxRs(0);
-//            }
-//            // 上半年退学人数
-//           /* SimpleCondition refCondition = new SimpleCondition(TraineeInformation.class);
-//            refCondition.eq(TraineeInformation.InnerColumn.referrer,zgjbxx.getXm()+"-"+zgjbxx.getId());
-//            refCondition.eq(TraineeInformation.InnerColumn.status,"60");
-//            refCondition.gte(TraineeInformation.InnerColumn.registrationTime, split[0] + "-01-01 00:00:00");
-//            refCondition.lte(TraineeInformation.InnerColumn.registrationTime, split[0] + "-06-30 23:59:59");
-//            Integer integer = informationService.countByCondition(refCondition);
-//
-//            SimpleCondition condition = new SimpleCondition(ZgTjjl.class);
-//            condition.eq(ZgTjjl.InnerColumn.zgId, zgjbxx.getId());
-//            condition.gte(ZgTjjl.InnerColumn.cjsj, split[0] + "-01-01 00:00:00");
-//            condition.lte(ZgTjjl.InnerColumn.cjsj, split[0] + "-06-30 23:59:59");
-//
-//            Integer count = zgTjjlService.countByCondition(condition);*/
-//
-//
-//            int sRsed = zgTjjlService.countByTime(split[0] + "-01-01 00:00:00", split[0] + "-06-30 23:59:59", zgjbxx.getId());
-//            int xRsed = zgTjjlService.countByTime(split[0] + "-07-01 00:00:00",split[0] + "-12-31 23:59:59",zgjbxx.getId());
-//
-//
-//           /* SimpleCondition refCondition1 = new SimpleCondition(TraineeInformation.class);
-//            refCondition1.eq(TraineeInformation.InnerColumn.referrer,zgjbxx.getXm()+"-"+zgjbxx.getId());
-//            refCondition1.eq(TraineeInformation.InnerColumn.status,"60");
-//            refCondition1.gte(TraineeInformation.InnerColumn.registrationTime, split[0] + "-07-01 00:00:00");
-//            refCondition1.lte(TraineeInformation.InnerColumn.registrationTime, split[0] + "-12-31 23:59:59");
-//            Integer integer1 = informationService.countByCondition(refCondition1);
-//
-//            SimpleCondition simpleCondition = new SimpleCondition(ZgTjjl.class);
-//            simpleCondition.eq(ZgTjjl.InnerColumn.zgId, zgjbxx.getId());
-//            simpleCondition.gte(ZgTjjl.InnerColumn.cjsj, split[0] + "-07-01 00:00:00");
-//            simpleCondition.lte(ZgTjjl.InnerColumn.cjsj, split[0] + "-12-31 23:59:59");
-//            Integer count1 = zgTjjlService.countByCondition(simpleCondition);*/
-//            zgjbxx.setsRsed(sRsed);
-//            zgjbxx.setxRsed(xRsed);
-//        }
-
-
     }
 
 

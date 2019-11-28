@@ -37,8 +37,8 @@
             <Row v-if="index!=1" style="margin-top: 16px;">
               <Col span="20">
                 <InputNumber v-model="item.by3" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
-                <span v-if="item.zddm =='K2PY'"> 元/人</span>
-                <span v-else-if="item.zddm =='K2KF'">返点金额</span>
+<!--                <span v-if="item.zddm =='K2PY'"> 元/人</span>-->
+                <span v-if="item.zddm =='K2KF' ||　(item.zddm.indexOf('K2PY') != -1)">返点金额</span>
                 <span v-else> 元/分钟</span>
               </Col>
               <Col span="4">
@@ -67,6 +67,7 @@
                 <span> 元/分钟</span>
               </Col>
               <Col span="4">
+                <Button type="primary" @click="confirm(item)">修改</Button>
               </Col>
             </Row>
             <Row style="margin-top: 16px;">
@@ -137,9 +138,9 @@
               r.zdmc = parseInt(r.zdmc)
               r.by3 = parseFloat(r.by3)
               r.by4 = parseFloat(r.by4)
-              r.by2 = r.by2==='0'||r.by2==='' ? false : true
-              r.by6 = r.by6==='0'||r.by6==='' ? false : true
-              r.by7 = r.by7==='0'||r.by7==='' ? false : true
+              r.by2 = !(r.by2 === '0' || r.by2 === '')
+              r.by6 = !(r.by6 === '0' || r.by6 === '')
+              r.by7 = !(r.by7 === '0' || r.by7 === '')
             }
           } else {
             this.$Message.error(res.message)

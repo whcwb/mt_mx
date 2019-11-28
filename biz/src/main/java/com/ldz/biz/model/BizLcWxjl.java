@@ -177,6 +177,7 @@ public class BizLcWxjl implements Serializable {
         id("id"),
         jlXm("jl_xm"),
         jlJx("jl_jx"),
+        ye("YE"),
         cjr("cjr"),
         cjsj("cjsj"),
         jlLxdh("jl_lxdh"),

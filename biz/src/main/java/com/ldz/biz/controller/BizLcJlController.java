@@ -181,4 +181,19 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         return service.payCNY(id, zf);
     }
 
+    /**
+     * 作废记录
+     * @param id
+     * @return
+     */
+    @PostMapping("/revokeJl")
+   public ApiResponse<String> revokeJl(String id){
+        return service.revokeJl(id);
+   }
+
+   @PostMapping("/getCarEnd")
+   public ApiResponse<String> getCarEnd(){
+        return service.getCarEnd();
+   }
+
 }

@@ -7,8 +7,10 @@ import com.ldz.sys.model.SysGn;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.GnService;
 import com.ldz.sys.service.YhService;
+import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.JwtUtil;
 import com.ldz.util.spring.SpringContextUtil;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -28,7 +30,7 @@ import java.util.List;
  * @author 李彬彬
  *
  */
-@Slf4j
+@Log4j2
 public class AccessInterceptor extends HandlerInterceptorAdapter {
 
 	private GnService gnService;
@@ -55,12 +57,6 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		/*long begin_nao_time = System.currentTimeMillis();
-		System.out.println(request.getRequestURI()+"开始时间:" + begin_nao_time);
-		//String realIp = HttpHeadTool.getRealIpAddr(request);
-		//request.setAttribute("p_real_ip", realIp);
-		request.setAttribute("begin_nao_time", begin_nao_time);*/
-
 
 		// 查看请求类型
 		String method = request.getMethod();
@@ -93,6 +89,11 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		}
 		log.debug("访问地址[{}]", request.getRequestURI());
 
+		log.info("uri-->" + request.getRequestURI());
+		log.info("token-->" + token);
+		log.info("userid-->" + userid);
+		log.info("params-->" + JsonUtil.toJson(request.getParameterMap()));
+
 		// 验证用户状态
 		SysYh user = yhService.findById(userid);
 		if (!Dict.UserStatus.VALID.getCode().equals(user.getZt())){
@@ -102,11 +103,13 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		try {
 			// 验证访问者是否合法
 			String userId = JwtUtil.getClaimAsString(token, "userId");
+			log.info("userId-->" + userId);
 			if (!userid.equals(userId)){
 				request.getRequestDispatcher("/authFiled").forward(request, response);
 				return false;
 			}
 			String value = redisDao.boundValueOps(userid).get();
+			log.info("TOKEN-->" + value);
 			if (StringUtils.isEmpty(value) || !value.equals(token)){
 				request.getRequestDispatcher("/authFiled").forward(request, response);
 				return false;

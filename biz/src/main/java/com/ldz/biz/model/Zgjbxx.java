@@ -24,7 +24,6 @@ public class Zgjbxx implements Serializable {
     @Column(name = "DABH1")
     private String dabh1;
 
-
     /**
      * 性别
      */
@@ -334,6 +333,8 @@ public class Zgjbxx implements Serializable {
     @Transient
     private int xRsed;
 
+    private  String jgmc;
+
     public String getKm() {
         return km;
     }
@@ -342,7 +343,7 @@ public class Zgjbxx implements Serializable {
         this.km = km;
     }
 
-    private  String jgmc;
+
 
     public String getAqyQdzt() {
         return aqyQdzt;
