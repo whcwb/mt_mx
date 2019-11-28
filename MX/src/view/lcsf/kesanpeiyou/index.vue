@@ -60,7 +60,7 @@
               </Button>
             </Col>
             <Col span="1" align="center">
-              <Button type="primary" @click="ifFinish=true,formData.zddm='K2KF';faCar('kf')">
+              <Button type="primary" @click="ifFinish=true,faCar('kf')">
                 <Icon type="md-add"></Icon>
               </Button>
             </Col>

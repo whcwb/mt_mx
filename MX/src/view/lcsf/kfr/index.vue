@@ -175,7 +175,7 @@
               <FormItem label="计费套餐" label-position="top">
                 <Select v-model="formData.zddm" @on-change="lcFyChange" style="width:250px">
                   <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="!it.zddm.includes('K2JS')">
-                    {{it.by9}}
+                    {{it.by9}}-{{it.zdmc}}元
                   </Option>
                 </Select>
                 <!--              <CheckboxGroup v-model="formData.lcFy">-->
@@ -185,7 +185,7 @@
             </div>
           </Col>
         </Row>
-        <Row :gutter="32" style="padding-top: 5px"  v-if="formData.zddm == 'K2PY'">
+        <Row :gutter="32" style="padding-top: 5px"  v-if="formData.zddm!=undefined&&formData.zddm.includes('K2PY')">
           <Card>
             <p slot="title">学员信息</p>
             <p>
@@ -399,7 +399,7 @@
           {
             title: '类型', minWidth: 90,align: 'center',
             render: (h, p) => {
-              return h('div', p.row.lcLx == '20' ? '培优' : '开放日')
+              return h('div', p.row.lcLx == '20' ? '培优-'+p.row.zdxm.zdmc+'元' : '开放日')
             },
             filters: [
               {
