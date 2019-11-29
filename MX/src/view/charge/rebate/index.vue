@@ -143,6 +143,20 @@
               } else {
                 return h('div', '科目三')
               }
+            },
+            filters: [
+              {
+                label: '科目二',
+                value: '2'
+              },
+              {
+                label: '科目三',
+                value: '3'
+              }
+            ],
+            filterMultiple: false,
+            filterMethod(value, row) {
+             return value==row.lcKm
             }
           },
           {title: '驾校', align: 'center', key: 'jlJx', minWidth: 120},
