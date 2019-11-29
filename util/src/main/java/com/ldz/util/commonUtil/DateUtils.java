@@ -1,6 +1,8 @@
 package com.ldz.util.commonUtil;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -251,6 +253,19 @@ public class DateUtils {
 		LocalDateTime dateTime = localDateTime.minusMonths(1L);
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		return  dateTime.format(dateTimeFormatter);
+	}
+
+	public static List<String> getDayBetween(String start, String end) {
+		org.joda.time.format.DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd");
+		DateTime startTime = DateTime.parse(start, pattern);
+		List<String> timeList = new ArrayList<>();
+		String now = "";
+		while(now.compareTo(end) < 0){
+			now = startTime.toString("yyyy-MM-dd");
+			timeList.add(now);
+			startTime = startTime.plusDays(1);
+		}
+		return timeList;
 	}
 
 }

@@ -168,6 +168,9 @@
                 return h('div', '计时返点')
               } else if (p.row.fdlx == '10') {
                 return h('div', '抵扣返点')
+              }else if(p.row.fdlx == '20'){
+
+                return h('div',"培优返点")
               } else {
                 return h('div', '开放日返点')
               }

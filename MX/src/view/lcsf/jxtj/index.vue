@@ -73,7 +73,8 @@
           zhLike: '',
           pageNum: 1,
           lcKm: '',
-          pageSize: 8
+          pageSize: 8,
+          zfzt:'10'
         },
       }
     },

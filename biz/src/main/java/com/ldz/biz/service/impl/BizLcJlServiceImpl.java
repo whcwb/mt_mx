@@ -20,6 +20,11 @@ import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.ExcelUtil;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.exception.RuntimeCheck;
+import jxl.Workbook;
+import jxl.format.Alignment;
+import jxl.format.BorderLineStyle;
+import jxl.format.VerticalAlignment;
+import jxl.write.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -29,7 +34,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import sun.tools.jar.Manifest;
 import tk.mybatis.mapper.common.Mapper;
 
 import javax.servlet.ServletOutputStream;
@@ -45,6 +49,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,6 +79,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     private BizJlCzMapper czMapper;
     @Autowired
     private StringRedisTemplate redis;
+    @Autowired
+    private BizLcFdsService fdsService;
 
     @Override
     protected Mapper<BizLcJl> getBaseMapper() {
@@ -348,7 +355,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 }
                 wxjlService.update(wxjl);
             }
-            // 科目二可能返点,跟培优一致
             if(StringUtils.equals(entity.getLcKm(), "2") &&StringUtils.equals(entity.getLcLx(),"20")){
                 entity.setXjje(entity.getYfJe());
                 // 开放日返点金额
@@ -684,6 +690,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String kssj = sj[0];
         String jssj = sj[1];
         String sql = "SELECT jl_jx,sum(sc) as sc,sum(lc_fy) as fy  from BIZ_LC_JL where 1=1 ";
+        sql += " and zfzt = '10' ";
         sql += " and kssj >= '" + kssj + "' and jssj <= '" + jssj + "'";
         sql += " and lc_km ='" + lcKm + "'";
         sql += " GROUP BY jl_jx ";
@@ -1998,7 +2005,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             // 总抵扣额度
             int kfje = xySl * dkdj;
             // 教练总开放余额 减去开放日金额
-
+            int  je = kfje;
             int syje = kfje - sum;
             int abs = 0;
             if (syje > 0) {
@@ -2019,24 +2026,20 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 wxjlService.update(wxjl);
                 abs = Math.abs(syje);
                 for (BizLcJl jl : jls) {
+                    jl.setKfje(je);
                     if (kfje != 0) {
                         kfje = kfje - jl.getLcFy();
                         if (kfje > 0) {
                             // 余额充足
-                            jl.setKfje(jl.getLcFy());
                             jl.setXjje(0);
                         } else {
-
                             jl.setXjje(Math.abs(kfje));
-                            jl.setKfje(jl.getLcFy() + kfje);
                             kfje = 0;
                         }
-                        jl.setCardje(0);
                     } else {
                         jl.setXjje(jl.getLcFy());
-                        jl.setCardje(0);
-                        jl.setKfje(0);
                     }
+                    jl.setCardje(0);
                     jl.setYfJe(jl.getXjje());
                     jl.setZfzt("10");
                     jl.setPz(pz);
@@ -2100,6 +2103,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         SimpleCondition condition = new SimpleCondition(BizLcWxjl.class);
         condition.gt(BizLcWxjl.InnerColumn.ye, 0);
         condition.in(BizLcWxjl.InnerColumn.id, set);
+        if(CollectionUtils.isEmpty(set)){
+            return ApiResponse.success("");
+        }
         List<BizLcWxjl> list = wxjlService.findByCondition(condition);
         list.forEach(bizLcWxjl -> {
             List<BizLcJl> jls = collect.get(bizLcWxjl.getId());
@@ -2110,7 +2116,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             int sc=0;
             for (BizLcJl lcJl : jlList) {
                 String kssj = lcJl.getKssj();
-
                 Date ks = null;
                 try {
                     ks = dateFormat.parse(kssj);
@@ -2127,6 +2132,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 bhList.addAll(strings);
             }
         });
+        bhList.sort(String::compareTo);
         clbhs = String.join(",",bhList);
         return ApiResponse.success(clbhs);
     }
@@ -2190,6 +2196,212 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         response.addHeader("Content-Disposition", "attachment; filename=" + new String(( "培优明细").getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xls");
         OutputStream out = response.getOutputStream();
         ExcelUtil.createSheet(out, "今日招生", data);
+
+    }
+
+    @Override
+    public ApiResponse<List<String>> statisSec(String start, String end) {
+        // 默认统计一周时间
+        if(StringUtils.isBlank(start)){
+            start = DateTime.now().minusDays(6).toString("yyyy-MM-dd");
+        }
+        if(StringUtils.isBlank(end)){
+            end = DateTime.now().toString("yyyy-MM-dd");
+        }
+        Map<String ,List<String>> mm = new HashMap<>();
+        // 先算科二的吧
+        SimpleCondition condition = new SimpleCondition(BizLcJl.class);
+        condition.gte(BizLcJl.InnerColumn.jssj , start + " 00:00:00");
+        condition.lte(BizLcJl.InnerColumn.jssj, end + " 23:59:59");
+        condition.eq(BizLcJl.InnerColumn.lcKm, "2");
+        condition.eq(BizLcJl.InnerColumn.zfzt, "10");
+        List<BizLcJl> jls = findByCondition(condition);
+        // 根据时间分组
+        Map<String, List<BizLcJl>> map = jls.stream().collect(Collectors.groupingBy(p -> p.getJssj().substring(0,10)));
+        List<String> between = DateUtils.getDayBetween(start, end);
+        List<String> secList = new ArrayList<>();
+
+        // 再计算科三的
+       SimpleCondition k3conditon = new SimpleCondition(BizLcJl.class);
+        k3conditon.gte(BizLcJl.InnerColumn.jssj , start + " 00:00:00");
+        k3conditon.lte(BizLcJl.InnerColumn.jssj, end + " 23:59:59");
+        k3conditon.eq(BizLcJl.InnerColumn.lcKm, "3");
+        k3conditon.eq(BizLcJl.InnerColumn.zfzt, "10");
+        List<BizLcJl> k3jls = findByCondition(condition);
+        Map<String, List<BizLcJl>> k3map = k3jls.stream().collect(Collectors.groupingBy(p -> p.getJssj().substring(0, 10)));
+
+
+        // 再查询财务充值和返点的情况
+        SimpleCondition czcondition = new SimpleCondition(BizJlCz.class);
+        czcondition.gte(BizJlCz.InnerColumn.cjsj, start  + " 00:00:00");
+        czcondition.lte(BizJlCz.InnerColumn.cjsj, end + " 23:59:59");
+        czcondition.eq(BizJlCz.InnerColumn.type, "10");
+        List<BizJlCz> czs = czMapper.selectByExample(czcondition);
+        Map<String, List<BizJlCz>> czmap = czs.stream().collect(Collectors.groupingBy(p -> p.getCjsj().substring(0, 10)));
+        // 查询返点情况
+        SimpleCondition fdcontion = new SimpleCondition(BizLcFds.class);
+        fdcontion.gte(BizLcFds.InnerColumn.cjsj, start  + " 00:00:00");
+        fdcontion.lte(BizLcFds.InnerColumn.cjsj, end + " 23:59:59");
+        List<BizLcFds> fds = fdsService.findByCondition(fdcontion);
+        Map<String, List<BizLcFds>> fdmap = fds.stream().collect(Collectors.groupingBy(p -> p.getCjsj().substring(0, 10)));
+        AtomicInteger k2js = new AtomicInteger();
+        AtomicInteger k2py = new AtomicInteger();
+        AtomicInteger k2kf = new AtomicInteger();
+        AtomicInteger k2xj = new AtomicInteger();
+        AtomicInteger k3js = new AtomicInteger();
+        AtomicInteger k3py = new AtomicInteger();
+        AtomicInteger k3ab = new AtomicInteger();
+        AtomicInteger k3xj = new AtomicInteger();
+        AtomicInteger cwcz = new AtomicInteger();
+        AtomicInteger cwfd = new AtomicInteger();
+        AtomicInteger cwzj = new AtomicInteger();
+        // 根据当前时间段来区分每天的收费状况
+        between.forEach(s -> {
+            int zj = 0;
+            // -----  科二  ----
+            List<BizLcJl> lcJls = map.get(s);
+            String data = s;
+            if(CollectionUtils.isEmpty(lcJls)){
+                data  += ",0,0,0,0";
+            }else{
+                // 先计算计时的总费用
+                int js = lcJls.stream().filter(lcJl -> StringUtils.equals(lcJl.getLcLx(), "00")).mapToInt(BizLcJl::getXjje).sum();
+                k2js.addAndGet(js);
+                // 再计算培优的总费用
+                int py = lcJls.stream().filter(lcjl -> StringUtils.equals(lcjl.getLcLx(), "20")).mapToInt(BizLcJl::getXjje).sum();
+                k2py.addAndGet(py);
+                // 再计算开放日总费用
+                int kf = lcJls.stream().filter(lcJl -> StringUtils.equals(lcJl.getLcLx(), "30")).mapToInt(BizLcJl::getXjje).sum();
+                k2kf.addAndGet(kf);
+                // 再计算小计
+                int sum   = js + py + kf;
+                k2xj.addAndGet(sum);
+                zj +=sum;
+                data += "," + js + "," + py + "," + kf + "," + sum;
+            }
+
+            // --- 科三 ---
+            List<BizLcJl> k3Jls = k3map.get(s);
+
+            if(CollectionUtils.isEmpty(k3Jls)){
+                data += ",0,0,0,0";
+            }else{
+                // 先计算计时的总费用
+                int js = lcJls.stream().filter(lcJl -> StringUtils.equals(lcJl.getLcLx(), "00")).mapToInt(BizLcJl::getXjje).sum();
+                k3js.addAndGet(js);
+                // 再计算培优的总费用
+                int py = lcJls.stream().filter(lcjl -> StringUtils.equals(lcjl.getLcLx(), "20")).mapToInt(BizLcJl::getXjje).sum();
+                k3py.addAndGet(py);
+                // 再计算按把总费用
+                int kf = lcJls.stream().filter(lcJl -> StringUtils.equals(lcJl.getLcLx(), "10")).mapToInt(BizLcJl::getXjje).sum();
+                k3ab.addAndGet(kf);
+                // 再计算小计
+                int sum   = js + py + kf;
+                k3xj.addAndGet(sum);
+                zj += sum;
+                data += "," + js + "," + py + "," + kf + "," + sum;
+            }
+
+            // --- 财务 充值返点 ---
+            List<BizJlCz> bizJlCzs = czmap.get(s);
+            List<BizLcFds> lcFds = fdmap.get(s);
+            if(CollectionUtils.isEmpty(bizJlCzs)){
+                data += ",0";
+                if(CollectionUtils.isEmpty(lcFds)){
+                    data += ",0";
+                }else{
+                    int sum = lcFds.stream().mapToInt(BizLcFds::getFdje).sum();
+                    data += "," + sum;
+                    cwfd.addAndGet(sum);
+                    zj -= sum;
+                }
+            }else {
+                int sum = bizJlCzs.stream().mapToInt(BizJlCz::getSfje).sum();
+                cwcz.addAndGet(sum);
+                data += "," + sum;
+                zj += sum;
+                if(CollectionUtils.isEmpty(lcFds)){
+                    data += ",0";
+                }else{
+                    int fdsum = lcFds.stream().mapToInt(BizLcFds::getFdje).sum();
+                    zj -= fdsum;
+                    cwfd.addAndGet(fdsum);
+                    data += "," + fdsum;
+                }
+            }
+            data += "," + zj;
+            cwzj.addAndGet(zj);
+            secList.add(data);
+        });
+        // 合计写在message里面吧
+        String hj = (k2xj) +","  + k3xj + "," + cwcz + "," + cwfd + "," + cwzj;
+        ApiResponse<List<String>> res = new ApiResponse<>();
+        res.setResult(secList);
+        res.setMessage(hj);
+        return res;
+    }
+
+    @Override
+    public ApiResponse<Map<String, Integer>> statisMain() {
+        // 科目二 未支付数和已作废数
+        SimpleCondition condition = new SimpleCondition(BizLcJl.class);
+        condition.eq(BizLcJl.InnerColumn.lcKm, "2");
+        condition.eq(BizLcJl.InnerColumn.zfzt, "00");
+        int k2wzf = baseMapper.selectCountByExample(condition);
+        condition = new SimpleCondition(BizLcJl.class);
+        condition.eq(BizLcJl.InnerColumn.zfzt, "20");
+        condition.eq(BizLcJl.InnerColumn.lcKm , "2");
+        int k2yzf = baseMapper.selectCountByExample(condition);
+
+        condition = new SimpleCondition(BizLcJl.class);
+        condition.eq(BizLcJl.InnerColumn.lcKm, "3");
+        condition.eq(BizLcJl.InnerColumn.zfzt, "00");
+        int k3wzf = baseMapper.selectCountByExample(condition);
+
+        condition = new SimpleCondition(BizLcJl.class);
+        condition.eq(BizLcJl.InnerColumn.zfzt,"20");
+        condition.eq(BizLcJl.InnerColumn.lcKm, "3");
+        int k3yzf = baseMapper.selectCountByExample(condition);
+        Map<String,Integer> m = new HashMap<>();
+        m.put("k2wzf", k2wzf);
+        m.put("k2yzf", k2yzf);
+        m.put("k3wzf", k3wzf);
+        m.put("k3yzf", k3yzf);
+        return ApiResponse.success(m);
+    }
+
+    @Override
+    public void exportSec(String start, String end, HttpServletRequest request, HttpServletResponse response) throws WriteException, IOException {
+        ApiResponse<List<String>> sec = statisSec(start, end);
+        // 每一行的数据
+        List<String> result = sec.getResult();
+        String message = sec.getMessage();
+        WritableCellFormat cellFormat = new WritableCellFormat();
+        cellFormat.setAlignment(Alignment.CENTRE);
+        cellFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+        cellFormat.setBorder(jxl.format.Border.ALL, BorderLineStyle.THIN);
+        response.setContentType("application/msexcel");
+        request.setCharacterEncoding("UTF-8");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String((start + "-" + end + "收支统计").getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xls");
+        OutputStream out = response.getOutputStream();
+
+
+        WritableWorkbook workbook = Workbook.createWorkbook(out);
+        WritableSheet sheet = workbook.createSheet("工作日志", 0);
+
+        sheet.mergeCells(0,1,0,4);
+        sheet.mergeCells(0,5,0,8);
+        sheet.mergeCells(0,9,0,10);
+        sheet.addCell(new Label(0,0,"",cellFormat));
+        sheet.addCell(new Label(0,1,"科二",cellFormat));
+        sheet.addCell(new Label(0,5,"科三", cellFormat));
+        sheet.addCell(new Label(0, 9 , "财务",cellFormat));
+        sheet.addCell(new Label(0,11, "总计", cellFormat));
+        sheet.addCell(new Label(1,0, "日期",cellFormat));
+        sheet.addCell(new Label(1,1, "计时"));
+
+
 
     }
 

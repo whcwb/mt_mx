@@ -291,6 +291,7 @@
           total: 0,
           lcKm: '3',
           zhLike: '',
+          zfzt:'10'
         },
       }
     },
