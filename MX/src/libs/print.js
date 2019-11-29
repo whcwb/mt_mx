@@ -51,10 +51,12 @@ obj.print = (id,item,time,callback) => {
             arr2.push(arr[i+a])
           }
           arr1.push(arr2.join(','))
+          // console.log(arr2)
         }
         if(arr.length%2!=0){
           arr1.push(arr[arr.length-1])
         }
+
         console.log(arr1)
 
         printJson.splice(16, 4)
@@ -85,6 +87,7 @@ obj.print = (id,item,time,callback) => {
     }
   })
 
+  // return
 
   $.ajax({
     type: "POST",

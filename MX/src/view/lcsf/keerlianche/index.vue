@@ -1607,7 +1607,7 @@
             // if (res.message !== '' && res.message !== '操作成功') {
               // this.yjclass='yjRed'
               this.yjYS = setInterval(() => {
-                console.log(v.yjclass)
+                // console.log(v.yjclass)
                 if (v.yjclass == 'yjRed') {
                   v.yjclass = 'yjBlack'
                 }

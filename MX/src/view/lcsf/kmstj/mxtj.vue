@@ -104,7 +104,59 @@
 
             }
           },
-          {title: '车型', key: 'jlCx', minWidth: 60, align: 'center',},
+          {title: '车型', key: 'jlCx', minWidth: 90, align: 'center',
+          filters: [
+            {
+              label: '大车',
+              value: '0'
+            },
+            {
+              label: '小车',
+              value: '1'
+            },
+            // {
+            //   label: 'A1',
+            //   value: 'A1'
+            // },
+            // {
+            //   label: 'A2',
+            //   value: 'A2'
+            // },
+            // {
+            //   label: 'A3',
+            //   value: 'A3'
+            // },
+            // {
+            //   label: 'B2',
+            //   value: 'B2'
+            // },
+            // {
+            //   label: 'C1',
+            //   value: 'C1'
+            // },
+            // {
+            //   label: 'C2',
+            //   value: 'C2'
+            // },
+          ],
+          filterMultiple: false,
+          filterMethod(value, row) {
+            console.log(value)
+            if(value==0){
+              return row.jlCx.includes('A')||row.jlCx.includes('B');
+            }else{
+              return row.jlCx.includes('C');
+            }
+            // this.util.getPageData(this)
+          },
+            // filterRemote(value, row) {
+            //   var _self = this
+            //   console.log(_self.param);
+            //   _self.param.zfzt = value;
+            //   _self.util.getPageData(_self);
+            //
+            // },
+          },
           {
             title: '类型',
             minWidth: 140,
@@ -221,6 +273,14 @@
             render: (h, p) => {
               return h('div', p.row.zgXm)
             }
+          },
+          {
+            title: '备注',
+            minWidth: 250,
+            align: 'center',
+            render: (h, p) => {
+              return h('div', p.row.bz)
+            }
           }
         ],
         pageData: [],
@@ -230,7 +290,7 @@
           orderBy: 'jssj desc',
           total: 0,
           lcKm: '3',
-          zhLike: ''
+          zhLike: '',
         },
       }
     },
@@ -279,6 +339,15 @@
             window.open(this.apis.url + '/pub/pagerExcelK3?'+p);
         },
       afterPager(list){
+        let arr1=[]
+        this.pageData.map((val,index,arr)=>{
+          if(val.jssj!=='')
+          {
+            arr1.push(val)
+          }
+        })
+        this.pageData=list=arr1
+
         this.addmoney = 0
         for (let r of list){
             r.kssj = r.kssj.substring(0,16)

@@ -154,6 +154,15 @@ export default [
         component: () => import('@/view/lcsf/lcjl')
       },
       {
+        path: 'sztj',
+        name: 'sztj',
+        meta: {
+          icon: '_bear',
+          title: '收支统计'
+        },
+        component: () => import('@/view/charge/sztj')
+      },
+      {
         path: 'rebate',
         name: 'rebate',
         meta: {
