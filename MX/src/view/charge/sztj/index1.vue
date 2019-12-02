@@ -2,15 +2,14 @@
   <div class="boxbackborder box_col" style="padding-top:16px">
     <div style="text-align: right;width: 100%">
       <DatePicker v-model="dateRange.kssj"
-                  @on-ok="getData"
                   @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm format="yyyy-MM-dd"
                   type="daterange" :placeholder="'请输入'" style="width: 200px"></DatePicker>
-      <Button type="primary" @click="getData" style="margin-left: 10px;">
+      <Button type="primary" @click="getData" style="margin-left: 16px;">
         <Icon type="md-search"></Icon>
         <!--查询-->
       </Button>
-      <!--<Button type="primary" @click="doPrint" style="margin-left: 10px;">打印</Button>-->
-      <Button type="primary" @click="exportExcel" style="margin-left: 10px;"><Icon type="ios-cloud-download" /></Button>
+      <Button type="primary" @click="doPrint" style="margin-left: 16px;">打印</Button>
+      <Button type="primary" @click="exportExcel" style="margin-left: 16px;">导出</Button>
     </div>
     <div class="box_col_100" id="page1" style="width: 100%">
       <div style="text-align: center"><span style="font-weight: 600;font-size: 20px">科目三模拟训练工作日志</span></div>
@@ -76,7 +75,6 @@
 <script>
 
   import print from './print'
-  import Cookies from 'js-cookie'
 
   export default {
     name: 'char',
@@ -91,25 +89,32 @@
         dateRange: {
           kssj: ''
         },
+          columns:[
+              {title:'序号',type:'index'},
+              {title:'姓名',key:'zgXm'},
+              {title:'车号',key:'clBh'},
+              {title:'第一趟',key:'index'},
+              {title:'第二趟',key:'index'},
+              {title:'第三趟',key:'index'},
+              {title:'第四趟',key:'index'},
+              {title:'第五趟',key:'index'},
+              {title:'第六趟',key:'index'},
+              {title:'合计',key:'index'},
+
+          ],
         param: {
           lcKm: '3',
           total: 0,
           zhLike: '',
           pageNum: 1,
-          pageSize: 8,
-          zfzt: '10'
+          pageSize: 8
         },
         total: 0,
       }
     },
     created() {
-      if(Cookies.get("daterange")!=undefined&&Cookies.get("daterange")!=''){
-        this.dateRange.kssj = Cookies.get("daterange").split(',')
-        this.param.kssjInRange = Cookies.get("daterange")
-      }else {
-        this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
-        this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
-      }
+      this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
+      this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       this.getData();
     },
     methods: {
@@ -126,6 +131,7 @@
       },
       getData() {
         this.list = [];
+        console.log(this.param.kssjInRange.length);
         if (this.param.kssjInRange.length > 26) {
           let sj = this.param.kssjInRange.split(',');
           let st = sj[0];
@@ -138,8 +144,24 @@
           if (res.code == 200) {
             if (res.result) {
               this.list = res.result;
-              this.total = 0;
               for (let r of this.list) {
+                  r.t01 = r.jls.length >= 1 ? r.jls[0].xySl : ''
+                  r.t02 = r.jls.length >= 1 ? r.jls[0].lcFy : ''
+
+                  r.t11 = r.jls.length >= 1 ? r.jls[1].xySl : ''
+                  r.t12 = r.jls.length >= 1 ? r.jls[1].lcFy : ''
+
+                  r.t21 = r.jls.length >= 1 ? r.jls[2].xySl : ''
+                  r.t22 = r.jls.length >= 1 ? r.jls[2].lcFy : ''
+
+                  r.t31 = r.jls.length >= 1 ? r.jls[3].xySl : ''
+                  r.t32 = r.jls.length >= 1 ? r.jls[3].lcFy : ''
+
+                  r.t41 = r.jls.length >= 1 ? r.jls[4].xySl : ''
+                  r.t42 = r.jls.length >= 1 ? r.jls[4].lcFy : ''
+
+                  r.t51 = r.jls.length >= 1 ? r.jls[5].xySl : ''
+                  r.t52 = r.jls.length >= 1 ? r.jls[5].lcFy : ''
                 this.total += parseInt(r.zj)
               }
             }
@@ -151,5 +173,3 @@
     }
   }
 </script>
-
-

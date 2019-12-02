@@ -18,6 +18,10 @@
         <Icon type="ios-paper"/>
         安全员统计
       </MenuItem>
+      <!--<MenuItem name="pxmx">-->
+        <!--<Icon type="ios-paper"/>-->
+        <!--大车培训明细-->
+      <!--</MenuItem>-->
     </Menu>
     <component :is="componentName"  lcKm="3"></component>
   </div>
@@ -34,11 +38,12 @@
   import jltj from  '../jlytj'
   //安全员统计
   import aqytj from  '../aqytj'
+  import pxmx from  './pxmx'
   import Cookies from 'js-cookie'
 
   export default {
     name: 'char',
-    components: {print,jxtj,mxtj,jltj,aqytj},
+    components: {print,jxtj,mxtj,jltj,aqytj,pxmx},
     data() {
       return {
         v: this,

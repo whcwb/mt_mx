@@ -78,22 +78,39 @@
               return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
             }
           },
-          {title: '驾校', align: 'center', key: 'jlJx', minWidth: 90},
+          {title: '驾校', align: 'center', key: 'jlJx', minWidth: 90,
+            filters: [
+              {
+                label: '本校',
+                value: '00'
+              },
+              {
+                label: '外校',
+                value: '10'
+              }
+            ],
+            filterMultiple: false,
+            filterRemote(value, row) {
+              var _self =  this.$options.parent.parent
+              _self.param.lx=value[0]?value[0]:''
+              _self.util.getPageData(_self)
+            },
+          },
           {title: '教练员', align: 'center', key: 'jlXm', minWidth: 80},
           {title: '开始时间', align: 'center', key: 'kssj',searchType: 'daterange', minWidth: 135},
           {title: '结束时间', align: 'center', key: 'jssj', minWidth: 135},
-          {
-            title: '时长', align: 'center', key: 'sc', minWidth: 70, defaul: '0',
-            render: (h, p) => {
-              return h('div', p.row.sc);
-            }
-          },
-          {
-            title: '应收', align: 'center', minWidth: 70, defaul: '0',
-            render: (h, p) => {
-              return h('div', p.row.lcFy + '元');
-            }
-          },
+          // {
+          //   title: '时长', align: 'center', key: 'sc', minWidth: 70, defaul: '0',
+          //   render: (h, p) => {
+          //     return h('div', p.row.sc);
+          //   }
+          // },
+          // {
+          //   title: '应收', align: 'center', minWidth: 70, defaul: '0',
+          //   render: (h, p) => {
+          //     return h('div', p.row.lcFy + '元');
+          //   }
+          // },
           {
             title: '实收', align: 'center', minWidth: 70, defaul: '0',
             render: (h, p) => {

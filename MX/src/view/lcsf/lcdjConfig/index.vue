@@ -8,7 +8,7 @@
         </div>
       </MenuItem>
     </Menu>
-    <div class="box_col_auto" style="overflow-x: hidden;">
+    <div class="box_col_auto" :style="{height:AF.getPageHeight()-150+'px',overflowX:'hidden',flex:'unset'}">
       <Row :gutter="12">
         <Col span="8" v-for="(item,index) in list" :prop="item.zdmc" :key="item.zdId">
           <Card style="margin-top: 12px;">

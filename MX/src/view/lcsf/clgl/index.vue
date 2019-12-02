@@ -45,7 +45,7 @@
     <div class="box_col_auto">
       <!--<Row>-->
         <!--<Col span="6" v-for="(item,index) in tabdata" :key="index">-->
-      <div class="box_row_list">
+      <div class="box_row_list" :style="{height:AF.getPageHeight()-240+'px'}">
         <div style="width: 25%;min-width: 320px;padding: 8px" v-for="(item,index) in tabdata" :key="index">
           <Card style="width:100%">
             <Row justify="center" align="middle">

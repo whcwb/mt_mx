@@ -169,51 +169,98 @@
       <Form :model="formData" label-position="top">
         <Row :gutter="32">
           <Col span="12">
-            <div style="float: left">
-              <FormItem label="教练员" style="width: 280px">
-                <Select v-model="formData.jlId"
-                        filterable
-                        clearable
-                        remote
-                        loading
-                        loading-text="请输入关键字搜索"
-                        @on-query-change="searchJly"
-                        ref="jlySelect"
-                >
-                  <Option v-for="(it,index) in searchCoachList" :value="it.value" :key="index">{{it.label}}</Option>
-                </Select>
-              </FormItem>
-            </div>
-            <div style="padding-top: 22px;">
-              <Button type="primary" @click="compName ='addjl'">
-                <Icon type="md-add"/>
-              </Button>
-            </div>
-          </Col>
+            <Row :gutter="32">
+              <Col span="12" style="display: flex">
+                <div style="float: left">
+                  <FormItem label="教练员" style="width: 280px">
+                    <Select v-model="formData.jlId"
+                            filterable
+                            clearable
+                            remote
+                            loading
+                            loading-text="请输入关键字搜索"
+                            @on-query-change="searchJly"
+                            ref="jlySelect"
+                    >
+                      <Option v-for="(it,index) in searchCoachList" :value="it.value" :key="index">{{it.label}}</Option>
+                    </Select>
+                  </FormItem>
+                </div>
+                <div style="padding-top: 22px;">
+                  <Button type="primary" @click="compName ='addjl'">
+                    <Icon type="md-add"/>
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+            <Row :gutter="32">
+              <Col span="12">
+                <div style="float: left">
+                  <FormItem label="计费套餐" label-position="top">
+                    <Select v-model="formData.zddm" style="width:280px" placeholder="计时500/小时" @on-change="lcFyChange">
+                      <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index"
+                              v-if="it.zddm!='K2KF'&&!it.zddm.includes('K3PY')">
+                        {{it.by9}}-{{it.zdmc}}元
+                      </Option>
+                    </Select>
+                  </FormItem>
+                </div>
+              </Col>
+            </Row>
+            <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && !formData.zddm.includes('K3PY')">
+              <Col span="12">
+                <FormItem :label="'人数'" label-position="top">
+                  <!--<Input v-model="formData.xySl"></Input>-->
+                  <InputNumber style="width:280px" :min="1" v-model="formData.xySl"></InputNumber>
+                </FormItem>
+              </Col>
+            </Row>
+            <Row :gutter="32" style="padding-top: 5px" v-if="formData.lcKm == '3'">
+              <Col span="12">
+                <FormItem :label="'安全员'" label-position="top">
+                  <Select v-model="formData.zgId" filterable ref="se" @on-query-change="searchJlyaq" style="width: 280px"
 
-        </Row>
-        <Row :gutter="32">
+                  >
+                    <Option v-for="(item) in sfaemanlist" :value="item.value" :key="item.value">{{item.label}}</Option>
+                  </Select>
+                </FormItem>
+              </Col>
+            </Row>
+          </Col>
           <Col span="12">
+            <Col span="12">
             <div style="float: left">
-              <FormItem label="计费套餐" label-position="top">
-                <Select v-model="formData.zddm" style="width:280px" placeholder="计时500/小时" @on-change="lcFyChange">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index"
-                          v-if="it.zddm!='K2KF'&&!it.zddm.includes('K3PY')">
-                    {{it.by9}}-{{it.zdmc}}元
-                  </Option>
-                </Select>
-              </FormItem>
-            </div>
-          </Col>
-        </Row>
-        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && !formData.zddm.includes('K3PY')">
-          <Col span="12">
-            <FormItem :label="'人数'" label-position="top">
-              <!--<Input v-model="formData.xySl"></Input>-->
-              <InputNumber style="width:280px" :min="1" v-model="formData.xySl"></InputNumber>
+            <FormItem label="备注" style="width: 280px">
+            <Input type="textarea" v-model="formData.bz" :rows="7"/>
             </FormItem>
+            </div>
+            </Col>
           </Col>
         </Row>
+
+
+        <!--<Row :gutter="32">-->
+          <!--<Col span="12">-->
+            <!--<div style="float: left">-->
+              <!--<FormItem label="计费套餐" label-position="top">-->
+                <!--<Select v-model="formData.zddm" style="width:280px" placeholder="计时500/小时" @on-change="lcFyChange">-->
+                  <!--<Option v-for="(it,index) in fylist" :value="it.zddm" :key="index"-->
+                          <!--v-if="it.zddm!='K2KF'&&!it.zddm.includes('K3PY')">-->
+                    <!--{{it.by9}}-{{it.zdmc}}元-->
+                  <!--</Option>-->
+                <!--</Select>-->
+              <!--</FormItem>-->
+            <!--</div>-->
+          <!--</Col>-->
+        <!--</Row>-->
+        <!--<Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && !formData.zddm.includes('K3PY')">-->
+          <!--<Col span="12">-->
+            <!--<FormItem :label="'人数'" label-position="top">-->
+              <!--&lt;!&ndash;<Input v-model="formData.xySl"></Input>&ndash;&gt;-->
+              <!--<InputNumber style="width:280px" :min="1" v-model="formData.xySl"></InputNumber>-->
+            <!--</FormItem>-->
+          <!--</Col>-->
+        <!--</Row>-->
         <!--<Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && formData.zddm.includes('K3PY')">-->
         <!--<Card>-->
         <!--<p slot="title">学员信息</p>-->
@@ -244,17 +291,7 @@
         <!--</p>-->
         <!--</Card>-->
         <!--</Row>-->
-        <Row :gutter="32" style="padding-top: 5px" v-if="formData.lcKm == '3'">
-          <Col span="12">
-            <FormItem :label="'安全员'" label-position="top">
-              <Select v-model="formData.zgId" filterable ref="se" @on-query-change="searchJlyaq" style="width: 280px"
 
-              >
-                <Option v-for="(item) in sfaemanlist" :value="item.value" :key="item.value">{{item.label}}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-        </Row>
 
         <!--        <radio-car v-if="carMess == null"-->
         <!--                   clKm="2"-->
@@ -670,7 +707,7 @@
                   [
                     h('Button', {
                       props: {
-                        type: 'warning',
+                        type: 'error',
                         size: 'small',
                         ghost: true,
                       },
@@ -696,6 +733,13 @@
                         ghost: true,
                       },
                       style: {},
+                      on:{
+                        click: () =>{
+                          this.ZFmodal=true
+                          this.ZFItem=[]
+                          this.ZFItem.push(p.row)
+                        }
+                      }
                     }, '已作废')
                   ])
               }else return h('div', '已支付')

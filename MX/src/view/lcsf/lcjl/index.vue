@@ -101,7 +101,24 @@
               return row.lcKm === value;
             },
           },
-          {title: '驾校', key: 'jlJx', searchKey: 'jlJxLike', minWidth: 90},
+          {title: '驾校', key: 'jlJx', searchKey: 'jlJxLike', minWidth: 90,
+            filters: [
+              {
+                label: '本校',
+                value: '00'
+              },
+              {
+                label: '外校',
+                value: '10'
+              }
+            ],
+            filterMultiple: false,
+            filterRemote(value, row) {
+              var _self =  this.$options.parent.parent
+              _self.param.lx=value[0]?value[0]:''
+              _self.util.getPageData(_self)
+            },
+          },
           {title: '教练员', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90},
           {
             title: '车号', key: 'clBh', searchKey: 'clBh', minWidth: 90, render: (h, p) => {
@@ -122,7 +139,29 @@
 
             }
           },
-          {title: '车型', key: 'jlCx', minWidth: 60, align: 'center',},
+          {title: '车型', key: 'jlCx', minWidth: 90, align: 'center',
+            filters: [
+              {
+                label: '大车',
+                value: '0'
+              },
+              {
+                label: '小车',
+                value: '1'
+              }
+            ],
+            filterMultiple: false,
+            filterRemote(value, row) {
+              var _self =  this.$options.parent.parent
+              if(value[0]==='0'){
+                _self.param.jlCxIn='A,A1,A2,A3,B,B1,B2'
+              }else if(value[0]==='1'){
+                _self.param.jlCxIn='C,C1,C2'
+              }
+              else _self.param.jlCxIn=''
+              _self.util.getPageData(_self)
+            },
+          },
           {
             title: '类型', minWidth: 90,
             render: (h, p) => {
@@ -145,7 +184,7 @@
           },
           {title: '开始时间', key: 'kssj', minWidth: 140},
           {title: '结束时间', key: 'jssj', minWidth: 140},
-          {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
+          {title: '时长', key: 'sc', minWidth: 100, defaul: '0'},
           {
             title: '应收', minWidth: 90, defaul: '0', align: 'center',
             render: (h, p) => {
@@ -197,6 +236,14 @@
           //   }
           // },
           {title: '安全员', key: 'zgXm', searchKey: 'zgXmLike', minWidth: 100},
+          {
+            title: '备注',
+            minWidth: 250,
+            align: 'center',
+            render: (h, p) => {
+              return h('div', p.row.bz)
+            }
+          }
           // {title: '教练类型', key: 'jlLx', dict: 'jllx',minWidth:120},
           // {title:'操作',render:(h,p)=>{
           //     let buttons = [];
@@ -215,7 +262,7 @@
           kssjInRange: '',
           zhLike: '',
           pageNum: 1,
-          pageSize: 8
+          pageSize: 15
         },
         dateRange: {
           kssj: ''

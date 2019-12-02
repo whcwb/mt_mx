@@ -308,7 +308,7 @@
       title="分配车辆"
       v-model="DrawerVal"
       :closable="false"
-      width="720"
+      width="800"
       :mask-closable="false">
       <div slot="header">
         <div class="box_row">
@@ -1607,7 +1607,7 @@
             // if (res.message !== '' && res.message !== '操作成功') {
               // this.yjclass='yjRed'
               this.yjYS = setInterval(() => {
-                console.log(v.yjclass)
+                // console.log(v.yjclass)
                 if (v.yjclass == 'yjRed') {
                   v.yjclass = 'yjBlack'
                 }

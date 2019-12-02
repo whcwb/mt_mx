@@ -221,6 +221,7 @@ util.initPageSize = (v)=>{
      v.param.pageSize = v.specialPageSize;
      return
    }
+    if(v.param.pageSize) return
     if (!v.param || !v.param.pageSize)return;
     let pageSize = Cookies.get("pageSize");
     if (!pageSize){

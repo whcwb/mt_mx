@@ -12,7 +12,7 @@
     </Row>
     <div v-if="pager" style="text-align: right;padding: 6px 0">
       <Page :total=parent.param.total :current=parent.param.pageNum :page-size=parent.param.pageSize
-            :page-size-opts=[8,10,20,30,40,50]
+            :page-size-opts=[8,10,15,20,30,40,50]
             @on-page-size-change='(e)=>{parent.param.pageSize=e;parent.util.getPageData(parent)}'
             show-total show-elevator show-sizer placement='top'
             @on-change='(e)=>parent.util.pageChange(parent,e)'></Page>

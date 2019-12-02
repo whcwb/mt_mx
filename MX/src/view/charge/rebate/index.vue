@@ -24,7 +24,7 @@
           <!--</span>-->
         </Col>
         <Col span="18" style="display: flex;justify-content: flex-end">
-          <Col span="4" style="margin-right: 10px">
+          <Col span="5" style="margin-right: 10px">
             <Input id="code" autofocus v-model="param.idLike" placeholder="请扫描条形码" @on-enter="getOldData"/>
           </Col>
           <Col span="4">
@@ -50,7 +50,8 @@
           <!--</Col>-->
         </Col>
       </Row>
-      <Table :height="AF.getPageHeight()-250" stripe size="small" @on-select="tabsel" @on-select-cancel="tabsel" @on-select-all="tabsel" @on-select-all-cancel="tabsel"
+      <Table :height="AF.getPageHeight()-250" stripe size="small" @on-select="tabsel" @on-select-cancel="tabsel"
+             @on-select-all="tabsel" @on-select-all-cancel="tabsel"
              :columns="tableColumns" :data="tableData"></Table>
       <div style="text-align: right;padding: 6px 0;display: flex;justify-content: flex-end">
         <span style="color: red;font-weight: 600;font-size: 20px;">
@@ -100,7 +101,7 @@
                :columns="tableColumns" :data="tableData"></Table>
       </div>
     </div>
-    <component :is="componentName"  :hisPrintMess="hisPrintMess"></component>
+    <component :is="componentName" :hisPrintMess="hisPrintMess"></component>
   </div>
 </template>
 
@@ -112,12 +113,12 @@
 
   export default {
     name: "index",
-    components: {remark, okBack,printSignUp},
+    components: {remark, okBack, printSignUp},
     watch: {},
     data() {
       return {
         input: '',
-          hisPrintMess:{},
+        hisPrintMess: {},
         componentName: '',
         choosedItem: null,
         count: 9000,
@@ -125,7 +126,7 @@
         MenuItemName: '1',
         tableData: [],
         tableColumns: [
-          {title: '序号', type: 'index', fixed: 'left', minWidth: 60,align: 'center'},
+          {title: '序号', type: 'index', fixed: 'left', minWidth: 60, align: 'center'},
           {
             title: '#',
             type: 'selection',
@@ -133,21 +134,35 @@
             fixed: 'left',
             align: 'center'
           },
-          {title: '凭证号', key: 'id', minWidth: 170,align: 'center'},
+          {title: '凭证号', key: 'id', minWidth: 170, align: 'center'},
           {
-            title: '科目',align: 'center', key: 'lcKm', minWidth: 120,
+            title: '科目', align: 'center', key: 'lcKm', minWidth: 120,
             render: (h, p) => {
               if (p.row.lcKm == '2') {
                 return h('div', '科目二')
               } else {
                 return h('div', '科目三')
               }
+            },
+            filters: [
+              {
+                label: '科目二',
+                value: '2'
+              },
+              {
+                label: '科目三',
+                value: '3'
+              }
+            ],
+            filterMultiple: false,
+            filterMethod(value, row) {
+             return value==row.lcKm
             }
           },
-          {title: '驾校',align: 'center',  key: 'jlJx', minWidth: 120},
+          {title: '驾校', align: 'center', key: 'jlJx', minWidth: 120},
           {title: '教练员', align: 'center', key: 'jlXm', minWidth: 120},
           {
-            title: '时长',align: 'center',  key: 'sc', minWidth: 120,
+            title: '时长', align: 'center', key: 'sc', minWidth: 120,
             render: (h, p) => {
               return h('div', p.row.sc + '分钟')
             }
@@ -176,19 +191,19 @@
             }
           },
           {
-            title: '返点金额',align: 'center',  key: 'fdje', minWidth: 120,
+            title: '返点金额', align: 'center', key: 'fdje', minWidth: 120,
             render: (h, p) => {
               return h('div', p.row.fdje + '元')
             }
           },
 
           {
-            title: '备注',align: 'center',  key: 'bz', minWidth: 120,
+            title: '备注', align: 'center', key: 'bz', minWidth: 120,
             render: (h, p) => {
-             /* if (p.row.fdlx == '20')
-                return h('div', '人数：' + p.row.xySl)
-              else*/
-                return h('div', p.row.bz)
+              /* if (p.row.fdlx == '20')
+                 return h('div', '人数：' + p.row.xySl)
+               else*/
+              return h('div', p.row.bz)
             }
           },
           // {
@@ -356,9 +371,9 @@
         })
       },
       tabsel(list, row) {
-        console.log(list,row)
+        console.log(list, row)
 
-        if(row!=undefined&&list[0].jlId!==row.jlId){
+        if (row != undefined && list[0].jlId !== row.jlId) {
           this.$Message.error('选择的教练并非同一位')
           // this.tableData.map((val,index,arr)=>{
           //   if(val.id===row.id){
@@ -389,19 +404,32 @@
           })
           return
         }
-        this.$http.post('/api/bizlcfd/updateZt', {id: this.okParams.id}).then(res => {
-          if (res.code == 200) {
-            // this.swal({
-            //   title: '返点成功',
-            //   type: 'success'
-            // })
-              this.hisPrintMess = res.result
-              this.componentName = 'printSignUp'
-            this.okParams.fdJe = 0
-            this.getOldData();
+
+        this.swal({
+          title: '确认返点?',
+          type: 'warning',
+          confirmButtonText: '确认',
+          cancelButtonText: '关闭',
+          showCancelButton: true
+        }).then((res) => {
+          if (res.value) {
+            this.$http.post('/api/bizlcfd/updateZt', {id: this.okParams.id}).then(res => {
+              if (res.code == 200) {
+                // this.swal({
+                //   title: '返点成功',
+                //   type: 'success'
+                // })
+                this.hisPrintMess = res.result
+                this.componentName = 'printSignUp'
+                this.okParams.fdJe = 0
+                this.getOldData();
+              }
+            }).catch(err => {
+            })
+          } else {
           }
-        }).catch(err => {
         })
+
 
         // if (this.ids.length == 0) {
         //   this.$Message.error('请选择记录');
