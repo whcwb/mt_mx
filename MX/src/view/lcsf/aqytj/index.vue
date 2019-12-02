@@ -2,6 +2,7 @@
   <div class="boxbackborder box_col" style="padding-top:16px">
     <div style="text-align: right;width: 100%">
       <DatePicker v-model="dateRange.kssj"
+                  @on-ok="getData"
                   @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm format="yyyy-MM-dd"
                   type="daterange" :placeholder="'请输入'" style="width: 200px"></DatePicker>
       <Button type="primary" @click="getData" style="margin-left: 10px;">
@@ -150,3 +151,5 @@
     }
   }
 </script>
+
+

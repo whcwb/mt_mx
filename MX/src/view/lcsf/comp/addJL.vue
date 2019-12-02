@@ -5,12 +5,12 @@
       <Form :model="formDataJL">
         <Row :gutter="32">
           <Col span="24">
-            <Col span="6">
+            <Col span="4">
               <FormItem label="教练员姓名" label-position="top" style="width: 95%">
                 <Input v-model="formDataJL.jlXm"/>
               </FormItem>
             </Col>
-            <Col span="6">
+            <Col span="5">
               <FormItem label="教练员联系方式" label-position="top" style="width: 95%">
                 <Input v-model="formDataJL.jlLxdh"/>
               </FormItem>
@@ -22,13 +22,21 @@
                 </Select>
               </FormItem>
             </Col>
+            <Col span="4">
+              <FormItem label="驾校" label-position="top" style="width: 95%;">
+                <RadioGroup v-model="formDataJL.jlLx">
+                  <Radio label="00"  @click="formDataJL.jlLx='00'"> 本校</Radio>
+                  <Radio label="10" @click="formDataJL.jlLx='10'">外校</Radio>
+                  </RadioGroup>
+              </FormItem>
+            </Col>
             <Col span="3">
               <FormItem label-position="top" style="width: 95%">
                 <div slot="label" style="color: #fff">_________</div>
                 <Button type="primary" @click="wxjlSave">新增</Button>
               </FormItem>
             </Col>
-            <Col span="3">
+            <Col span="2">
               <FormItem label-position="top" style="width: 95%">
                 <div slot="label" style="color: #fff">_________</div>
                 <Button type="warning" @click="gogo">
@@ -67,7 +75,8 @@
         formDataJL: {
           jlJx: '',
           jlXm: '',
-          jlLxdh: ''
+          jlLxdh: '',
+          jlLx:'00'
         }
       }
     },

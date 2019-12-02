@@ -22,17 +22,16 @@
           时间段：{{kssjInRange.split(',')[0].substring(0, 10)}}至{{kssjInRange.split(',')[1].substring(0, 10)}}
         </span>
       </div>
-      <table border="1" cellpadding="0" cellspacing="0" style="width: 100%">
+      <table border="1" cellpadding="0" cellspacing="0" style="width: 100%;text-align: center;">
         <thead>
         <tr>
-          <td colspan="1"></td>
+          <td rowspan="2">日期</td>
           <td colspan="4">科二</td>
           <td colspan="4">科三</td>
           <td colspan="2">财务</td>
-          <td>总计</td>
+          <td rowspan="2">总计</td>
         </tr>
         <tr>
-          <td>日期</td>
           <td>计时</td>
           <td>培优</td>
           <td>开放日</td>
@@ -43,7 +42,6 @@
           <td>小计</td>
           <td>充值卡</td>
           <td>返点</td>
-          <td></td>
         </tr>
         </thead>
         <tbody>
@@ -119,7 +117,10 @@
           p += '&' + k + '=' + this.param[k];
         }
         p = p.substr(1);
-        window.open(this.apis.url + '/pub/aqyExcel?' + p);
+        let accessToken = JSON.parse(Cookies.get('accessToken'));
+        let token = accessToken.token;
+        let userid = accessToken.userId;
+        window.open(this.apis.url + '/api/lcjl/exportSec?token='+token+'&userid='+userid+'&' + p);
       },
       doPrint(how) {
         this.componentName = 'print';
@@ -142,3 +143,10 @@
     }
   }
 </script>
+
+<style scoped>
+  table td{
+    padding: 5px 2px !important;
+    font-size: 13px;
+  }
+</style>

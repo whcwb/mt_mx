@@ -3,6 +3,7 @@
     <!--<pager-tit title="驾校统计"></pager-tit>-->
     <div style="text-align: right;width: 100%">
       <DatePicker v-model="dateRange['tjsj']"
+                  @on-ok="v.util.getPageData(v)"
                   @on-change="param['tjsj'] = v.util.dateRangeChange(dateRange['tjsj'])" confirm format="yyyy-MM-dd"
                   type="daterange" :placeholder="'请输入'" style="width: 200px"></DatePicker>
       <Button type="primary" @click="v.util.getPageData(v)" style="margin-left: 10px;">
