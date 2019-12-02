@@ -832,8 +832,8 @@
       }
     },
     mounted() {
-        this.loadData();
-        //
+        // this.loadData();
+
         var userInfo = sessionStorage.getItem("userInfo");
         var uData = JSON.parse(userInfo);
         if (uData.type == "su"){

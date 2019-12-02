@@ -308,7 +308,7 @@
       title="分配车辆"
       v-model="DrawerVal"
       :closable="false"
-      width="800"
+      width="720"
       :mask-closable="false">
       <div slot="header">
         <div class="box_row">
