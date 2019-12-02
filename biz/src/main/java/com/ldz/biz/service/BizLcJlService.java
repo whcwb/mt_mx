@@ -76,4 +76,6 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
     ApiResponse<Map<String, Integer>> statisMain();
 
     void exportSec(String start, String end, HttpServletRequest request, HttpServletResponse response) throws WriteException, IOException;
+
+    void exportKm3(HttpServletRequest request, HttpServletResponse response) throws IOException;
 }

@@ -11,10 +11,7 @@ import com.ldz.sys.model.SysZdxm;
 import com.ldz.util.bean.ApiResponse;
 import jxl.write.WriteException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -220,8 +217,23 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
        return service.statisMain();
    }
 
+    /**
+     * 收支统计excel导出
+     * @param start
+     * @param end
+     * @param request
+     * @param response
+     * @throws Exception
+     */
+   @GetMapping("/exportSec")
    public void exportSec(String start, String end, HttpServletRequest request, HttpServletResponse response) throws Exception {
        service.exportSec(start, end, request, response);
    }
+
+   @GetMapping("/exportKm3")
+    public void exportKm3(HttpServletRequest request, HttpServletResponse response) throws IOException {
+       service.exportKm3(request,response);
+   }
+
 
 }

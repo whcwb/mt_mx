@@ -868,7 +868,6 @@ public class BizMainController {
     @GetMapping("/exportXymx")
     public void exportXymx(Page<BizLcJl> page, HttpServletRequest request , HttpServletResponse response) throws IOException {
         jlService.exportXymx(page,request,response);
-
     }
 
 

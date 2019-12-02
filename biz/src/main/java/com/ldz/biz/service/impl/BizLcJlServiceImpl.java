@@ -89,6 +89,18 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
     @Override
     public boolean fillPagerCondition(LimitedCondition condition) {
+        String lx = getRequestParamterAsString("lx");
+        if(StringUtils.isNotBlank(lx)){
+            SimpleCondition condition1 = new SimpleCondition(BizLcWxjl.class);
+            condition1.eq(BizLcWxjl.InnerColumn.jlLx, lx);
+            List<BizLcWxjl> lcWxjls = wxjlService.findByCondition(condition1);
+            if(CollectionUtils.isNotEmpty(lcWxjls)){
+                List<String> list = lcWxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toList());
+                condition.in(BizLcJl.InnerColumn.jlId, list);
+            }else{
+                return false;
+            }
+        }
         condition.setOrderByClause("  jssj  desc, jl_id asc , kssj desc");
         return true;
     }
@@ -530,9 +542,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 // 190
                 String hour = management.getZdmc();
                 if (lcSc > (management.getQz() * lcJl.getXySl())) {
-                    v = (int) Math.ceil((lcSc - (management.getQz() * lcJl.getXySl())) * Float.parseFloat(by3)) + Integer.parseInt(hour);
+                    v = (int) Math.ceil((lcSc - (management.getQz() * lcJl.getXySl())) * Float.parseFloat(by3)) + (Integer.parseInt(hour)* lcJl.getXySl());
                 } else {
-                    v = Integer.parseInt(hour);
+                    v = Integer.parseInt(hour) * lcJl.getXySl();
                 }
             } else {
                 // 每小时的费用
@@ -689,10 +701,22 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String[] sj = tjsj.split(",");
         String kssj = sj[0];
         String jssj = sj[1];
-        String sql = "SELECT jl_jx,sum(sc) as sc,sum(lc_fy) as fy  from BIZ_LC_JL where 1=1 ";
+        String sql = "SELECT jl_jx,sum(sc) as sc,sum(xjje) as fy  from BIZ_LC_JL where 1=1 ";
         sql += " and zfzt = '10' ";
         sql += " and kssj >= '" + kssj + "' and jssj <= '" + jssj + "'";
         sql += " and lc_km ='" + lcKm + "'";
+        String lx = getRequestParamterAsString("lx");
+        if(StringUtils.isNotBlank(lx)){
+            List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, lx);
+            if(CollectionUtils.isNotEmpty(wxjls)){
+                String ids = wxjls.stream().map(BizLcWxjl::getId).collect(Collectors.joining(","));
+                sql += " and jl_id in (" + ids + ") ";
+            }else{
+                return new ArrayList<>();
+            }
+        }
+
+
         sql += " GROUP BY jl_jx ";
         System.out.println(sql);
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
@@ -1064,15 +1088,17 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     public ApiResponse<List<LcJlModel>> getJlTj() {
         List<LcJlModel> list = new ArrayList<>();
         LimitedCondition queryCondition = getQueryCondition();
-        /*String cjsjGte = getRequestParamterAsString("cjsjGte");
-        String cjsjLte = getRequestParamterAsString("cjsjLte");
-        if(StringUtils.isBlank(cjsjGte)){
-            queryCondition.gte(BizLcJl.InnerColumn.cjsj, DateUtils.getDateStr(new Date(),"yyyy-MM-dd")+ " 00:00:00");
-        }
-        if(StringUtils.isBlank(cjsjLte)){
-            queryCondition.lte(BizLcJl.InnerColumn.cjsj, DateUtils.getDateStr(new Date(),"yyyy-MM-dd") + " 23:59:59");
-        }*/
         queryCondition.and().andIsNotNull(BizLcJl.InnerColumn.lcFy.name());
+        String lx = getRequestParamterAsString("lx");
+        if(StringUtils.isNotBlank(lx)){
+            List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, lx);
+            if(CollectionUtils.isNotEmpty(wxjls)){
+                List<String> collect = wxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toList());
+                queryCondition.in(BizLcJl.InnerColumn.jlId, collect);
+            }else {
+                return ApiResponse.success(new ArrayList<>());
+            }
+        }
         List<BizLcJl> lcJls = findByCondition(queryCondition);
         if (CollectionUtils.isNotEmpty(lcJls)) {
             Map<String, List<BizLcJl>> collect = lcJls.stream().collect(Collectors.groupingBy(BizLcJl::getJlXm));
@@ -1082,7 +1108,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 // 累计时长
                 int sum = jlList.stream().mapToInt(BizLcJl::getSc).sum();
                 // 累计费用
-                int sum1 = jlList.stream().mapToInt(BizLcJl::getLcFy).sum();
+                int sum1 = jlList.stream().mapToInt(BizLcJl::getXjje).sum();
                 if (StringUtils.equals(jlList.get(0).getJlLx(), "00")) {
                     model.setJlXm(jlList.get(0).getJlXm() + "_" + jlList.get(0).getJlJx());
                     model.setJlJx("明涛驾校");
@@ -2211,8 +2237,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         Map<String ,List<String>> mm = new HashMap<>();
         // 先算科二的吧
         SimpleCondition condition = new SimpleCondition(BizLcJl.class);
-        condition.gte(BizLcJl.InnerColumn.jssj , start + " 00:00:00");
-        condition.lte(BizLcJl.InnerColumn.jssj, end + " 23:59:59");
+        condition.gte(BizLcJl.InnerColumn.kssj , start + " 00:00:00");
+        condition.lte(BizLcJl.InnerColumn.kssj, end + " 23:59:59");
         condition.eq(BizLcJl.InnerColumn.lcKm, "2");
         condition.eq(BizLcJl.InnerColumn.zfzt, "10");
         List<BizLcJl> jls = findByCondition(condition);
@@ -2223,11 +2249,11 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
         // 再计算科三的
        SimpleCondition k3conditon = new SimpleCondition(BizLcJl.class);
-        k3conditon.gte(BizLcJl.InnerColumn.jssj , start + " 00:00:00");
-        k3conditon.lte(BizLcJl.InnerColumn.jssj, end + " 23:59:59");
+        k3conditon.gte(BizLcJl.InnerColumn.kssj , start + " 00:00:00");
+        k3conditon.lte(BizLcJl.InnerColumn.kssj, end + " 23:59:59");
         k3conditon.eq(BizLcJl.InnerColumn.lcKm, "3");
         k3conditon.eq(BizLcJl.InnerColumn.zfzt, "10");
-        List<BizLcJl> k3jls = findByCondition(condition);
+        List<BizLcJl> k3jls = findByCondition(k3conditon);
         Map<String, List<BizLcJl>> k3map = k3jls.stream().collect(Collectors.groupingBy(p -> p.getJssj().substring(0, 10)));
 
 
@@ -2287,13 +2313,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 data += ",0,0,0,0";
             }else{
                 // 先计算计时的总费用
-                int js = lcJls.stream().filter(lcJl -> StringUtils.equals(lcJl.getLcLx(), "00")).mapToInt(BizLcJl::getXjje).sum();
+                int js = k3Jls.stream().filter(lcJl -> StringUtils.equals(lcJl.getLcLx(), "00")).mapToInt(BizLcJl::getXjje).sum();
                 k3js.addAndGet(js);
                 // 再计算培优的总费用
-                int py = lcJls.stream().filter(lcjl -> StringUtils.equals(lcjl.getLcLx(), "20")).mapToInt(BizLcJl::getXjje).sum();
+                int py = k3Jls.stream().filter(lcjl -> StringUtils.equals(lcjl.getLcLx(), "20")).mapToInt(BizLcJl::getXjje).sum();
                 k3py.addAndGet(py);
                 // 再计算按把总费用
-                int kf = lcJls.stream().filter(lcJl -> StringUtils.equals(lcJl.getLcLx(), "10")).mapToInt(BizLcJl::getXjje).sum();
+                int kf = k3Jls.stream().filter(lcJl -> StringUtils.equals(lcJl.getLcLx(), "10")).mapToInt(BizLcJl::getXjje).sum();
                 k3ab.addAndGet(kf);
                 // 再计算小计
                 int sum   = js + py + kf;
@@ -2390,19 +2416,135 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         WritableWorkbook workbook = Workbook.createWorkbook(out);
         WritableSheet sheet = workbook.createSheet("工作日志", 0);
 
-        sheet.mergeCells(0,1,0,4);
-        sheet.mergeCells(0,5,0,8);
-        sheet.mergeCells(0,9,0,10);
+        sheet.mergeCells(1,0,4,0);
+        sheet.mergeCells(5,0,8,0);
+        sheet.mergeCells(9,0,10,0);
         sheet.addCell(new Label(0,0,"",cellFormat));
-        sheet.addCell(new Label(0,1,"科二",cellFormat));
-        sheet.addCell(new Label(0,5,"科三", cellFormat));
-        sheet.addCell(new Label(0, 9 , "财务",cellFormat));
-        sheet.addCell(new Label(0,11, "总计", cellFormat));
-        sheet.addCell(new Label(1,0, "日期",cellFormat));
-        sheet.addCell(new Label(1,1, "计时"));
+        sheet.addCell(new Label(1,0,"科二",cellFormat));
+        sheet.addCell(new Label(5,0,"科三", cellFormat));
+        sheet.addCell(new Label(9, 0 , "财务",cellFormat));
+        sheet.addCell(new Label(11,0, "总计", cellFormat));
+        sheet.addCell(new Label(0,1, "日期",cellFormat));
+        sheet.addCell(new Label(1,1, "计时",cellFormat));
+        sheet.addCell(new Label(2,1,"培优", cellFormat));
+        sheet.addCell(new Label(3,1,"开放日", cellFormat));
+        sheet.addCell(new Label(4,1,"小计", cellFormat));
+        sheet.addCell(new Label(5,1,"计时", cellFormat));
+        sheet.addCell(new Label(6,1,"培优",cellFormat));
+        sheet.addCell(new Label(7,1,"按把",cellFormat));
+        sheet.addCell(new Label(8,1,"小计",cellFormat));
+        sheet.addCell(new Label(9,1,"充值卡",cellFormat));
+        sheet.addCell(new Label(10,1,"返点",cellFormat));
+        sheet.addCell(new Label(11,1,"",cellFormat));
+        for (int i = 0; i < result.size(); i++) {
+            String s = result.get(i);
+            String[] split = s.split(",");
+            for (int i1 = 0; i1 < split.length; i1++) {
+                sheet.addCell(new Label(i1, (i+2),split[i1],cellFormat));
+            }
+        }
+        String[] split = message.split(",");
+        int i = result.size() + 2;
+        sheet.addCell(new Label(0, i,"合计",cellFormat));
+        sheet.addCell(new Label(1,i,"",cellFormat));
+        sheet.addCell(new Label(2,i, "",cellFormat));
+        sheet.addCell(new Label(3,i,"",cellFormat));
+        sheet.addCell(new Label(4,i,split[0],cellFormat));
+        sheet.addCell(new Label(5,i,"",cellFormat));
+        sheet.addCell(new Label(6,i,"",cellFormat));
+        sheet.addCell(new Label(7,i,"",cellFormat));
+        sheet.addCell(new Label(8,i,split[1],cellFormat));
+        sheet.addCell(new Label(9,i,split[2],cellFormat));
+        sheet.addCell(new Label(10,i,split[3],cellFormat));
+        sheet.addCell(new Label(11,i, split[4],cellFormat));
+        workbook.write();
+        workbook.close();
+    }
+
+    @Override
+    public void exportKm3(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        LimitedCondition condition = getQueryCondition();
+        List<BizLcJl> jls = findByCondition(condition);
+        List<Map<Integer,String>>  dataList = new ArrayList<>();
+        Map<Integer,String> titleMap = new HashMap<>();
+        titleMap.put(0,"序号");
+        titleMap.put(1,"驾校");
+        titleMap.put(2,"教练员");
+        titleMap.put(3,"车号");
+        titleMap.put(4,"人数");
+        titleMap.put(5,"车型");
+        titleMap.put(6,"类型");
+        titleMap.put(7,"开始时间");
+        titleMap.put(8,"结束时间");
+        titleMap.put(9,"时长");
+        titleMap.put(10, "应收");
+        titleMap.put(11,"实收");
+        titleMap.put(12, "订单状态");
+        titleMap.put(13, "支付方式");
+        titleMap.put(14, "安全员");
+        titleMap.put(15,"备注");
+        dataList.add(titleMap);
+
+        List<SysZdxm> zdxms = zdxmService.findEq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        Map<String, String> map = zdxms.stream().collect(Collectors.toMap(SysZdxm::getZddm, p -> p.getBy9()));
+
+        for (int i = 0; i < jls.size(); i++) {
+            BizLcJl jl = jls.get(i);
+            Map<Integer,String> dataMap = new HashMap<>();
+            dataMap.put(0, (i+1)+"");
+            dataMap.put(1,jl.getJlJx());
+            dataMap.put(2,jl.getJlXm());
+            dataMap.put(3,jl.getClBh());
+            dataMap.put(4,jl.getXySl() +"");
+            dataMap.put(5,jl.getJlCx());
+            dataMap.put(6,map.get(jl.getZddm()));
+            dataMap.put(7, jl.getKssj());
+            dataMap.put(8,jl.getJssj().substring(12,17));
+            dataMap.put(9, jl.getSc()+"");
+            dataMap.put(10, jl.getLcFy()+"");
+            dataMap.put(11,jl.getXjje() +"");
+            dataMap.put(12, StringUtils.equals(jl.getZfzt(),"00")?"未支付": "已支付");
+            if(jl.getKfje() != null && jl.getKfje() > 0 ){
+                dataMap.put(13, "抵扣支付");
+            }else if(jl.getCardje() != null && jl.getCardje() > 0){
+                dataMap.put(13, "充值卡");
+            }else{
+                dataMap.put(13, "现金");
+            }
+            dataMap.put(14, jl.getZgXm());
+            dataMap.put(15, jl.getBz());
+            dataList.add(dataMap);
+        }
+        Map<Integer,String> hjMap = new HashMap<>();
+        hjMap.put(0,"合计");
+        hjMap.put(1,"");
+        hjMap.put(2,"");
+        hjMap.put(3,"");
+        hjMap.put(4,"");
+        hjMap.put(5,"");
+        hjMap.put(6,"");
+        hjMap.put(7,"");
+        hjMap.put(8,"");
+        hjMap.put(9,"");
+        hjMap.put(10, CollectionUtils.isEmpty(jls)?"0":(jls.stream().mapToInt(BizLcJl::getLcFy).sum()+""));
+        hjMap.put(11,CollectionUtils.isEmpty(jls)?"0":(jls.stream().mapToInt(BizLcJl::getXjje).sum() +""));
+        hjMap.put(12,"");
+        hjMap.put(13,"");
+        hjMap.put(14,"");
+        hjMap.put(15,"");
+        dataList.add(hjMap);
 
 
 
+
+
+        response.setContentType("application/msexcel");
+        request.setCharacterEncoding("UTF-8");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String( "明细".getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xls");
+        OutputStream out = response.getOutputStream();
+        ExcelUtil.createSheet(out, "明细", dataList);
     }
 
 

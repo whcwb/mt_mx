@@ -162,9 +162,9 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
                                     // 190
                                     String hour = management.getZdmc();
                                     if(Integer.parseInt(sc) > management.getQz()){
-                                        v = (int) Math.ceil((Integer.parseInt(sc) - management.getQz()) * Float.parseFloat(by3)) + Integer.parseInt(hour);
+                                        v = (int) Math.ceil((Integer.parseInt(sc) - (management.getQz()*bizLcJl.getXySl())) * Float.parseFloat(by3)) + (Integer.parseInt(hour)*bizLcJl.getXySl());
                                     }else{
-                                        v = Integer.parseInt(hour);
+                                        v = Integer.parseInt(hour) * bizLcJl.getXySl();
                                     }
                                 }else{
                                     // 每小时的费用
