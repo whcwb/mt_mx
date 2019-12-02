@@ -2419,6 +2419,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         sheet.mergeCells(1,0,4,0);
         sheet.mergeCells(5,0,8,0);
         sheet.mergeCells(9,0,10,0);
+        sheet.mergeCells(11,0,11,1);
         sheet.addCell(new Label(0,0,"",cellFormat));
         sheet.addCell(new Label(1,0,"科二",cellFormat));
         sheet.addCell(new Label(5,0,"科三", cellFormat));
@@ -2435,7 +2436,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         sheet.addCell(new Label(8,1,"小计",cellFormat));
         sheet.addCell(new Label(9,1,"充值卡",cellFormat));
         sheet.addCell(new Label(10,1,"返点",cellFormat));
-        sheet.addCell(new Label(11,1,"",cellFormat));
         for (int i = 0; i < result.size(); i++) {
             String s = result.get(i);
             String[] split = s.split(",");
