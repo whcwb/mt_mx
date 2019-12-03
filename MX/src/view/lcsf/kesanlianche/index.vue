@@ -121,7 +121,7 @@
           </Button>
         </Col>
       </Row>
-      <Table :height="AF.getPageHeight()-240"
+      <Table :height="AF.getPageHeight()-280"
              stripe
              size="small"
              @on-select="tabcheck"
@@ -207,7 +207,8 @@
                 </div>
               </Col>
             </Row>
-            <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && !formData.zddm.includes('K3PY')">
+            <Row :gutter="32" style="padding-top: 5px"
+                 v-if="formData.zddm!=undefined && !formData.zddm.includes('K3PY')">
               <Col span="12">
                 <FormItem :label="'人数'" label-position="top">
                   <!--<Input v-model="formData.xySl"></Input>-->
@@ -218,7 +219,8 @@
             <Row :gutter="32" style="padding-top: 5px" v-if="formData.lcKm == '3'">
               <Col span="12">
                 <FormItem :label="'安全员'" label-position="top">
-                  <Select v-model="formData.zgId" filterable ref="se" @on-query-change="searchJlyaq" style="width: 280px"
+                  <Select v-model="formData.zgId" filterable ref="se" @on-query-change="searchJlyaq"
+                          style="width: 280px"
 
                   >
                     <Option v-for="(item) in sfaemanlist" :value="item.value" :key="item.value">{{item.label}}</Option>
@@ -229,37 +231,37 @@
           </Col>
           <Col span="12">
             <Col span="12">
-            <div style="float: left">
-            <FormItem label="备注" style="width: 280px">
-            <Input type="textarea" v-model="formData.bz" :rows="7"/>
-            </FormItem>
-            </div>
+              <div style="float: left">
+                <FormItem label="备注" style="width: 280px">
+                  <Input type="textarea" v-model="formData.bz" :rows="7"/>
+                </FormItem>
+              </div>
             </Col>
           </Col>
         </Row>
 
 
         <!--<Row :gutter="32">-->
-          <!--<Col span="12">-->
-            <!--<div style="float: left">-->
-              <!--<FormItem label="计费套餐" label-position="top">-->
-                <!--<Select v-model="formData.zddm" style="width:280px" placeholder="计时500/小时" @on-change="lcFyChange">-->
-                  <!--<Option v-for="(it,index) in fylist" :value="it.zddm" :key="index"-->
-                          <!--v-if="it.zddm!='K2KF'&&!it.zddm.includes('K3PY')">-->
-                    <!--{{it.by9}}-{{it.zdmc}}元-->
-                  <!--</Option>-->
-                <!--</Select>-->
-              <!--</FormItem>-->
-            <!--</div>-->
-          <!--</Col>-->
+        <!--<Col span="12">-->
+        <!--<div style="float: left">-->
+        <!--<FormItem label="计费套餐" label-position="top">-->
+        <!--<Select v-model="formData.zddm" style="width:280px" placeholder="计时500/小时" @on-change="lcFyChange">-->
+        <!--<Option v-for="(it,index) in fylist" :value="it.zddm" :key="index"-->
+        <!--v-if="it.zddm!='K2KF'&&!it.zddm.includes('K3PY')">-->
+        <!--{{it.by9}}-{{it.zdmc}}元-->
+        <!--</Option>-->
+        <!--</Select>-->
+        <!--</FormItem>-->
+        <!--</div>-->
+        <!--</Col>-->
         <!--</Row>-->
         <!--<Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && !formData.zddm.includes('K3PY')">-->
-          <!--<Col span="12">-->
-            <!--<FormItem :label="'人数'" label-position="top">-->
-              <!--&lt;!&ndash;<Input v-model="formData.xySl"></Input>&ndash;&gt;-->
-              <!--<InputNumber style="width:280px" :min="1" v-model="formData.xySl"></InputNumber>-->
-            <!--</FormItem>-->
-          <!--</Col>-->
+        <!--<Col span="12">-->
+        <!--<FormItem :label="'人数'" label-position="top">-->
+        <!--&lt;!&ndash;<Input v-model="formData.xySl"></Input>&ndash;&gt;-->
+        <!--<InputNumber style="width:280px" :min="1" v-model="formData.xySl"></InputNumber>-->
+        <!--</FormItem>-->
+        <!--</Col>-->
         <!--</Row>-->
         <!--<Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && formData.zddm.includes('K3PY')">-->
         <!--<Card>-->
@@ -407,8 +409,6 @@
     </Modal>
 
 
-
-
     <Modal
       title="确认作废"
       width="700px"
@@ -430,8 +430,10 @@
           <Col span="24">
             <Card>
               <p slot="title" style="font-size: 20px;font-weight: 600">训练信息</p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">教练员 : {{ZFItem[0].jlXm===undefined?'':ZFItem[0].jlXm}}</p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px">总时长 : {{ZFItem[0].sc===undefined?'':ZFItem[0].sc}}分钟</p>
+              <p style="font-size: 18px;font-weight: 500;padding: 10px">教练员 :
+                {{ZFItem[0].jlXm===undefined?'':ZFItem[0].jlXm}}</p>
+              <p style="font-size: 18px;font-weight: 500;padding: 10px">总时长 :
+                {{ZFItem[0].sc===undefined?'':ZFItem[0].sc}}分钟</p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px;color: red">总费用 : {{ZFItem[0].lcFy}}元</p>
             </Card>
           </Col>
@@ -709,10 +711,10 @@
                         ghost: true,
                       },
                       style: {},
-                      on:{
-                        click: () =>{
-                          this.ZFmodal=true
-                          this.ZFItem=[]
+                      on: {
+                        click: () => {
+                          this.ZFmodal = true
+                          this.ZFItem = []
                           this.ZFItem.push(p.row)
                         }
                       }
@@ -720,7 +722,7 @@
                   ])
 
                 return h('div', '未支付')
-              } else if(p.row.zfzt == '20'){
+              } else if (p.row.zfzt == '20') {
                 return h('div',
                   [
                     h('Button', {
@@ -730,16 +732,16 @@
                         ghost: true,
                       },
                       style: {},
-                      on:{
-                        click: () =>{
-                          this.ZFmodal=true
-                          this.ZFItem=[]
+                      on: {
+                        click: () => {
+                          this.ZFmodal = true
+                          this.ZFItem = []
                           this.ZFItem.push(p.row)
                         }
                       }
                     }, '已作废')
                   ])
-              }else return h('div', '已支付')
+              } else return h('div', '已支付')
             },
             filters: [
               {
@@ -897,7 +899,7 @@
         jlJx: '',
         zxNum: 0,
         xxNum: 0,
-        zj:0,
+        zj: 0,
         carList: [],
         coachList: [],
         param1: {
@@ -1084,6 +1086,12 @@
                                   // }
                                   if (p.row.lcJl.lcLx == '00') {
                                     this.ifFinish = true
+                                    if (this.QRmess.fdr == '1') {     //如果是现金支付，应收现金为总费用
+                                      this.ysxzA = this.QRmess.lcFy
+                                    }
+                                    else {
+                                      this.ysxzA = this.QRmess.cardje - this.QRmess.lcFy < 0 ? this.QRmess.cardje - this.QRmess.lcFy : 0
+                                    }
                                     this.QRmodal = true
                                   } else {
                                     this.print(res.result, true)
@@ -1141,13 +1149,13 @@
 
                                       if (p.row.lcJl.lcLx == '00') {
                                         this.ifFinish = true
+
                                         if (this.QRmess.fdr == '1') {     //如果是现金支付，应收现金为总费用
                                           this.ysxzA = this.QRmess.lcFy
                                         }
                                         else {
                                           this.ysxzA = this.QRmess.cardje - this.QRmess.lcFy < 0 ? this.QRmess.cardje - this.QRmess.lcFy : 0
                                         }
-
                                         this.ifFinish = true
                                         this.QRmodal = true
                                       } else {
@@ -1355,11 +1363,11 @@
             // },
           },
         ],
-        ZFmodal:false,
-        ZFItem:[
+        ZFmodal: false,
+        ZFItem: [
           {
-            jlXm:'',
-            sc:''
+            jlXm: '',
+            sc: ''
           }
         ]
       }
@@ -1407,8 +1415,8 @@
         let a = JSON.parse(JSON.stringify(this.Pmess));
         this.AMess.push(a);
       },
-      toPY(){
-        Cookies.set('showModal','true')
+      toPY() {
+        Cookies.set('showModal', 'true')
         this.$router.push({
           name: 'kmspy'
         })
@@ -1512,6 +1520,12 @@
             //
             // }
             this.QRmess.zf = this.QRmess.fdr
+            if (this.QRmess.fdr == '1') {     //如果是现金支付，应收现金为总费用
+              this.ysxzA = this.QRmess.lcFy
+            }
+            else {
+              this.ysxzA = this.QRmess.cardje - this.QRmess.lcFy < 0 ? this.QRmess.cardje - this.QRmess.lcFy : 0
+            }
             console.log(this.QRmess.fdr)
             this.ifFinish = true
             this.QRmodal = true
@@ -1757,7 +1771,7 @@
           }
         })
       },
-      zf(){
+      zf() {
         this.swal({
           title: '确认作废该记录?',
           type: 'warning',
@@ -1766,12 +1780,12 @@
           showCancelButton: true
         }).then((res) => {
           if (res.value) {
-            this.$http.post('/api/lcjl/revokeJl', {id:this.ZFItem[0].id}).then((res) => {
+            this.$http.post('/api/lcjl/revokeJl', {id: this.ZFItem[0].id}).then((res) => {
               if (res.code == 200) {
-                this.ZFmodal=false
+                this.ZFmodal = false
                 this.util.getPageData(this)
                 this.$Message.info(res.message);
-              }else{
+              } else {
                 this.$Message.info(res.message);
               }
             })
@@ -1925,8 +1939,8 @@
         }).then((res) => {
           if (res.code == 200) {
             this.carList = res.page.list
-            if(this.formData.clZt == ''||this.formData.clZt==undefined) {
-              this.zxNum = this.xxNum =this.zj=0;
+            if (this.formData.clZt == '' || this.formData.clZt == undefined) {
+              this.zxNum = this.xxNum = this.zj = 0;
               for (let r of this.carList) {
                 if (r.clZt === '01') {
                   this.zxNum++;
