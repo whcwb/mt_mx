@@ -163,6 +163,15 @@ export default [
         component: () => import('@/view/charge/sztj')
       },
       {
+        path: 'jlwh',
+        name: 'jlwh',
+        meta: {
+          icon: '_bear',
+          title: '教练维护'
+        },
+        component: () => import('@/view/charge/jlwh')
+      },
+      {
         path: 'rebate',
         name: 'rebate',
         meta: {
