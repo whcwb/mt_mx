@@ -607,7 +607,7 @@
     },
     directives: {
       focus: function (el,is) {
-        console.log('sssss',is)
+        // console.log('sssss',is)
         if(is.value) el.focus();
       }
     },
@@ -654,7 +654,7 @@
       // }, 1000)
       // this.getYYdj()
       this.getzdlist()
-      this.pr()
+      // this.pr()
       this.zy()
     },
     beforeDestroy() {
@@ -663,7 +663,7 @@
     methods: {
       zy(){
         var _this = this;
-        console.log(_this.focusList);
+        // console.log(_this.focusList);
         document.onkeydown = function (e) {
           let key = window.event.keyCode;
           if (key == 39) {
@@ -674,25 +674,25 @@
             //   _this.$refs['input3'][0].focus()
             // // })
 
-            console.log(_this.focusList.length);
+            // console.log(_this.focusList.length);
             for (let a = 0; a < 9; a++) {  //从左往右，所以下一个input框是a+1
-              console.log(a, "A")
-              console.log(_this.focusList[a]);
-              console.log(_this.$refs['input' + (a + 1)]);
+              // console.log(a, "A")
+              // console.log(_this.focusList[a]);
+              // console.log(_this.$refs['input' + (a + 1)]);
               if (_this.focusList[a] && _this.$refs['input' + (a + 1)]) {
-                console.log('input' + (a + 1));
+                // console.log('input' + (a + 1));
                 _this.focusList[a] = false
                 _this.focusList[a + 1] = true;
                 _this.$nextTick(()=>{
                   _this.$refs['input' + (a + 1)][0].focus()
                 })
-                console.log(_this.focusList,"end");
+                // console.log(_this.focusList,"end");
                 return;
               }
             }
           }
           if(key == 37){
-            console.log("点击了左键");
+            // console.log("点击了左键");
             for (let a = 0; a < _this.focusList.length; a++) {   //从右向左，所以上一个input框是a-1
               if (_this.focusList[a] && _this.$refs['input' + (a - 1)]) {
                 _this.focusList[a] = false
@@ -707,8 +707,8 @@
         };
       },
       getInputFocus(index) {
-        console.log(this.focusList.length , "--------")
-        console.log(index, "index")
+        // console.log(this.focusList.length , "--------")
+        // console.log(index, "index")
         for (let a = 0; a < this.focusList.length; a++) {
           if (index == a) {
             this.focusList[a] = true
@@ -733,7 +733,7 @@
         let dxarr = [];
         let sfzarr = [];
         let a = true
-        console.log(AMess, 'AMess');
+        // console.log(AMess, 'AMess');
         for (let i = 0; i < AMess.length; i++) {
           if (AMess[i].xyXm == undefined || AMess[i].xyXm == '' || AMess[i].xyXm == null) {
             this.swal({
@@ -747,8 +747,8 @@
             dxarr.push(AMess[i].xyDh)
             sfzarr.push(AMess[i].bz)
             if (i == arrAMess) {
-              console.log(dxarr.join(','))
-              console.log(messarr.join(','))
+              // console.log(dxarr.join(','))
+              // console.log(messarr.join(','))
               this.formData.xyXm = messarr.join(',');
               this.formData.xyDh = dxarr.join(',');
               this.formData.xyZjhm = sfzarr.join(',');
@@ -1095,7 +1095,7 @@
         })
       },
       searchJlyaq(query) {
-        console.log(query);
+        // console.log(query);
       },
       mxShow() {
         this.mx = true
@@ -1120,7 +1120,7 @@
 
         })
 
-        console.log(this.mxList)
+        // console.log(this.mxList)
       },
       // print(mess) {//还车
       //   this.hisPrintMess = mess
@@ -1237,7 +1237,7 @@
               this.util.initTable(this);
               this.carMess = null
               this.AMess = [{cartype: 'C1'}];
-              console.log(res.message, 'resmessage')
+              // console.log(res.message, 'resmessage')
               if (this.mxlx == 'py' || this.mxlx == 'kf') {
                 //打印票据
                 this.formData = JSON.parse(res.message)

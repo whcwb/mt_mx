@@ -632,7 +632,7 @@
       // }, 1000)
       // this.getYYdj()
       this.getzdlist()
-        this.pr()
+        // this.pr()
     },
     beforeDestroy() {
       clearInterval(this.IntervalKE)
