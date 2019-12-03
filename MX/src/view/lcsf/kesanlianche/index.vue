@@ -670,10 +670,7 @@
 
           {title: '开始时间', key: 'kssj', minWidth: 140, align: 'center',},
           {
-            title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 90, align: 'center',
-            render: (h, p) => {
-              return h('div', p.row.jssj.substring(10, 16))
-            }
+            title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 140, align: 'center',
           },
           {
             title: '时长', key: 'sc', minWidth: 100, defaul: '0', align: 'center',
@@ -785,12 +782,20 @@
               return h('div', p.row.zgXm)
             }
           },
+          {
+            title: '备注',
+            minWidth: 150,
+            align: 'center',
+            render: (h, p) => {
+              return h('div', p.row.bz)
+            }
+          },
           // {title: '凭证号', key: 'pz', minWidth: 150, align: 'center',},
 
           {
             title: '补打', minWidth: 60, align: 'center', render: (h, p) => {
               let buttons = [];
-              if (p.row.zfzt !== '00') {
+              if (p.row.zfzt == '10') {
                 buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
                   this.hisPrintMess = p.row
                   this.printClose = false

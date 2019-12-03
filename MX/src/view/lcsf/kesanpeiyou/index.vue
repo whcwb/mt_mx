@@ -409,6 +409,12 @@
           {title: '教练员', key: 'jlXm', align: 'center', searchKey: 'jlXmLike', minWidth: 90},
           {title: '教练员电话', align: 'center', key: 'jlDh', minWidth: 100},
           {
+            title: '类型', minWidth: 110, align: 'center',
+            render: (h, p) => {
+              return h('div', '培优' + p.row.zdxm.zdmc + '元')
+            }
+          },
+          {
             title: '学员数量', align: 'center', key: 'xySl', minWidth: 90, defaul: '0',
             render: (h, p) => {
               return h('div', p.row.xySl + '人')
@@ -433,12 +439,6 @@
             render: (h, p) => {
               return h('div', p.row.lcFy + '元')
             },
-          },
-          {
-            title: '类型', minWidth: 110, align: 'center',
-            render: (h, p) => {
-              return h('div', '培优' + p.row.zdxm.zdmc + '元')
-            }
           },
           {title: '创建时间', align: 'center', key: 'kssj', searchType: 'daterange', minWidth: 140},
           {title: '安全员', align: 'center', key: 'zgXm', minWidth: 100},
