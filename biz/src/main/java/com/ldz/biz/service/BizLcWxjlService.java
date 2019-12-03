@@ -17,7 +17,7 @@ public interface BizLcWxjlService extends BaseService<BizLcWxjl, String> {
 
     ApiResponse<String> resetPwd(String cardNo);
 
-    ApiResponse<String> czmx(int pageNum, int pageSize, String id);
+    ApiResponse<String> czmx(int pageNum, int pageSize, String id, String lx);
 
     ApiResponse<String> getPjbh();
 

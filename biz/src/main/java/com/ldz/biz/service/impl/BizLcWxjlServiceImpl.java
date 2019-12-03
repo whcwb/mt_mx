@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
 import javax.management.relation.RoleUnresolved;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +47,6 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
     @Override
     public ApiResponse<String> saveEntity(BizLcWxjl entity) {
         SysYh user = getCurrentUser();
-//		RuntimeCheck.ifBlank(entity.getJlJx(), "驾校名称不能为空");
         RuntimeCheck.ifBlank(entity.getJlXm(), "教练姓名不能为空");
         RuntimeCheck.ifBlank(entity.getJlLxdh(), "教练联系电话不能为空");
         List<BizLcWxjl> wxjls = findEq(BizLcWxjl.InnerColumn.jlLxdh, entity.getJlLxdh());
@@ -127,9 +127,14 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
     }
 
     @Override
-    public ApiResponse<String> czmx(int pageNum, int pageSize, String id) {
+    public ApiResponse<String> czmx(int pageNum, int pageSize, String id, String lx) {
         RuntimeCheck.ifBlank(id, "请选择记录");
         SimpleCondition condition = new SimpleCondition(BizJlCz.class);
+        if(StringUtils.equals(lx, "kfr")){
+            condition.in(BizJlCz.InnerColumn.type, Arrays.asList("00" ,"30"));
+        }else if(StringUtils.equals(lx, "cz")){
+            condition.in(BizJlCz.InnerColumn.type, Arrays.asList("10","20"));
+        }
         condition.eq(BizJlCz.InnerColumn.jlId, id);
         PageInfo<BizJlCz> info = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(() -> czMapper.selectByExample(condition));
         if (CollectionUtils.isNotEmpty(info.getList())) {

@@ -150,8 +150,8 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
     }
 
     @PostMapping("/cz")
-    public ApiResponse<BizJlCz> saveCz(String cardNo, int je, int sfje){
-        return service.saveCz(cardNo, je, sfje);
+    public ApiResponse<BizJlCz> saveCz(String id, int je, int sfje){
+        return service.saveCz(id, je, sfje);
     }
 
 //    @PostMapping("/pay")
@@ -177,6 +177,12 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         return service.getByPz(pz);
     }
 
+    /**
+     * 支付接口 (可选择支付方式)
+     * @param id
+     * @param zf
+     * @return
+     */
     @PostMapping("/payCNY")
     public ApiResponse<BizLcJl> payCNY(String id, String zf){
         return service.payCNY(id, zf);
@@ -212,6 +218,10 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
        return service.statisSec(start,end);
    }
 
+    /**
+     * 主页统计
+     * @return
+     */
    @PostMapping("/statisMain")
    public ApiResponse<Map<String, Integer>> statisMain(){
        return service.statisMain();
@@ -230,6 +240,12 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
        service.exportSec(start, end, request, response);
    }
 
+    /**
+     * 导出科目三模训明细excel
+     * @param request
+     * @param response
+     * @throws IOException
+     */
    @GetMapping("/exportKm3")
     public void exportKm3(HttpServletRequest request, HttpServletResponse response) throws IOException {
        service.exportKm3(request,response);

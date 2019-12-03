@@ -53,8 +53,8 @@ public class BizLcWxjlController extends BaseController<BizLcWxjl, String> {
     }
 
     @PostMapping("/czmx")
-    public ApiResponse<String> czmx(@RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "8") int pageSize, String id){
-        return service.czmx(pageNum, pageSize, id);
+    public ApiResponse<String> czmx(@RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "8") int pageSize, String id, String lx){
+        return service.czmx(pageNum, pageSize, id, lx);
     }
 
     @PostMapping("/getPjbh")

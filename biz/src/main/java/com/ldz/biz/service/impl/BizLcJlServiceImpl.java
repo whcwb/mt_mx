@@ -3,9 +3,7 @@ package com.ldz.biz.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import com.ldz.biz.mapper.BizFdConfigMapper;
 import com.ldz.biz.mapper.BizJlCzMapper;
-import com.ldz.biz.mapper.BizJlXfMappper;
 import com.ldz.biz.mapper.BizLcJlMapper;
 import com.ldz.biz.model.*;
 import com.ldz.biz.service.*;
@@ -17,6 +15,7 @@ import com.ldz.sys.service.ZdxmService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.DateUtils;
+import com.ldz.util.commonUtil.EncryptUtil;
 import com.ldz.util.commonUtil.ExcelUtil;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.exception.RuntimeCheck;
@@ -41,7 +40,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -71,10 +69,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private BizLcFdService fdService;
-    @Autowired
-    private BizFdConfigMapper fdConfigMapper;
-    @Autowired
-    private BizJlXfMappper xfMappper;
+
     @Autowired
     private BizJlCzMapper czMapper;
     @Autowired
@@ -1347,14 +1342,27 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     }
 
     @Override
-    public ApiResponse<BizJlCz> saveCz(String no, int je, int sfje) {
-        RuntimeCheck.ifBlank(no, "请输入卡号");
+    public ApiResponse<BizJlCz> saveCz(String id, int je, int sfje) {
+//        RuntimeCheck.ifBlank(no, "请输入卡号");
         RuntimeCheck.ifTrue(je <= 0, "充值金额必须大于0");
         RuntimeCheck.ifTrue(sfje <= 0, "实付金额必须大于0 ");
         // 根据卡号查询教练信息
-        List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.cardNo, no);
-        RuntimeCheck.ifEmpty(wxjls, "未找到卡号记录");
-        BizLcWxjl wxjl = wxjls.get(0);
+        BizLcWxjl wxjl  = wxjlService.findById(id);
+        //
+        RuntimeCheck.ifNull(wxjl, "未找到教练信息");
+        if(StringUtils.isBlank(wxjl.getCardNo())){
+            String maxNo = baseMapper.getMaxNo();
+            String cardNo = genCardNo(Integer.parseInt(maxNo.replaceAll("VIP","")));
+            List<BizLcWxjl> eq =wxjlService.findEq(BizLcWxjl.InnerColumn.cardNo, cardNo);
+            while (CollectionUtils.isNotEmpty(eq)) {
+                int anInt = Integer.parseInt(cardNo.replaceAll("VIP","")) + 1;
+                cardNo = genCardNo(anInt);
+                eq = wxjlService.findEq(BizLcWxjl.InnerColumn.cardNo, cardNo);
+            }
+            wxjl.setCardNo(cardNo);
+            wxjl.setPwd(EncryptUtil.encryptUserPwd("123456"));
+        }
+
 
         BizJlCz jlCz = new BizJlCz();
         jlCz.setZy("充值");
@@ -1375,6 +1383,19 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         jlCz.setJx(wxjl.getJlJx());
         jlCz.setXm(wxjl.getJlXm());
         return ApiResponse.success(jlCz);
+    }
+
+    private String genCardNo(int maxNo) {
+        StringBuilder s = new StringBuilder(maxNo++ + "");
+        int length = s.length();
+
+        if (length == 4) {
+            return "VIP" + maxNo + "";
+        }
+        for (int i = 0; i < 4 - length; i++) {
+            s.insert(0, "0");
+        }
+        return "VIP" + s.toString();
     }
 
     @Override
@@ -2015,6 +2036,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 lcJl.setBz("应收现金" + 0 + "元,卡上余额" + wxjl.getCardJe() + "元");
             }
         } else if (StringUtils.equals(zf, "3")) {
+            int wxjlYe = wxjl.getYe();
             String c = getRequestParamterAsString("c");
             RuntimeCheck.ifBlank(c, "请填写学员人数");
             // 抵扣支付 不够的按现金结算
@@ -2030,6 +2052,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             RuntimeCheck.ifTrue(i < xySl, "抵扣人数不能大于开放日学员人数");
             // 总抵扣额度
             int kfje = xySl * dkdj;
+            int czhje = kfje;
             // 教练总开放余额 减去开放日金额
             int  je = kfje;
             int syje = kfje - sum;
@@ -2072,6 +2095,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     update(jl);
                 }
 
+
+
                 // 生成返点金额
                 float aFloat = Float.parseFloat(by4);
                 int v = (int) Math.ceil(abs * aFloat);
@@ -2094,6 +2119,20 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fdService.save(fd);
                 }
             }
+            // 生成消费记录
+            BizJlCz jlCz = new BizJlCz();
+            jlCz.setJlId(wxjl.getId());
+            jlCz.setSfje(0);
+            jlCz.setId(genId());
+            jlCz.setCzqje(wxjlYe);
+            wxjl.setYe(Math.max((wxjlYe - czhje), 0));
+            jlCz.setCzhje(Math.max((wxjlYe - czhje), 0));
+            jlCz.setCjsj(DateUtils.getNowTime());
+            jlCz.setJe(kfje);
+            jlCz.setType("30");
+            czMapper.insert(jlCz);
+            wxjlService.update(wxjl);
+
             lcJl.setBz("应收现金" + abs + "元");
 
         }

@@ -31,7 +31,7 @@ public class BizJlCz {
      */
     private String cjsj;
     /**
-     *  类型  00 : 卡片充值 10: 开放日充值 20: 卡片消费  30 : 抵扣消费
+     *  类型  10 : 卡片充值 00: 开放日充值 20: 卡片消费  30 : 抵扣消费
      */
     private String type;
     /**
