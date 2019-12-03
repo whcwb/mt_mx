@@ -33,8 +33,8 @@
     </div>
 
     <Row style="position: relative;">
-      <Table stripe
-        :height="AF.getPageHeight()-300"
+      <Table stripe size="small"
+        :height="AF.getPageHeight()-270"
         :columns="tableTiT"
         :data="tableData">
       </Table>

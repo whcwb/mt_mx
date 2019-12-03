@@ -208,22 +208,21 @@
                   </RadioGroup>
                 </Col>
                 <Col span="4" :class-name="'colsty'">
-                  <Input type="text" size="default" v-model="item.xyXm" placeholder="学员姓名"/>
+                  <Input type="text" size="default" :ref="'input'+(index*3+1)" id="input1"  @on-focus="getInputFocus(index*3 +1)" v-model="item.xyXm" placeholder="学员姓名"/>
                 </Col>
                 <Col span="6" :class-name="'colsty'">
-                  <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"
-                         size="default" v-model="item.bz" placeholder="身份证号码"/>
+                  <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}" :ref="'input'+(index*3+2)" id="input2" @on-focus="getInputFocus(index*3 + 2)"
+                         size="default" v-model="item.xyZjhm" placeholder="身份证号码"/>
                 </Col>
                 <Col span="4" :class-name="'colsty'">
-                  <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"
-                         size="default" v-model="item.xyDh" placeholder="学员联系电话"/>
+                  <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}" :ref="'input'+(index*3+3)" v-focus="true" @on-focus="getInputFocus(index*3+3)" size="default" v-model="item.xyDh" placeholder="学员联系电话"/>
                 </Col>
                 <Col span="2" v-if="AMess.length>1">
-                  <Button size="default" type="warning" @click="remove(index)">删除</Button>
+                  <Button size="default" type="warning" tabIndex="-1" @click="remove(index)">删除</Button>
                 </Col>
                 <Col span="2" align="center">
 
-                  <Button type="info" icon="md-add"
+                  <Button type="info" icon="md-add" tabIndex="-1"
                           @click="pushmess"
                   >
                   </Button>
@@ -409,6 +408,12 @@
           {title: '教练员', key: 'jlXm', align: 'center', searchKey: 'jlXmLike', minWidth: 90},
           {title: '教练员电话', align: 'center', key: 'jlDh', minWidth: 100},
           {
+            title: '类型', minWidth: 110, align: 'center',
+            render: (h, p) => {
+              return h('div', '培优' + p.row.zdxm.zdmc + '元')
+            }
+          },
+          {
             title: '学员数量', align: 'center', key: 'xySl', minWidth: 90, defaul: '0',
             render: (h, p) => {
               return h('div', p.row.xySl + '人')
@@ -433,12 +438,6 @@
             render: (h, p) => {
               return h('div', p.row.lcFy + '元')
             },
-          },
-          {
-            title: '类型', minWidth: 110, align: 'center',
-            render: (h, p) => {
-              return h('div', '培优' + p.row.zdxm.zdmc + '元')
-            }
           },
           {title: '创建时间', align: 'center', key: 'kssj', searchType: 'daterange', minWidth: 140},
           {title: '安全员', align: 'center', key: 'zgXm', minWidth: 100},
@@ -602,7 +601,14 @@
         }, 60000),*/
         fylist: [],
         fy: [],
-        cxlist: []
+        cxlist: [],
+        focusList: [false, false,false]
+      }
+    },
+    directives: {
+      focus: function (el,is) {
+        console.log('sssss',is)
+        if(is.value) el.focus();
       }
     },
     watch: {
@@ -649,17 +655,76 @@
       // this.getYYdj()
       this.getzdlist()
       this.pr()
+      this.zy()
     },
     beforeDestroy() {
       clearInterval(this.IntervalKE)
     },
     methods: {
+      zy(){
+        var _this = this;
+        console.log(_this.focusList);
+        document.onkeydown = function (e) {
+          let key = window.event.keyCode;
+          if (key == 39) {
+            console.log(_this.AMess, "amess")
+            // console.log("点击了右键");
+            // console.log(_this.$refs['input3']);
+            // // _this.$nextTick(() => {
+            //   _this.$refs['input3'][0].focus()
+            // // })
+
+            console.log(_this.focusList.length);
+            for (let a = 0; a < 9; a++) {  //从左往右，所以下一个input框是a+1
+              console.log(a, "A")
+              console.log(_this.focusList[a]);
+              console.log(_this.$refs['input' + (a + 1)]);
+              if (_this.focusList[a] && _this.$refs['input' + (a + 1)]) {
+                console.log('input' + (a + 1));
+                _this.focusList[a] = false
+                _this.focusList[a + 1] = true;
+                _this.$nextTick(()=>{
+                  _this.$refs['input' + (a + 1)][0].focus()
+                })
+                console.log(_this.focusList,"end");
+                return;
+              }
+            }
+          }
+          if(key == 37){
+            console.log("点击了左键");
+            for (let a = 0; a < _this.focusList.length; a++) {   //从右向左，所以上一个input框是a-1
+              if (_this.focusList[a] && _this.$refs['input' + (a - 1)]) {
+                _this.focusList[a] = false
+                _this.focusList[a - 1] = true;
+                _this.$nextTick(()=>{
+                  _this.$refs['input' + (a - 1)][0].focus()
+                })
+                return;
+              }
+            }
+          }
+        };
+      },
+      getInputFocus(index) {
+        console.log(this.focusList.length , "--------")
+        console.log(index, "index")
+        for (let a = 0; a < this.focusList.length; a++) {
+          if (index == a) {
+            this.focusList[a] = true
+          } else {
+            this.focusList[a] = false
+          }
+        }
+      },
       remove(i) {
         this.AMess.splice(i, 1)
       },
       pushmess() {
         let a = JSON.parse(JSON.stringify(this.Pmess));
         this.AMess.push(a);
+        // let b = [false,false,false]
+        this.focusList.push(false,false,false)
       },
       getWXXY(AMess) {
         AMess = this.AMess

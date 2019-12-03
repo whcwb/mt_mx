@@ -308,7 +308,7 @@
       title="分配车辆"
       v-model="DrawerVal"
       :closable="false"
-      width="800"
+      width="720"
       :mask-closable="false">
       <div slot="header">
         <div class="box_row">
@@ -721,8 +721,38 @@
             minWidth: 50,
             // fixed: 'left',
           },
-          {title: '驾校', align: 'center', key: 'jlJx', minWidth: 90},
+          {title: '驾校', align: 'center', key: 'jlJx', minWidth: 120},
           {title: '教练员', align: 'center', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 80},
+          {
+            title: '类型', align: 'center', minWidth: 140,
+            filters: [
+              {
+                label: '计时',
+                value: 'JS'
+              },
+              {
+                label: '培优',
+                value: 'PY'
+              },
+              {
+                label: '开放日',
+                value: 'KF'
+              },
+            ],
+            filterMultiple: false,
+            filterRemote(value, row) {
+              this.param.zddmLike = value;
+              // var _self = this
+              this.util.getPageData(this);
+            },
+            render: (h, p) => {
+              if (p.row.zdxm != '') {
+                return h('div', p.row.zdxm.by9 + ' ' + p.row.zdxm.zdmc)
+              }
+
+            }
+          },
+          {title: '人数', align: 'center', key: 'xySl', minWidth: 70, defaul: '0'},
           // {title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90,},
           // {
           //   title: '状态', minWidth: 120, render: (h, p) => {
@@ -738,15 +768,18 @@
           //   }
           // },
 
-          {title: '开始时间', align: 'center', key: 'kssj', minWidth: 135},
-          {title: '结束时间', align: 'center', key: 'jssj', searchType: 'daterange', minWidth: 135},
+          {title: '开始时间', align: 'center', key: 'kssj', minWidth: 145},
+          {title: '结束时间', align: 'center', key: 'jssj', searchType: 'daterange', minWidth: 90,
+            render: (h, p) => {
+              return h('div', p.row.jssj.substring(10));
+            }
+          },
           {
-            title: '时长', align: 'center', key: 'sc', minWidth: 70, defaul: '0',
+            title: '时长', align: 'center', key: 'sc', minWidth: 100, defaul: '0',
             render: (h, p) => {
               return h('div', p.row.sc + '分钟');
             }
           },
-          // {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
           // {
           //   title: '费用', align: 'center', minWidth: 70, defaul: '0',
@@ -761,13 +794,13 @@
           //   }
           // },
           {
-            title: '应收', align: 'center', minWidth: 70, defaul: '0',
+            title: '应收', align: 'center', minWidth: 110, defaul: '0',
             render: (h, p) => {
               return h('div', p.row.lcFy + '元');
             }
           },
           {
-            title: '实收', align: 'center', minWidth: 70, defaul: '0',
+            title: '实收', align: 'center', minWidth: 110, defaul: '0',
             render: (h, p) => {
               if (p.row.zfzt == '00') {    //为已支付的，就显示现金
                 return h('div', '');
@@ -847,35 +880,6 @@
               } else return h('div', '已支付')
             }
           },
-          {
-            title: '类型', align: 'center', minWidth: 100,
-            filters: [
-              {
-                label: '计时',
-                value: 'JS'
-              },
-              {
-                label: '培优',
-                value: 'PY'
-              },
-              {
-                label: '开放日',
-                value: 'KF'
-              },
-            ],
-            filterMultiple: false,
-            filterRemote(value, row) {
-              this.param.zddmLike = value;
-              // var _self = this
-              this.util.getPageData(this);
-            },
-            render: (h, p) => {
-              if (p.row.zdxm != '') {
-                return h('div', p.row.zdxm.by9)
-              }
-
-            }
-          },
           // {title: '凭证', key: 'pz', align: 'center', minWidth: 130,},
           // {
           //   title: '备注', align: 'center', minWidth: 130,
@@ -912,7 +916,7 @@
           {
             title: '操作', minWidth: 70, align: 'center', render: (h, p) => {
               let buttons = [];
-              if (p.row.zfzt != '00') {
+              if (p.row.zfzt == '10') {
                 buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {
                   this.hisPrintMess = p.row
                   this.printClose = false

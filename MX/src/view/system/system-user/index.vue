@@ -39,8 +39,8 @@
 
     <Row style="position: relative;">
       <Table
-        size='large' stripe
-        :height="AF.getPageHeight()-320"
+        size="small" stripe
+        :height="AF.getPageHeight()-270"
         :row-class-name="rowClassName"
         :columns="tableTiT"
         :data="tableData"></Table>

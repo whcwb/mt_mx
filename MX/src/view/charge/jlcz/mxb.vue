@@ -8,7 +8,7 @@
       @on-ok="ok">
       <Table stripe
              :height="AF.getPageHeight()-250"
-             :columns="columns2"
+             :columns="lx=='cz'?columns1:columns2"
              :data="dataList">
       </Table>
       <div style="text-align: right;padding: 6px 0">
@@ -48,6 +48,10 @@
       isMxb: {
         type: Boolean,
         default: false
+      },
+      lx:{
+        type: String,
+        default: ''
       }
     },
     data() {
@@ -59,14 +63,16 @@
         param: {
           pageNum: 1,
           pageSize: 8,
-          id: ''
+          id: '',
+          lx:''
         },
         dataList: [],
-        columns2: [
-          {title: '#', type: 'index', width: 90},
+        columns1: [
+          {title: '#', type: 'index'},
           {
             title: '流水时间',
             align: 'center',
+            minWidth: 90,
             render: (h, p) => {
               return h('div', p.row.cjsj.substring(0, 16));
             },
@@ -74,20 +80,15 @@
           {
             title: '类型',
             align: 'center',
+            minWidth: 50,
             render: (h, p) => {
               let type = ''
               switch (p.row.type) {
-                case '00':
-                  type = '预存(开放日)'
-                  break;
                 case '10':
                   type = '预存(充值卡)'
                   break;
                 case '20':
                   type = '抵扣(充值卡)'
-                  break;
-                case '30':
-                  type = '抵扣(开放日)'
                   break;
               }
               return h('div', type);
@@ -100,14 +101,6 @@
               {
                 label: '抵扣(充值卡)',
                 value: '20'
-              },
-              {
-                label: '预存(开放日)',
-                value: '00'
-              },
-              {
-                label: '抵扣(开放日)',
-                value: '30'
               }
             ],
             filterMultiple: false,
@@ -118,24 +111,18 @@
               //   return row.age < 25;
               // }
               switch (value) {
-                case '00':
-                  return row.type == '00'
-                  break;
                 case '10':
                   return row.type == '10'
                   break;
                 case '20':
                   return row.type == '20'
                   break;
-                case '30':
-                  return row.type == '30'
-                  break;
               }
 
             }
           },
           {
-            title: '预存金额',
+            title: '预存',
             align: 'center',
             render: (h, p) => {
               if (p.row.type == '00' || p.row.type == '10')
@@ -144,7 +131,7 @@
             },
           },
           {
-            title: '抵扣金额',
+            title: '抵扣',
             align: 'center',
             render: (h, p) => {
               if (p.row.type == '20' || p.row.type == '30')
@@ -153,7 +140,7 @@
             },
           },
           {
-            title: '实付金额',
+            title: '实收',
             align: 'center',
             render: (h, p) => {
               return h('div', p.row.sfje + '元');
@@ -208,7 +195,136 @@
 
             }
           }
-        ],
+        ],        //充值卡列表
+        columns2: [
+          {title: '#', type: 'index', width: 90},
+          {
+            title: '流水时间',
+            align: 'center',
+            minWidth: 90,
+            render: (h, p) => {
+              return h('div', p.row.cjsj.substring(0, 16));
+            },
+          },
+          {
+            title: '类型',
+            align: 'center',
+            minWidth: 50,
+            render: (h, p) => {
+              let type = ''
+              switch (p.row.type) {
+                case '00':
+                  type = '预存(开放日)'
+                  break;
+                case '30':
+                  type = '抵扣(开放日)'
+                  break;
+              }
+              return h('div', type);
+            },
+            filters: [
+              {
+                label: '预存(开放日)',
+                value: '00'
+              },
+              {
+                label: '抵扣(开放日)',
+                value: '30'
+              }
+            ],
+            filterMultiple: false,
+            filterMethod(value, row) {
+              // if (value === 1) {
+              //   return row.age > 25;
+              // } else if (value === 2) {
+              //   return row.age < 25;
+              // }
+              switch (value) {
+                case '00':
+                  return row.type == '00'
+                  break;
+                case '30':
+                  return row.type == '30'
+                  break;
+              }
+
+            }
+          },
+          {
+            title: '预存',
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.type == '00' || p.row.type == '10')
+                return h('div', p.row.je + '元');
+              else return h('div', '/');
+            },
+          },
+          {
+            title: '抵扣',
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.type == '20' || p.row.type == '30')
+                return h('div', p.row.je + '元');
+              else return h('div', '/');
+            },
+          },
+          {
+            title: '实收',
+            align: 'center',
+            render: (h, p) => {
+              return h('div', p.row.sfje + '元');
+            },
+          },
+          {
+            title: '余额',
+            align: 'center',
+            render: (h, p) => {
+              let type = ''
+              // switch (p.row.type) {
+              //   case '00':type='开放日余额:'+p.row.czhje+'元'
+              //     break;
+              //   case '30':type='开放日余额:'+p.row.czhje+'元'
+              //     break;
+              //   case '10':type='充值卡余额:'+p.row.czhje+'元'
+              //     break;
+              //   case '20':type='充值卡余额:'+p.row.czhje+'元'
+              //     break;
+              // }
+              return h('div', p.row.czhje + '元');
+            }
+          },
+          {
+            title: '备注',
+            key: 'bz',
+            align: 'center',
+          },
+          {
+            title: '操作',
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.type == '10') {
+                return h('Button', {
+                  props: {
+                    type: 'info',
+                    size: 'small'
+                  },
+                  style: {
+                    borderRadius: '15px'
+                  },
+                  on: {
+                    click: () => {
+                      this.hisPrintMess = p.row
+                      this.componentName = 'printSignUp'
+                    }
+                  }
+                }, '打印')
+              } else {
+                return ''
+              }
+
+            }
+          }
+        ],        //开放日列表
       }
     },
     watch: {
@@ -221,6 +337,7 @@
     methods: {
       getData() {
         this.param.id = this.itemObj.id
+        this.param.lx=this.lx
         this.$http.post('/api/lcwxjl/czmx', this.param).then(res => {
           if (res.code == 200) {
             this.totalS = res.page.total

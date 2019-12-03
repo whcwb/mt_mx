@@ -36,8 +36,8 @@
                 <Button type="primary" @click="wxjlSave">新增</Button>
               </FormItem>
             </Col>
-            <Col span="2">
-              <FormItem label-position="top" style="width: 95%">
+            <Col span="2" v-if="showCloseBtn">
+              <FormItem label-position="top"  style="width: 95%">
                 <div slot="label" style="color: #fff">_________</div>
                 <Button type="warning" @click="gogo">
                   关闭
@@ -67,7 +67,11 @@
       jxmc: {
         type: String,
         default: ''
-      }
+      },
+      showCloseBtn: {
+        type: Boolean,
+        default: true
+      },
     },
     data() {
       return {

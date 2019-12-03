@@ -27,7 +27,7 @@
       </Button>
     </div>
     <Row style="position: relative;">
-      <Table :height="AF.getPageHeight()-320" stripe
+      <Table :height="AF.getPageHeight()-270" stripe  size="small"
              :row-class-name="rowClassName" :columns="tableTiT" :data="pageData"></Table>
     </Row>
     <Row class="margin-top-10 pageSty">
