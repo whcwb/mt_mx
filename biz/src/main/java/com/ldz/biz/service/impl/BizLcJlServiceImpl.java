@@ -2524,6 +2524,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         titleMap.put(14, "安全员");
         titleMap.put(15,"备注");
         dataList.add(titleMap);
+        String cx = getRequestParamterAsString("cx");
 
         List<SysZdxm> zdxms = zdxmService.findEq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
         Map<String, String> map = zdxms.stream().collect(Collectors.toMap(SysZdxm::getZddm, p -> p.getBy9()));
