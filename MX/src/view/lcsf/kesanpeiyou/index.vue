@@ -204,7 +204,7 @@
               <Row v-for="(item,index) in AMess" :key="index" style="display: flex;align-items: center;">
                 <Col>
                   <RadioGroup v-model="item.cartype">
-                    <Radio :label="item.key" v-for="item in cxlist" v-if="item.key.includes(cx)"></Radio>
+                    <Radio  v-for="item in cxlist"  :label="item.key" v-if="item.key.includes(cx)"></Radio>
                   </RadioGroup>
                 </Col>
                 <Col span="4" :class-name="'colsty'">
@@ -375,9 +375,11 @@
     },
     data() {
       return {
-        Pmess: {},
+        Pmess: {
+          cartype: 'C1'
+        },
         AMess: [
-          {cartype: ''}
+          {cartype: 'C1'}
         ],
         hj: 0,
         rs: 0,
@@ -704,6 +706,14 @@
               }
             }
           }
+          if (key == 107){
+            console.log('++++++++')
+            _this.pushmess()
+          }
+          if (key == 109){
+            console.log('--------')
+            _this.remove(_this.AMess.length-1)
+          }
         };
       },
       getInputFocus(index) {
@@ -718,9 +728,22 @@
         }
       },
       remove(i) {
-        this.AMess.splice(i, 1)
+        if (i<=0){
+          return
+        }else {
+          this.AMess.splice(i, 1)
+        }
       },
       pushmess() {
+        if (this.cx == 'C'){
+          this.Pmess.cartype = 'C1'
+        }
+        if (this.cx == 'B'){
+          this.Pmess.cartype = 'B2'
+        }
+        if (this.cx == 'A'){
+          this.Pmess.cartype = 'A1'
+        }
         let a = JSON.parse(JSON.stringify(this.Pmess));
         this.AMess.push(a);
         // let b = [false,false,false]
@@ -932,7 +955,30 @@
         // }
 
       },
-      cxChange() {
+      cxChange(a) {
+          for (let i=0;i<this.AMess.length;i++){
+
+            if (this.cx == 'C'){
+              console.log('c')
+              this.AMess[i].cartype = 'C1'
+              console.log( this.AMess)
+              this.$nextTick()
+            }
+            if (this.cx == 'B'){
+              console.log('B')
+
+
+              this.AMess[i].cartype = 'B2'
+              console.log( this.AMess)
+              this.$nextTick()
+            }
+            if (this.cx == 'A'){
+              console.log('A')
+              this.AMess[i].cartype = 'A1'
+              console.log( this.AMess)
+              this.$nextTick()
+            }
+          }
         // this.fy = []
         // this.fylist.map((val, index, arr) => {
         //   if (val.by8.includes(this.formData.jlCx)) {
