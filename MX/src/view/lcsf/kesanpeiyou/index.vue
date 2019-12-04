@@ -212,7 +212,7 @@
                 </Col>
                 <Col span="6" :class-name="'colsty'">
                   <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}" :ref="'input'+(index*3+2)" id="input2" @on-focus="getInputFocus(index*3 + 2)"
-                         size="default" v-model="item.xyZjhm" placeholder="身份证号码"/>
+                         size="default" v-model="item.bz" placeholder="身份证号码"/>
                 </Col>
                 <Col span="4" :class-name="'colsty'">
                   <Input type="textarea" :autosize="{minRows: 1,maxRows: 1}" :ref="'input'+(index*3+3)" v-focus="true" @on-focus="getInputFocus(index*3+3)" size="default" v-model="item.xyDh" placeholder="学员联系电话"/>
