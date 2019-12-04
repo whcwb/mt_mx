@@ -121,7 +121,7 @@
           </Button>
         </Col>
       </Row>
-      <Table :height="AF.getPageHeight()-280"
+      <Table :height="AF.getPageHeight()-240"
              stripe
              size="small"
              @on-select="tabcheck"
@@ -606,7 +606,7 @@
             width: 50,
             align: 'center'
           },
-          {title: '驾校', key: 'jlJx', minWidth: 90, align: 'center',},
+          {title: '驾校', key: 'jlJx', minWidth: 120, align: 'center',},
           {title: '教练员', key: 'jlXm', searchKey: 'jlXmLike', minWidth: 90, align: 'center',},
           {title: '车号', key: 'clBh', minWidth: 60, align: 'center',},
           {
