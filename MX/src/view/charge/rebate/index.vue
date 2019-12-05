@@ -30,6 +30,11 @@
           <Col span="4">
             <Input autofocus v-model="param.jlXmLike" placeholder="教练员姓名" @on-enter="getOldData"/>
           </Col>
+          <Col span="4">
+            <Select v-model="param.jlLx" style="width:200px" @on-change="getOldData">
+              <Option v-for="item in jlLxList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+          </Col>
           <Col span="1" style="margin-right: 20px">
           <span style="margin:0 10px;">
             <Button type="primary" @click="getOldData">
@@ -118,6 +123,14 @@
     data() {
       return {
         input: '',
+        jlLxList:[ {
+          value: '00',
+          label: '本校'
+        },
+          {
+            value: '10',
+            label: '外校'
+          },],
         hisPrintMess: {},
         componentName: '',
         choosedItem: null,
@@ -159,7 +172,26 @@
              return value==row.lcKm
             }
           },
-          {title: '驾校', align: 'center', key: 'jlJx', minWidth: 120},
+          {title: '驾校', align: 'center', key: 'jlJx', minWidth: 120,
+            filters: [
+              {
+                label: '本校',
+                value: 1
+              },
+              {
+                label: '外校',
+                value: 2
+              }
+            ],
+            filterMultiple: false,
+            filterMethod (value, row) {
+              if (value === 1) {
+                return row.jlJx == '00';
+              } else if (value === 2) {
+                return row.jlJx =='10';
+              }
+            }
+          },
           {title: '教练员', align: 'center', key: 'jlXm', minWidth: 120},
           {
             title: '时长', align: 'center', key: 'sc', minWidth: 120,
@@ -271,6 +303,7 @@
           qrsjIsNull: '1',
           orderBy: 'cjsj desc',
           idLike: '',
+          jlLx:'',
           jlXmLike: '',
           pageNum: 1,
           pageSize: 10
