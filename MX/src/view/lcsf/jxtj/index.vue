@@ -77,7 +77,7 @@
             },
           },
           {title: '时长', key: 'lcSc', minWidth: 80, defaul: '0'},
-          {title: '费用', minWidth: 90, defaul: '0',
+          {title: '实收', minWidth: 90, defaul: '0',
             render: (h, p) => {
               return h('div', p.row.lcFy+'元')
             },

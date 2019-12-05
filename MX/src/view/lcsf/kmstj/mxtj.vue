@@ -74,20 +74,6 @@
           {title: '教练员', key: 'jlXm', minWidth: 90, align: 'center',},
           {title: '车号', key: 'clBh', minWidth: 60, align: 'center',},
           {
-            title: '人数',
-            key: 'xySl',
-            minWidth: 80,
-            align: 'center',
-            render: (h, p) => {
-              if (p.row.xySl != '' && p.row.xySl != undefined) {
-                return h('div', p.row.xySl + '人')
-              } else {
-                return ''
-              }
-
-            }
-          },
-          {
             title: '车型', key: 'jlCx', minWidth: 90, align: 'center',
             filters: [
               {
@@ -140,6 +126,20 @@
               var _self =  this.$options.parent.parent
               _self.param.zddmLike = value;
               _self.util.getPageData(_self)
+            }
+          },
+          {
+            title: '人数',
+            key: 'xySl',
+            minWidth: 80,
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.xySl != '' && p.row.xySl != undefined) {
+                return h('div', p.row.xySl + '人')
+              } else {
+                return ''
+              }
+
             }
           },
           {title: '开始时间', key: 'kssj', searchType: 'daterange', minWidth: 140, align: 'center',},

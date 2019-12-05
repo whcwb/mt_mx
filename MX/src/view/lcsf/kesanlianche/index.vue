@@ -671,9 +671,10 @@
           // },
 
           {title: '开始时间', key: 'kssj', minWidth: 140, align: 'center',},
-          {
-            title: '结束时间', key: 'jssj', searchType: 'daterange', minWidth: 140, align: 'center',
-          },
+          {title: '结束时间', searchType: 'daterange', align: 'center', key: 'jssj', minWidth: 100,
+            render: (h, p) => {
+              return h('div', p.row.jssj.substring(10));
+            }},
           {
             title: '时长', key: 'sc', minWidth: 100, defaul: '0', align: 'center',
             render: (h, p) => {
@@ -1308,7 +1309,7 @@
               if (p.row.dqsc == '') {
 
               } else {
-                return h('div', parseInt(p.row.dqsc / 60) + '分钟')
+                return h('div', parseInt(p.row.dqsc) + '分钟')
               }
 
             }

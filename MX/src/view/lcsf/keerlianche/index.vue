@@ -1482,7 +1482,7 @@
               if (p.row.dqsc == '') {
 
               } else {
-                return h('div', parseInt(p.row.dqsc / 60) + '分钟')
+                return h('div', parseInt(p.row.dqsc) + '分钟')
               }
 
             }
