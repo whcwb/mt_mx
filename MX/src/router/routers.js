@@ -163,6 +163,15 @@ export default [
         component: () => import('@/view/charge/sztj')
       },
       {
+        path: 'mxtj',
+        name: 'mxtj',
+        meta: {
+          icon: '_bear',
+          title: '模训统计'
+        },
+        component: () => import('@/view/lcsf/mxtj')
+      },
+      {
         path: 'jlwh',
         name: 'jlwh',
         meta: {

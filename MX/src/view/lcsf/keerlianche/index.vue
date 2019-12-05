@@ -1482,7 +1482,7 @@
               if (p.row.dqsc == '') {
 
               } else {
-                return h('div', parseInt(p.row.dqsc / 60) + '分钟')
+                return h('div', parseInt(p.row.dqsc) + '分钟')
               }
 
             }
@@ -2135,7 +2135,8 @@
           if (res.code == 200) {
             this.carList = res.page.list
             if (this.formData.clZt == '' || this.formData.clZt == undefined) {
-              this.zxNum = this.xxNum = this.zj = 0;
+              this.zxNum = this.xxNum =  0;
+              this.zj =0
               for (let r of this.carList) {
                 if (r.clZt === '01') {
                   this.zxNum++;
@@ -2195,7 +2196,9 @@
             if (res.code == 200) {
               this.DrawerVal = false;
               this.formData = {};
+              // this.formData.clZt = '00'
               this.getCarList();
+
               // this.swal({
               //   title: '发车成功',
               //   type: 'success',
