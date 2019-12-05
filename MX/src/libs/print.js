@@ -50,7 +50,7 @@ obj.print = (id,item,time,callback) => {
           for (let a=0;a<2;a++){
             arr2.push(arr[i+a])
           }
-          arr1.push(arr2.join(','))
+          arr1.push(arr2.join(' '))
           // console.log(arr2)
         }
         if(arr.length%2!=0&&arr.length!==3){
