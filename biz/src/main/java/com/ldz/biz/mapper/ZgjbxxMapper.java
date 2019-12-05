@@ -14,6 +14,7 @@ public interface ZgjbxxMapper extends Mapper<Zgjbxx>  {
             "  ]]> "+
             " </script>"})
     void bulkInsertLog();
+
     @Update({"<script> " +
             " UPDATE ZGJBXX SET AQY_QDZT = '00', AQY_QDSJ = null , KM = null WHERE AQY_QDZT='10'   "+
             " </script>"})

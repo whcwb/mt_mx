@@ -5,10 +5,13 @@ import com.ldz.biz.mapper.BizLcFdMapper;
 import com.ldz.biz.model.BizLcFd;
 import com.ldz.biz.model.BizLcFds;
 import com.ldz.biz.model.BizLcJl;
+import com.ldz.biz.model.BizLcWxjl;
 import com.ldz.biz.service.BizLcFdService;
 import com.ldz.biz.service.BizLcFdsService;
 import com.ldz.biz.service.BizLcJlService;
+import com.ldz.biz.service.BizLcWxjlService;
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.DateUtils;
@@ -33,6 +36,8 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 	private BizLcJlService jlService;
 	@Autowired
 	private BizLcFdsService fdsService;
+	@Autowired
+	private BizLcWxjlService wxjlService;
 
 	@Override
 	protected Mapper<BizLcFd> getBaseMapper() {
@@ -40,14 +45,30 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 	}
 
 	@Override
+	public boolean fillPagerCondition(LimitedCondition condition) {
+		String jlLX = getRequestParamterAsString("jlLx");
+		if(StringUtils.isNotBlank(jlLX)){
+			List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, jlLX);
+			if(CollectionUtils.isEmpty(wxjls)){
+				return false;
+			}else {
+				List<String> list = wxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toList());
+				condition.in(BizLcFd.InnerColumn.jlId, list);
+			}
+		}
+		return true;
+	}
+
+	@Override
 	public  void afterPager(PageInfo<BizLcFd> pageInfo){
 		if(CollectionUtils.isEmpty(pageInfo.getList())){
 			return;
 		}
+		List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, "00");
+		List<String> collect = wxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toList());
 		List<BizLcFd> lcFds = pageInfo.getList();
 		lcFds.forEach(bizLcFd -> {
 			if(StringUtils.isNotBlank(bizLcFd.getLcId())){
-
 				List<BizLcJl> jlList = jlService.findIn(BizLcJl.InnerColumn.id, Arrays.asList(bizLcFd.getLcId().split(",")));
 				// 计算练车总费用
 				int sum = jlList.stream().mapToInt(BizLcJl::getXjje).sum();
@@ -60,6 +81,11 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 				bizLcFd.setJlJx(jlList.get(0).getJlJx());
 				int xysl = jlList.stream().mapToInt(BizLcJl::getXySl).sum();
 				bizLcFd.setXySl(xysl);
+				if(collect.contains(bizLcFd.getJlId())){
+					bizLcFd.setJlLx("00");
+				}else{
+					bizLcFd.setJlLx("10");
+				}
 			}
 		});
 	}
