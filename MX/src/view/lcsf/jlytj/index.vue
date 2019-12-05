@@ -58,7 +58,24 @@
         },
         tableColumns: [
             {title: '序号', type: 'index'},
-          {title: '驾校', key: 'jlJx'},
+          {title: '驾校', key: 'jlJx',
+            filters: [
+              {
+                label: '本校',
+                value: '00'
+              },
+              {
+                label: '外校',
+                value: '10'
+              }
+            ],
+            filterMultiple: false,
+            filterRemote(value, row) {
+              var _self =  this.$options.parent.parent
+              _self.param.lx=value[0]?value[0]:''
+              _self.util.getPageData(_self)
+            },
+          },
           {title: '教练员', key: 'jlXm'},
           {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
           {title: '费用', minWidth: 90, defaul: '0',

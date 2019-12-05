@@ -121,6 +121,26 @@
               }
 
             },
+            filters: [
+              {
+                label: '计时',
+                value: 'JS'
+              },
+              {
+                label: '培优',
+                value: 'PY'
+              },
+              {
+                label: '按把',
+                value: 'AB'
+              },
+            ],
+            filterMultiple: false,
+            filterRemote(value, row) {
+              var _self =  this.$options.parent.parent
+              _self.param.zddmLike = value;
+              _self.util.getPageData(_self)
+            }
           },
           {title: '开始时间', key: 'kssj', searchType: 'daterange', minWidth: 140, align: 'center',},
           {
