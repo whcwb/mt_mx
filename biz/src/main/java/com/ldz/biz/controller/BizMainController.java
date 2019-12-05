@@ -596,6 +596,11 @@ public class BizMainController {
         jlService.pagerExcelK3(page, request, response);
     }
 
+    @GetMapping("/pagerExcelAll")
+    public void pagerExcelAll(Page<BizLcJl> page , HttpServletRequest request , HttpServletResponse response) throws IOException {
+        jlService.pagerExcelAll(page, request, response);
+    }
+
     /**
      * 驾校统计 Excel 导出
      */

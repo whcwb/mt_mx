@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -529,7 +530,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             RuntimeCheck.ifTrue(StringUtils.equals(km, "2") && !StringUtils.equals(km, lcJl.getLcKm()), "请前往科目二窗口还车");
             RuntimeCheck.ifTrue(StringUtils.equals(km, "3") && !StringUtils.equals(km, lcJl.getLcKm()), "请前往科目三窗口还车");
             // 计算实际时长  (所有车辆免费前五分钟)
-            int lcSc = Math.max((int) ((end.getTime() - start.getTime()) / (1000 * 60)), 0);
+            long ksfz = start.getTime() / (60 * 1000);
+            long jsfz = end.getTime() / (60 * 1000);
+            int lcSc = (int) (jsfz - ksfz);
             int v;
             if (StringUtils.equals(lcJl.getLcKm(), "2") && StringUtils.equals(lcJl.getZddm(), "K2JS-S")) {
                 // 科目二的 190 35分钟 , 超出时间按照 8.33计算
@@ -690,7 +693,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     @Override
     public List<Map<String, Object>> drivingSchoolStatistics() {
         String lcKm = getRequestParamterAsString("lcKm");
-        RuntimeCheck.ifBlank(lcKm, "请选择科目");
+//        RuntimeCheck.ifBlank(lcKm, "请选择科目");
         String tjsj = getRequestParamterAsString("tjsj");
         if (StringUtils.isEmpty(tjsj)) tjsj = DateUtils.getToday() + " 00:00:00," + DateUtils.getToday() + " 23:59:59";
         String[] sj = tjsj.split(",");
@@ -699,7 +702,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String sql = "SELECT jl_jx,sum(sc) as sc,sum(xjje) as fy  from BIZ_LC_JL where 1=1 ";
         sql += " and zfzt = '10' ";
         sql += " and kssj >= '" + kssj + "' and jssj <= '" + jssj + "'";
-        sql += " and lc_km ='" + lcKm + "'";
+        if(StringUtils.isNotBlank(lcKm)){
+            sql += " and lc_km ='" + lcKm + "'";
+        }
         String lx = getRequestParamterAsString("lx");
         if(StringUtils.isNotBlank(lx)){
             List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, lx);
@@ -1280,7 +1285,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             }
              dataMap.put(14, jl.getZgXm());
 
-            dataMap.put(9, stringMap.get(jl.getZddm()));
             data.add(dataMap);
         }
         Map<Integer, String> dataMap = new HashMap<>();
@@ -2236,7 +2240,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                         }
                         dataMap.put(1, i + "");
                         dataMap.put(2, split[i1].split("-")[0]);
-                        if(i1 <= zjhms.length){
+                        if(i1 <= zjhms.length -1){
                             dataMap.put(3, zjhms[i1]);
                         }else{
                             dataMap.put(3,"");
@@ -2510,19 +2514,20 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         titleMap.put(0,"序号");
         titleMap.put(1,"驾校");
         titleMap.put(2,"教练员");
-        titleMap.put(3,"车号");
-        titleMap.put(4,"人数");
-        titleMap.put(5,"车型");
-        titleMap.put(6,"类型");
-        titleMap.put(7,"开始时间");
-        titleMap.put(8,"结束时间");
-        titleMap.put(9,"时长");
-        titleMap.put(10, "应收");
-        titleMap.put(11,"实收");
-        titleMap.put(12, "订单状态");
-        titleMap.put(13, "支付方式");
-        titleMap.put(14, "安全员");
-        titleMap.put(15,"备注");
+        titleMap.put(3, "科目");
+        titleMap.put(4,"车号");
+        titleMap.put(5,"人数");
+        titleMap.put(6,"车型");
+        titleMap.put(7,"类型");
+        titleMap.put(8,"开始时间");
+        titleMap.put(9,"结束时间");
+        titleMap.put(10,"时长");
+        titleMap.put(11, "应收");
+        titleMap.put(12,"实收");
+        titleMap.put(13, "订单状态");
+        titleMap.put(14, "支付方式");
+        titleMap.put(15, "安全员");
+        titleMap.put(16,"备注");
         dataList.add(titleMap);
         String cx = getRequestParamterAsString("cx");
 
@@ -2535,25 +2540,26 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             dataMap.put(0, (i+1)+"");
             dataMap.put(1,jl.getJlJx());
             dataMap.put(2,jl.getJlXm());
-            dataMap.put(3,jl.getClBh());
-            dataMap.put(4,jl.getXySl() +"");
-            dataMap.put(5,jl.getJlCx());
-            dataMap.put(6,map.get(jl.getZddm()));
-            dataMap.put(7, jl.getKssj());
-            dataMap.put(8,jl.getJssj().substring(12,17));
-            dataMap.put(9, jl.getSc()+"");
-            dataMap.put(10, jl.getLcFy()+"");
-            dataMap.put(11,jl.getXjje() +"");
-            dataMap.put(12, StringUtils.equals(jl.getZfzt(),"00")?"未支付": "已支付");
+            dataMap.put(3, StringUtils.equals(jl.getLcKm(),"2")?"科目二":"科目三");
+            dataMap.put(4,jl.getClBh());
+            dataMap.put(5,jl.getXySl() +"");
+            dataMap.put(6,jl.getJlCx());
+            dataMap.put(7,map.get(jl.getZddm()));
+            dataMap.put(8, jl.getKssj());
+            dataMap.put(9,jl.getJssj().substring(12,17));
+            dataMap.put(10, jl.getSc()+"");
+            dataMap.put(11, jl.getLcFy()+"");
+            dataMap.put(12,jl.getXjje() +"");
+            dataMap.put(13, StringUtils.equals(jl.getZfzt(),"00")?"未支付": "已支付");
             if(jl.getKfje() != null && jl.getKfje() > 0 ){
-                dataMap.put(13, "抵扣支付");
+                dataMap.put(14, "抵扣支付");
             }else if(jl.getCardje() != null && jl.getCardje() > 0){
-                dataMap.put(13, "充值卡");
+                dataMap.put(14, "充值卡");
             }else{
-                dataMap.put(13, "现金");
+                dataMap.put(14, "现金");
             }
-            dataMap.put(14, jl.getZgXm());
-            dataMap.put(15, jl.getBz());
+            dataMap.put(15, jl.getZgXm());
+            dataMap.put(16, jl.getBz());
             dataList.add(dataMap);
         }
         Map<Integer,String> hjMap = new HashMap<>();
@@ -2567,12 +2573,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         hjMap.put(7,"");
         hjMap.put(8,"");
         hjMap.put(9,"");
-        hjMap.put(10, CollectionUtils.isEmpty(jls)?"0":(jls.stream().mapToInt(BizLcJl::getLcFy).sum()+""));
-        hjMap.put(11,CollectionUtils.isEmpty(jls)?"0":(jls.stream().mapToInt(BizLcJl::getXjje).sum() +""));
-        hjMap.put(12,"");
+        hjMap.put(10,"");
+        hjMap.put(11, CollectionUtils.isEmpty(jls)?"0":(jls.stream().mapToInt(BizLcJl::getLcFy).sum()+""));
+        hjMap.put(12,CollectionUtils.isEmpty(jls)?"0":(jls.stream().mapToInt(BizLcJl::getXjje).sum() +""));
         hjMap.put(13,"");
         hjMap.put(14,"");
         hjMap.put(15,"");
+        hjMap.put(16,"");
         dataList.add(hjMap);
 
 
@@ -2585,6 +2592,104 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         response.addHeader("Content-Disposition", "attachment; filename=" + new String( "明细".getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xls");
         OutputStream out = response.getOutputStream();
         ExcelUtil.createSheet(out, "明细", dataList);
+    }
+
+    @Override
+    public void pagerExcelAll(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
+        String fileName = time + "-明细统计";
+        LimitedCondition condition = getQueryCondition();
+        condition.and().andCondition(" jssj is not null and jssj != ''");
+        PageInfo<BizLcJl> info = findPage(page, condition);
+        List<BizLcJl> list = info.getList();
+        List<Map<Integer, String>> data = new ArrayList<>();
+        Map<Integer, String> map = new HashMap<>();
+        map.put(0, "#");
+        map.put(2, "驾校");
+        map.put(3, "教练员");
+        map.put(1, "科目");
+        map.put(6, "人数");
+        map.put(4, "车型");
+        map.put(5, "类型");
+        map.put(7, "开始时间");
+        map.put(8, "结束时间");
+        map.put(9, "时长");
+        map.put(10, "应收");
+        map.put(11, "实收");
+        map.put(12, "支付方式");
+        map.put(13, "安全员");
+        data.add(map);
+        Set<String> collect = list.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
+        SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
+        condition1.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        condition1.in(SysZdxm.InnerColumn.zddm, collect);
+        List<SysZdxm> zdxms= new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(collect)){
+            zdxms = zdxmService.findByCondition(condition1);
+        }
+
+        Map<String, String> stringMap = zdxms.stream().collect(Collectors.toMap(SysZdxm::getZddm, SysZdxm::getBy9));
+        for (int i = 0; i < list.size(); i++) {
+            BizLcJl jl = list.get(i);
+            Map<Integer, String> dataMap = new HashMap<>();
+            dataMap.put(0, i + 1 + "");
+            dataMap.put(2, jl.getJlJx());
+            dataMap.put(3, jl.getJlXm());
+            dataMap.put(1, StringUtils.equals(jl.getLcKm(),"2")? "科目二":"科目三");
+            dataMap.put(6,jl.getXySl()+"");
+            dataMap.put(4, jl.getJlCx());
+            dataMap.put(5, stringMap.get(jl.getZddm()));
+            if (StringUtils.isNotBlank(jl.getKssj())) {
+                dataMap.put(7, jl.getKssj().substring(0, jl.getJssj().length() - 3));
+            } else {
+                dataMap.put(7, "-");
+            }
+            if (StringUtils.isNotBlank(jl.getJssj())) {
+                dataMap.put(8, jl.getJssj().substring(0, jl.getJssj().length() - 3));
+            } else {
+                dataMap.put(8, "-");
+            }
+
+
+            dataMap.put(9, jl.getSc() +"");
+            dataMap.put(10, jl.getLcFy() + "");
+            dataMap.put(11, jl.getXjje() + "");
+            // 计算下支付方式
+            if(jl.getCardje() != null && jl.getCardje() > 0) {
+                dataMap.put(12,"充值卡");
+            }else if(StringUtils.equals(jl.getZfzt(), "10")){
+                dataMap.put(12,"现金");
+            }
+            dataMap.put(13, jl.getZgXm());
+
+            data.add(dataMap);
+        }
+        Map<Integer, String> dataMap = new HashMap<>();
+        dataMap.put(0, data.size() + "");
+        dataMap.put(1, "合计:");
+        dataMap.put(2, "");
+        dataMap.put(3, "");
+        dataMap.put(4, "");
+        dataMap.put(5, "");
+        dataMap.put(6,"");
+        dataMap.put(7,"");
+        dataMap.put(11, list.stream().filter(jl -> jl.getXjje() != null).mapToInt(BizLcJl::getXjje).sum() + "");
+        dataMap.put(8, "");
+        dataMap.put(10,"");
+        dataMap.put(9, "");
+        dataMap.put(10, list.size() == 0 ? "0" : list.stream().filter(bizLcJl -> bizLcJl.getLcFy() != null).mapToInt(BizLcJl::getLcFy).sum() + "");
+        dataMap.put(12,"");
+        dataMap.put(13,"");
+        data.add(dataMap);
+
+        response.setContentType("application/msexcel");
+        request.setCharacterEncoding("UTF-8");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xls");
+        ServletOutputStream outputStream = response.getOutputStream();
+        ExcelUtil.createSheet(outputStream, "明细统计", data);
+
     }
 
 

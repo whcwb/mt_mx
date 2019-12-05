@@ -138,9 +138,13 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
                     String sc;
                     Date ks = dateFormat.parse(kssj);
                     Date js = new Date();
-                    sc = (((js.getTime() - ks.getTime()) / (60 * 1000))) + "";
-                    bizLcCl.setYhsc("0");
-                    bizLcCl.setDqsc((js.getTime() - ks.getTime()) / (1000) + "");
+
+                    long ksfz = ks.getTime() / (60 * 1000);
+                    long jsfz = js.getTime() / (60 * 1000);
+                    sc = (int) (jsfz - ksfz) +"";
+
+                    bizLcCl.setYhsc(sc);
+                    bizLcCl.setDqsc(sc + "");
                     SimpleCondition zjCondition = new SimpleCondition(SysZdxm.class);
                     zjCondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
                     zjCondition.eq(SysZdxm.InnerColumn.zddm, bizLcJl.getZddm());
