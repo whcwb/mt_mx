@@ -45,7 +45,7 @@ obj.print = (id,item,time,callback) => {
       if(val.length>14){
         let arr=val.split(',')
         let arr1=[]
-        for (let i=0;i<arr.length/2+1;i=i+2){
+        for (let i=0;i<arr.length/2+2;i=i+2){
           let arr2=[]
           for (let a=0;a<2;a++){
             arr2.push(arr[i+a])
@@ -53,7 +53,7 @@ obj.print = (id,item,time,callback) => {
           arr1.push(arr2.join(','))
           // console.log(arr2)
         }
-        if(arr.length%2!=0){
+        if(arr.length%2!=0&&arr.length!==3){
           arr1.push(arr[arr.length-1])
         }
 
