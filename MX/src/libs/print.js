@@ -53,9 +53,9 @@ obj.print = (id,item,time,callback) => {
           arr1.push(arr2.join(' '))
           // console.log(arr2)
         }
-        if(arr.length%2!=0&&arr.length!==3){
-          arr1.push(arr[arr.length-1])
-        }
+        // if(arr.length%2!=0&&arr.length!==3){
+        //   arr1.push(arr[arr.length-1])
+        // }
 
         console.log(arr1)
 
