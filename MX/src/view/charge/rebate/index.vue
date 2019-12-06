@@ -186,9 +186,9 @@
             filterMultiple: false,
             filterMethod (value, row) {
               if (value === 1) {
-                return row.jlJx == '00';
+                return row.jlLx == '00';
               } else if (value === 2) {
-                return row.jlJx =='10';
+                return row.jlLx =='10';
               }
             }
           },
