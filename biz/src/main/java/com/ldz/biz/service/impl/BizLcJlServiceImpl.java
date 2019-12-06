@@ -87,7 +87,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     public boolean fillPagerCondition(LimitedCondition condition) {
         String lx = getRequestParamterAsString("lx");
         if(StringUtils.isNotBlank(lx)){
-            condition.eq(BizLcJl.InnerColumn.jlJx, lx);
+            condition.eq(BizLcJl.InnerColumn.jlLx, lx);
         }
         condition.setOrderByClause("  jssj  desc, jl_id asc , kssj desc");
         return true;
@@ -2125,7 +2125,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             wxjl.setYe(Math.max((wxjlYe - czhje), 0));
             jlCz.setCzhje(Math.max((wxjlYe - czhje), 0));
             jlCz.setCjsj(DateUtils.getNowTime());
-            jlCz.setJe(kfje);
+            jlCz.setJe(czhje);
             jlCz.setType("30");
             czMapper.insert(jlCz);
             wxjlService.update(wxjl);

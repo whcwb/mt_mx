@@ -130,6 +130,7 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
     public ApiResponse<String> czmx(int pageNum, int pageSize, String id, String lx) {
         RuntimeCheck.ifBlank(id, "请选择记录");
         SimpleCondition condition = new SimpleCondition(BizJlCz.class);
+        condition.setOrderByClause(" cjsj desc");
         if(StringUtils.equals(lx, "kfr")){
             condition.in(BizJlCz.InnerColumn.type, Arrays.asList("00" ,"30"));
         }else if(StringUtils.equals(lx, "cz")){
