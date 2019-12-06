@@ -20,9 +20,9 @@
       <div class="messItem" style="font-size: 16px">
         武汉创伟博科技有限公司
       </div>
-<!--      <div class="messItem" style="font-size: 16px">-->
-<!--        Copyright@2018 武汉创伟博科技有限公司-->
-<!--      </div>-->
+      <div class="messItem" style="font-size: 16px">
+        ultimate v 2.2.3
+      </div>
     </div>
 
   </div>
