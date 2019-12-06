@@ -63,18 +63,18 @@
           <span>合计：</span>
           <span>{{okParams.fdJe}}元</span>
           </span>
-<!--        <Page :total=totalS-->
-<!--              :current=param.pageNum-->
-<!--              :page-size=param.pageSize-->
-<!--              :page-size-opts=[8,10,20,30,40,50]-->
-<!--              show-total-->
-<!--              show-elevator-->
-<!--              show-sizer-->
-<!--              placement='top'-->
-<!--              style="display: inline-block;margin-left: 20px"-->
-<!--              @on-page-size-change='(n)=>{pageSizeChange(n)}'-->
-<!--              @on-change='(n)=>{pageChange(n)}'>-->
-<!--        </Page>-->
+        <Page :total=totalS
+              :current=param.pageNum
+              :page-size=param.pageSize
+              :page-size-opts=[8,10,20,30,40,50]
+              show-total
+              show-elevator
+              show-sizer
+              placement='top'
+              style="display: inline-block;margin-left: 20px"
+              @on-page-size-change='(n)=>{pageSizeChange(n)}'
+              @on-change='(n)=>{pageChange(n)}'>
+        </Page>
       </div>
     </div>
     <div class="body" v-else-if="MenuItemName=='2'">
@@ -309,7 +309,7 @@
           jlLx:'',
           jlXmLike: '',
           pageNum: 1,
-          pageSize: 999999999
+          pageSize: 20
         },
         okParams: {
           id: '',
