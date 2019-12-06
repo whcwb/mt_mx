@@ -1,7 +1,7 @@
 // let ajaxUrl = 'http://127.0.0.1:8080';
-let ajaxUrl = 'http://192.168.1.156:8080';
+// let ajaxUrl = 'http://192.168.1.156:8080';
 // let ajaxUrl ='http://192.168.0.100:8080';//宋
-// let ajaxUrl ='http://192.168.0.104:8080';//张
+let ajaxUrl ='http://192.168.0.101:8080';//张
 // let ajaxUrl ='http://192.168.123.69:8080';//宋
 // let ajaxUrl ='http://172.16.0.33:8080';//宋
 // let ajaxUrl = 'http://mt.xxpt123.com:81';
