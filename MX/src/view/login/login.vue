@@ -13,7 +13,7 @@
         </div>
       </Card>
     </div>
-    <div class="copyRight" style="color: #fff;padding-bottom: 80px">
+    <div class="copyRight" style="color: #fff;padding-bottom:20px">
       <div>
         © Copyright Reserved 版权所有
       </div>
@@ -21,7 +21,7 @@
         武汉创伟博科技有限公司
       </div>
       <div class="messItem" style="font-size: 16px">
-        ultimate v 2.2.3
+        Version Number  v 2 . 2 . 3
       </div>
     </div>
 

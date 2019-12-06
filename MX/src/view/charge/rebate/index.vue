@@ -30,11 +30,11 @@
           <Col span="4">
             <Input autofocus v-model="param.jlXmLike" placeholder="教练员姓名" @on-enter="getOldData"/>
           </Col>
-          <Col span="4">
-            <Select v-model="param.jlLx" style="width:200px" @on-change="getOldData">
-              <Option v-for="item in jlLxList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select>
-          </Col>
+<!--          <Col span="4">-->
+<!--            <Select v-model="param.jlLx" style="width:200px" @on-change="getOldData">-->
+<!--              <Option v-for="item in jlLxList" :value="item.value" :key="item.value">{{ item.label }}</Option>-->
+<!--            </Select>-->
+<!--          </Col>-->
           <Col span="1" style="margin-right: 20px">
           <span style="margin:0 10px;">
             <Button type="primary" @click="getOldData">
@@ -56,25 +56,25 @@
         </Col>
       </Row>
       <Table :height="AF.getPageHeight()-250" stripe size="small" @on-select="tabsel" @on-select-cancel="tabsel"
-             @on-select-all="tabsel" @on-select-all-cancel="tabsel"
+             @on-select-all="tabselAll" @on-select-all-cancel="tabselAll1" @on-selection-change="tabselAll"
              :columns="tableColumns" :data="tableData"></Table>
       <div style="text-align: right;padding: 6px 0;display: flex;justify-content: flex-end">
         <span style="color: red;font-weight: 600;font-size: 20px;">
           <span>合计：</span>
           <span>{{okParams.fdJe}}元</span>
           </span>
-        <Page :total=totalS
-              :current=param.pageNum
-              :page-size=param.pageSize
-              :page-size-opts=[8,10,20,30,40,50]
-              show-total
-              show-elevator
-              show-sizer
-              placement='top'
-              style="display: inline-block;margin-left: 20px"
-              @on-page-size-change='(n)=>{pageSizeChange(n)}'
-              @on-change='(n)=>{pageChange(n)}'>
-        </Page>
+<!--        <Page :total=totalS-->
+<!--              :current=param.pageNum-->
+<!--              :page-size=param.pageSize-->
+<!--              :page-size-opts=[8,10,20,30,40,50]-->
+<!--              show-total-->
+<!--              show-elevator-->
+<!--              show-sizer-->
+<!--              placement='top'-->
+<!--              style="display: inline-block;margin-left: 20px"-->
+<!--              @on-page-size-change='(n)=>{pageSizeChange(n)}'-->
+<!--              @on-change='(n)=>{pageChange(n)}'>-->
+<!--        </Page>-->
       </div>
     </div>
     <div class="body" v-else-if="MenuItemName=='2'">
@@ -82,7 +82,7 @@
       <div v-if="false">
         <Row style="padding: 12px 0" :gutter="12">
           <Col span="4">
-            <Input id="code" autofocus v-model="param.idLik" placeholder="请扫描条形码" @on-enter="getOldData"/>
+            <Input id="code" autofocus v-model="param.idLike" placeholder="请扫描条形码" @on-enter="getOldData"/>
           </Col>
           <Col span="4">
             <Input autofocus v-model="param.jlXmLike" placeholder="教练员姓名" @on-enter="getOldData"/>
@@ -139,12 +139,11 @@
         MenuItemName: '1',
         tableData: [],
         tableColumns: [
-          {title: '序号', type: 'index', fixed: 'left', minWidth: 60, align: 'center'},
+          {title: '序号', type: 'index', minWidth: 60, align: 'center'},
           {
             title: '#',
             type: 'selection',
             width: 60,
-            fixed: 'left',
             align: 'center'
           },
           {title: '凭证号', key: 'id', minWidth: 170, align: 'center'},
@@ -192,16 +191,15 @@
               }
             }
           },
-          {title: '教练员', align: 'center', key: 'jlXm', minWidth: 120},
+          {title: '教练员', align: 'center', key: 'jlXm', minWidth: 80},
+          // {
+          //   title: '时长', align: 'center', key: 'sc', minWidth: 80,
+          //   render: (h, p) => {
+          //     return h('div', p.row.sc + '分钟')
+          //   }
+          // },
           {
-            title: '时长', align: 'center', key: 'sc', minWidth: 120,
-            render: (h, p) => {
-              return h('div', p.row.sc + '分钟')
-            }
-
-          },
-          {
-            title: '费用', align: 'center', key: 'lcFy', minWidth: 120,
+            title: '费用', align: 'center', key: 'lcFy', minWidth: 80,
             render: (h, p) => {
               return h('div', p.row.lcFy + '元')
             }
@@ -213,7 +211,7 @@
               if (p.row.fdlx == '00') {
                 return h('div', '计时返点')
               } else if (p.row.fdlx == '10') {
-                return h('div', '抵扣返点')
+                return h('div', '按把返点')
               }else if(p.row.fdlx == '20'){
 
                 return h('div',"培优返点")
@@ -223,19 +221,24 @@
             }
           },
           {
-            title: '返点金额', align: 'center', key: 'fdje', minWidth: 120,
+            title: '返点金额', align: 'center', key: 'fdje', minWidth: 80,
             render: (h, p) => {
               return h('div', p.row.fdje + '元')
             }
           },
 
           {
-            title: '备注', align: 'center', key: 'bz', minWidth: 120,
+            title: '备注', align: 'center', key: 'bz', minWidth: 160,
             render: (h, p) => {
               /* if (p.row.fdlx == '20')
                  return h('div', '人数：' + p.row.xySl)
                else*/
               return h('div', p.row.bz)
+            }
+          },
+          {title: '创建时间', align: 'center', key: 'cjsj', minWidth: 140,
+            render:(h,p)=>{
+              return h('div',p.row.cjsj.substring(0,10))
             }
           },
           // {
@@ -306,7 +309,7 @@
           jlLx:'',
           jlXmLike: '',
           pageNum: 1,
-          pageSize: 10
+          pageSize: 999999999
         },
         okParams: {
           id: '',
@@ -403,6 +406,26 @@
           this.param.idLike = '';
         })
       },
+      tabselAll1(){
+        this.okParams.id = ''
+        this.okParams.fdJe = 0;
+        console.log(this.okParams.fdJe,'this.okParams.fdJe');
+        this.$nextTick()
+      },
+      tabselAll(list){
+        this.okParams.id = ''
+        this.okParams.fdJe = 0
+        list.forEach((it, index) => {
+          this.okParams.fdJe = this.okParams.fdJe + it.fdje
+          if (index == list.length - 1) {
+            this.okParams.id = this.okParams.id + it.id
+
+          } else {
+            this.okParams.id = this.okParams.id + it.id + ','
+          }
+          console.log(this.okParams.fdJe,'this.okParams.fdJe');
+        })
+      },
       tabsel(list, row) {
         console.log(list, row)
 
@@ -416,7 +439,6 @@
           // console.log(this.tableData)
           // return
         }
-
         this.okParams.id = ''
         this.okParams.fdJe = 0
         list.forEach((it, index) => {
