@@ -87,15 +87,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     public boolean fillPagerCondition(LimitedCondition condition) {
         String lx = getRequestParamterAsString("lx");
         if(StringUtils.isNotBlank(lx)){
-            SimpleCondition condition1 = new SimpleCondition(BizLcWxjl.class);
-            condition1.eq(BizLcWxjl.InnerColumn.jlLx, lx);
-            List<BizLcWxjl> lcWxjls = wxjlService.findByCondition(condition1);
-            if(CollectionUtils.isNotEmpty(lcWxjls)){
-                List<String> list = lcWxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toList());
-                condition.in(BizLcJl.InnerColumn.jlId, list);
-            }else{
-                return false;
-            }
+            condition.eq(BizLcJl.InnerColumn.jlLx, lx);
         }
         condition.setOrderByClause("  jssj  desc, jl_id asc , kssj desc");
         return true;
@@ -181,7 +173,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         RuntimeCheck.ifBlank(entity.getJlId(), "请选择教练");
         BizLcWxjl wxjl = wxjlService.findById(entity.getJlId());
         // 本校外校没有了   jlLx 这个字段暂时没用 , 全部默认为外校
-        entity.setJlLx("10");
+        entity.setJlLx(wxjl.getJlLx());
+//        entity.setJlLx("10");
         entity.setId(genId());
         if(StringUtils.equals(entity.getZddm(), "K2JS-S")){
             RuntimeCheck.ifNull(entity.getXySl(), "此套餐需要填写学员数量");
@@ -2132,7 +2125,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             wxjl.setYe(Math.max((wxjlYe - czhje), 0));
             jlCz.setCzhje(Math.max((wxjlYe - czhje), 0));
             jlCz.setCjsj(DateUtils.getNowTime());
-            jlCz.setJe(kfje);
+            jlCz.setJe(czhje);
             jlCz.setType("30");
             czMapper.insert(jlCz);
             wxjlService.update(wxjl);

@@ -16,6 +16,6 @@ public interface BizLcJlMapper extends Mapper<BizLcJl> {
     @Select(" select * from biz_lc_jl where id in (SELECT a.id from biz_lc_jl a left join biz_lc_wxjl b on  a.jl_Id = b.id where b.ye > 0 and lc_km= '2' and ((a.jssj = '' or a.jssj is null) or a.zfzt = '00'))  ")
     List<BizLcJl> getAllInfo();
 
-    @Select(" select ifnull(card_no,'1') c from biz_lc_wxjl order by c limit 1 ")
+    @Select(" select ifnull(card_no,'1') c from biz_lc_wxjl order by c desc limit 1 ")
     String getMaxNo();
 }
