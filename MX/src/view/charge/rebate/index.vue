@@ -58,26 +58,44 @@
       <Table :height="AF.getPageHeight()-250" stripe size="small" @on-select="tabsel" @on-select-cancel="tabsel"
              @on-select-all="tabselAll" @on-select-all-cancel="tabselAll1" @on-selection-change="tabselAll"
              :columns="tableColumns" :data="tableData"></Table>
+      <Row>
+        <Col span="4">
+          <div style="text-align: center;padding: 6px 0;display: flex;justify-content: flex-end">
+             <span style="font-size: 15px;font-weight: 600">
+            小计：<span style="color: #ed3f14"> {{okParams.fdJe}} </span> 元
+            </span>
+<!--          <span style="font-size: 12px;padding-top: 7px">-->
+<!--            <span>小计：</span>-->
+<!--            <span> {{okParams.fdJe}}</span>-->
+<!--            <span> 元</span>-->
 
-      <div style="text-align: right;padding: 6px 0;display: flex;justify-content: flex-end">
-        <span style="color: red;font-weight: 600;font-size: 18px;padding-right: 750px">勾选合计：{{okParams.fdJe}}元</span>
-        <span style="font-weight: 600;font-size: 14px;padding-top: 5px">
-          <span>待返点合计：</span>
-          <span>{{hj}}元</span>
+<!--          </span>-->
+          </div>
+        </Col>
+        <Col span="20">
+          <div style="text-align: right;padding: 6px 0;display: flex;justify-content: flex-end">
+
+        <span style="font-size: 12px;padding-top: 7px">
+          <span>共</span>
+          <span>{{hj}}</span>
+          <span>元</span>
           </span>
-        <Page :total=totalS
-              :current=param.pageNum
-              :page-size=param.pageSize
-              :page-size-opts=[8,10,15,20,30,40,50]
-              show-total
-              show-elevator
-              show-sizer
-              placement='top'
-              style="display: inline-block;margin-left: 20px"
-              @on-page-size-change='(n)=>{pageSizeChange(n)}'
-              @on-change='(n)=>{pageChange(n)}'>
-        </Page>
-      </div>
+            <Page :total=totalS
+                  :current=param.pageNum
+                  :page-size=param.pageSize
+                  :page-size-opts=[8,10,15,20,30,40,50]
+                  show-total
+                  show-elevator
+                  show-sizer
+                  placement='top'
+                  style="display: inline-block;margin-left: 20px"
+                  @on-page-size-change='(n)=>{pageSizeChange(n)}'
+                  @on-change='(n)=>{pageChange(n)}'>
+            </Page>
+          </div>
+        </Col>
+      </Row>
+
     </div>
     <div class="body" v-else-if="MenuItemName=='2'">
       <ok-back></ok-back>
