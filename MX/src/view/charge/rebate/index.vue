@@ -348,15 +348,28 @@
       keerkesan(val) {
         this.MenuItemName = val
         if (val == 1) {
-          this.param.qrsjIsNull = '1'
-          this.param.orderBy = 'cjsj desc'
+          this.param.qrsjIsNull = '1';
+          this.param.orderBy = 'cjsj desc';
+          this.param.lcKm = '';
+          this.param.jlLx ='';
+          this.param.jlXmLike = '';
+          this.param.idLike = '';
+          this.param.pageNum = 1
+          this.param.pageSize = 15;
           delete this.param.qrsjIsNotNull
           this.getOldData();
         }
         if (val == 2) {
           this.param.qrsjIsNotNull = '1';
           this.param.orderBy = 'qrsj desc';
-          delete this.param.qrsjIsNull
+          this.param.lcKm = '';
+          this.param.jlLx ='';
+          this.param.jlXmLike = '';
+          this.param.idLike = '';
+          this.param.pageNum = 1
+          this.param.pageSize = 15;
+          delete this.param.qrsjIsNull;
+
           this.total = 0;
           this.ids = '';
           // this.getDoneData()
