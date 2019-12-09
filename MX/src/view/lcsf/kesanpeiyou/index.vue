@@ -534,9 +534,10 @@
         mx: false,
         mxList: [],
         mxColumns: [
+          {title: '序号', align: 'center',type:'index', minWidth: 90},
           {title: '教练员', key: 'jlXm', align: 'center', minWidth: 90},
           {
-            title: '序号', align: 'center', minWidth: 80,
+            title: '编号', align: 'center', minWidth: 80,
             render: (h, p) => {
               return h('div', p.row.index + 1)
             },
