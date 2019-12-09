@@ -2204,46 +2204,50 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         LimitedCondition condition = getQueryCondition();
         condition.setOrderByClause(" kssj desc");
         PageInfo<BizLcJl> info = findPage(page, condition);
-        List<Map<Integer,String>> data = new ArrayList<>();
-        Map<Integer,String> titleMap = new HashMap<>();
-        titleMap.put(0,"教练员");
-        titleMap.put(1,"序号");
-        titleMap.put(2, "学员姓名");
-        titleMap.put(3, "学员证件号码");
-        titleMap.put(4,"学员联系方式");
-        titleMap.put(5, "培训车型");
+        List<Map<Integer, String>> data = new ArrayList<>();
+        Map<Integer, String> titleMap = new HashMap<>();
+        titleMap.put(0, "序号");
+        titleMap.put(1, "教练员");
+        titleMap.put(2, "编号");
+        titleMap.put(3, "学员姓名");
+        titleMap.put(4, "学员证件号码");
+        titleMap.put(5, "学员联系方式");
+        titleMap.put(6, "培训车型");
         data.add(titleMap);
         List<BizLcJl> list = info.getList();
-        if(CollectionUtils.isNotEmpty(list)){
+        if (CollectionUtils.isNotEmpty(list)) {
+            int xh = 0;
             Map<String, List<BizLcJl>> map = list.stream().collect(Collectors.groupingBy(BizLcJl::getJlId));
             for (Map.Entry<String, List<BizLcJl>> entry : map.entrySet()) {
                 List<BizLcJl> jls = entry.getValue();
-                String jlxm =jls.get(0).getJlJx() + "_" + jls.get(0).getJlXm();
+                String jlxm = jls.get(0).getJlJx() + "_" + jls.get(0).getJlXm();
                 int i = 1;
                 for (BizLcJl jl : jls) {
                     String[] split = jl.getXyXm().split(",");
                     String[] dhs = jl.getXyDh().split(",");
                     String[] zjhms = jl.getXyZjhm().split(",");
                     for (int i1 = 0; i1 < split.length; i1++) {
-                        Map<Integer,String> dataMap = new HashMap<>();
-                        if(i == 1) {
-                            dataMap.put(0, jlxm);
-                        }else{
-                            dataMap.put(0,"");
+                        xh++;
+                        Map<Integer, String> dataMap = new HashMap<>();
+                        dataMap.put(0, xh + "");
+                        if (i == 1) {
+                            dataMap.put(1, jlxm);
+                        } else {
+                            dataMap.put(1, "");
                         }
-                        dataMap.put(1, i + "");
-                        dataMap.put(2, split[i1].split("-")[0]);
-                        if(i1 <= zjhms.length -1){
-                            dataMap.put(3, zjhms[i1]);
-                        }else{
-                            dataMap.put(3,"");
+                        dataMap.put(2, i + "");
+                        dataMap.put(3, split[i1].split("-")[0]);
+                        if (i1 <= zjhms.length - 1) {
+                            dataMap.put(4, zjhms[i1]);
+                        } else {
+                            dataMap.put(4, "");
                         }
-                        if(i1 <= dhs.length -1){
-                            dataMap.put(4,dhs[i1]);
-                        }else{
-                            dataMap.put(4,"");
+                        if (i1 <= dhs.length - 1) {
+                            dataMap.put(5, dhs[i1]);
+                        } else {
+                            dataMap.put(5, "");
                         }
-                        dataMap.put(5,split[i1].split("-")[1]);
+                        dataMap.put(6, split[i1].split("-")[1]);
                         data.add(dataMap);
                         i++;
                     }
