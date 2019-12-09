@@ -128,6 +128,7 @@ public class MainController {
 			// 验证图片验证码
 			if(StringUtils.isEmpty(userCred.getCaptcha()) || !userCred.getCaptcha().equals("99999")){
 				String code = redisDao.boundValueOps(userCred.getCodeID()).get();
+
 				RuntimeCheck.ifTrue(!userCred.getCaptcha().equals(code),"验证码不正确！");
 			}
 		}
@@ -141,7 +142,7 @@ public class MainController {
 		try {
 			String token = JwtUtil.createToken(user.getYhid(),user.getYhid());
 			redisDao.boundValueOps(user.getYhid()).set(token, 1, TimeUnit.DAYS);
-			redisDao.boundValueOps(user.getYhid()+"-userInfo").set(mapper.writeValueAsString(user), 1, TimeUnit.DAYS);
+			redisDao.boundValueOps(user.getYhid()+"-userInfo").set(mapper.writeValueAsString(user), 300, TimeUnit.DAYS);
 			AccessToken aToken = new AccessToken();
 			aToken.setUserId(user.getYhid());
 			aToken.setUsername(user.getZh());

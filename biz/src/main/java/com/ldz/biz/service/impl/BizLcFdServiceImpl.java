@@ -1,5 +1,6 @@
 package com.ldz.biz.service.impl;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.ldz.biz.mapper.BizLcFdMapper;
 import com.ldz.biz.model.BizLcFd;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -185,6 +187,57 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 		}else{
 			return ApiResponse.success(genId());
 		}
+	}
+
+	@Override
+	public ApiResponse<String> getPager(Page<BizLcFd> pager) {
+		LimitedCondition condition = getQueryCondition();
+		ApiResponse<String> res = new ApiResponse<>();
+		String jlLx = getRequestParamterAsString("jlLx");
+		if(StringUtils.isNotBlank(jlLx)){
+			List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, jlLx);
+			if(CollectionUtils.isEmpty(wxjls)){
+				res.setResult("0");
+				return res;
+			}else {
+				List<String> list = wxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toList());
+				condition.in(BizLcFd.InnerColumn.jlId, list);
+			}
+		}
+		PageInfo<BizLcFd> pageInfo = findPage(pager, condition);
+		List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, "00");
+		List<String> collect = wxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toList());
+		List<BizLcFd> lcFds = pageInfo.getList();
+
+		lcFds.forEach(bizLcFd -> {
+			if(StringUtils.isNotBlank(bizLcFd.getLcId())){
+				List<BizLcJl> jlList = jlService.findIn(BizLcJl.InnerColumn.id, Arrays.asList(bizLcFd.getLcId().split(",")));
+				// 计算练车总费用
+				int sum = jlList.stream().mapToInt(BizLcJl::getXjje).sum();
+				int zsc = jlList.stream().mapToInt(BizLcJl::getSc).sum();
+
+				bizLcFd.setLcFy(sum);
+				bizLcFd.setSc(zsc);
+				bizLcFd.setJlList(jlList);
+				if(CollectionUtils.isNotEmpty(jlList)){
+					String lckm = jlList.get(0).getLcKm();
+					bizLcFd.setJlJx(jlList.get(0).getJlJx());
+					bizLcFd.setLcKm(lckm);
+				}
+				int xysl = jlList.stream().mapToInt(BizLcJl::getXySl).sum();
+				bizLcFd.setXySl(xysl);
+				if(collect.contains(bizLcFd.getJlId())){
+					bizLcFd.setJlLx("00");
+				}else{
+					bizLcFd.setJlLx("10");
+				}
+			}
+		});
+		List<BizLcFd> fds = findByCondition(condition);
+		int sum = fds.stream().mapToInt(BizLcFd::getFdje).sum();
+		res.setPage(pageInfo);
+		res.setResult(sum+"");
+		return res;
 	}
 
 }
