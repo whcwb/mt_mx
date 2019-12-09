@@ -27,7 +27,7 @@
       <Page :total=totalS
             :current=param.pageNum
             :page-size=param.pageSize
-            :page-size-opts=[8,10,20,30,40,50]
+            :page-size-opts=[8,10,15,20,30,40,50]
             show-total
             show-elevator
             show-sizer
@@ -109,7 +109,7 @@
           cjrLike: '',
           fdZt: '10',
           pageNum: 1,
-          pageSize: 10,
+          pageSize: 15,
           cjsjInRange:''
         }
       }

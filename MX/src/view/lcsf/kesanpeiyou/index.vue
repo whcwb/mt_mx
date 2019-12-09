@@ -142,13 +142,12 @@
         </div>
       </div>
       <Form :model="formData" label-position="top">
-        <Row>
-          <Col span="24"></Col>
-        </Row>
-        <Row :gutter="24">
-          <Col span="17">
+
+        <Row :gutter="32">
+          <Col span="12">
+            <Row :gutter="20">
             <div style="float: left">
-              <FormItem label="教练员" style="width: 250px">
+              <FormItem label="教练员" label-position="top" style="width: 250px">
                 <Select v-model="formData.jlId"
                         filterable
                         clearable
@@ -165,38 +164,50 @@
                 <Icon type="md-add"/>
               </Button>
             </div>
-          </Col>
-        </Row>
-        <Row :gutter="32">
-          <Col>
-            <div style="float: left">
-              <FormItem label="选择车型" label-position="top">
-                <!--<Select v-model="formData.jlCx" @on-change="cxChange" style="width:70px">-->
-                <!--<Option v-for="(it,index) in cxlist" :value="it.key" :key="it.key">-->
-                <!--{{it.key}}-->
-                <!--</Option>-->
-                <!--</Select>-->
-                <Select v-model="cx" @on-change="cxChange" style="width:70px">
-                  <Option v-for="(it,index) in ['C','A','B']" :value="it" :key="it">
-                    {{it}}
-                  </Option>
-                </Select>
-              </FormItem>
-            </div>
+            </Row>
+            <Row :gutter="28">
+              <Col>
+                <div style="float: left">
+                  <FormItem label="选择车型" label-position="top">
+                    <!--<Select v-model="formData.jlCx" @on-change="cxChange" style="width:70px">-->
+                    <!--<Option v-for="(it,index) in cxlist" :value="it.key" :key="it.key">-->
+                    <!--{{it.key}}-->
+                    <!--</Option>-->
+                    <!--</Select>-->
+                    <Select v-model="cx" @on-change="cxChange" style="width:70px">
+                      <Option v-for="(it,index) in ['C','A','B']" :value="it" :key="it">
+                        {{it}}
+                      </Option>
+                    </Select>
+                  </FormItem>
+                </div>
+              </Col>
+              <Col span="12">
+                <div style="float: left">
+                  <FormItem label="计费套餐" label-position="top">
+                    <Select v-model="formData.zddm" @on-change="lcFyChange" style="width:165px">
+                      <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index"
+                              v-if="it.zddm.includes('K3PY')&&it.by8.includes(cx)">
+                        {{it.by9}}-{{it.zdmc}}元
+                      </Option>
+                    </Select>
+                  </FormItem>
+                </div>
+              </Col>
+
+            </Row>
           </Col>
           <Col span="12">
-            <div style="float: left">
-              <FormItem label="计费套餐" label-position="top">
-                <Select v-model="formData.zddm" @on-change="lcFyChange" style="width:165px">
-                  <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index"
-                          v-if="it.zddm.includes('K3PY')&&it.by8.includes(cx)">
-                    {{it.by9}}-{{it.zdmc}}元
-                  </Option>
-                </Select>
-              </FormItem>
-            </div>
+            <Col span="12">
+              <div style="float: left">
+                <FormItem label="备注" style="width: 280px">
+                  <Input type="textarea" v-model="formData.bz" :rows="4"/>
+                </FormItem>
+              </div>
+            </Col>
           </Col>
         </Row>
+
         <Row :gutter="32" style="padding-top: 5px">
           <Card>
             <p slot="title">学员信息</p>
@@ -408,7 +419,7 @@
           },
           {title: '驾校', key: 'jlJx', align: 'center', minWidth: 90},
           {title: '教练员', key: 'jlXm', align: 'center', searchKey: 'jlXmLike', minWidth: 90},
-          {title: '教练员电话', align: 'center', key: 'jlDh', minWidth: 100},
+          {title: '教练员电话', align: 'center', key: 'jlDh', minWidth: 90},
           {
             title: '类型', minWidth: 110, align: 'center',
             render: (h, p) => {
@@ -416,7 +427,7 @@
             }
           },
           {
-            title: '学员数量', align: 'center', key: 'xySl', minWidth: 90, defaul: '0',
+            title: '学员数量', align: 'center', key: 'xySl', minWidth: 70, defaul: '0',
             render: (h, p) => {
               return h('div', p.row.xySl + '人')
             },
@@ -442,7 +453,8 @@
             },
           },
           {title: '创建时间', align: 'center', key: 'kssj', searchType: 'daterange', minWidth: 140},
-          {title: '安全员', align: 'center', key: 'zgXm', minWidth: 100},
+          {title: '安全员', align: 'center', key: 'zgXm', minWidth: 80},
+          {title: '备注', align: 'center', key: 'bz', minWidth: 100},
           // {
           //     title: '状态', minWidth: 120, render: (h, p) => {
           //         let s = '';
