@@ -58,10 +58,12 @@
       <Table :height="AF.getPageHeight()-250" stripe size="small" @on-select="tabsel" @on-select-cancel="tabsel"
              @on-select-all="tabselAll" @on-select-all-cancel="tabselAll1" @on-selection-change="tabselAll"
              :columns="tableColumns" :data="tableData"></Table>
+
       <div style="text-align: right;padding: 6px 0;display: flex;justify-content: flex-end">
-        <span style="color: red;font-weight: 600;font-size: 20px;">
-          <span>合计：</span>
-          <span>{{okParams.fdJe}}元</span>
+        <span style="color: red;font-weight: 600;font-size: 18px;padding-right: 750px">勾选合计：{{okParams.fdJe}}元</span>
+        <span style="font-weight: 600;font-size: 14px;padding-top: 5px">
+          <span>待返点合计：</span>
+          <span>{{hj}}元</span>
           </span>
         <Page :total=totalS
               :current=param.pageNum
@@ -167,28 +169,29 @@
               }
             ],
             filterMultiple: false,
-            filterMethod(value, row) {
-             return value==row.lcKm
+            filterRemote(value, row) {
+              // var _self =  this.$options.parent.parent
+                this.param.lcKm=value
+              this.getOldData()
+
+             // return value==row.lcKm
             }
           },
           {title: '驾校', align: 'center', key: 'jlJx', minWidth: 120,
             filters: [
               {
                 label: '本校',
-                value: 1
+                value: '00'
               },
               {
                 label: '外校',
-                value: 2
+                value: '10'
               }
             ],
             filterMultiple: false,
-            filterMethod (value, row) {
-              if (value === 1) {
-                return row.jlLx == '00';
-              } else if (value === 2) {
-                return row.jlLx =='10';
-              }
+            filterRemote (value, row) {
+              this.param.jlLx=value
+              this.getOldData()
             }
           },
           {title: '教练员', align: 'center', key: 'jlXm', minWidth: 80},
@@ -307,6 +310,7 @@
           orderBy: 'cjsj desc',
           idLike: '',
           jlLx:'',
+          lcKm:'',
           jlXmLike: '',
           pageNum: 1,
           pageSize: 15
@@ -314,7 +318,8 @@
         okParams: {
           id: '',
           fdJe: 0
-        }
+        },
+        hj:''
       }
     },
     created() {
@@ -367,10 +372,12 @@
       getOldData() {
         this.total = 0;
         this.ids = '';
-        this.$http.post('/api/bizlcfd/pager', this.param).then((res) => {
+        this.hj='';
+        this.$http.post('/api/bizlcfd/getPager', this.param).then((res) => {
           if (res.code == 200 && res.page.list) {
             this.totalS = res.page.total
             this.tableData = res.page.list;
+            this.hj = res.result
           }
         })
       },
