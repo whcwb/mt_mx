@@ -73,12 +73,15 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 				// 计算练车总费用
 				int sum = jlList.stream().mapToInt(BizLcJl::getXjje).sum();
 				int zsc = jlList.stream().mapToInt(BizLcJl::getSc).sum();
-				String lckm = jlList.get(0).getLcKm();
+
 				bizLcFd.setLcFy(sum);
 				bizLcFd.setSc(zsc);
-				bizLcFd.setLcKm(lckm);
 				bizLcFd.setJlList(jlList);
-				bizLcFd.setJlJx(jlList.get(0).getJlJx());
+				if(CollectionUtils.isNotEmpty(jlList)){
+					String lckm = jlList.get(0).getLcKm();
+					bizLcFd.setJlJx(jlList.get(0).getJlJx());
+					bizLcFd.setLcKm(lckm);
+				}
 				int xysl = jlList.stream().mapToInt(BizLcJl::getXySl).sum();
 				bizLcFd.setXySl(xysl);
 				if(collect.contains(bizLcFd.getJlId())){
