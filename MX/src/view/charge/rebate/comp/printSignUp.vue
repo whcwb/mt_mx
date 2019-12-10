@@ -122,6 +122,16 @@
             padding-left: 6px;
             margin-bottom: 3px;
           }
+          .ItemMess5 {
+            float: left;
+            clear: right;
+            width: 150mm;
+            text-align: left;
+            font-size: 19px;
+            padding-right: 4px;
+            padding-left: 6px;
+            margin-bottom: 3px;
+          }
           .messTit2 {
             font-size: 16px;
             width: 25mm;
@@ -238,8 +248,8 @@
                   <div class="messTit" style="font-size: 16px">
                     备注 :
                   </div>
-                  <div class="hc" v-for="(item,index) in bzid"  style="text-align: left; font-size: 16px">
-                    {{ item }}
+                  <div class="ItemMess5" v-for="(item,index) in bzid"  style="text-align: left; font-size: 16px;padding-left: 5px;font-weight: 400">
+                    　{{ item }}
                   </div>
                 </div>
 
@@ -351,7 +361,7 @@
                 arr2.push(a[i*3 + j])
               }
             }
-            this.bzid.push(arr2.join(' '))
+            this.bzid.push(arr2.join('　'))
             console.log(arr2)
           }
         }
@@ -530,6 +540,16 @@
             width: 18mm;
             text-align: right;
             float: left;
+          }
+          .ItemMess5 {
+            float: left;
+            clear: right;
+            width: 150mm;
+            text-align: left;
+            font-size: 19px;
+            padding-right: 4px;
+            padding-left: 6px;
+            margin-bottom: 3px;
           }
           .ItemMess2 {
             float: left;

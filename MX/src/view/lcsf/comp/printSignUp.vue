@@ -322,7 +322,7 @@
         this.jgName = this.hisPrintMess.jx
         this.glyxm = this.hisPrintMess.xm
         this.money = this.hisPrintMess.sfje
-        this.money1 = this.hisPrintMess.je
+        this.money1 =  parseInt(this.hisPrintMess.je) - parseInt(this.hisPrintMess.sfje)
         this.bz = this.hisPrintMess.bz
         this.getNum()
       console.log('數據傳遞', this.printMess);
