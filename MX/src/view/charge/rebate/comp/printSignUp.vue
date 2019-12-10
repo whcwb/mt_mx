@@ -36,9 +36,20 @@
         line-height: 13mm;
       }
     }
+    .rightTitSize {
+      font-size: 12px;
+      padding: 35px 8px 8px 0;
+      float: right;
+      height: 70mm;
+      width: 15mm;
+      .LiftTitItem {
+        height: 5mm;
+        line-height: 3mm;
+      }
+    }
     .pageBox {
       float: left;
-      width: 200mm;
+      width: 190mm;
       /**/
       .titMess {
         font-size: 16px;
@@ -57,6 +68,11 @@
             width: 35mm;
             text-align: right;
             float: left;
+          }
+          .ItemMess3 {
+            /*border-bottom: solid 1px #000;*/
+            text-align: left;
+            font-size: 10px;
           }
           .ItemMess {
             float: left;
@@ -111,6 +127,13 @@
             width: 25mm;
             text-align: right;
             float: left;
+          }
+          .ItemMess3 {
+            float: left;
+            width: 20mm;
+            /*border-bottom: solid 1px #000;*/
+            text-align: left;
+            font-size: 10px;
           }
           .ItemMess2 {
             float: left;
@@ -199,23 +222,27 @@
                   </div>
                 </div>
 
-                <div class="messList">
-                  <div class="messTit">
-                    &nbsp;
-                  </div>
-                </div>
+<!--                <div class="messList">-->
+<!--                  <div class="messTit" >-->
+<!--                     练车记录 :-->
+<!--                  </div>-->
+<!--                  <div class="ItemMess" style="font-size: 10px">-->
+<!--                     -->
+<!--                  </div>-->
+<!--                </div>-->
 
                 <div class="messList">
-                  <div class="messTit">
+                  <div class="messTit" style="font-size: 16px">
                     备注 :
                   </div>
-<!--                  <div class="ItemMess">-->
+                  <div  style="font-size: 10px;text-align: left">
+                    {{ this.hisPrintMess.lcId}}
 <!--                    <Input v-if="bzShow" v-model="bz" type="textarea" :autosize="false"-->
 <!--                           :maxlength="30"-->
 <!--                           :rows="1" id="textarr"-->
 <!--                           placeholder="备注说明" />-->
 <!--                    <span v-else>{{bz}}</span>-->
-<!--                  </div>-->
+                  </div>
                 </div>
 
               </div>
@@ -258,6 +285,11 @@
 <!--                    </div>-->
 <!--                  </div>-->
 
+              </div>
+            </div>
+            <div class="rightTitSize">
+              <div class="LiftTitItem" v-for="item in ['一','联','存','根','二','联','财','务','三','联','客','户']">
+                {{item}}
               </div>
             </div>
 

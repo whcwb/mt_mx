@@ -36,9 +36,20 @@
         line-height: 13mm;
       }
     }
+    .rightTitSize {
+      font-size: 12px;
+      padding: 35px 8px 8px 0;
+      float: right;
+      height: 70mm;
+      width: 15mm;
+      .LiftTitItem {
+        height: 5mm;
+        line-height: 3mm;
+      }
+    }
     .pageBox {
       float: left;
-      width: 200mm;
+      width: 190mm;
       /**/
       .titMess {
         font-size: 16px;
@@ -204,26 +215,26 @@
 
                 <div class="messList">
                   <div class="messTit3">
-                   实收人民币
+                   充值金额
                   </div>
                   <div class="ItemMess3">
                     :  {{money | DX}} <span style="float: right">￥{{money}}元</span>
                   </div>
                   <div class="messTit3">
-                    赠送消费人民币
+                    赠送额度
                   </div>
                   <div class="ItemMess3">
                     :  {{money1 | DX}} <span style="float: right">￥{{money1}}元</span>
                   </div>
                 </div>
-                <div class="messList">
-                  <div class="messTit">
-                    &nbsp;
-                  </div>
-                </div>
+<!--                <div class="messList">-->
+<!--                  <div class="messTit">-->
+<!--                    &nbsp;-->
+<!--                  </div>-->
+<!--                </div>-->
 
                 <div class="messList">
-                  <div class="messTit">
+                  <div class="messTit" style="font-size: 16px">
                     备注：
                   </div>
                 </div>
@@ -259,7 +270,11 @@
 
               </div>
             </div>
-
+            <div class="rightTitSize">
+              <div class="LiftTitItem" v-for="item in ['一','联','存','根','二','联','客','户','三','联','财','务']">
+                {{item}}
+              </div>
+            </div>
           </div>
         </div>
       </div>
