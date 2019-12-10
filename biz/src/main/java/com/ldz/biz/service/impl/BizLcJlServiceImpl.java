@@ -363,22 +363,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 entity.setJssj(nowTime);
                 // 类型为开放练习 此时需要直接返点
                 RuntimeCheck.ifFalse(entity.getXySl() > 0, "培优需要填写学员信息");
-                // 充值余额
-                int czje = entity.getLcFy() - fdje;
-                // 新增充值余额记录
-                BizJlCz jlCz = new BizJlCz();
-                jlCz.setCjsj(nowTime);
-                jlCz.setCzqje(wxjl.getYe());
-                // 教练添加余额
-                wxjl.setYe(czje + wxjl.getYe());
-                jlCz.setCzhje(wxjl.getYe());
-                jlCz.setId(genId());
-                jlCz.setJe(czje);
-                jlCz.setJlId(wxjl.getId());
-                jlCz.setType("00");
-                // 新增充值记录
-                czMapper.insert(jlCz);
-
                 if (fdje > 0) {
                     // 新增返点记录
                     BizLcFd lcFd = new BizLcFd();
@@ -397,7 +381,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fdService.save(lcFd);
                     entity.setPz(lcFd.getId());
                 }
-                wxjlService.update(wxjl);
             }
             //  科目三 按把练车需要返点
             if (StringUtils.equals(entity.getLcKm(), "3") && StringUtils.equals(entity.getLcLx(), "10")) {
@@ -426,7 +409,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 }
             }
         }
-
         // 科三培优可能要返点
         if(StringUtils.equals(entity.getLcKm(), "3") && StringUtils.equals(entity.getLcLx(), "20")){
             entity.setJssj(nowTime);
