@@ -122,11 +122,18 @@
             }
           },
           {
-            title: '预存',
+            title: '实收',
+            align: 'center',
+            render: (h, p) => {
+              return h('div', p.row.sfje + '元');
+            },
+          },
+          {
+            title: '赠送额度',
             align: 'center',
             render: (h, p) => {
               if (p.row.type == '00' || p.row.type == '10')
-                return h('div', p.row.je + '元');
+                return h('div', (parseInt(p.row.je) - parseInt(p.row.sfje)) + '元');
               else return h('div', '/');
             },
           },
@@ -137,13 +144,6 @@
               if (p.row.type == '20' || p.row.type == '30')
                 return h('div', p.row.je + '元');
               else return h('div', '/');
-            },
-          },
-          {
-            title: '实收',
-            align: 'center',
-            render: (h, p) => {
-              return h('div', p.row.sfje + '元');
             },
           },
           {
