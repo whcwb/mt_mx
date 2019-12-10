@@ -354,6 +354,7 @@
   import moment from 'moment'
   import Cookies from 'js-cookie'
   import printNew from '../../../components/printNew'
+  import formItems from "../../components/formItems";
 
   export default {
     name: "index",
@@ -380,7 +381,7 @@
         choosedItem: null,
         tableColumns: [
           {
-            title: '序号', align: 'center', minWidth: 80,
+            title: '序号', align: 'center', minWidth: 50,
             // render: (h, params) => {
             //   return h('div', params.index + 1)
             // return h('Tag', {
@@ -395,7 +396,7 @@
           },
           {title: '驾校', key: 'jlJx', align: 'center',minWidth: 90},
           {title: '教练员', key: 'jlXm', align: 'center',searchKey: 'jlXmLike', minWidth: 90},
-          {title: '教练员电话', align: 'center',key: 'jlDh', minWidth: 90},
+          {title: '教练员电话', align: 'center',key: 'jlDh', minWidth: 80},
           {
             title: '类型', minWidth: 90,align: 'center',
             render: (h, p) => {
@@ -416,11 +417,13 @@
               return row.lcLx == value;
             }
           },
-          {title: '学员数量',align: 'center', key: 'xySl', minWidth: 90, defaul: '0',
+          {title: '学员数量',align: 'center', key: 'xySl', minWidth: 60, defaul: '0',
             render: (h, p) => {
               return h('div', p.row.xySl+'人')
             },
           },
+
+
           // {
           //   title: '安全员', minWidth: 90,
           //   render: (h, p) => {
@@ -460,6 +463,34 @@
           //         return h('div', s);
           //     }
           // },
+          {title: '学员信息',align: 'center',minWidth: 250,
+            className: 'no_padding',
+            render: (h, params) => {
+              let x = ''
+              if(params.row.zddm.indexOf('PY')>=0){
+                let a = params.row.xyDh.split(',')
+                let b = params.row.xyZjhm.split(',')
+                let d = params.row.xyXm.split(',')
+                for(let i = 0;i<a.length;i++){
+                  let sfz = b[i]
+                  let dh = a[i]
+                  let cx = d[i].split('-')[1]
+                  let xm = d[i].split('-')[0]
+
+                  if (i == a.length-1){
+                    x = "<lable>"+x + xm+','+sfz+','+dh+','+cx + "</lable>"
+                  }else {
+                    x = "<lable>"+x + xm+','+sfz+','+dh+','+cx + "</lable>"+"<br></br>";
+                  }
+                }
+              }
+              return h('div',{
+                domProps: {
+                  innerHTML: x
+                },
+              },x) ;
+            }
+          },
           {
             title: '操作', fixed: 'right', width: 80, render: (h, p) => {
               let buttons = [];
@@ -1223,5 +1254,9 @@
     padding: 10px 16px;
     text-align: right;
     background: #fff;
+  }
+  .ivu-table td.no_padding>.ivu-table-cell{
+    padding-left: 0;
+    padding-right: 0;
   }
 </style>
