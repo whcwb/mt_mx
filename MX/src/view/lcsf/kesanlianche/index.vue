@@ -1164,6 +1164,7 @@
                                       }
                                       // this.print(res.result)
                                       this.getCarList()
+                                      this.getSafemanList()
                                     } else {
                                       this.swal({
                                         title: res.message,

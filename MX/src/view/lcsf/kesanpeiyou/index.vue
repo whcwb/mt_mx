@@ -534,10 +534,10 @@
         mx: false,
         mxList: [],
         mxColumns: [
-          {title: '序号', align: 'center',type:'index', minWidth: 90},
+          {title: '序号', align: 'center',type:'index', minWidth: 60},
           {title: '教练员', key: 'jlXm', align: 'center', minWidth: 90},
           {
-            title: '编号', align: 'center', minWidth: 80,
+            title: '编号', align: 'center', minWidth: 60,
             render: (h, p) => {
               return h('div', p.row.index + 1)
             },
@@ -546,7 +546,7 @@
             title: '学员姓名', minWidth: 110, align: 'center', key: 'xyXm'
           },
           {
-            title: '学员证件号码', minWidth: 110, align: 'center', key: 'xyZjhm'
+            title: '学员证件号码', minWidth: 140, align: 'center', key: 'xyZjhm'
           },
           {
             title: '学员联系方式', minWidth: 110, align: 'center', key: 'xyDh'
