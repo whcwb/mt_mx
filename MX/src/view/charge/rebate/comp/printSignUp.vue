@@ -41,7 +41,7 @@
       padding: 35px 8px 8px 0;
       float: right;
       height: 70mm;
-      width: 15mm;
+      width: 10mm;
       .LiftTitItem {
         height: 5mm;
         line-height: 3mm;
@@ -456,9 +456,20 @@
             height: 13mm;
             line-height: 13mm;
           }
+          .rightTitSize {
+      font-size: 12px;
+      padding: 35px 8px 8px 0;
+      float: right;
+      height: 70mm;
+      width: 10mm;
+      .LiftTitItem {
+        height: 5mm;
+        line-height: 3mm;
+      }
+    }
           .pageBox {
             float: left;
-            width: 200mm;
+            width: 190mm;
           }
           /**/
           .titMess {

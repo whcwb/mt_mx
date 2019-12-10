@@ -41,8 +41,8 @@
       padding: 35px 8px 8px 0;
       float: right;
       height: 70mm;
-      width: 15mm;
-      .LiftTitItem {
+      width: 10mm;
+      .rightTitItem {
         height: 5mm;
         line-height: 3mm;
       }
@@ -72,7 +72,7 @@
           .ItemMess {
             float: left;
             clear: right;
-            width: 150mm;
+            width: 130mm;
             border-bottom: solid 1px #000;
             text-align: left;
             font-size: 19px;
@@ -95,13 +95,13 @@
           }
           .messTit3 {
             font-size: 16px;
-            width: 40mm;
+            width: 30mm;
             text-align: right;
             float: left;
           }
           .ItemMess3 {
             float: left;
-            width: 50mm;
+            width: 60mm;
             border-bottom: solid 1px #000;
             text-align: left;
             font-size: 18px;
@@ -110,16 +110,16 @@
       }
       .boxmess1 {
         padding-right: 8px;
-        .messList {
+        .messList11 {
           overflow: hidden;
           line-height: 10mm;
-          .messTit {
+          .messTit11 {
             font-size: 16px;
             width: 25mm;
             text-align: right;
             float: left;
           }
-          .ItemMess {
+          .ItemMess11 {
             float: left;
             clear: right;
             width: 150mm;
@@ -130,13 +130,13 @@
             padding-left: 6px;
             margin-bottom: 3px;
           }
-          .messTit2 {
+          .messTit211 {
             font-size: 16px;
             width: 25mm;
             text-align: right;
             float: left;
           }
-          .ItemMess2 {
+          .ItemMess211 {
             float: left;
             width: 20mm;
             /*border-bottom: solid 1px #000;*/
@@ -241,29 +241,29 @@
 
               </div>
               <div class="boxmess1" style="font-size: 16px;padding-right: 6px;">
-                <div class="messList">
-                  <div class="messTit2">
+                <div class="messList11">
+                  <div class="messTit211">
                     核准人
                   </div>
-                  <div class="ItemMess2">
+                  <div class="ItemMess211">
                     :
                   </div>
-                  <div class="messTit2">
+                  <div class="messTit211">
                     制单人
                   </div>
-                  <div class="ItemMess2">
+                  <div class="ItemMess211">
                     :
                   </div>
-                  <div class="messTit2">
+                  <div class="messTit211">
                     收款人
                   </div>
-                  <div class="ItemMess2">
+                  <div class="ItemMess211">
                     :
                   </div>
-                  <div class="messTit2">
+                  <div class="messTit211">
                     付款人
                   </div>
-                  <div class="ItemMess2" style="clear:right;">
+                  <div class="ItemMess211" style="clear:right;">
                     :
                   </div>
                 </div>
@@ -271,7 +271,7 @@
               </div>
             </div>
             <div class="rightTitSize">
-              <div class="LiftTitItem" v-for="item in ['一','联','存','根','二','联','客','户','三','联','财','务']">
+              <div class="rightTitItem" v-for="item in ['一','联','存','根','二','联','客','户','三','联','财','务']">
                 {{item}}
               </div>
             </div>
@@ -409,55 +409,53 @@
         this.bzShow = false
         const cssText = `
           #printDivSigUp {
-            /*font-family: "PingFang SC";*/
             font-family: "黑体";
-            color: #000000 !important;
+            color: #000000!important;
             font-weight: 500;
             text-align: center;
             padding: 0 0 16px 0;
-          }
-          .ptintPager {
-            width: 220mm;
-            margin: auto;
-          }
-          .titTop {
-            text-align: center;
-            font-size: 24px;
-          }
-          .bodyMess {
-            overflow: hidden;
-          }
-          .leftTitSize {
-            font-size: 22px;
-            padding: 25px 8px 0 8px;
-            float: left;
-            height: 70mm;
-            width: 15mm;
-          }
-          .LiftTitItem {
-            height: 13mm;
-            line-height: 13mm;
-          }
-          .pageBox {
-            float: left;
-            width: 200mm;
-          }
-          /**/
-          .titMess {
-            font-size: 16px;
-            height: 10mm;
-            line-height: 10mm;
-          }
-          .boxmess {
-            border: solid 1px #000;
-            padding-right: 8px;
-            min-height: 60mm;
-          }
-          .messList {
-            overflow: hidden;
-            line-height: 10mm;
-          }
-          .messTit {
+            }
+    .ptintPager {
+      width: 220mm;
+      margin: auto;
+    }
+    .titTop {
+      text-align: center;
+      font-size: 24px;
+    }
+    .bodyMess {
+      overflow: hidden;
+    }
+    .leftTitSize {
+      font-size: 22px;
+      padding: 25px 8px 0 8px;
+      float: left;
+      height: 70mm;
+      width: 12mm;
+
+    }
+    .LiftTitItem {
+        height: 13mm;
+        line-height: 13mm;
+      }
+    .rightTitSize {
+      font-size: 12px;
+      padding: 35px 8px 8px 0;
+      float: right;
+      height: 70mm;
+      width: 10mm;
+
+    }
+    .rightTitItem {
+        height: 5mm;
+        line-height: 3mm;
+      }
+       .titMess {
+        font-size: 16px;
+        height: 10mm;
+        line-height: 10mm;
+      }
+      .messTit {
             font-size: 20px;
             width: 35mm;
             text-align: right;
@@ -466,7 +464,7 @@
           .ItemMess {
             float: left;
             clear: right;
-            width: 150mm;
+            width: 130mm;
             border-bottom: solid 1px #000;
             text-align: left;
             font-size: 19px;
@@ -489,22 +487,81 @@
           }
           .messTit3 {
             font-size: 16px;
-            width: 40mm;
+            width: 30mm;
             text-align: right;
             float: left;
           }
           .ItemMess3 {
             float: left;
-            width: 50mm;
+            width: 60mm;
             border-bottom: solid 1px #000;
             text-align: left;
             font-size: 18px;
           }
-          .boxPagerNum {
-            text-align: left;
-            padding: 2px 0;
-            font-size: 14px;
+    .pageBox {
+      float: left;
+      width: 190mm;
+      /**/
+
+
+      }
+      .messList {
+          overflow: hidden;
+          line-height: 10mm;
+
+
+        }
+        .messTit11 {
+            font-size: 16px;
+            width: 25mm;
+            text-align: right;
+            float: left;
           }
+          .ItemMess11 {
+            float: left;
+            clear: right;
+            width: 150mm;
+            border-bottom: solid 1px #000;
+            text-align: left;
+            font-size: 19px;
+            padding-right: 4px;
+            padding-left: 6px;
+            margin-bottom: 3px;
+          }
+          .messTit211 {
+            font-size: 16px;
+            width: 25mm;
+            text-align: right;
+            float: left;
+          }
+          .ItemMess211 {
+            float: left;
+            width: 20mm;
+            /*border-bottom: solid 1px #000;*/
+            text-align: left;
+            font-size: 18px;
+          }
+      .boxmess {
+        border: solid 1px #000;
+        padding-right: 8px;
+        min-height: 60mm;
+       }
+      .boxmess1 {
+        padding-right: 8px;
+
+      }
+      .messList11 {
+          overflow: hidden;
+          line-height: 10mm;
+
+        }
+      .boxPagerNum {
+        text-align: left;
+        padding: 2px 0;
+        font-size: 14px;
+      }
+
+
         `
 
         const d = new Printd();
