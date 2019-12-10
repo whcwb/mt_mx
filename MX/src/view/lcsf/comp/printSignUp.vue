@@ -97,6 +97,43 @@
           }
         }
       }
+      .boxmess1 {
+        padding-right: 8px;
+        .messList {
+          overflow: hidden;
+          line-height: 10mm;
+          .messTit {
+            font-size: 16px;
+            width: 25mm;
+            text-align: right;
+            float: left;
+          }
+          .ItemMess {
+            float: left;
+            clear: right;
+            width: 150mm;
+            border-bottom: solid 1px #000;
+            text-align: left;
+            font-size: 19px;
+            padding-right: 4px;
+            padding-left: 6px;
+            margin-bottom: 3px;
+          }
+          .messTit2 {
+            font-size: 18px;
+            width: 25mm;
+            text-align: right;
+            float: left;
+          }
+          .ItemMess2 {
+            float: left;
+            width: 20mm;
+            /*border-bottom: solid 1px #000;*/
+            text-align: left;
+            font-size: 18px;
+          }
+        }
+      }
       .boxPagerNum {
         text-align: left;
         padding: 2px 0;
@@ -128,7 +165,7 @@
           <div class="bodyMess">
 
             <div class="leftTitSize">
-              <div class="LiftTitItem" v-for="item in ['收','款','单','据']">
+              <div class="LiftTitItem" v-for="item in ['收','款','凭','证']">
                 {{item}}
               </div>
             </div>
@@ -136,7 +173,7 @@
             <div class="pageBox">
               <!--tit-->
               <div class="titMess" style="text-align: left">
-                收款日期:{{time}}
+                收款日期：{{time}}
                 <!--{{printMess[0].chargeRecord.chargeTime}}-->
                 <div v-if="num.length == 13" style="float: right">
                   NO {{num}}
@@ -173,30 +210,44 @@
                     :  {{money | DX}} <span style="float: right">￥{{money}}元</span>
                   </div>
                   <div class="messTit3">
-                    充值人民币
+                    赠送消费人民币
                   </div>
                   <div class="ItemMess3">
                     :  {{money1 | DX}} <span style="float: right">￥{{money1}}元</span>
                   </div>
                 </div>
-
-
+                <div class="messList">
+                  <div class="messTit">
+                    &nbsp;
+                  </div>
+                </div>
 
                 <div class="messList">
-                  <div class="messTit2" style="width: 30mm">
-                    单位公章
+                  <div class="messTit">
+                    备注：
+                  </div>
+                </div>
+
+              </div>
+              <div class="boxmess1" style="font-size: 16px;padding-right: 6px;">
+                <div class="messList">
+                  <div class="messTit2">
+                    核准人
+                  </div>
+                  <div class="ItemMess2">
+                    :
                   </div>
                   <div class="messTit2">
                     制单人
                   </div>
                   <div class="ItemMess2">
-                    :  {{user.xm}}
+                    :
                   </div>
                   <div class="messTit2">
                     收款人
                   </div>
                   <div class="ItemMess2">
-                    :  {{user.xm}}
+                    :
                   </div>
                   <div class="messTit2">
                     付款人
@@ -205,35 +256,6 @@
                     :
                   </div>
                 </div>
-
-                <div class="messList">
-                  <div class="messTit">
-                    备注说明
-                  </div>
-                  <div class="ItemMess">
-                    <Input v-if="bzShow" v-model="bz" type="textarea" :autosize="false"
-                           :maxlength="30"
-                           :rows="1" id="textarr"
-                           placeholder="备注说明" />
-                    <span v-else>{{bz}}</span>
-                  </div>
-                </div>
-
-              </div>
-              <div style="font-size: 16px;padding-right: 6px;">
-                <Row>
-                  <div style="overflow: hidden">
-                    <div style="float: left;width: 33.33%">
-                      {{payType}}
-                    </div>
-                    <div style="float: left;width: 33.33%">
-<!--                      推荐人:{{tjr}}-->
-                    </div>
-                    <div style="float: right;width: 33.33%">
-                      Tel:{{jgphone.length==11 ? '400-133-2133': jgphone}}
-                    </div>
-                  </div>
-                </Row>
 
               </div>
             </div>

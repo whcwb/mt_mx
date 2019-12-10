@@ -84,6 +84,43 @@
           }
         }
       }
+      .boxmess1 {
+        padding-right: 8px;
+        .messList {
+          overflow: hidden;
+          line-height: 10mm;
+          .messTit {
+            font-size: 16px;
+            width: 25mm;
+            text-align: right;
+            float: left;
+          }
+          .ItemMess {
+            float: left;
+            clear: right;
+            width: 150mm;
+            border-bottom: solid 1px #000;
+            text-align: left;
+            font-size: 19px;
+            padding-right: 4px;
+            padding-left: 6px;
+            margin-bottom: 3px;
+          }
+          .messTit2 {
+            font-size: 18px;
+            width: 25mm;
+            text-align: right;
+            float: left;
+          }
+          .ItemMess2 {
+            float: left;
+            width: 20mm;
+            /*border-bottom: solid 1px #000;*/
+            text-align: left;
+            font-size: 18px;
+          }
+        }
+      }
       .boxPagerNum {
         text-align: left;
         padding: 2px 0;
@@ -116,15 +153,15 @@
           <div class="bodyMess">
 
             <div class="leftTitSize">
-              <div class="LiftTitItem" v-for="item in ['付','款','单','据']">
+              <div class="LiftTitItem" v-for="item in ['付','款','凭','证']">
                 {{item}}
               </div>
             </div>
 
             <div class="pageBox">
               <!--tit-->
-              <div class="titMess" style="text-align: left">
-                付款日期:{{time}}
+              <div class="titMess" style="text-align: left;font-weight: 400">
+                付款日期 ： {{time}}
                 <!--{{printMess[0].chargeRecord.chargeTime}}-->
                 <div v-if="num.length == 13" style="float: right">
                   NO {{num}}
@@ -149,7 +186,7 @@
                     支付
                   </div>
                   <div class="ItemMess">
-                    :  练车奖励费用
+                    :  培训支出
                   </div>
                 </div>
 
@@ -163,57 +200,63 @@
                 </div>
 
                 <div class="messList">
-                  <div class="messTit2" style="width: 30mm">
-                    单位公章
-                  </div>
-                  <div class="messTit2">
-                    制单人
-                  </div>
-                  <div class="ItemMess2">
-                    :  {{user.xm}}
-                  </div>
-                  <div class="messTit2">
-                    付款人
-                  </div>
-                  <div class="ItemMess2">
-                    :  {{user.xm}}
-                  </div>
-                  <div class="messTit2">
-                    收款人签字
-                  </div>
-                  <div class="ItemMess2" style="clear:right;">
-                    :
+                  <div class="messTit">
+                    &nbsp;
                   </div>
                 </div>
 
                 <div class="messList">
                   <div class="messTit">
-                    备注说明
+                    备注 :
                   </div>
-                  <div class="ItemMess">
-                    <Input v-if="bzShow" v-model="bz" type="textarea" :autosize="false"
-                           :maxlength="30"
-                           :rows="1" id="textarr"
-                           placeholder="备注说明" />
-                    <span v-else>{{bz}}</span>
-                  </div>
+<!--                  <div class="ItemMess">-->
+<!--                    <Input v-if="bzShow" v-model="bz" type="textarea" :autosize="false"-->
+<!--                           :maxlength="30"-->
+<!--                           :rows="1" id="textarr"-->
+<!--                           placeholder="备注说明" />-->
+<!--                    <span v-else>{{bz}}</span>-->
+<!--                  </div>-->
                 </div>
 
               </div>
-              <div style="font-size: 16px;padding-right: 6px;">
-                <Row>
-                  <div style="overflow: hidden">
-                    <div style="float: left;width: 33.33%">
-                      {{payType}}
+              <div class="boxmess1" style="font-size: 16px;padding-right: 6px;">
+                  <div class="messList">
+                    <div class="messTit2">
+                      核准人
                     </div>
-                    <div style="float: left;width: 33.33%">
-<!--                      推荐人:{{tjr}}-->
+                    <div class="ItemMess2">
+                      :
                     </div>
-                    <div style="float: right;width: 33.33%">
-                      Tel:{{jgphone.length==11 ? '400-133-2133': jgphone}}
+                    <div class="messTit2">
+                      制单人
+                    </div>
+                    <div class="ItemMess2">
+                      :
+                    </div>
+                    <div class="messTit2">
+                      付款人
+                    </div>
+                    <div class="ItemMess2">
+                      :
+                    </div>
+                    <div class="messTit2">
+                      收款人
+                    </div>
+                    <div class="ItemMess2" style="clear:right;">
+                      :
                     </div>
                   </div>
-                </Row>
+<!--                  <div style="overflow: hidden">-->
+<!--                    <div style="float: left;width: 33.33%">-->
+<!--                      {{payType}}-->
+<!--                    </div>-->
+<!--                    <div style="float: left;width: 33.33%">-->
+<!--&lt;!&ndash;                      推荐人:{{tjr}}&ndash;&gt;-->
+<!--                    </div>-->
+<!--                    <div style="float: right;width: 33.33%">-->
+<!--                      Tel:{{jgphone.length==11 ? '400-133-2133': jgphone}}-->
+<!--                    </div>-->
+<!--                  </div>-->
 
               </div>
             </div>
@@ -391,6 +434,43 @@
             height: 10mm;
             line-height: 10mm;
           }
+         　 .boxmess1 {
+        padding-right: 8px;
+        .messList {
+          overflow: hidden;
+          line-height: 10mm;
+          .messTit {
+            font-size: 16px;
+            width: 18mm;
+            text-align: right;
+            float: left;
+          }
+          .ItemMess {
+            float: left;
+            clear: right;
+            width: 150mm;
+            border-bottom: solid 1px #000;
+            text-align: left;
+            font-size: 19px;
+            padding-right: 4px;
+            padding-left: 6px;
+            margin-bottom: 3px;
+          }
+          .messTit2 {
+            font-size: 18px;
+            width: 18mm;
+            text-align: right;
+            float: left;
+          }
+          .ItemMess2 {
+            float: left;
+            width: 30mm;
+            /*border-bottom: solid 1px #000;*/
+            text-align: left;
+            font-size: 18px;
+          }
+        }
+      }
           .boxmess {
             border: solid 1px #000;
             padding-right: 8px;
