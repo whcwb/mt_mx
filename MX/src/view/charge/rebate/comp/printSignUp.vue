@@ -107,7 +107,7 @@
             margin-bottom: 3px;
           }
           .messTit2 {
-            font-size: 18px;
+            font-size: 16px;
             width: 25mm;
             text-align: right;
             float: left;
@@ -117,7 +117,7 @@
             width: 20mm;
             /*border-bottom: solid 1px #000;*/
             text-align: left;
-            font-size: 18px;
+            font-size: 16px;
           }
         }
       }
