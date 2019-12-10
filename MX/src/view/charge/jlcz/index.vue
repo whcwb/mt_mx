@@ -14,12 +14,13 @@
       <Col span="18">
         <Row type="flex" justify="end" :gutter="8">
           <Col span="4">
-            <Select filterable clearable v-model="param.jlJx" @on-change="getData" :label-in-value="true" placeholder="请输入驾校">
+            <Select filterable clearable v-model="param.jlJx" @on-change="getData" :label-in-value="true"
+                    placeholder="请输入驾校">
               <Option v-for="(item,index) in JX" :key="index" :value="item.val">{{item.val}}-{{item.by1}}</Option>
             </Select>
           </Col>
           <!--<Col span="4">-->
-            <!--<Input size="large" v-model="param.cardNo" @on-keyup.enter="getData" clearable placeholder="请输入卡号"/>-->
+          <!--<Input size="large" v-model="param.cardNo" @on-keyup.enter="getData" clearable placeholder="请输入卡号"/>-->
           <!--</Col>-->
           <Col span="4">
             <Input size="large" v-model="param.jlXmLike" @on-keyup.enter="getData" clearable placeholder="请输入教练姓名"/>
@@ -106,40 +107,41 @@
 
 
         <!--<component :is="compName" :jxmc="jlJx"-->
-                   <!--:showCloseBtn="false"-->
-                   <!--@SaveOk="addjlSaveOk"-->
-                   <!--@colse="clearYY"-->
-                   <!--@remove="getCoachList('',true)"-->
-                   <!--@JLRowClick="JLRowClick"-->
-                   <!--@jxSeljxSel="(val)=>{getCoachList('',true)}"></component>-->
+        <!--:showCloseBtn="false"-->
+        <!--@SaveOk="addjlSaveOk"-->
+        <!--@colse="clearYY"-->
+        <!--@remove="getCoachList('',true)"-->
+        <!--@JLRowClick="JLRowClick"-->
+        <!--@jxSeljxSel="(val)=>{getCoachList('',true)}"></component>-->
 
-          <Row :gutter="32" style="display: flex;justify-content: space-between">
-              <Col span="6">
-                <FormItem label="教练员姓名" label-position="top" style="width: 95%">
-                  <Input v-model="formDataJL.jlXm"/>
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem label="教练员联系方式" label-position="top" style="width: 95%">
-                  <Input v-model="formDataJL.jlLxdh"/>
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem label="所属驾校" label-position="top" style="width: 95%">
-                  <Select filterable clearable v-model="formDataJL.jlJx" :label-in-value="true" @on-change="jsSelect">
-                    <Option v-for="(item,index) in schoolList" :key="index" :value="item.val">{{item.val}}-{{item.by1}}</Option>
-                  </Select>
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem label="驾校" label-position="top" style="width: 95%;">
-                  <RadioGroup v-model="formDataJL.jlLx">
-                    <Radio label="00"  @click="formDataJL.jlLx='00'"> 本校</Radio>
-                    <Radio label="10" @click="formDataJL.jlLx='10'">外校</Radio>
-                  </RadioGroup>
-                </FormItem>
-              </Col>
-          </Row>
+        <Row :gutter="32" style="display: flex;justify-content: space-between">
+          <Col span="6">
+            <FormItem label="教练员姓名" label-position="top" style="width: 95%">
+              <Input v-model="formDataJL.jlXm"/>
+            </FormItem>
+          </Col>
+          <Col span="6">
+            <FormItem label="教练员联系方式" label-position="top" style="width: 95%">
+              <Input v-model="formDataJL.jlLxdh"/>
+            </FormItem>
+          </Col>
+          <Col span="6">
+            <FormItem label="所属驾校" label-position="top" style="width: 95%">
+              <Select filterable clearable v-model="formDataJL.jlJx" :label-in-value="true">
+                <Option v-for="(item,index) in schoolList" :key="index" :value="item.val">{{item.val}}-{{item.by1}}
+                </Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="6">
+            <FormItem label="驾校" label-position="top" style="width: 95%;">
+              <RadioGroup v-model="formDataJL.jlLx">
+                <Radio label="00" @click="formDataJL.jlLx='00'"> 本校</Radio>
+                <Radio label="10" @click="formDataJL.jlLx='10'">外校</Radio>
+              </RadioGroup>
+            </FormItem>
+          </Col>
+        </Row>
 
       </Form>
       <div slot='footer'>
@@ -176,14 +178,29 @@
               </Col>
             </Row>
             <Row style="display: flex;justify-content: space-between">
-              <Col span="11">
+              <Col span="6" style="padding-left: 5px">
                 <FormItem label="实收金额" label-position="top">
-                  <Input v-model="payItem.sfje"/>
+                  <Input v-model="payItem.sfje" @on-change="changeJe"/>
                 </FormItem>
               </Col>
-              <Col span="11">
-                <FormItem label="充值金额" label-position="top">
-                  <Input type="number" v-model="payItem.je" @on-change="je=Number(payItem.je)+Number(payItem.cardJe)"/>
+              <Col span="2">
+                <div></div>
+              </Col>
+              <Col span="6">
+                <FormItem label="赠送比例" label-position="top">
+                  <Select v-model="bl" @on-change="changeJe">
+                    <Option v-for="(item,index) in blList" :value="item.val" :key="item.val">
+                      {{item.val}}
+                    </Option>
+                  </Select>
+                </FormItem>
+              </Col>
+              <Col span="2">
+                <div></div>
+              </Col>
+              <Col span="6" style="padding-right: 5px">
+                <FormItem label="赠送额度" label-position="top">
+                  <Input type="number" v-model="zsje" readonly/>
                 </FormItem>
               </Col>
             </Row>
@@ -205,11 +222,19 @@
             <!--</Col>-->
             <!--</Row>-->
             <Row style="display: flex;justify-content: center">
-              <Col span="23">
-                <FormItem label="备注" label-position="top">
-                  <Input v-model="payItem.bz"/>
+              <Col span="6" style="padding-left: 20px">
+                <FormItem label="账户余额" label-position="top">
+                  <Input v-model="zhye" readonly/>
                 </FormItem>
               </Col>
+              <Col span="18">
+                <div></div>
+              </Col>
+              <!--              <Col span="23">-->
+              <!--                <FormItem label="备注" label-position="top">-->
+              <!--                  <Input v-model="payItem.bz"/>-->
+              <!--                </FormItem>-->
+              <!--              </Col>-->
             </Row>
           </Col>
 
@@ -333,6 +358,7 @@
   import mxb from '../jlcz/mxb'
   import {mapMutations} from 'vuex'
   import printSignUp from '../../lcsf/comp/printSignUp'
+  import dictUtil from "../../../libs/dictUtil";
 
   export default {
     name: "index",
@@ -343,14 +369,18 @@
     },
     data() {
       return {
+        bl: '',
+        zhye: 0,
+        blList: [],
+        zsje: null,
         dataList: [],
         isMxb: false,
-        lx:'',
+        lx: '',
         jlItem: {},
         pay: false,        //充值modal
         payItem: {
-          je: '',
-          sfje: '',
+          je: null,
+          sfje: null,
           id: ''
           // no: ''
         },
@@ -368,7 +398,7 @@
           jlJx: '',
           jlXm: '',
           jlLxdh: '',
-          jlLx:'00'
+          jlLx: '00'
         },
         schoolList: [],
         compName: '',
@@ -409,7 +439,7 @@
           pageSize: 15,
           jlJx: '',
           jlLx: '',
-          orderBy:'cjsj desc'
+          orderBy: 'cjsj desc'
         },
         showCAR: false,
         carMess: null,
@@ -478,16 +508,16 @@
             ],
             filterMultiple: false,
             filterRemote(value, row) {
-              var _self =  this.$options.parent
-              if(value[0]=='1'){
-                _self.param.cardNoIsNotNull='1'
-                _self.param.cardNoIsNull=''
-              }else if(value[0]=='0'){
-                _self.param.cardNoIsNull='1'
-                _self.param.cardNoIsNotNull=''
-              }else{
-                _self.param.cardNoIsNull=''
-                _self.param.cardNoIsNotNull=''
+              var _self = this.$options.parent
+              if (value[0] == '1') {
+                _self.param.cardNoIsNotNull = '1'
+                _self.param.cardNoIsNull = ''
+              } else if (value[0] == '0') {
+                _self.param.cardNoIsNull = '1'
+                _self.param.cardNoIsNotNull = ''
+              } else {
+                _self.param.cardNoIsNull = ''
+                _self.param.cardNoIsNotNull = ''
               }
               _self.getData()
             },
@@ -504,14 +534,14 @@
                   ghost: true,
                 },
                 style: {},
-                on:{
-                  click: () =>{
+                on: {
+                  click: () => {
                     this.jlItem = p.row
-                    this.lx='cz'
+                    this.lx = 'cz'
                     this.isMxb = true
                   }
                 }
-              },p.row.cardJe + '元')
+              }, p.row.cardJe + '元')
             }
           },
           {
@@ -526,10 +556,10 @@
                   ghost: true,
                 },
                 style: {},
-                on:{
-                  click: () =>{
+                on: {
+                  click: () => {
                     this.jlItem = p.row
-                    this.lx='kfr'
+                    this.lx = 'kfr'
                     this.isMxb = true
                   }
                 }
@@ -631,10 +661,11 @@
                         type: 'info',
                         size: 'small',
                       },
-                      style: {margin: '0 10px 0 0',borderRadius: '15px'},
+                      style: {margin: '0 10px 0 0', borderRadius: '15px'},
                       on: {
                         click: () => {
                           this.payItem = JSON.parse(JSON.stringify(p.row))
+                          this.zhye = this.payItem.cardJe
                           this.pay = true
                         }
                       }
@@ -652,7 +683,7 @@
                         type: 'info',
                         size: 'small',
                       },
-                      style: {margin: '0 10px 0 0',borderRadius: '15px'},
+                      style: {margin: '0 10px 0 0', borderRadius: '15px'},
                       on: {
                         click: () => {
                           this.infoItem = JSON.parse(JSON.stringify(p.row))
@@ -727,13 +758,11 @@
     },
     created() {
 
-      // this.getCarList();
-      // this.getzdlist();
-      // this.getYYdj();
       this.getSchoolList()
       this.getData()
       this.getJX()
       this.getCoachList();
+      this.getBL()
     },
     beforeDestroy() {
       clearInterval(this.IntervalKE)
@@ -743,6 +772,15 @@
         'set_LcTime',
         'Ch_LcTime'
       ]),
+      changeJe() {
+        let je = 0;
+        if (this.payItem.sfje) {
+          je = parseInt(this.payItem.sfje);
+        }
+
+        this.zsje = Math.ceil(je * parseFloat(this.bl))
+        this.zhye = parseInt(this.zsje) + je + parseInt(this.payItem.cardJe)
+      },
       getData() {
         this.$http.get('/api/lcwxjl/pager', {
           params: this.param
@@ -762,6 +800,7 @@
       },
       closePay() {
         this.payItem = {};
+        this.zsje = null;
         this.pay = false
       },
       winPrint(a) {
@@ -769,11 +808,29 @@
         this.componentName = 'printSignUp'
       },
       savePay() {
+        if (this.payItem.sfje == null) {
+          this.swal({
+            title: "请填写实付金额",
+            type: 'warning'
+          })
+          return
+        }
+        if ((this.bl == "")) {
+          this.swal({
+            title: "请填写赠送比例",
+            type: 'warning'
+          })
+          return
+        }
+        if (this.payItem.sfje > 0) {
+          this.payItem.je = parseInt(this.zsje) + parseInt(this.payItem.sfje);
+        }
         this.$http.post('/api/lcjl/cz', this.payItem).then(res => {
           if (res.code == 200) {
             this.pay = false;
             this.getData();
             this.payItem = {};
+            this.zsje = null
             // this.swal({
             //   title: '充值成功',
             //   type: 'success',
@@ -1003,14 +1060,14 @@
           })
           return
         }
-        if(this.formDataJL.jlLxdh == ''){
+        if (this.formDataJL.jlLxdh == '') {
           this.swal({
-            title:'请填写教练电话!',
-            type:'warning'
+            title: '请填写教练电话!',
+            type: 'warning'
           })
           return
         }
-        console.log('######',this.formDataJL);
+        console.log('######', this.formDataJL);
         let params = JSON.parse(JSON.stringify(this.formDataJL));
         this.$http.post('/api/lcwxjl/save', params).then(res => {
           if (res.code == 200) {
@@ -1022,10 +1079,10 @@
             this.formDataJL.jlLxdh = ''
             this.DrawerVal = false;
             this.getData()
-          }else {
+          } else {
             this.swal({
-              title:res.message,
-              type:'error'
+              title: res.message,
+              type: 'error'
             })
           }
         }).catch(err => {
@@ -1042,7 +1099,7 @@
         this.formData.lcLx = '00';
         this.searchCoachList = [];
         //清空下拉框内容
-        this.$refs.jlySelect.clearSingleSelect();
+        // this.$refs.jlySelect.clearSingleSelect();
       },
       yyClick(val, cx) {
         console.log(val);
@@ -1111,7 +1168,11 @@
 
       },
       getJX() {
-        this.JX = this.dictUtil.getByCode(this, 'ZDCLK1017');
+        this.JX = this.dictUtil.getByCode(this, "ZDCLK1017");
+      },
+      getBL() {
+        this.blList = this.dictUtil.getByCode(this, "ZDCLK1049");
+        this.bl = this.blList[0].val;
       }
     },
   }
