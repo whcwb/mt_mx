@@ -128,6 +128,9 @@
             text-align: right;
             float: left;
           }
+          .hc{
+            word-wrap: normal
+          }
           .ItemMess3 {
             float: left;
             width: 20mm;
@@ -235,13 +238,8 @@
                   <div class="messTit" style="font-size: 16px">
                     备注 :
                   </div>
-                  <div  style="font-size: 10px;text-align: left">
-                    {{ this.hisPrintMess.lcId}}
-<!--                    <Input v-if="bzShow" v-model="bz" type="textarea" :autosize="false"-->
-<!--                           :maxlength="30"-->
-<!--                           :rows="1" id="textarr"-->
-<!--                           placeholder="备注说明" />-->
-<!--                    <span v-else>{{bz}}</span>-->
+                  <div class="hc" v-for="(item,index) in bzid"  style="text-align: left; font-size: 16px">
+                    {{ item }}
                   </div>
                 </div>
 
@@ -288,7 +286,7 @@
               </div>
             </div>
             <div class="rightTitSize">
-              <div class="LiftTitItem" v-for="item in ['一','联','存','根','二','联','财','务','三','联','客','户']">
+              <div class="rightTitItem" v-for="item in ['一','联','存','根','二','联','财','务','三','联','客','户']">
                 {{item}}
               </div>
             </div>
@@ -325,13 +323,40 @@
         bz: ':',//备注
         tjr:'',
         messIdList:[],
-        studentIDS:[]
+        studentIDS:[],
+        bzid:[]
       }
     },
     props: {
         hisPrintMess: Object
     },
     created() {
+      if (this.hisPrintMess.lcId!=''){
+        let a =  this.hisPrintMess.lcId.split(',')
+        if(a.length == 1){
+          this.hisPrintMess.lcId = ''
+        }else {
+          var row = Math.ceil(a.length/3)　　// 3
+          console.log(row);
+          for (let i=0;i<row;i++){
+            let arr2=[]
+            for (let j=0;j<3;j++){
+              if (i>=1 && j==0) {
+                var p =''
+                for(let m=0;m<17;m++){
+                  p+='\xa0'
+                }
+                arr2.push(p+a[i*3+j])
+              }else {
+                arr2.push(a[i*3 + j])
+              }
+            }
+            this.bzid.push(arr2.join(' '))
+            console.log(arr2)
+          }
+        }
+      }
+
       this.getTime()
       this.bz = ''
       var v = this
@@ -450,22 +475,23 @@
             padding: 25px 8px 0 8px;
             float: left;
             height: 70mm;
-            width: 15mm;
+            width: 10mm;
           }
           .LiftTitItem {
             height: 13mm;
             line-height: 13mm;
           }
+          .rightTitItem {
+        height: 5mm;
+        line-height: 3mm;
+      }
           .rightTitSize {
       font-size: 12px;
       padding: 35px 8px 8px 0;
       float: right;
       height: 70mm;
       width: 10mm;
-      .LiftTitItem {
-        height: 5mm;
-        line-height: 3mm;
-      }
+
     }
           .pageBox {
             float: left;
