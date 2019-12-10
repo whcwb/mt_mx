@@ -363,22 +363,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 entity.setJssj(nowTime);
                 // 类型为开放练习 此时需要直接返点
                 RuntimeCheck.ifFalse(entity.getXySl() > 0, "培优需要填写学员信息");
-                // 充值余额
-                int czje = entity.getLcFy() - fdje;
-                // 新增充值余额记录
-                BizJlCz jlCz = new BizJlCz();
-                jlCz.setCjsj(nowTime);
-                jlCz.setCzqje(wxjl.getYe());
-                // 教练添加余额
-                wxjl.setYe(czje + wxjl.getYe());
-                jlCz.setCzhje(wxjl.getYe());
-                jlCz.setId(genId());
-                jlCz.setJe(czje);
-                jlCz.setJlId(wxjl.getId());
-                jlCz.setType("00");
-                // 新增充值记录
-                czMapper.insert(jlCz);
-
                 if (fdje > 0) {
                     // 新增返点记录
                     BizLcFd lcFd = new BizLcFd();
@@ -397,7 +381,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fdService.save(lcFd);
                     entity.setPz(lcFd.getId());
                 }
-                wxjlService.update(wxjl);
             }
             //  科目三 按把练车需要返点
             if (StringUtils.equals(entity.getLcKm(), "3") && StringUtils.equals(entity.getLcLx(), "10")) {
@@ -426,7 +409,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 }
             }
         }
-
         // 科三培优可能要返点
         if(StringUtils.equals(entity.getLcKm(), "3") && StringUtils.equals(entity.getLcLx(), "20")){
             entity.setJssj(nowTime);
@@ -2204,46 +2186,50 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         LimitedCondition condition = getQueryCondition();
         condition.setOrderByClause(" kssj desc");
         PageInfo<BizLcJl> info = findPage(page, condition);
-        List<Map<Integer,String>> data = new ArrayList<>();
-        Map<Integer,String> titleMap = new HashMap<>();
-        titleMap.put(0,"教练员");
-        titleMap.put(1,"序号");
-        titleMap.put(2, "学员姓名");
-        titleMap.put(3, "学员证件号码");
-        titleMap.put(4,"学员联系方式");
-        titleMap.put(5, "培训车型");
+        List<Map<Integer, String>> data = new ArrayList<>();
+        Map<Integer, String> titleMap = new HashMap<>();
+        titleMap.put(0, "序号");
+        titleMap.put(1, "教练员");
+        titleMap.put(2, "编号");
+        titleMap.put(3, "学员姓名");
+        titleMap.put(4, "学员证件号码");
+        titleMap.put(5, "学员联系方式");
+        titleMap.put(6, "培训车型");
         data.add(titleMap);
         List<BizLcJl> list = info.getList();
-        if(CollectionUtils.isNotEmpty(list)){
+        if (CollectionUtils.isNotEmpty(list)) {
+            int xh = 0;
             Map<String, List<BizLcJl>> map = list.stream().collect(Collectors.groupingBy(BizLcJl::getJlId));
             for (Map.Entry<String, List<BizLcJl>> entry : map.entrySet()) {
                 List<BizLcJl> jls = entry.getValue();
-                String jlxm =jls.get(0).getJlJx() + "_" + jls.get(0).getJlXm();
+                String jlxm = jls.get(0).getJlJx() + "_" + jls.get(0).getJlXm();
                 int i = 1;
                 for (BizLcJl jl : jls) {
                     String[] split = jl.getXyXm().split(",");
                     String[] dhs = jl.getXyDh().split(",");
                     String[] zjhms = jl.getXyZjhm().split(",");
                     for (int i1 = 0; i1 < split.length; i1++) {
-                        Map<Integer,String> dataMap = new HashMap<>();
-                        if(i == 1) {
-                            dataMap.put(0, jlxm);
-                        }else{
-                            dataMap.put(0,"");
+                        xh++;
+                        Map<Integer, String> dataMap = new HashMap<>();
+                        dataMap.put(0, xh + "");
+                        if (i == 1) {
+                            dataMap.put(1, jlxm);
+                        } else {
+                            dataMap.put(1, "");
                         }
-                        dataMap.put(1, i + "");
-                        dataMap.put(2, split[i1].split("-")[0]);
-                        if(i1 <= zjhms.length -1){
-                            dataMap.put(3, zjhms[i1]);
-                        }else{
-                            dataMap.put(3,"");
+                        dataMap.put(2, i + "");
+                        dataMap.put(3, split[i1].split("-")[0]);
+                        if (i1 <= zjhms.length - 1) {
+                            dataMap.put(4, zjhms[i1]);
+                        } else {
+                            dataMap.put(4, "");
                         }
-                        if(i1 <= dhs.length -1){
-                            dataMap.put(4,dhs[i1]);
-                        }else{
-                            dataMap.put(4,"");
+                        if (i1 <= dhs.length - 1) {
+                            dataMap.put(5, dhs[i1]);
+                        } else {
+                            dataMap.put(5, "");
                         }
-                        dataMap.put(5,split[i1].split("-")[1]);
+                        dataMap.put(6, split[i1].split("-")[1]);
                         data.add(dataMap);
                         i++;
                     }

@@ -169,7 +169,6 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
         condition.eq(Zgjbxx.InnerColumn.aqyQdzt,"10");
         condition.setOrderByClause(" CONVERT(xm using gbk) asc ");
         List<Zgjbxx> zgjbxxes = findByCondition(condition);
-
         return ApiResponse.success(zgjbxxes);
     }
 
