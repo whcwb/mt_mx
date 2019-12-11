@@ -338,33 +338,7 @@
         hisPrintMess: Object
     },
     created() {
-      // if (this.hisPrintMess.lcId!=''){
-      //   let a =  this.hisPrintMess.lcId.split(',')
-      //   if(a.length == 1){
-      //     this.hisPrintMess.lcId = ''
-      //   }else {
-      //     var row = Math.ceil(a.length/3)　　// 3
-      //     console.log(row);
-      //     for (let i=0;i<row;i++){
-      //       let arr2=[]
-      //       for (let j=0;j<3;j++){
-      //         if (i>=1 && j==0) {
-      //           var p =''
-      //           for(let m=0;m<17;m++){
-      //             p+='\xa0'
-      //           }
-      //           arr2.push(p+a[i*3+j])
-      //         }else {
-      //           arr2.push(a[i*3 + j])
-      //         }
-      //       }
-      //       this.bzid.push(arr2.join('　'))
-      //       console.log(arr2)
-      //     }
-      //   }
-      // }
 
-      // this.getTime()
       this.time=new Date().format('yyyy-MM-dd')
       this.bz = ''
       var v = this
@@ -372,52 +346,9 @@
         this.jgName = this.hisPrintMess.jx
         this.money = this.hisPrintMess.fdje
         this.bz = this.hisPrintMess.bz
-        this.num = Date.parse(new Date())
-
-        // this.getNum()
-      console.log('數據傳遞', this.printMess);
+        this.num = (new Date()).valueOf()
     },
     methods: {
-      getTime(){
-        this.$http.post('/pub/getTime',{type:'yyyy-MM-dd'}).then(res=>{
-          if(res.code == 200){
-            this.time = res.result
-          }
-        })
-      },
-      getNum(){
-          this.$http.post('/api/lcwxjl/getPjbh').then((res)=>{
-              if (res.code== 200){
-                  this.num = res.message
-              }else {
-
-              }
-          })
-        // var v = this
-        // for(var item of this.printMess){
-        //   console.log("log " , item.chargeRecord.pjbh);
-        //   if(item.chargeRecord.pjbh){
-        //     let arr = item.chargeRecord.pjbh.split('-');
-        //     v.num = arr[0] + '-' + arr[1];
-        //     return
-        //   }
-        // }
-        // setTimeout(()=>{
-        //   v.AF.getPrintNum('signUp',this.studentIDS,num => {
-        //     v.num = num
-        //     console.log("num -> " , num);
-        //     // v.num = 0
-        //     if(v.num == 0){
-        //       v.num = '网络异常!请点击取消按钮,重新打开获取票据号';
-        //       swal({
-        //         title: '网络异常!请点击取消按钮,重新打开获取票据号',
-        //         type: 'warning',
-        //         confirmButtonText: '确定'
-        //       })
-        //     }
-        //   })
-        // },100)
-      },
       getMess(arr,callback) {
         var v = this
 
