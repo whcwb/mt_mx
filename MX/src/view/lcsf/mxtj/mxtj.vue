@@ -1,7 +1,13 @@
 <template>
   <div class="boxbackborder box_col" style="padding-top:16px">
-    <search-bar :parent="v" :showSearchButton="true" :showDownLoadButton="true" :show-create-button="false" :buttons="searchBarButtons" @print="componentName = 'print'"
+    <div style="display: flex;justify-content: space-between;align-items: center">
+    <span
+      style="cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
+     @click="toPrint">收款凭证</span>
+    <search-bar :parent="v" :showSearchButton="true" :showDownLoadButton="true" :show-create-button="false"
+                :buttons="searchBarButtons" @print="componentName = 'print'"
                 @exportExcel="exportExcel"></search-bar>
+    </div>
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
     <Row>
       <Col span="24" align="right">
@@ -10,7 +16,7 @@
         </div>
       </Col>
     </Row>
-    <component :is="componentName"></component>
+    <component :is="componentName" :hisPrintMess="hisPrintMess"></component>
   </div>
 </template>
 
@@ -19,18 +25,20 @@
   import Cookies from 'js-cookie'
   import print from './print'
   //驾校统计
-  import jxtj from  '../jxtj'
+  import jxtj from '../jxtj'
+  import printSignUp from './comp/printSignUp'
 
   export default {
     name: 'char',
-    components: {print,jxtj},
+    components: {print, jxtj,printSignUp},
     data() {
       return {
         v: this,
-        addmoney:0,
+        addmoney: 0,
         apiRoot: this.apis.lcjl,
         choosedItem: null,
         componentName: '',
+        hisPrintMess:{},
         searchBarButtons: [
           // {title: '打印', click: 'print'},
           //   {title: '导出', click: 'exportExcel'}
@@ -45,9 +53,10 @@
               return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
             }
           },
-          {title: '科目', align: 'center', key: 'lcKm', minWidth: 80,
+          {
+            title: '科目', align: 'center', minWidth: 80,
             render: (h, params) => {
-              return h('div', params.row.lcKm==='2'?'科目二':'科目三');
+              return h('div', params.row.lcKm === '2' ? '科目二' : '科目三');
             },
             filters: [
               {
@@ -61,12 +70,13 @@
             ],
             filterMultiple: false,
             filterRemote(value, row) {
-              var _self =  this.$options.parent.parent
-              _self.param.lcKm=value[0]?value[0]:''
+              var _self = this.$options.parent.parent
+              _self.param.lcKm = value[0] ? value[0] : ''
               _self.util.getPageData(_self)
             },
           },
-          {title: '驾校', align: 'center', key: 'jlJx', minWidth: 90,
+          {
+            title: '驾校', align: 'center', key: 'jlJx', minWidth: 90,
             filters: [
               {
                 label: '本校',
@@ -79,13 +89,14 @@
             ],
             filterMultiple: false,
             filterRemote(value, row) {
-              var _self =  this.$options.parent.parent
-              _self.param.lx=value[0]?value[0]:''
+              var _self = this.$options.parent.parent
+              _self.param.lx = value[0] ? value[0] : ''
               _self.util.getPageData(_self)
             },
           },
           {title: '教练员', align: 'center', key: 'jlXm', minWidth: 80},
-          {title: '车型', align: 'center', key: 'jlCx', minWidth: 80,
+          {
+            title: '车型', align: 'center', key: 'jlCx', minWidth: 80,
             filters: [
               {
                 label: '大车',
@@ -98,13 +109,13 @@
             ],
             filterMultiple: false,
             filterRemote(value, row) {
-              var _self =  this.$options.parent.parent
-              if(value[0]==='0'){
-                _self.param.jlCxIn='A,A1,A2,A3,B,B1,B2'
-              }else if(value[0]==='1'){
-                _self.param.jlCxIn='C,C1,C2'
+              var _self = this.$options.parent.parent
+              if (value[0] === '0') {
+                _self.param.jlCxIn = 'A,A1,A2,A3,B,B1,B2'
+              } else if (value[0] === '1') {
+                _self.param.jlCxIn = 'C,C1,C2'
               }
-              else _self.param.jlCxIn=''
+              else _self.param.jlCxIn = ''
               _self.util.getPageData(_self)
             },
           },
@@ -131,11 +142,11 @@
             filterMultiple: false,
             filterRemote(value, row) {
 
-              var _self =  this.$options.parent.parent
-              if(value[0]){
+              var _self = this.$options.parent.parent
+              if (value[0]) {
                 _self.param.zddmLike = value;
               }
-              else _self.param.zddmLike=''
+              else _self.param.zddmLike = ''
               _self.util.getPageData(_self)
             },
             render: (h, p) => {
@@ -146,11 +157,13 @@
             }
           },
           {title: '人数', align: 'center', key: 'xySl', minWidth: 70},
-          {title: '开始时间', align: 'center', key: 'kssj',searchType: 'daterange', minWidth: 135},
-          {title: '结束时间', align: 'center', key: 'jssj', minWidth: 100,
+          {title: '开始时间', align: 'center', key: 'kssj', searchType: 'daterange', minWidth: 135},
+          {
+            title: '结束时间', align: 'center', key: 'jssj', minWidth: 100,
             render: (h, p) => {
               return h('div', p.row.jssj.substring(10));
-            }},
+            }
+          },
           {
             title: '时长', align: 'center', key: 'sc', minWidth: 100, defaul: '0',
             render: (h, p) => {
@@ -168,7 +181,7 @@
             render: (h, p) => {
               if (p.row.zfzt == '00') {    //为已支付的，就显示现金
                 return h('div', '');
-              }else{
+              } else {
                 return h('div', p.row.xjje + '元');
               }
             }
@@ -178,7 +191,7 @@
             render: (h, p) => {
               if (p.row.zfzt == '00') {
                 return h('div', '');
-              }else{
+              } else {
                 return h('div', p.row.zffs);
               }
             }
@@ -193,38 +206,39 @@
           },
         ],
         pageData: [],
-        specialPageSize:9999,
+        specialPageSize: 9999,
         param: {
           orderBy: 'jssj desc',
-            notShowLoading:'true',
+          notShowLoading: 'true',
           total: 0,
           zhLike: '',
           pageNum: 1,
           pageSize: 8,
-          zfzt:'10'
+          zfzt: '10',
+          lcKm:''
         },
       }
     },
     created() {
-      if(Cookies.get("daterange")!=undefined&&Cookies.get("daterange")!=''){
+      if (Cookies.get("daterange") != undefined && Cookies.get("daterange") != '') {
         this.dateRange.kssj = Cookies.get("daterange").split(',')
         this.param.kssjInRange = Cookies.get("daterange")
-      }else {
+      } else {
         this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
         this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       }
-        this.util.initTable(this);
+      this.util.initTable(this);
     },
     methods: {
-        exportExcel(){
-            let p = '';
-            for (let k in this.param){
-                p += '&'+k + '=' +this.param[k];
-            }
-            p = p.substr(1);
-            // console.log(this.apis.url + '/pub/pagerExcelK3?'+p)
-            window.open(this.apis.url + '/pub/pagerExcelAll?'+p);
-        },
+      exportExcel() {
+        let p = '';
+        for (let k in this.param) {
+          p += '&' + k + '=' + this.param[k];
+        }
+        p = p.substr(1);
+        // console.log(this.apis.url + '/pub/pagerExcelK3?'+p)
+        window.open(this.apis.url + '/pub/pagerExcelAll?' + p);
+      },
       parseTime(s) {
         s = parseInt(s);
         let h = parseInt(s / 60);
@@ -233,19 +247,41 @@
         if (h != 0) r += h + '小时'
         return r + m + '分钟'
       },
-      afterPager(list){
+      afterPager(list) {
         this.addmoney = 0
-          var v = this
-        for (let r of list){
-            r.sc = this.parseTime(r.sc)
-            r.kssj = r.kssj.substring(0,16)
-            r.jssj = r.jssj.substring(0,16)
-            v.addmoney = v.addmoney + Number(r.xjje);
+        var v = this
+        for (let r of list) {
+          r.sc = this.parseTime(r.sc)
+          r.kssj = r.kssj.substring(0, 16)
+          r.jssj = r.jssj.substring(0, 16)
+          v.addmoney = v.addmoney + Number(r.xjje);
         }
       },
       print() {
         console.log('print');
       },
+      toPrint(){
+        let {
+          param,
+          hisPrintMess,
+          addmoney
+        }=this
+
+        hisPrintMess.lcKm=param.lcKm
+        hisPrintMess.addmoney=addmoney
+
+        if(hisPrintMess.lcKm=='') {
+          this.$Message.error('请选择科目');
+          return
+        }
+
+        if(hisPrintMess.addmoney===''||hisPrintMess.addmoney=='0') {
+          this.$Message.error('当日无收款记录');
+          return
+        }
+
+        this.componentName = 'printSignUp'
+      }
     }
   }
 </script>
