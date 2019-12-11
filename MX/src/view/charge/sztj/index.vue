@@ -52,13 +52,17 @@
         </tr>
         <tr>
           <td>合计</td>
-          <td colspan="3"></td>
-          <td style="font-weight: 800">{{total[0]}}</td>
-          <td colspan="3"></td>
-          <td style="font-weight: 800">{{total[1]}}</td>
-          <td style="font-weight: 800">{{total[2]}}</td>
-          <td style="font-weight: 800">{{total[3]}}</td>
-          <td style="font-weight: 800">{{total[4]}}</td>
+          <td style="font-weight: 800">{{total[0] | GS }}</td>
+          <td style="font-weight: 800">{{total[1] | GS }}</td>
+          <td style="font-weight: 800">{{total[2] | GS }}</td>
+          <td style="font-weight: 800">{{total[3] | GS }}</td>
+          <td style="font-weight: 800">{{total[4] | GS }}</td>
+          <td style="font-weight: 800">{{total[5] | GS }}</td>
+          <td style="font-weight: 800">{{total[6] | GS }}</td>
+          <td style="font-weight: 800">{{total[7] | GS }}</td>
+          <td style="font-weight: 800">{{total[8] | GS }}</td>
+          <td style="font-weight: 800">{{total[9] | GS }}</td>
+          <td style="font-weight: 800">{{total[10]  | GS }}</td>
         </tr>
         </tbody>
       </table>
@@ -71,9 +75,11 @@
 
   import print from './print'
   import Cookies from 'js-cookie'
+  import mixin from '@/mixins'
 
   export default {
     name: 'char',
+    mixins:[mixin],
     components: {print},
     data() {
       return {

@@ -218,13 +218,13 @@
                    充值金额
                   </div>
                   <div class="ItemMess3">
-                    :  {{money | DX}} <span style="float: right">￥{{money}}元</span>
+                    :  {{money | DX}} <span style="float: right">￥{{money | GS}}元</span>
                   </div>
                   <div class="messTit3">
                     赠送额度
                   </div>
                   <div class="ItemMess3">
-                    :  {{money1 | DX}} <span style="float: right">￥{{money1}}元</span>
+                    :  {{money1 | DX}} <span style="float: right">￥{{money1 | GS}}元</span>
                   </div>
                 </div>
 <!--                <div class="messList">-->

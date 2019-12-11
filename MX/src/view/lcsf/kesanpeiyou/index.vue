@@ -109,7 +109,7 @@
             </span>
           &nbsp&nbsp&nbsp
             <span style="font-size: 15px;font-weight: 600">
-            合计：<span style="color: #ed3f14"> {{hj}} </span> 元
+            合计：<span style="color: #ed3f14"> {{hj | GS}} </span> 元
             </span>
             </span>
         </Col>
@@ -376,9 +376,11 @@
   import moment from 'moment'
   import Cookies from 'js-cookie'
   import printNew from '../../../components/printNew'
+  import mixin from '@/mixins'
 
   export default {
     name: "index",
+    mixins:[mixin],
     components: {
       carCard, jlwh, addjl,
       print, radioCar, carStatistics, printNew,
