@@ -40,7 +40,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -508,13 +507,14 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         int kfye = 0;
         int cardye = 0;
         String fdr = "";
+        // 计算实际时长  (所有车辆免费前五分钟)
+        long ksfz = start.getTime() / (60 * 1000);
+        long jsfz = end.getTime() / (60 * 1000);
+        int lcSc = (int) (jsfz - ksfz);
+        lcJl.setSc(lcSc);
         if (StringUtils.equals(lcJl.getLcLx(), "00")) {
             RuntimeCheck.ifTrue(StringUtils.equals(km, "2") && !StringUtils.equals(km, lcJl.getLcKm()), "请前往科目二窗口还车");
             RuntimeCheck.ifTrue(StringUtils.equals(km, "3") && !StringUtils.equals(km, lcJl.getLcKm()), "请前往科目三窗口还车");
-            // 计算实际时长  (所有车辆免费前五分钟)
-            long ksfz = start.getTime() / (60 * 1000);
-            long jsfz = end.getTime() / (60 * 1000);
-            int lcSc = (int) (jsfz - ksfz);
             int v;
             if (StringUtils.equals(lcJl.getLcKm(), "2") && StringUtils.equals(lcJl.getZddm(), "K2JS-S")) {
                 // 科目二的 190 35分钟 , 超出时间按照 8.33计算
@@ -587,6 +587,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             }
             str += " 应收现金" + xjje + "元";
         } else {
+            lcJl.setSc(0);
             fdr = "3";
             str = " 应收现金: " + lcJl.getLcFy() + "元";
         }
@@ -603,8 +604,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 clService.update(lcCl);
             }
         }
-
-        lcJl.setSc((int) (end.getTime() - start.getTime()) / (1000 * 60));
         lcJl.setJssj(s);
         lcJl.setXgr(yh.getZh() + "-" + yh.getXm());
         lcJl.setXgsj(DateUtils.getNowTime());
@@ -2389,7 +2388,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             secList.add(data);
         });
         // 合计写在message里面吧
-        String hj = (k2xj) +","  + k3xj + "," + cwcz + "," + cwfd + "," + cwzj;
+        String hj = k2js + "," + k2py + "," + k2kf + "," + (k2xj) + "," + k3js + "," + k3py + "," + k3ab + "," + k3xj + "," + cwcz + "," + cwfd + "," + cwzj;
         ApiResponse<List<String>> res = new ApiResponse<>();
         res.setResult(secList);
         res.setMessage(hj);
@@ -2469,23 +2468,23 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             String s = result.get(i);
             String[] split = s.split(",");
             for (int i1 = 0; i1 < split.length; i1++) {
-                sheet.addCell(new Label(i1, (i+2),split[i1],cellFormat));
+                sheet.addCell(new Label(i1, (i + 2), split[i1], cellFormat));
             }
         }
         String[] split = message.split(",");
         int i = result.size() + 2;
-        sheet.addCell(new Label(0, i,"合计",cellFormat));
-        sheet.addCell(new Label(1,i,"",cellFormat));
-        sheet.addCell(new Label(2,i, "",cellFormat));
-        sheet.addCell(new Label(3,i,"",cellFormat));
-        sheet.addCell(new Label(4,i,split[0],cellFormat));
-        sheet.addCell(new Label(5,i,"",cellFormat));
-        sheet.addCell(new Label(6,i,"",cellFormat));
-        sheet.addCell(new Label(7,i,"",cellFormat));
-        sheet.addCell(new Label(8,i,split[1],cellFormat));
-        sheet.addCell(new Label(9,i,split[2],cellFormat));
-        sheet.addCell(new Label(10,i,split[3],cellFormat));
-        sheet.addCell(new Label(11,i, split[4],cellFormat));
+        sheet.addCell(new Label(0, i, "合计", cellFormat));
+        sheet.addCell(new Label(1, i, split[0], cellFormat));
+        sheet.addCell(new Label(2, i, split[1], cellFormat));
+        sheet.addCell(new Label(3, i, split[2], cellFormat));
+        sheet.addCell(new Label(4, i, split[4], cellFormat));
+        sheet.addCell(new Label(5, i, split[5], cellFormat));
+        sheet.addCell(new Label(6, i, split[6], cellFormat));
+        sheet.addCell(new Label(7, i, split[7], cellFormat));
+        sheet.addCell(new Label(8, i, split[8], cellFormat));
+        sheet.addCell(new Label(9, i, split[9], cellFormat));
+        sheet.addCell(new Label(10, i, split[10], cellFormat));
+        sheet.addCell(new Label(11, i, split[11], cellFormat));
         workbook.write();
         workbook.close();
     }
