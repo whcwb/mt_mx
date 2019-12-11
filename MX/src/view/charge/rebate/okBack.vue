@@ -23,24 +23,49 @@
     </Row>
     <Table :height="AF.getPageHeight()-250" stripe size="small"
            :columns="tableColumns" :data="tableData"></Table>
-    <div style="text-align: right;padding: 6px 0;display: flex;justify-content: flex-end">
-       <span style="font-size: 12px;padding-top: 7px">
+
+    <Row style="display: flex;align-items: center;height: 36px;">
+      <Col span="3" align="left">
+        <i-switch v-model="switch1"></i-switch>
+      </Col>
+      <Col span="21" align="right" style="display: flex;justify-content: flex-end;">
+          <span style="font-size: 12px;padding-top: 7px" v-if="switch1">
           <span>共&nbsp; </span>
           <span>{{hj}}</span>
           <span> &nbsp;元&nbsp;&nbsp;</span>
        </span>
-      <Page :total=totalS
-            :current=param.pageNum
-            :page-size=param.pageSize
-            :page-size-opts=[8,10,15,20,30,40,50]
-            show-total
-            show-elevator
-            show-sizer
-            placement='top'
-            @on-page-size-change='(n)=>{pageSizeChange(n)}'
-            @on-change='(n)=>{pageChange(n)}'>
-      </Page>
-    </div>
+        <Page :total=totalS
+              :current=param.pageNum
+              :page-size=param.pageSize
+              :page-size-opts=[8,10,15,20,30,40,50]
+              show-total
+              show-elevator
+              show-sizer
+              placement='top'
+              @on-page-size-change='(n)=>{pageSizeChange(n)}'
+              @on-change='(n)=>{pageChange(n)}'>
+        </Page>
+      </Col>
+    </Row>
+
+    <!--<div style="text-align: right;padding: 6px 0;display: flex;justify-content: flex-end">-->
+       <!--<span style="font-size: 12px;padding-top: 7px">-->
+          <!--<span>共&nbsp; </span>-->
+          <!--<span>{{hj}}</span>-->
+          <!--<span> &nbsp;元&nbsp;&nbsp;</span>-->
+       <!--</span>-->
+      <!--<Page :total=totalS-->
+            <!--:current=param.pageNum-->
+            <!--:page-size=param.pageSize-->
+            <!--:page-size-opts=[8,10,15,20,30,40,50]-->
+            <!--show-total-->
+            <!--show-elevator-->
+            <!--show-sizer-->
+            <!--placement='top'-->
+            <!--@on-page-size-change='(n)=>{pageSizeChange(n)}'-->
+            <!--@on-change='(n)=>{pageChange(n)}'>-->
+      <!--</Page>-->
+    <!--</div>-->
     <component :is="compName" :MSList="MSList"></component>
     <component :is="componentName"  :hisPrintMess="hisPrintMess"></component>
   </div>
@@ -49,6 +74,7 @@
 <script>
   import fdms from './comp/fdms'
   import printSignUp from './comp/printSignUp'
+  import Cookies from 'js-cookie'
   export default {
     name: "okBack",
     components: {fdms,printSignUp},
@@ -109,6 +135,7 @@
           cjsj: ''
         },
         hj:0,
+        switch1: true,
         param: {
             qrsjIsNotNull:'1',
             orderBy: 'qrsj desc',
@@ -119,6 +146,14 @@
           cjsjInRange:''
         }
       }
+    },
+    watch: {
+      switch1:function (val) {
+        Cookies.set('showMessFD',val)
+      }
+    },
+    mounted() {
+      this.switch1=Cookies.get('showMessFD')==='true'?true:false
     },
     created() {
       const end = new Date();
