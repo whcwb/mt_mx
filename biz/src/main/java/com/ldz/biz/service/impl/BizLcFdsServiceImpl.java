@@ -89,6 +89,7 @@ public class BizLcFdsServiceImpl extends BaseServiceImpl<BizLcFds,String> implem
         List<BizLcFds> fds = findByCondition(condition);
         int sum = fds.stream().mapToInt(BizLcFds::getFdje).sum();
         res.setResult("" + sum);
+        res.setPage(pageInfo);
         return res;
     }
 }
