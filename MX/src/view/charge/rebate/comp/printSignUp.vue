@@ -245,7 +245,7 @@
 <!--                </div>-->
 
                 <div class="messList">
-                  <div class="messTit" style="font-size: 16px">
+                  <div class="messTit" style="font-size: 19px;padding-left: 15px">
                     备注 :
                   </div>
                   <div class="ItemMess5" v-for="(item,index) in bzid"  style="text-align: left; font-size: 16px;padding-left: 5px;font-weight: 400">
@@ -554,7 +554,6 @@
           .ItemMess2 {
             float: left;
             width: 30mm;
-            /*border-bottom: solid 1px #000;*/
             text-align: left;
             font-size: 18px;
           }
@@ -595,7 +594,6 @@
           .ItemMess2 {
             float: left;
             width: 20mm;
-            border-bottom: solid 1px #000;
             text-align: left;
             font-size: 18px;
           }

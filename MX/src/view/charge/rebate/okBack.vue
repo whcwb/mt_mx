@@ -23,7 +23,12 @@
     </Row>
     <Table :height="AF.getPageHeight()-250" stripe size="small"
            :columns="tableColumns" :data="tableData"></Table>
-    <div style="text-align: right;padding: 6px 0">
+    <div style="text-align: right;padding: 6px 0;display: flex;justify-content: flex-end">
+       <span style="font-size: 12px;padding-top: 7px">
+          <span>共&nbsp; </span>
+          <span>{{hj}}</span>
+          <span> &nbsp;元&nbsp;&nbsp;</span>
+       </span>
       <Page :total=totalS
             :current=param.pageNum
             :page-size=param.pageSize
@@ -103,6 +108,7 @@
         dateRange: {
           cjsj: ''
         },
+        hj:0,
         param: {
             qrsjIsNotNull:'1',
             orderBy: 'qrsj desc',
@@ -143,8 +149,10 @@
         this.compName = fdms
       },
       getOldData() {
-        this.$http.post('/api/fds/pager',this.param).then((res) => {
+        this.hj= 0
+        this.$http.post('/api/fds/getPager',this.param).then((res) => {
           if (res.code == 200 && res.page.list) {
+            this.hj = res.result
             this.totalS = res.page.total
             this.tableData = res.page.list;
           }

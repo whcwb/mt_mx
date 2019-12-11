@@ -18,13 +18,11 @@
         © Copyright Reserved 版权所有
       </div>
       <div class="messItem" style="font-size: 16px">
-        武汉创伟博科技有限公司  V 2.2.6
+        武汉创伟博科技有限公司  V 2.2.8
       </div>
       <div class="messItem" style="font-size: 16px">
-
       </div>
     </div>
-
   </div>
 </template>
 
