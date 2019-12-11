@@ -228,7 +228,7 @@
                     人民币(大写)
                   </div>
                   <div class="ItemMess">
-                    :  {{hisPrintMess.addmoney | DX}} <span style="float: right">￥{{hisPrintMess.addmoney}}元</span>
+                    :  {{hisPrintMess.addmoney | DX}} <span style="float: right">￥{{hisPrintMess.addmoney|GS}}元</span>
                   </div>
                 </div>
 
