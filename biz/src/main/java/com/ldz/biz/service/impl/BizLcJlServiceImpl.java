@@ -163,7 +163,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     public ApiResponse<String> saveEntity(BizLcJl entity) {
 
         String s = JSON.toJSONString(entity);
-        // 避免数据重复提交
         String lc = redis.boundValueOps("lcjl").get();
         if (StringUtils.isNotBlank(lc)) {
             RuntimeCheck.ifTrue(StringUtils.equals(lc, s), "操作频繁,请稍后再试");
@@ -173,10 +172,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         //  判断所有必填字段
         RuntimeCheck.ifBlank(entity.getJlId(), "请选择教练");
         BizLcWxjl wxjl = wxjlService.findById(entity.getJlId());
-        // 根据教练判断本校外校
+        // 本校外校没有了   jlLx 这个字段暂时没用 , 全部默认为外校
         entity.setJlLx(wxjl.getJlLx());
+//        entity.setJlLx("10");
         entity.setId(genId());
-        // 科目二 190 套餐 ,  需要根据人数计费
         if(StringUtils.equals(entity.getZddm(), "K2JS-S")){
             RuntimeCheck.ifNull(entity.getXySl(), "此套餐需要填写学员数量");
             RuntimeCheck.ifTrue(entity.getXySl()<=0, "学员数量不能小于0");
@@ -187,15 +186,12 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         condition.eq(SysZdxm.InnerColumn.zddm, entity.getZddm());
         List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
         RuntimeCheck.ifEmpty(zdxms, "未找到套餐信息");
-        // 拿到练车套餐的内容
         SysZdxm zdxm = zdxms.get(0);
-        // 科目三培优需要填写学员人数
         if(StringUtils.equals(entity.getLcKm(), "3") && !StringUtils.equals(entity.getLcLx(), "20")){
             RuntimeCheck.ifNull(entity.getXySl(), "请填写学员人数");
             RuntimeCheck.ifTrue(entity.getXySl() <= 0, "学员数量必须大于0");
         }
         BizLcCl lcCl = null;
-        // 是否有选择车辆 , 如果有需要判断车辆状态
         if (StringUtils.isNotBlank(entity.getLcClId())) {
             lcCl = clService.findById(entity.getLcClId());
             RuntimeCheck.ifTrue(lcCl.getClZt().equalsIgnoreCase("01"), lcCl.getClBh() + "号车辆已经在训练中");
@@ -215,7 +211,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             lcCl.setXgsj(DateUtils.getNowTime());
             lcCl.setZgId(entity.getZgId());
         }
-        // 根据套餐内容判断此次发车是否需要刷卡
         if (StringUtils.equals(zdxm.getBy2(), "1")) {
             RuntimeCheck.ifNull(lcCl, "请选择车辆");
             // 0 为不启用打卡 1 为启用打卡
@@ -234,10 +229,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 RuntimeCheck.ifFalse(StringUtils.equals(lcCl.getCardNo(),entity.getCardNo()), "卡号与车号不匹配,该卡已绑定" +clBh + "号车!" );
             }
         }
-        // 根据所选套餐判断训练类型
         entity.setLcLx(zdxm.getBy5());
         entity.setJlJx(wxjl.getJlJx());
-        // 如果不是 培优 和开放日 则需要选择车辆
         if (!StringUtils.equals(entity.getLcLx(), "30") && ! StringUtils.equals(entity.getLcLx(), "20")) {
             RuntimeCheck.ifNull(lcCl, "请选择车辆");
             // 查询卡号记录 判断是否在训练中
@@ -252,7 +245,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             // 修改车辆为使用中
             clService.update(lcCl);
         }
-        // 科目三发车需要选择安全员 (培优除外)
         if ((StringUtils.equals(entity.getLcKm(), "3") && !StringUtils.equals(entity.getLcLx(),"20"))  || StringUtils.isNotBlank(entity.getZgId())) {
             // 科目三需要选定安全员
             RuntimeCheck.ifBlank(entity.getZgId(), "请选择安全员");
@@ -265,12 +257,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             RuntimeCheck.ifTrue(ObjectUtils.isEmpty(zgjbxx), "没有找到该安全员的信息");
             entity.setZgXm(zgjbxx.getXm());
         }
-        // 设置发车时间
+
+        entity.setLcLx(StringUtils.isBlank(entity.getLcLx()) ? "00" : entity.getLcLx());
         LocalDateTime now = LocalDateTime.now();
         String nowTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         entity.setCjsj(nowTime);
         entity.setKssj(nowTime);
-        // 如果不是计时类型 则直接计算费用 返点 都在生成记录时产生
+
         if (!StringUtils.equals(entity.getLcLx(), "00") && StringUtils.isNotBlank(entity.getLcLx())) {
             entity.setPz(entity.getId());
             // 套餐类型不是计时培训 需要在记录的时候就将费用计算出来 , 有返点的直接记录返点

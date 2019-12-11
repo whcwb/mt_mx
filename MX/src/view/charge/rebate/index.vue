@@ -334,6 +334,7 @@
           pageSize: 15
         },
         okParams: {
+          jl:'',
           id: '',
           fdJe: 0
         },
@@ -479,6 +480,7 @@
         }
         this.okParams.id = ''
         this.okParams.fdJe = 0
+        this.okParams.jl = row.jlXm
         list.forEach((it, index) => {
           this.okParams.fdJe = this.okParams.fdJe + it.fdje
           if (index == list.length - 1) {
@@ -497,9 +499,8 @@
           })
           return
         }
-
         this.swal({
-          title: '确认返点?',
+          title: '是否确认[ '+this.okParams.jl+' ]返点[ '+this.okParams.fdJe+' ]元?',
           type: 'warning',
           confirmButtonText: '确认',
           cancelButtonText: '关闭',
