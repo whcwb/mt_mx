@@ -234,7 +234,7 @@
 <!--                </div>-->
 
                 <div class="messList">
-                  <div class="messTit" style="font-size: 16px">
+                  <div class="messTit" style="font-size: 19px;padding-left: 15px">
                     备注：
                   </div>
                 </div>
