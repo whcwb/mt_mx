@@ -2389,7 +2389,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             secList.add(data);
         });
         // 合计写在message里面吧
-        String hj = (k2xj) +","  + k3xj + "," + cwcz + "," + cwfd + "," + cwzj;
+        String hj = k2js + "," + k2py + "," + k2kf + "," + (k2xj) + "," + k3js + "," + k3py + "," + k3ab + "," + k3xj + "," + cwcz + "," + cwfd + "," + cwzj;
         ApiResponse<List<String>> res = new ApiResponse<>();
         res.setResult(secList);
         res.setMessage(hj);
@@ -2469,23 +2469,23 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             String s = result.get(i);
             String[] split = s.split(",");
             for (int i1 = 0; i1 < split.length; i1++) {
-                sheet.addCell(new Label(i1, (i+2),split[i1],cellFormat));
+                sheet.addCell(new Label(i1, (i + 2), split[i1], cellFormat));
             }
         }
         String[] split = message.split(",");
         int i = result.size() + 2;
-        sheet.addCell(new Label(0, i,"合计",cellFormat));
-        sheet.addCell(new Label(1,i,"",cellFormat));
-        sheet.addCell(new Label(2,i, "",cellFormat));
-        sheet.addCell(new Label(3,i,"",cellFormat));
-        sheet.addCell(new Label(4,i,split[0],cellFormat));
-        sheet.addCell(new Label(5,i,"",cellFormat));
-        sheet.addCell(new Label(6,i,"",cellFormat));
-        sheet.addCell(new Label(7,i,"",cellFormat));
-        sheet.addCell(new Label(8,i,split[1],cellFormat));
-        sheet.addCell(new Label(9,i,split[2],cellFormat));
-        sheet.addCell(new Label(10,i,split[3],cellFormat));
-        sheet.addCell(new Label(11,i, split[4],cellFormat));
+        sheet.addCell(new Label(0, i, "合计", cellFormat));
+        sheet.addCell(new Label(1, i, split[0], cellFormat));
+        sheet.addCell(new Label(2, i, split[1], cellFormat));
+        sheet.addCell(new Label(3, i, split[2], cellFormat));
+        sheet.addCell(new Label(4, i, split[4], cellFormat));
+        sheet.addCell(new Label(5, i, split[5], cellFormat));
+        sheet.addCell(new Label(6, i, split[6], cellFormat));
+        sheet.addCell(new Label(7, i, split[7], cellFormat));
+        sheet.addCell(new Label(8, i, split[8], cellFormat));
+        sheet.addCell(new Label(9, i, split[9], cellFormat));
+        sheet.addCell(new Label(10, i, split[10], cellFormat));
+        sheet.addCell(new Label(11, i, split[11], cellFormat));
         workbook.write();
         workbook.close();
     }
