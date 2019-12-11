@@ -30,11 +30,11 @@
       </Col>
       <Col span="21" align="right" style="display: flex;justify-content: flex-end;">
           <span style="font-size: 12px;padding-top: 7px" v-if="switch1">
-            <span style="font-size: 15px;font-weight: 600">笔数&nbsp; </span>
-          <span style="color: #ed3f14">{{totalS }}</span>
+            <span style="font-size: 15px;font-weight: 600">笔数:&nbsp; </span>
+          <span style="color: #ed3f14;font-size: 15px;">{{totalS }}</span>
             <span style="font-size: 15px;font-weight: 600"> &nbsp;笔&nbsp;&nbsp;</span>
-          <span style="font-size: 15px;font-weight: 600">合计&nbsp</span>
-          <span style="color: #ed3f14">{{hj}}</span>
+          <span style="font-size: 15px;font-weight: 600">合计:&nbsp</span>
+          <span style="color: #ed3f14;font-size: 15px;">{{hj|GS}}</span>
           <span style="font-size: 15px;font-weight: 600"> &nbsp;元&nbsp;&nbsp;</span>
        </span>
         <Page :total=totalS
@@ -59,9 +59,11 @@
   import fdms from './comp/fdms'
   import printSignUp from './comp/printSignUp'
   import Cookies from 'js-cookie'
+  import mixin from '@/mixins'
   export default {
     name: "okBack",
     components: {fdms,printSignUp},
+    mixins:[mixin],
     data() {
       return {
         v: this,
