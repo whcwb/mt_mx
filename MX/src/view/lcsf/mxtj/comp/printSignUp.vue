@@ -212,6 +212,7 @@
                   </div>
                   <div class="ItemMess">
                     :  科目{{hisPrintMess.lcKm==''?'二、三':hisPrintMess.lcKm==='2'?'二':'三'}}
+                    （{{start}}至{{end}}）
                   </div>
                 </div>
                 <div class="messList">
@@ -331,13 +332,18 @@
         tjr:'',
         messIdList:[],
         studentIDS:[],
-        bzid:[]
+        bzid:[],
+        start:'',
+        end:''
       }
     },
     props: {
         hisPrintMess: Object
     },
     created() {
+
+      this.start=this.hisPrintMess.kssjInRange.split(',')[0].substring(0,10)
+      this.end=this.hisPrintMess.kssjInRange.split(',')[1].substring(0,10)
 
       this.time=new Date().format('yyyy-MM-dd')
       this.bz = ''

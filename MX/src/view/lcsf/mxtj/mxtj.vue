@@ -271,6 +271,7 @@
 
         hisPrintMess.lcKm=param.lcKm
         hisPrintMess.addmoney=addmoney
+        hisPrintMess.kssjInRange=param.kssjInRange
 
         if(hisPrintMess.lcKm=='') {
           this.$Message.error('请选择科目');
@@ -281,6 +282,7 @@
           this.$Message.error('当日无收款记录');
           return
         }
+
 
         this.componentName = 'printSignUp'
       }
