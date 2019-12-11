@@ -30,9 +30,12 @@
       </Col>
       <Col span="21" align="right" style="display: flex;justify-content: flex-end;">
           <span style="font-size: 12px;padding-top: 7px" v-if="switch1">
-          <span>共&nbsp; </span>
-          <span>{{hj}}</span>
-          <span> &nbsp;元&nbsp;&nbsp;</span>
+            <span style="font-size: 15px;font-weight: 600">笔数&nbsp; </span>
+          <span style="color: #ed3f14">{{totalS }}</span>
+            <span style="font-size: 15px;font-weight: 600"> &nbsp;笔&nbsp;&nbsp;</span>
+          <span style="font-size: 15px;font-weight: 600">合计&nbsp</span>
+          <span style="color: #ed3f14">{{hj}}</span>
+          <span style="font-size: 15px;font-weight: 600"> &nbsp;元&nbsp;&nbsp;</span>
        </span>
         <Page :total=totalS
               :current=param.pageNum
@@ -47,25 +50,6 @@
         </Page>
       </Col>
     </Row>
-
-    <!--<div style="text-align: right;padding: 6px 0;display: flex;justify-content: flex-end">-->
-       <!--<span style="font-size: 12px;padding-top: 7px">-->
-          <!--<span>共&nbsp; </span>-->
-          <!--<span>{{hj}}</span>-->
-          <!--<span> &nbsp;元&nbsp;&nbsp;</span>-->
-       <!--</span>-->
-      <!--<Page :total=totalS-->
-            <!--:current=param.pageNum-->
-            <!--:page-size=param.pageSize-->
-            <!--:page-size-opts=[8,10,15,20,30,40,50]-->
-            <!--show-total-->
-            <!--show-elevator-->
-            <!--show-sizer-->
-            <!--placement='top'-->
-            <!--@on-page-size-change='(n)=>{pageSizeChange(n)}'-->
-            <!--@on-change='(n)=>{pageChange(n)}'>-->
-      <!--</Page>-->
-    <!--</div>-->
     <component :is="compName" :MSList="MSList"></component>
     <component :is="componentName"  :hisPrintMess="hisPrintMess"></component>
   </div>
