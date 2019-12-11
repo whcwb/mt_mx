@@ -454,6 +454,7 @@
       tabselAll(list){
         this.okParams.id = ''
         this.okParams.fdJe = 0
+        this.okParams.jl = list[0].jlXm
         list.forEach((it, index) => {
           this.okParams.fdJe = this.okParams.fdJe + it.fdje
           if (index == list.length - 1) {
