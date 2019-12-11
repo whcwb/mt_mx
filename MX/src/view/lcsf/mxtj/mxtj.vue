@@ -6,7 +6,7 @@
     <Row>
       <Col span="24" align="right">
         <div style="font-size: 15px;font-weight: 600">
-          实收合计：<span style="color: #ed3f14"> {{addmoney}} </span> 元
+          实收合计：<span style="color: #ed3f14"> {{addmoney | GS}} </span> 元
         </div>
       </Col>
     </Row>
@@ -16,6 +16,7 @@
 
 <script>
   // import formData from './formModal.vue'
+  import mixin from '@/mixins'
   import Cookies from 'js-cookie'
   import print from './print'
   //驾校统计
@@ -23,6 +24,7 @@
 
   export default {
     name: 'char',
+    mixins: [mixin],
     components: {print,jxtj},
     data() {
       return {
