@@ -749,25 +749,9 @@
               if (p.row.zdxm != '') {
                 return h('div', p.row.zdxm.by9 + ' ' + p.row.zdxm.zdmc)
               }
-
             }
           },
           {title: '人数', align: 'center', key: 'xySl', minWidth: 70, defaul: '0'},
-          // {title: '车辆编号', key: 'clBh', searchKey: 'clBh', minWidth: 90,},
-          // {
-          //   title: '状态', minWidth: 120, render: (h, p) => {
-          //     let s = '';
-          //     if (!p.row.kssj || p.row.kssj === '') {
-          //       s = '预约中'
-          //     } else if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')) {
-          //       s = '训练中'
-          //     } else {
-          //       s = '已结束'
-          //     }
-          //     return h('div', s);
-          //   }
-          // },
-
           {title: '开始时间', align: 'center', key: 'kssj', minWidth: 145},
           {title: '结束时间', align: 'center', key: 'jssj', searchType: 'daterange', minWidth: 90,
             render: (h, p) => {
@@ -780,19 +764,6 @@
               return h('div', p.row.sc + '分钟');
             }
           },
-          // {title: '计费类型', key: 'lcLx',minWidth:90,dict:'ZDCLK1048'},
-          // {
-          //   title: '费用', align: 'center', minWidth: 70, defaul: '0',
-          //   render: (h, p) => {
-          //     if (p.row.zfzt == '00') {
-          //       return h('div', p.row.yfJe + '元');
-          //     }
-          //
-          //     if (p.row.zfzt !== '00') {    //为已支付的，就显示现金
-          //       return h('div', p.row.xjje + '元');
-          //     }
-          //   }
-          // },
           {
             title: '应收', align: 'center', minWidth: 110, defaul: '0',
             render: (h, p) => {
