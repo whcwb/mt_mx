@@ -20,7 +20,7 @@
       <!--</Col>-->
       <Col span="24" align="right">
         <div style="font-size: 15px;font-weight: 600">
-          实收合计：<span style="color: #ed3f14"> {{addmoney}} </span> 元
+          实收合计：<span style="color: #ed3f14"> {{addmoney | GS}} </span> 元
         </div>
       </Col>
     </Row>
@@ -33,10 +33,12 @@
   import print from './print'
   import moment from 'moment'
   import Cookies from 'js-cookie'
+  import mixin from '@/mixins'
 
   export default {
     name: 'char',
     components: {print},
+    mixins: [mixin],
     data() {
       return {
         v: this,

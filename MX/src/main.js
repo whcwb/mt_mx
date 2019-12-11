@@ -48,6 +48,9 @@ Vue.use(iView, {
   'split-panels':true
 })
 
+
+
+
 Vue.config.productionTip = false
 /**
  * @description 全局注册应用配置

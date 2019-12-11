@@ -112,6 +112,10 @@ export default {
     }
     return num
   },
+  GS: (n)=>{ //  格式化 1000  转  1,000
+    var pattern = /(?=((?!\b)\d{3})+$)/g;
+    return n.replace(pattern, ',');
+  },
   DX: (n) => {//金额大写转换
     if (!/^(0|[1-9]\d*)(\.\d+)?$/.test(n))
       return "数据非法";
