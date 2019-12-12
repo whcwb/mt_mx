@@ -72,7 +72,7 @@
           {
             title: '流水时间',
             align: 'center',
-            minWidth: 90,
+            minWidth: 80,
             render: (h, p) => {
               return h('div', p.row.cjsj.substring(0, 16));
             },
@@ -85,21 +85,21 @@
               let type = ''
               switch (p.row.type) {
                 case '10':
-                  type = '预存(充值卡)'
+                  type = '预存'
                   break;
                 case '20':
-                  type = '抵扣(充值卡)'
+                  type = '抵扣'
                   break;
               }
               return h('div', type);
             },
             filters: [
               {
-                label: '预存(充值卡)',
+                label: '预存',
                 value: '10'
               },
               {
-                label: '抵扣(充值卡)',
+                label: '抵扣',
                 value: '20'
               }
             ],
@@ -124,6 +124,7 @@
           {
             title: '实收',
             align: 'center',
+            minWidth: 70,
             render: (h, p) => {
               return h('div', p.row.sfje + '元');
             },
@@ -131,6 +132,7 @@
           {
             title: '赠送额度',
             align: 'center',
+            minWidth: 60,
             render: (h, p) => {
               if (p.row.type == '00' || p.row.type == '10')
                 return h('div', (parseInt(p.row.je) - parseInt(p.row.sfje)) + '元');
@@ -165,11 +167,6 @@
             }
           },
           {
-            title: '备注',
-            key: 'bz',
-            align: 'center',
-          },
-          {
             title: '操作',
             align: 'center',
             render: (h, p) => {
@@ -201,7 +198,7 @@
           {
             title: '流水时间',
             align: 'center',
-            minWidth: 90,
+            minWidth: 60,
             render: (h, p) => {
               return h('div', p.row.cjsj.substring(0, 16));
             },
@@ -214,21 +211,21 @@
               let type = ''
               switch (p.row.type) {
                 case '00':
-                  type = '预存(开放日)'
+                  type = '预存'
                   break;
                 case '30':
-                  type = '抵扣(开放日)'
+                  type = '抵扣'
                   break;
               }
               return h('div', type);
             },
             filters: [
               {
-                label: '预存(开放日)',
+                label: '预存',
                 value: '00'
               },
               {
-                label: '抵扣(开放日)',
+                label: '抵扣',
                 value: '30'
               }
             ],
@@ -268,13 +265,13 @@
               else return h('div', '/');
             },
           },
-          {
-            title: '实收',
-            align: 'center',
-            render: (h, p) => {
-              return h('div', p.row.sfje + '元');
-            },
-          },
+          // {
+          //   title: '实收',
+          //   align: 'center',
+          //   render: (h, p) => {
+          //     return h('div', p.row.sfje + '元');
+          //   },
+          // },
           {
             title: '余额',
             align: 'center',
@@ -296,34 +293,35 @@
           {
             title: '备注',
             key: 'bz',
+            minWidth: 130,
             align: 'center',
           },
-          {
-            title: '操作',
-            align: 'center',
-            render: (h, p) => {
-              if (p.row.type == '10') {
-                return h('Button', {
-                  props: {
-                    type: 'info',
-                    size: 'small'
-                  },
-                  style: {
-                    borderRadius: '15px'
-                  },
-                  on: {
-                    click: () => {
-                      this.hisPrintMess = p.row
-                      this.componentName = 'printSignUp'
-                    }
-                  }
-                }, '打印')
-              } else {
-                return ''
-              }
-
-            }
-          }
+          // {
+          //   title: '操作',
+          //   align: 'center',
+          //   render: (h, p) => {
+          //     if (p.row.type == '10') {
+          //       return h('Button', {
+          //         props: {
+          //           type: 'info',
+          //           size: 'small'
+          //         },
+          //         style: {
+          //           borderRadius: '15px'
+          //         },
+          //         on: {
+          //           click: () => {
+          //             this.hisPrintMess = p.row
+          //             this.componentName = 'printSignUp'
+          //           }
+          //         }
+          //       }, '打印')
+          //     } else {
+          //       return ''
+          //     }
+          //
+          //   }
+          // }
         ],        //开放日列表
       }
     },
