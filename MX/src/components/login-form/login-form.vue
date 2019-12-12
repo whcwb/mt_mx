@@ -195,12 +195,16 @@
         })
       },
       login(){
+        localStorage.removeItem("menuList");
+        sessionStorage.clear()
+        Cookies.remove('accessToken')
+        Cookies.remove('usermess')
         var v = this
         v.$http.post(this.apis.LOGIN.QUERY, this.form).then((res) => {
           if (res.code === 200) {
-            localStorage.setItem('user',this.form.username)
+            localStorage.setItem('user', this.form.username)
             Cookies.set('usermess', this.form.username);
-            Cookies.set('accessToken', res.result.accessToken,{ expires: 36500 });
+            Cookies.set('accessToken', res.result.accessToken, {expires: 36500});
 
             sessionStorage.setItem("userInfo", JSON.stringify(res.result.userInfo));
             localStorage.setItem('menuList', JSON.stringify(res.result.menuTree))
