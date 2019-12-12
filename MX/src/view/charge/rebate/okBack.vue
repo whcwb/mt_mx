@@ -142,17 +142,17 @@
       this.switch1=Cookies.get('showMessFD')==='true'?true:false
     },
     created() {
-      const end = new Date();
-      const start = new Date();
-      start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-      this.dateRange.cjsj = [start, end]
-      var d = start;
-      var c = end;
-      var datetimed = this.AF.trimDate(start) + ' ' + '00:00:00';
-      var datetimec = this.AF.trimDate() + ' 23:59:59';
-      this.param.cjsjInRange = datetimed + ',' + datetimec
-      // this.dateRange.cjsj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
-      // this.param.cjsjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
+      // const end = new Date();
+      // const start = new Date();
+      // start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+      // this.dateRange.cjsj = [start, end]
+      // var d = start;
+      // var c = end;
+      // var datetimed = this.AF.trimDate(start) + ' ' + '00:00:00';
+      // var datetimec = this.AF.trimDate() + ' 23:59:59';
+      // this.param.cjsjInRange = datetimed + ',' + datetimec
+      this.dateRange.cjsj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
+      this.param.cjsjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
       this.getOldData()
     },
     methods: {
