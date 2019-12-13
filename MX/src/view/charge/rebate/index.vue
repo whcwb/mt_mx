@@ -25,7 +25,7 @@
         </Col>
         <Col span="18" style="display: flex;justify-content: flex-end">
           <Col span="5" style="margin-right: 10px">
-            <Input id="code" ref="code" :autofocus="true" v-focus v-model="param.idLike" clearable placeholder="请扫描条形码" @on-change="getOldData" @on-enter="getOldData"/>
+            <Input id="code" ref="code" :autofocus="true" v-focus v-model="param.idLike" clearable placeholder="请扫描条形码" @on-enter="getOldData"/>
           </Col>
           <Col span="4">
             <Input v-model="param.jlXmLike" clearable placeholder="教练员姓名" @on-enter="getOldData"/>
