@@ -6,7 +6,6 @@ import com.github.pagehelper.PageInfo;
 import com.ldz.biz.mapper.BizJlCzMapper;
 import com.ldz.biz.mapper.BizLcWxjlMapper;
 import com.ldz.biz.model.BizJlCz;
-import com.ldz.biz.model.BizLcFd;
 import com.ldz.biz.model.BizLcWxjl;
 import com.ldz.biz.service.BizLcWxjlService;
 import com.ldz.sys.base.BaseServiceImpl;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
-import javax.management.relation.RoleUnresolved;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -218,6 +216,35 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
         wxjl.setCardNo(null);
         wxjl.setPwd(null);
         baseMapper.updateByPrimaryKey(wxjl);
+        return ApiResponse.success();
+    }
+
+    @Override
+    public ApiResponse<String> updateZhye(String id) {
+        RuntimeCheck.ifBlank(id, "请选择教练");
+        String[] split = id.split(",");
+        List<BizLcWxjl> wxjls = findByIds(Arrays.asList(split));
+        SysYh sysYh = getCurrentUser();
+        wxjls.forEach(bizLcWxjl -> {
+            if (bizLcWxjl.getYe() > 0) {
+                BizJlCz cz = new BizJlCz();
+                cz.setId(genId());
+                cz.setXm(bizLcWxjl.getJlXm());
+                cz.setType("30");
+                cz.setSfje(0);
+                cz.setJx(bizLcWxjl.getJlJx());
+                cz.setJlId(bizLcWxjl.getId());
+                cz.setJe(bizLcWxjl.getYe());
+                cz.setCzhje(0);
+                cz.setCjsj(DateUtils.getNowTime());
+                cz.setBz(sysYh.getXm() + "-" + sysYh.getZh() + " 余额清零");
+                cz.setCzqje(bizLcWxjl.getYe());
+                cz.setZy("余额清零");
+                czMapper.insert(cz);
+                bizLcWxjl.setYe(0);
+                update(bizLcWxjl);
+            }
+        });
         return ApiResponse.success();
     }
 

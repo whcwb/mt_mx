@@ -28,4 +28,6 @@ public interface BizLcWxjlService extends BaseService<BizLcWxjl, String> {
     ApiResponse<String> removeEntity(String id);
 
     ApiResponse<String> unbindCardNo(String id);
+
+    ApiResponse<String> updateZhye(String id);
 }
