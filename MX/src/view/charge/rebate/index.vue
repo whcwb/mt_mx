@@ -25,10 +25,10 @@
         </Col>
         <Col span="18" style="display: flex;justify-content: flex-end">
           <Col span="5" style="margin-right: 10px">
-            <Input id="code" autofocus v-model="param.idLike" placeholder="请扫描条形码" @on-enter="getOldData"/>
+            <Input id="code" ref="code" :autofocus="true" v-focus v-model="param.idLike" clearable placeholder="请扫描条形码" @on-change="getOldData" @on-enter="getOldData"/>
           </Col>
           <Col span="4">
-            <Input autofocus v-model="param.jlXmLike" placeholder="教练员姓名" @on-enter="getOldData"/>
+            <Input v-model="param.jlXmLike" clearable placeholder="教练员姓名" @on-enter="getOldData"/>
           </Col>
 <!--          <Col span="4">-->
 <!--            <Select v-model="param.jlLx" style="width:200px" @on-change="getOldData">-->
@@ -140,6 +140,11 @@
     name: "index",
     components: {remark, okBack, printSignUp},
     watch: {},
+    directives: {
+      focus:function (el) {
+        el.focus();
+      }
+    },
     data() {
       return {
         input: '',
@@ -410,6 +415,8 @@
             this.totalS = res.page.total
             this.tableData = res.page.list;
             this.hj = res.result
+            this.param.idLike=''
+            this.$refs['code'].focus();
           }
         })
       },
