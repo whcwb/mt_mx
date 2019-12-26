@@ -10,7 +10,7 @@ obj.readCardChrome = (callback) => {
     dataType: "json",
     beforeSend: function () { },
     success: function (data) {
-      alert("读取卡号结果："+data);
+      // alert("读取卡号结果："+data);
       callback && callback(true, data)
     },
     error:function(data){
