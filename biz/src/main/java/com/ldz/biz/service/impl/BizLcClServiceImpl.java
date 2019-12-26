@@ -127,12 +127,14 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
                 Map<String, BizLcJl> jlMap = jls.stream().collect(Collectors.toMap(BizLcJl::getLcClId, p -> p));
                 for (BizLcCl bizLcCl : pageInfo.getList()) {
                     BizLcJl bizLcJl = jlMap.get(bizLcCl.getId());
-                    if(bizLcJl == null ){
+                    if (bizLcJl == null) {
                         continue;
                     }
                     BizLcWxjl wxjl = wxjlService.findById(bizLcJl.getJlId());
                     bizLcCl.setLcJl(bizLcJl);
-                    bizLcJl.setJlDh(wxjl.getJlLxdh());
+                    if (wxjl != null) {
+                        bizLcJl.setJlDh(wxjl.getJlLxdh());
+                    }
                     // 计算下时长 所有计费向上取整
                     String kssj = bizLcJl.getKssj();
                     String sc;
@@ -141,7 +143,7 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
 
                     long ksfz = ks.getTime() / (60 * 1000);
                     long jsfz = js.getTime() / (60 * 1000);
-                    sc = (int) (jsfz - ksfz) +"";
+                    sc = (int) (jsfz - ksfz) + "";
 
                     bizLcCl.setYhsc(sc);
                     bizLcCl.setDqsc(sc + "");
