@@ -1,10 +1,10 @@
 // let ajaxUrl = 'http://127.0.0.1:8080';
 // let ajaxUrl = 'http://192.168.1.156:8080';
-let ajaxUrl ='http://192.168.0.103:8080';//宋
+// let ajaxUrl ='http://192.168.0.103:8080';//宋
 // let ajaxUrl ='http://172.16.0.33:8080';//张
 // let ajaxUrl ='http://192.168.123.69:8080';//宋
 // let ajaxUrl ='http://172.16.0.33:8080';//宋
-// let ajaxUrl = 'http://mt.xxpt123.com:81';
+let ajaxUrl = 'http://cb2795.natappfree.cc';
 export default {
   NETWORK_ERR_STR: '网络加载异常!',
   // url:'http://192.168.3.234:10010',
@@ -37,7 +37,6 @@ export default {
     dateO: '/api/traineeinformation/countStu',
     //
     dateP: '/api/traineeinformation/countTest'
-
   },
   FBXXY: {    //非本校学员
     PAGER: 'api/exception/pager',
