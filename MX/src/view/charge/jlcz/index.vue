@@ -8,8 +8,10 @@
       </MenuItem>
     </Menu>
     <Row style="margin-bottom: 8px" type="flex" align="bottom">
-      <Col span="6">
-        <!--<pager-tit title="开卡充值" style="float: left"></pager-tit>-->
+      <Col span="6" style="display: flex;align-items: center">
+        <span
+          style="cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
+          @click="toEmpty">余额归零</span>
       </Col>
       <Col span="18">
         <Row type="flex" justify="end" :gutter="8">
@@ -349,13 +351,14 @@
     <!--    </Modal>-->
 
     <mxb :itemObj="jlItem" :isMxb="isMxb" :lx="lx" @closemxb="closeMXB"></mxb>
-    <component :is="componentName" :printClose="printClose" :hisPrintMess="hisPrintMess"></component>
+    <component :is="componentName" @closeEmpty="closeEmpty" :QRmodal="componentName==='empty'" :printClose="printClose" :hisPrintMess="hisPrintMess"></component>
   </div>
 </template>
 
 <script>
   import addjl from '../../lcsf/comp/addJL'
   import mxb from '../jlcz/mxb'
+  import empty from '../jlcz/empty'
   import {mapMutations} from 'vuex'
   import printSignUp from '../../lcsf/comp/printSignUp'
   import dictUtil from "../../../libs/dictUtil";
@@ -365,6 +368,7 @@
     components: {
       addjl,
       mxb,
+      empty,
       printSignUp
     },
     data() {
@@ -564,7 +568,23 @@
                   }
                 }
               }, p.row.ye + '元')
-            }
+            },
+            filters: [
+              {
+                label: '不为零',
+                value: '1'
+              }
+            ],
+            filterMultiple: false,
+            filterRemote(value, row) {
+              var _self = this.$options.parent
+              if (value[0] == '1') {
+                _self.param.yeGte='1'
+              }else {
+                _self.param.yeGte=''
+              }
+              _self.getData()
+            },
           },
           {
             title: '操作',
@@ -780,6 +800,13 @@
 
         this.zsje = Math.ceil(je * parseFloat(this.bl))
         this.zhye = parseInt(this.zsje) + je + parseInt(this.payItem.cardJe)
+      },
+      toEmpty(){
+        this.componentName='empty'
+      },
+      closeEmpty(){
+        this.componentName=''
+        this.getData()
       },
       getData() {
         this.$http.get('/api/lcwxjl/pager', {
