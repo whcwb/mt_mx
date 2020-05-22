@@ -563,7 +563,31 @@
               {
                 label: '大车',
                 value: 2
-              }
+              }, {
+                label: 'C1',
+                value: 3
+              }, {
+                label: 'C2',
+                value: 4
+              }, {
+                label: 'A1',
+                value: 5
+              }, {
+                label: 'A2',
+                value: 6
+              },{
+                label: 'A3',
+                value: 7
+              },{
+                label: 'B1',
+                value: 8
+              },{
+                label: 'B2',
+                value: 9
+              },{
+                label: 'B3',
+                value: 10
+              },
             ],
             filterMultiple: false,
             filterMethod (value, row) {
@@ -571,6 +595,22 @@
                 return row.xyCx == 'C1'||row.xyCx == 'C2';
               } else if (value === 2) {
                 return row.xyCx.indexOf('A') >-1||row.xyCx.indexOf('B') >-1
+              } else if(value === 3){
+                return row.xyCx == 'C1'
+              } else if(value === 4){
+                return row.xyCx == 'C2'
+              }else if(value === 5){
+                return row.xyCx == 'A1'
+              }else if(value === 6){
+                return row.xyCx == 'A2'
+              }else if(value === 7){
+                return row.xyCx == 'A3'
+              }else if(value === 8){
+                return row.xyCx == 'B1'
+              }else if(value === 9){
+                return row.xyCx == 'B2'
+              }else if(value === 10){
+                return row.xyCx == 'B3'
               }
             }
           },
