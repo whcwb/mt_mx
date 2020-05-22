@@ -419,6 +419,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         if(StringUtils.equals(entity.getLcKm(), "3") && StringUtils.equals(entity.getLcLx(), "20")){
             entity.setJssj(nowTime);
             double v = Double.parseDouble(zdxm.getBy4());
+
             int v1 = (int)Math.ceil(entity.getLcFy() * v);
             if(v1 > 0 ){
                 // 新增返点记录

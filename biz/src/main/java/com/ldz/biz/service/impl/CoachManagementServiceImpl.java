@@ -1,18 +1,15 @@
 package com.ldz.biz.service.impl;
 
 import com.ldz.biz.mapper.CoachManagementMapper;
-import com.ldz.biz.mapper.TraineeInformationMapper;
 import com.ldz.biz.model.CoachManagement;
 import com.ldz.biz.model.Zgjbxx;
 import com.ldz.biz.service.CoachManagementService;
-import com.ldz.biz.service.TraineeInformationService;
 import com.ldz.biz.service.ZgjbxxService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
-import com.ldz.sys.service.SysMessageService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.DateUtils;

@@ -156,6 +156,7 @@
                         clearable
                         remote
                         @on-query-change="searchJly"
+                        @on-change="changeTest"
                         ref="jlySelect"
                 >
                   <Option v-for="(it,index) in searchCoachList" :value="it.value" :key="index">{{it.label}}</Option>
@@ -258,7 +259,7 @@
                    @JLRowClick="JLRowClick"
                    @jxSeljxSel="(val)=>{getCoachList('',true)}"></component>
 
-        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2KF'">
+        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm && formData.zddm.startsWith("K2KF)">
           <Col span="11">
             <FormItem label="学员人数" label-position="top">
               <InputNumber :min="1" v-model="formData.xySl" @keyup.enter.native="save"  style="width: 250px"></InputNumber>
@@ -588,7 +589,7 @@
           xyZjhm: '',
           xyXm: '',
           xyDh: '',
-          xySl: '',
+          xySl: null,
           // yhsc:'5',
           id: '',
           jlXm: '',
@@ -809,7 +810,11 @@
       getCarItemMess(it, index) {
         this.formData.lcClId = it.id
       },
+      changeTest(val){
+        console.log('******************',val);
+      },
       searchJly(query) {
+        console.log(query, "query");
         if (query !== '') {
           this.loadingJly = true;
           setTimeout(() => {
@@ -817,9 +822,11 @@
             this.searchCoachList = this.coachList.filter(item => {
               return item.label.indexOf(query.toUpperCase()) != -1
             });
+            console.log(this.searchCoachList, "ca");
+
           }, 200);
         } else {
-          this.searchCoachList = [];
+          // this.searchCoachList = [];
         }
       },
       clzt(zt) {
@@ -1115,6 +1122,7 @@
               let py = this.util.parsePY(r.jlXm)
               this.coachList.push({label: r.jlJx + '_' + r.jlXm + '[' + py + ']' + '_' + r.jlLxdh, value: r.id});
             }
+            // this.searchCoachList = this.coachList
           }
           if (res.code == 200 && res.result && id) {
             this.formData.jlId = id
