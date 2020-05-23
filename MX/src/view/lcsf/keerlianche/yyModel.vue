@@ -239,7 +239,7 @@
             });
           }, 200);
         } else {
-          this.searchCoachList = [];
+          // this.searchCoachList = [];
         }
       },
       JLRowClick(row) {
