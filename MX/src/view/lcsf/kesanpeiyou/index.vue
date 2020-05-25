@@ -39,7 +39,8 @@
               style="cursor: pointer;width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
               @click="mxShow">培优明细</span>
           </Col>
-          <Col span="22" style="display: flex;justify-content: flex-end">
+
+          <Col span="19" style="display: flex;justify-content: flex-end">
             <DatePicker v-model="dateRange.cjsj"
                         @on-change="param.cjsjInRange = v.util.dateRangeChange(dateRange.cjsj)"
                         @on-ok="v.util.getPageData(v)"
@@ -52,6 +53,13 @@
             <Col span="3">
               <Input size="large" v-model="param.jlXmLike" clearable placeholder="请输入教练姓名"
                      @on-enter="v.util.getPageData(v)"/>
+            </Col>
+            <Col span="3">
+              <Select v-model="param.jlCxIn" @on-change="v.util.getPageData(v)" clearable>
+                <Option v-for="(item, index) in carTypes" :value="item.val" :key="index">
+                  {{item.label}}
+                </Option>
+              </Select>
             </Col>
             <Col span="1" align="center" style="margin-right: 5px">
               <Button type="primary" @click="v.util.getPageData(v)">
@@ -404,6 +412,7 @@
         v: this,
         apiRoot: this.apis.lcjl,
         choosedItem: null,
+        carTypes: [{label: '大车', val: 'A1,A2,A3,B1,B2,A,B'}, {label: '小车', val: 'C1,C2,C'}],
         tableColumns: [
           {
             title: '序号', align: 'center', minWidth: 80,
