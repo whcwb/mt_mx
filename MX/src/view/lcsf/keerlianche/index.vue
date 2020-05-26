@@ -644,6 +644,7 @@
     },
     data() {
       return {
+        kfdj: 0,
         b: false,
         RS: [1, 2],
         tcIndex: 0,
@@ -1246,12 +1247,12 @@
                                   this.QRmess = res.result
                                   // this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
                                   // this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
-                                  var a = this.QRmess.kfje / 200
+                                  var a = this.QRmess.kfje / this.QRmess.kfDj
                                   this.RS = []
                                   for (let i = 0; i < a; i++) {
                                     this.RS.push(i + 1)
                                   }
-                                  this.QRmessxj.c = this.QRmess.kfje / 200
+                                  this.QRmessxj.c = this.QRmess.kfje / this.QRmess.kfDj
                                   this.QRmessxj.zf = this.QRmess.fdr
                                   if (p.row.lcJl.lcLx == '00') {
                                     this.ifFinish = true
@@ -1295,12 +1296,14 @@
                                     cardNo: cardNo
                                   }).then((res) => {
                                     if (res.code == 200) {
+
+                                      console.log(this.QRmess.kfDj, "kfdj");
                                       // this.$Message.success(res.message)
                                       this.QRmess = res.result
                                       this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
                                       this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
                                       this.QRmessxj.zf = this.QRmess.fdr
-                                      var a = this.QRmess.kfje / 200
+                                      var a = this.QRmess.kfje / this.QRmess.kfDj
                                       this.RS = []
                                       for (let i = 0; i < a; i++) {
                                         this.RS.push(i + 1)
@@ -1309,6 +1312,7 @@
                                       if (p.row.lcJl.lcLx == '00') {
                                         this.ifFinish = true
                                         this.QRmodal = true
+
                                       } else {
 
                                       }
@@ -1495,7 +1499,7 @@
       },
       'QRmessxj.zf': function (n, o) {
         if (n == '3') {
-          this.QRmessxj.c = this.QRmess.kfje / 200
+          this.QRmessxj.c = this.QRmess.kfje / this.QRmess.kfDj
         }
         this.getysxjA()
       },
@@ -1533,6 +1537,15 @@
         'set_LcTime',
         'Ch_LcTime'
       ]),
+      getKfdj(jlid) {
+        this.$http.get("/api/lcjl/getKfDj", {jlId: jlid}).then(res => {
+          if (res.code === 200) {
+            this.QRmess.kfDj = res.result
+          } else {
+            this.$Message.error("数据异常, 请联系开发人员处理")
+          }
+        })
+      },
       getysxjA() {
         if (this.QRmessxj.zf == '1') {
           this.ysxzA = this.QRmess.lcFy
@@ -1543,8 +1556,8 @@
           this.kfje = this.QRmess.kfje
           this.QRmessxj.c = 0
         } else {
-          this.ysxzA = (this.QRmess.lcFy - (200 * this.QRmessxj.c)) > 0 ? (this.QRmess.lcFy - (200 * this.QRmessxj.c)) : 0
-          this.kfje = this.QRmess.kfje - 200 * this.QRmessxj.c
+          this.ysxzA = (this.QRmess.lcFy - (this.QRmess.kfDj * this.QRmessxj.c)) > 0 ? (this.QRmess.lcFy - (this.QRmess.kfDj * this.QRmessxj.c)) : 0
+          this.kfje = this.QRmess.kfje - this.QRmess.kfDj * this.QRmessxj.c
         }
       },
       getRs(we) {
@@ -1564,12 +1577,12 @@
         // }
         // this.getysxjA()
         if (we == '3') {
-          var a = this.QRmess.kfje / 200
+          var a = this.QRmess.kfje / this.QRmess.kfDj
           this.RS = []
           for (let i = 0; i < a; i++) {
             this.RS.push(i + 1)
           }
-          this.QRmessxj.c = this.QRmess.kfje / 200
+          this.QRmessxj.c = this.QRmess.kfje / this.QRmess.kfDj
         }
         this.getysxjA()
       },
@@ -1639,8 +1652,8 @@
             this.QRmessxj.zf = this.QRmess.fdr
             if (this.QRmessxj.zf == '3') {
               // this.getRs('3')
-              this.QRmessxj.c = this.QRmess.kfje / 200
-              var a = this.QRmess.kfje / 200
+              this.QRmessxj.c = this.QRmess.kfje / this.QRmess.kfDj
+              var a = this.QRmess.kfje / this.QRmess.kfDj
               this.RS = []
               for (let i = 0; i < a; i++) {
                 this.RS.push(i + 1)
@@ -1751,7 +1764,8 @@
         this.$http.post('/api/lcjl/payCNY', {
           id: this.QRmess.id,
           zf: this.QRmessxj.zf,
-          c: this.QRmessxj.c
+          c: this.QRmessxj.c,
+          kfDj: this.QRmess.kfDj
         }).then((res) => {
           if (res.code == 200) {
             // this.$Message.success(res.message)

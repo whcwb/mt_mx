@@ -3,6 +3,7 @@ package com.ldz.biz.model;
 import com.ldz.sys.model.SysZdxm;
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -215,6 +216,9 @@ public class BizLcJl implements Serializable {
 
     @Transient
     private String zffs;
+
+    @Transient
+    private Integer kfDj;
 
     private static final long serialVersionUID = 1L;
 

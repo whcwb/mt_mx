@@ -9,7 +9,6 @@ import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.sys.model.SysZdxm;
 import com.ldz.util.bean.ApiResponse;
-import jxl.write.WriteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -246,10 +245,18 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * @param response
      * @throws IOException
      */
-   @GetMapping("/exportKm3")
+    @GetMapping("/exportKm3")
     public void exportKm3(HttpServletRequest request, HttpServletResponse response) throws IOException {
-       service.exportKm3(request,response);
-   }
+        service.exportKm3(request, response);
+    }
+
+    /**
+     * 查询当前教练的开放日 套餐单价是多少
+     */
+    @GetMapping("/getKfDj")
+    public ApiResponse<Integer> getKfDj(String jlId) {
+        return service.getKfDj(jlId);
+    }
 
 
 }

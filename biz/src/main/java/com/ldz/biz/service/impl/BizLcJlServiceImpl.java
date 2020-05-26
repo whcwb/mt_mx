@@ -613,6 +613,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         } else {
             lcJl.setFdZt("40");
         }
+        ApiResponse<Integer> kfDj = getKfDj(lcJl.getJlId());
+        RuntimeCheck.ifFalse(kfDj.getCode() == 200, "数据异常 , 请联系开发人员处理");
         if (StringUtils.equals(lcJl.getLcLx(), "00")) {
             lcJl.setZfzt("00");
             update(lcJl);
@@ -665,9 +667,11 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 }
             });
             result.setJls(bizLcJls);
+            result.setKfDj(kfDj.getResult());
             return ApiResponse.success(result);
         } else {
             update(lcJl);
+            lcJl.setKfDj(kfDj.getResult());
             return ApiResponse.success(lcJl);
         }
     }
@@ -1604,6 +1608,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         lcJl.setJls(lcJls);
         lcJl.setClBh(jls.stream().map(BizLcJl::getClBh).collect(Collectors.joining(",")));
         lcJl.setJlCx(jls.stream().map(BizLcJl::getJlCx).collect(Collectors.joining(",")));
+        ApiResponse<Integer> kfDj = getKfDj(jls.get(0).getJlId());
+        RuntimeCheck.ifFalse(kfDj.getCode() == 200, "数据异常 , 请联系开发人员处理");
+        lcJl.setKfDj(kfDj.getResult());
         return ApiResponse.success(lcJl);
     }
 
@@ -1875,6 +1882,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
         RuntimeCheck.ifBlank(id, "请选择要支付的订单");
         RuntimeCheck.ifBlank(zf, "请选择支付方式");
+        String dj = getRequestParamterAsString("kfDj");
+        RuntimeCheck.ifBlank(dj, "请上传当前开放日套餐单价");
+        Integer kfDj = Integer.parseInt(dj);
+
         SimpleCondition jlCondition = new SimpleCondition(BizLcJl.class);
         jlCondition.in(BizLcJl.InnerColumn.id, Arrays.asList(id.split(",")));
         jlCondition.eq(BizLcJl.InnerColumn.zfzt, "00");
@@ -2028,7 +2039,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             // 抵扣支付 不够的按现金结算
             SimpleCondition simpleCondition = new SimpleCondition(SysZdxm.class);
             simpleCondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-            simpleCondition.eq(SysZdxm.InnerColumn.zddm, "K2KF");
+            simpleCondition.like(SysZdxm.InnerColumn.zddm, "K2KF");
+            simpleCondition.eq(SysZdxm.InnerColumn.zdmc, kfDj + "");
             List<SysZdxm> sysZdxms = zdxmService.findByCondition(simpleCondition);
             String by4 = sysZdxms.get(0).getBy4();
             int xySl = Integer.parseInt(c);
@@ -2676,6 +2688,21 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         ServletOutputStream outputStream = response.getOutputStream();
         ExcelUtil.createSheet(outputStream, "明细统计", data);
 
+    }
+
+    @Override
+    public ApiResponse<Integer> getKfDj(String jlId) {
+        RuntimeCheck.ifBlank(jlId, "请上传教练id");
+        SimpleCondition condition = new SimpleCondition(BizLcJl.class);
+        condition.eq(BizLcJl.InnerColumn.jlId, jlId);
+        condition.setOrderByClause(" id desc ");
+        condition.like(BizLcJl.InnerColumn.zddm, "K2KF");
+        List<BizLcJl> lcJls = findByCondition(condition);
+        if (CollectionUtils.isEmpty(lcJls)) {
+            return ApiResponse.success(0);
+        }
+        int i = lcJls.get(0).getXjje() / lcJls.get(0).getXySl();
+        return ApiResponse.success(i);
     }
 
 
