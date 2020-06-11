@@ -1616,6 +1616,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
     @Override
     public ApiResponse<String> saveBatch(String ids) {
+        String zf = getRequestParamterAsString("zf");
+        RuntimeCheck.ifBlank(zf, "请选择支付方式");
         SysYh yh = getCurrentUser();
         RuntimeCheck.ifBlank(ids, "请选择要支付的订单");
         double rate = 0;
@@ -1661,7 +1663,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 kfje = sum;
             }
         } else {
-            if (cardJe > 0) {
+            if (cardJe > 0 && StringUtils.equals(zf, "2")) {
                 int sfje = cardJe - sum;
                 if (sfje < 0) {
                     card = cardJe;

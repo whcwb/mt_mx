@@ -1665,7 +1665,7 @@
         // })
         // }
         // else {
-        this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
+        this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id, zf: this.QRmess.zf}).then((res) => {
           if (res.code == 200) {
             // this.$Message.success(res.message)
             this.QRmess.id = res.message
