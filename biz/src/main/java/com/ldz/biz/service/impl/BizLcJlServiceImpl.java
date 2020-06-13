@@ -2703,8 +2703,12 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         if (CollectionUtils.isEmpty(lcJls)) {
             return ApiResponse.success(0);
         }
-        int i = lcJls.get(0).getXjje() / lcJls.get(0).getXySl();
-        return ApiResponse.success(i);
+        String zddm= lcJls.get(0).getZddm();
+        List<SysZdxm> zdxms = zdxmService.findEq(SysZdxm.InnerColumn.zddm, zddm);
+        if (CollectionUtils.isEmpty(zdxms)) {
+            return ApiResponse.success(0);
+        }
+        return ApiResponse.success(Integer.parseInt(zdxms.get(0).getZdmc()));
     }
 
 

@@ -176,10 +176,12 @@
           setTimeout(() => {
             this.loadingJly = false;
             this.searchCoachList = this.coachList.filter(item => {
+              console.log("+++++++++++++++++")
               return item.label.indexOf(query.toUpperCase()) != -1
             });
           }, 200);
         } else {
+          console.log("----------------------")
           // this.searchCoachList = [];
         }
       },
