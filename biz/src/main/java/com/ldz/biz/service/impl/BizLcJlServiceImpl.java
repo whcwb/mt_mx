@@ -1626,7 +1626,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         condition.in(BizLcJl.InnerColumn.id, list);
         condition.eq(BizLcJl.InnerColumn.zfzt, "00");
         List<BizLcJl> jls = findByCondition(condition);
-        RuntimeCheck.ifEmpty(jls, "记录为空, 或已经支付过订单");
+        RuntimeCheck.ifEmpty(jls,
+                "记录为空, 或已经支付过订单");
         BizLcJl lcJl = jls.get(0);
         List<String> set = jls.stream().map(BizLcJl::getJlId).distinct().collect(Collectors.toList());
         int size = set.size();
