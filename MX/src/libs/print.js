@@ -1,6 +1,3 @@
-import $http from '@/axios/index'
-import swal from 'sweetalert2';
-
 var obj = {}
 
 obj.print = (id,item,time,callback) => {
@@ -20,7 +17,7 @@ obj.print = (id,item,time,callback) => {
     {'x': 10, 'y': 290, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '累计时长', 'font_size': 12},
     {'x': 110, 'y': 290, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '', 'font_size': 9},
     {'x': 10, 'y': 320, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '累计费用', 'font_size': 12},
-    {'x': 110, 'y': 320, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '300元', 'font_size': 9},
+    {'x': 110, 'y': 320, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': item.lcFy, 'font_size': 9},
     {'x': 10, 'y': 350, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '备注', 'font_size': 12},
     {'x': 110, 'y': 350, 'w': 150, 'h': 30, 'isbar': 'F', 'border': 1, 'text': '1人', 'font_size': 9},
     {'x': 10, 'y': 380, 'w': 100, 'h': 30, 'isbar': 'F', 'border': 0, 'text': '本票据遗失不补', 'font_size': 9},

@@ -33,17 +33,17 @@
   //明细统计
   import mxtj from './mxtj'
   //驾校统计
-  import jxtj from  '../jxtj'
+  import jxtj from '../jxtj'
   //教练统计
-  import jltj from  '../jlytj'
+  import jltj from '../jlytj'
   //安全员统计
-  import aqytj from  '../aqytj'
-  import pxmx from  './pxmx'
+  import aqytj from '../aqytj'
+  import pxmx from './pxmx'
   import Cookies from 'js-cookie'
 
   export default {
     name: 'char',
-    components: {print,jxtj,mxtj,jltj,aqytj,pxmx},
+    components: {print, jxtj, mxtj, jltj, aqytj, pxmx},
     data() {
       return {
         v: this,
@@ -85,14 +85,6 @@
           {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           {title: '计费类型', key: 'lcLx', minWidth: 90, dict: 'ZDCLK1048'},
           {title: '练车费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0', fixed: 'right'},
-          // {title:'操作',render:(h,p)=>{
-          //     let buttons = [];
-          //     buttons.push(this.util.buildeditButton(this,h,p));
-          //     buttons.push(this.util.buildDeleteButton(this,h,p.row.yhid));
-          //     return h('div',buttons);
-          //   }
-          //   },
-
         ],
         pageData: [],
         param: {

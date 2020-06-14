@@ -85,8 +85,20 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     @Override
     public boolean fillPagerCondition(LimitedCondition condition) {
         String lx = getRequestParamterAsString("lx");
-        if(StringUtils.isNotBlank(lx)){
+        if (StringUtils.isNotBlank(lx)) {
             condition.eq(BizLcJl.InnerColumn.jlLx, lx);
+        }
+        String zflx = getRequestParamterAsString("zflx");
+        if (StringUtils.isNotBlank(zflx)) {
+            if (StringUtils.equals(zflx, "1")) {
+                condition.and().andCondition(" xjje > 0");
+            } else if (StringUtils.equals(zflx, "2")) {
+                condition.and().andCondition(" kfje > 0");
+            } else if (StringUtils.equals(zflx, "3")) {
+                condition.and().andCondition(" cardje > 0");
+            } else {
+                return false;
+            }
         }
         condition.setOrderByClause("  jssj  desc, jl_id asc , kssj desc");
         return true;
@@ -1583,7 +1595,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         str += "应收现金" + xjje + "元";
         if (fdr.contains("2")) {
             // 计算余额
-            str += ",卡上余额" + (wxjl.getCardJe() - card) + "元";
+            str = "卡上余额" + (wxjl.getCardJe() - card) + "元";
         }
         // 查询当天所有非开放日记录
         SimpleCondition condition1 = new SimpleCondition(BizLcJl.class);
@@ -1862,7 +1874,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         str += "应付现金" + jl.getXjje() + "元";
         if (fdr.contains("2")) {
             // 计算余额
-            str += ",卡上余额" + wxjl.getCardJe() + "元";
+            str = "卡上余额" + wxjl.getCardJe() + "元";
         }
         jl.setBz(str);
         jl.setFdr(fdr);
@@ -2030,9 +2042,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     fd.setBz("(" + cardJe + " - " + sum + ") * " + aFloat);
                     fdService.save(fd);
                 }
-                lcJl.setBz("应收现金" + abs + "元,卡上余额" + wxjl.getCardJe() + "元");
+                lcJl.setBz("卡上余额" + wxjl.getCardJe() + "元");
             }else{
-                lcJl.setBz("应收现金" + 0 + "元,卡上余额" + wxjl.getCardJe() + "元");
+                lcJl.setBz("卡上余额" + wxjl.getCardJe() + "元");
             }
         } else if (StringUtils.equals(zf, "3")) {
             int wxjlYe = wxjl.getYe();
@@ -2492,14 +2504,14 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         sheet.addCell(new Label(1, i, split[0], cellFormat));
         sheet.addCell(new Label(2, i, split[1], cellFormat));
         sheet.addCell(new Label(3, i, split[2], cellFormat));
-        sheet.addCell(new Label(4, i, split[4], cellFormat));
-        sheet.addCell(new Label(5, i, split[5], cellFormat));
-        sheet.addCell(new Label(6, i, split[6], cellFormat));
-        sheet.addCell(new Label(7, i, split[7], cellFormat));
-        sheet.addCell(new Label(8, i, split[8], cellFormat));
-        sheet.addCell(new Label(9, i, split[9], cellFormat));
-        sheet.addCell(new Label(10, i, split[10], cellFormat));
-        sheet.addCell(new Label(11, i, split[11], cellFormat));
+        sheet.addCell(new Label(4, i, split[3], cellFormat));
+        sheet.addCell(new Label(5, i, split[4], cellFormat));
+        sheet.addCell(new Label(6, i, split[5], cellFormat));
+        sheet.addCell(new Label(7, i, split[6], cellFormat));
+        sheet.addCell(new Label(8, i, split[7], cellFormat));
+        sheet.addCell(new Label(9, i, split[8], cellFormat));
+        sheet.addCell(new Label(10, i, split[9], cellFormat));
+        sheet.addCell(new Label(11, i, split[10], cellFormat));
         workbook.write();
         workbook.close();
     }

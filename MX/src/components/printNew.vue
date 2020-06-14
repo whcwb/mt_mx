@@ -177,7 +177,7 @@
             },
             {
               title: '累计费用',
-              val: this.info.xjje,
+              val: this.info.lcFy + '元',
             },
             {
               title: '备注',
@@ -273,6 +273,7 @@
       doPrint(how, callback) {
         let item = []
         this.displayItem.map((val, index, arr) => {
+
           item[index] = val.val
         })
 

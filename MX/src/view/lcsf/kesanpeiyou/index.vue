@@ -55,7 +55,7 @@
                      @on-enter="v.util.getPageData(v)"/>
             </Col>
             <Col span="3">
-              <Select v-model="param.jlCxIn" @on-change="v.util.getPageData(v)" clearable>
+              <Select v-model="param.jlCxIn" @on-change="v.util.getPageData(v)" clearable placeholder="请选择车型">
                 <Option v-for="(item, index) in carTypes" :value="item.val" :key="index">
                   {{item.label}}
                 </Option>
@@ -412,7 +412,10 @@
         v: this,
         apiRoot: this.apis.lcjl,
         choosedItem: null,
-        carTypes: [{label: '大车', val: 'A1,A2,A3,B1,B2,A,B'}, {label: '小车', val: 'C1,C2,C'}],
+        carTypes: [{label: "全部", val: "A1,A2,A3,B1,B2,A,B,C1,C2,C"}, {
+          label: '大车',
+          val: 'A1,A2,A3,B1,B2,A,B'
+        }, {label: '小车', val: 'C1,C2,C'}],
         tableColumns: [
           {
             title: '序号', align: 'center', minWidth: 80,
@@ -670,7 +673,8 @@
           lcKm: 3,
           lcLxIn: '20,30',
           cjsjInRange: '',
-          zhLike: ''
+          zhLike: '',
+          jlCxIn: "A1,A2,A3,B1,B2,A,B,C1,C2,C"
         },
         pageData: [],
         specialPageSize: 99999999,

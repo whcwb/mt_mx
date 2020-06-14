@@ -1,7 +1,9 @@
 <template>
   <div class="boxbackborder box_col" style="padding-top:16px">
-    <search-bar :parent="v" :showSearchButton="true" :showDownLoadButton="true" :show-create-button="false" :buttons="searchBarButtons" @print="componentName = 'print'"
+    <search-bar :parent="v" :showSearchButton="true" :showDownLoadButton="true" :show-create-button="false"
+                :buttons="searchBarButtons" @print="componentName = 'print'"
                 @exportExcel="exportExcel"></search-bar>
+
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
     <Row>
       <Col span="24" align="right">
@@ -16,20 +18,21 @@
 
 <script>
   // import formData from './formModal.vue'
+  // import formData from './formModal.vue'
   import Cookies from 'js-cookie'
   import print from './print'
   //驾校统计
-  import jxtj from  '../jxtj'
+  import jxtj from '../jxtj'
   import mixin from '@/mixins'
 
   export default {
     name: 'char',
-    mixins:[mixin],
-    components: {print,jxtj},
+    mixins: [mixin],
+    components: {print, jxtj},
     data() {
       return {
         v: this,
-        addmoney:0,
+        addmoney: 0,
         apiRoot: this.apis.lcjl,
         choosedItem: null,
         componentName: '',
@@ -80,7 +83,8 @@
               return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
             }
           },
-          {title: '驾校', align: 'center', key: 'jlJx', minWidth: 90,
+          {
+            title: '驾校', align: 'center', key: 'jlJx', minWidth: 90,
             filters: [
               {
                 label: '本校',
@@ -93,13 +97,13 @@
             ],
             filterMultiple: false,
             filterRemote(value, row) {
-              var _self =  this.$options.parent.parent
-              _self.param.lx=value[0]?value[0]:''
+              var _self = this.$options.parent.parent
+              _self.param.lx = value[0] ? value[0] : ''
               _self.util.getPageData(_self)
             },
           },
           {title: '教练员', align: 'center', key: 'jlXm', minWidth: 80},
-          {title: '开始时间', align: 'center', key: 'kssj',searchType: 'daterange', minWidth: 135},
+          {title: '开始时间', align: 'center', key: 'kssj', searchType: 'daterange', minWidth: 135},
           {title: '结束时间', align: 'center', key: 'jssj', minWidth: 135},
           // {
           //   title: '时长', align: 'center', key: 'sc', minWidth: 70, defaul: '0',
@@ -118,7 +122,7 @@
             render: (h, p) => {
               if (p.row.zfzt == '00') {    //为已支付的，就显示现金
                 return h('div', '');
-              }else{
+              } else {
                 return h('div', p.row.xjje + '元');
               }
             }
@@ -128,9 +132,30 @@
             render: (h, p) => {
               if (p.row.zfzt == '00') {
                 return h('div', '');
-              }else{
+              } else {
                 return h('div', p.row.zffs);
               }
+            },
+            filters: [
+              {
+                label: '现金',
+                value: '1',
+              },
+              {
+                label: '开放日',
+                value: '2'
+              },
+              {
+                label: '充值卡',
+                value: '3'
+              }],
+            filterMultiple: false,
+            filterRemote(value, row) {
+              var _self = this.$options.parent.parent
+              console.log(value)
+              console.log(_self.param);
+              _self.param.zflx = value[0]
+              _self.util.initTable(_self)
             }
           },
           {
@@ -163,38 +188,39 @@
           },
         ],
         pageData: [],
-        specialPageSize:9999,
+        specialPageSize: 9999,
         param: {
           orderBy: 'jssj desc',
-            notShowLoading:'true',
+          notShowLoading: 'true',
           total: 0,
           lcKm: '2',
           zhLike: '',
           pageNum: 1,
           pageSize: 8,
-          zfzt:'10'
+          zfzt: '10',
+          zflx: ''
         },
       }
     },
     created() {
-      if(Cookies.get("daterange")!=undefined&&Cookies.get("daterange")!=''){
+      if (Cookies.get("daterange") != undefined && Cookies.get("daterange") != '') {
         this.dateRange.kssj = Cookies.get("daterange").split(',')
         this.param.kssjInRange = Cookies.get("daterange")
-      }else {
+      } else {
         this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
         this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       }
-        this.util.initTable(this);
+      this.util.initTable(this);
     },
     methods: {
-        exportExcel(){
-            let p = '';
-            for (let k in this.param){
-                p += '&'+k + '=' +this.param[k];
-            }
-            p = p.substr(1);
-            window.open(this.apis.url + '/pub/pagerExcel?'+p);
-        },
+      exportExcel() {
+        let p = '';
+        for (let k in this.param) {
+          p += '&' + k + '=' + this.param[k];
+        }
+        p = p.substr(1);
+        window.open(this.apis.url + '/pub/pagerExcel?' + p);
+      },
       parseTime(s) {
         s = parseInt(s);
         let h = parseInt(s / 60);
@@ -203,14 +229,14 @@
         if (h != 0) r += h + '小时'
         return r + m + '分钟'
       },
-      afterPager(list){
+      afterPager(list) {
         this.addmoney = 0
-          var v = this
-        for (let r of list){
-            r.sc = this.parseTime(r.sc)
-            r.kssj = r.kssj.substring(0,16)
-            r.jssj = r.jssj.substring(0,16)
-            v.addmoney = v.addmoney + Number(r.xjje);
+        var v = this
+        for (let r of list) {
+          r.sc = this.parseTime(r.sc)
+          r.kssj = r.kssj.substring(0, 16)
+          r.jssj = r.jssj.substring(0, 16)
+          v.addmoney = v.addmoney + Number(r.xjje);
         }
       },
       print() {
