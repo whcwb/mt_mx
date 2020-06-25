@@ -361,7 +361,6 @@
   import empty from '../jlcz/empty'
   import {mapMutations} from 'vuex'
   import printSignUp from '../../lcsf/comp/printSignUp'
-  import dictUtil from "../../../libs/dictUtil";
 
   export default {
     name: "index",
@@ -391,6 +390,7 @@
         je: 0,   //充值金额+余额
         jxList: [],
         password: false,
+
         passwordItem: {},
         totalS: 0,
         info: false,
