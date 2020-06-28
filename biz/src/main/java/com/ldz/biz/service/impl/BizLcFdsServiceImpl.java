@@ -12,14 +12,24 @@ import com.ldz.biz.service.BizLcWxjlService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.exception.RuntimeCheck;
+import jxl.CellView;
+import jxl.Workbook;
+import jxl.format.Alignment;
+import jxl.format.Colour;
+import jxl.format.UnderlineStyle;
+import jxl.write.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -92,4 +102,86 @@ public class BizLcFdsServiceImpl extends BaseServiceImpl<BizLcFds,String> implem
         res.setPage(pageInfo);
         return res;
     }
+
+    @Override
+    public void downloadExcel(Page<BizLcFds> pager, HttpServletRequest request, HttpServletResponse response) throws IOException, WriteException {
+        ApiResponse<String> apiResponse = getPager(pager);
+        String lcKm = getRequestParamterAsString("lcKm");
+        RuntimeCheck.ifBlank(lcKm, "请选择导出科目");
+        Map<String, String> map = new HashMap<>();
+        map.put("2", "科目二");
+        map.put("3", "科目三");
+        List<BizLcFds> list = apiResponse.getPage().getList();
+        String range = getRequestParamterAsString("cjsjInRange");
+        List<String> times = Arrays.asList(range.split(","));
+        String start = times.get(0).substring(0, 10).replace("-", "年").replace("-", "月") + "日";
+        String end = times.get(1).substring(0, 10).replace("-", "年").replace("-", "月") + "日";
+        String fileName = "返现登记表";
+        response.setContentType("application/msexcel");
+        request.setCharacterEncoding("UTF-8");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1") + ".xls");
+        OutputStream out = response.getOutputStream();
+        WritableWorkbook workbook = Workbook.createWorkbook(out);
+        WritableSheet sheet = workbook.createSheet("返现登记", 0);
+        sheet.mergeCells(0, 0, 7, 0);
+
+        WritableFont titleFont = new WritableFont(WritableFont.ARIAL, 16, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
+        WritableCellFormat titleFormat = new WritableCellFormat(titleFont);
+        titleFormat.setAlignment(jxl.format.Alignment.CENTRE);
+
+        CellView view = new CellView();
+        view.setSize(5000);
+        for (int i = 0; i < 8; i++) {
+            sheet.setColumnView(i, view);
+        }
+        sheet.addCell(new Label(0, 0, "知音考场返现登记表(" + map.get(lcKm) + ")", titleFormat));
+
+        WritableFont font = new WritableFont(WritableFont.ARIAL, 14, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
+        WritableCellFormat format = new WritableCellFormat(font);
+        format.setAlignment(jxl.format.Alignment.RIGHT);
+        sheet.mergeCells(0, 1, 7, 1);
+        sheet.addCell(new Label(0, 1, "返现时间：" + start + "至" + end, format));
+
+        WritableFont contentFont = new WritableFont(WritableFont.ARIAL, 12, WritableFont.NO_BOLD, false, UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
+        WritableCellFormat contentFormat = new WritableCellFormat(contentFont);
+        contentFormat.setAlignment(Alignment.CENTRE);
+
+        sheet.addCell(new Label(0, 2, "序号", contentFormat));
+        sheet.addCell(new Label(1, 2, "领款时间", contentFormat));
+        sheet.addCell(new Label(2, 2, "驾校名称", contentFormat));
+        sheet.addCell(new Label(3, 2, "返现笔数", contentFormat));
+        sheet.addCell(new Label(4, 2, "练车金额", contentFormat));
+        sheet.addCell(new Label(5, 2, "返现金额", contentFormat));
+        sheet.addCell(new Label(6, 2, "领款人签字", contentFormat));
+        sheet.addCell(new Label(7, 2, "备注", contentFormat));
+
+        sheet.addCell(new Label(0, list.size() + 3, "合计", contentFormat));
+        sheet.mergeCells(1, list.size() + 3, 3, list.size() + 3);
+        sheet.mergeCells(6, list.size() + 3, 7, list.size() + 3);
+        if (CollectionUtils.isNotEmpty(list)) {
+            Set<String> jlids = list.stream().map(BizLcFds::getJlId).collect(Collectors.toSet());
+            List<BizLcWxjl> wxjls = wxjlService.findByIds(jlids);
+            Map<String, String> jxmcMap = new HashMap<>();
+            if (CollectionUtils.isNotEmpty(wxjls)) {
+                jxmcMap = wxjls.stream().collect(Collectors.toMap(BizLcWxjl::getId, BizLcWxjl::getJlJx));
+            }
+            for (int i = 0; i < list.size(); i++) {
+                BizLcFds fd = list.get(i);
+                sheet.addCell(new Label(0, i + 3, i + 1 + "", contentFormat));
+                sheet.addCell(new Label(1, i + 3, fd.getCjsj().substring(0, 10), contentFormat));
+                sheet.addCell(new Label(2, i + 3, jxmcMap.get(fd.getJlId()), contentFormat));
+                sheet.addCell(new Label(3, i + 3, fd.getLcId().split(",").length + "", contentFormat));
+                sheet.addCell(new Label(4, i + 3, fd.getLcFy() + "", contentFormat));
+                sheet.addCell(new Label(5, i + 3, fd.getFdje() + "", contentFormat));
+                sheet.addCell(new Label(6, i + 3, " ", contentFormat));
+                sheet.addCell(new Label(7, i + 3, " ", contentFormat));
+            }
+            sheet.addCell(new Label(4, list.size() + 3, list.stream().mapToInt(BizLcFds::getLcFy).sum() + "", contentFormat));
+            sheet.addCell(new Label(5, list.size() + 3, list.stream().mapToInt(BizLcFds::getFdje).sum() + "", contentFormat));
+        }
+        workbook.write();
+        workbook.close();
+    }
+
 }

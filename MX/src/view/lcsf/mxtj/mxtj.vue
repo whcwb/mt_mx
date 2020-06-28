@@ -283,7 +283,7 @@
           return
         }
 
-
+        this.hisPrintMess.name = localStorage.getItem("user")
         this.componentName = 'printSignUp'
       }
     }

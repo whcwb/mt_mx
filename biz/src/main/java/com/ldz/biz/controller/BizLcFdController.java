@@ -8,7 +8,10 @@ import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/bizlcfd")
@@ -35,4 +38,6 @@ public class BizLcFdController extends BaseController<BizLcFd, String> {
     public ApiResponse<String> getPager(Page<BizLcFd> pager) {
         return service.getPager(pager);
     }
+
+
 }

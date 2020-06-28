@@ -264,7 +264,7 @@
                       制单人
                     </div>
                     <div class="ItemMess2">
-                      :
+                      :{{hisPrintMess.name}}
                     </div>
                     <div class="messTit2">
                       收款人
@@ -308,10 +308,10 @@
 </template>
 
 <script>
-  import swal from 'sweetalert2'
   import mixin from '@/mixins'
   // import Print from 'print-js'
   import {Printd} from 'printd'
+
   export default {
     name: "mess",
     mixins: [mixin],
