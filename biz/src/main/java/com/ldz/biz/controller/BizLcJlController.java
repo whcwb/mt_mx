@@ -30,8 +30,6 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         return service;
     }
 
-
-
     /**
      * 新增一条练车记录
      * @param entity
@@ -252,9 +250,11 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
 
     /**
      * 查询当前教练的开放日 套餐单价是多少
+     *
+     * @return
      */
     @GetMapping("/getKfDj")
-    public ApiResponse<Integer> getKfDj(String jlId) {
+    public ApiResponse<String> getKfDj(String jlId) {
         return service.getKfDj(jlId);
     }
 

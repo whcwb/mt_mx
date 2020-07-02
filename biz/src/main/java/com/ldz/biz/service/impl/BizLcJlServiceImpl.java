@@ -625,7 +625,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         } else {
             lcJl.setFdZt("40");
         }
-        ApiResponse<Integer> kfDj = getKfDj(lcJl.getJlId());
+        ApiResponse<String> kfDj = getKfDj(lcJl.getJlId());
         RuntimeCheck.ifFalse(kfDj.getCode() == 200, "数据异常 , 请联系开发人员处理");
         if (StringUtils.equals(lcJl.getLcLx(), "00")) {
             lcJl.setZfzt("00");
@@ -679,11 +679,11 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 }
             });
             result.setJls(bizLcJls);
-            result.setKfDj(kfDj.getResult());
+            result.setKfDj(Integer.parseInt(kfDj.getResult().split("-")[0]));
             return ApiResponse.success(result);
         } else {
             update(lcJl);
-            lcJl.setKfDj(kfDj.getResult());
+            lcJl.setKfDj(Integer.parseInt(kfDj.getResult().split("-")[0]));
             return ApiResponse.success(lcJl);
         }
     }
@@ -1620,9 +1620,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         lcJl.setJls(lcJls);
         lcJl.setClBh(jls.stream().map(BizLcJl::getClBh).collect(Collectors.joining(",")));
         lcJl.setJlCx(jls.stream().map(BizLcJl::getJlCx).collect(Collectors.joining(",")));
-        ApiResponse<Integer> kfDj = getKfDj(jls.get(0).getJlId());
+        ApiResponse<String> kfDj = getKfDj(jls.get(0).getJlId());
         RuntimeCheck.ifFalse(kfDj.getCode() == 200, "数据异常 , 请联系开发人员处理");
-        lcJl.setKfDj(kfDj.getResult());
+        lcJl.setKfDj(Integer.parseInt(kfDj.getResult().split("-")[0]));
         return ApiResponse.success(lcJl);
     }
 
@@ -2705,7 +2705,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     }
 
     @Override
-    public ApiResponse<Integer> getKfDj(String jlId) {
+    public ApiResponse<String> getKfDj(String jlId) {
         RuntimeCheck.ifBlank(jlId, "请上传教练id");
         SimpleCondition condition = new SimpleCondition(BizLcJl.class);
         condition.eq(BizLcJl.InnerColumn.jlId, jlId);
@@ -2713,14 +2713,14 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         condition.like(BizLcJl.InnerColumn.zddm, "K2KF");
         List<BizLcJl> lcJls = findByCondition(condition);
         if (CollectionUtils.isEmpty(lcJls)) {
-            return ApiResponse.success(0);
+            return ApiResponse.success("0-0");
         }
-        String zddm= lcJls.get(0).getZddm();
+        String zddm = lcJls.get(0).getZddm();
         List<SysZdxm> zdxms = zdxmService.findEq(SysZdxm.InnerColumn.zddm, zddm);
         if (CollectionUtils.isEmpty(zdxms)) {
-            return ApiResponse.success(0);
+            return ApiResponse.success("0-0");
         }
-        return ApiResponse.success(Integer.parseInt(zdxms.get(0).getZdmc()));
+        return ApiResponse.success(zdxms.get(0).getZdmc() + "-" + zdxms.get(0).getBy10());
     }
 
 
