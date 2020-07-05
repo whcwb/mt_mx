@@ -339,7 +339,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 // 类型为开放练习 此时需要直接返点
                 RuntimeCheck.ifFalse(entity.getXySl() > 0, "开放训练必须填学员人数");
                 // 充值余额
-                int czje = entity.getLcFy() - fdje;
+                int czje = entity.getLcFy();
                 // 新增充值余额记录
                 BizJlCz jlCz = new BizJlCz();
                 jlCz.setCjsj(nowTime);
@@ -2062,7 +2062,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             String by4 = sysZdxms.get(0).getBy4();
             int xySl = Integer.parseInt(c);
             // 计算单个学员的保底费用
-            int dkdj = Integer.parseInt(sysZdxms.get(0).getZdmc()) - Integer.parseInt(sysZdxms.get(0).getBy3());
+            int dkdj = Integer.parseInt(sysZdxms.get(0).getZdmc());
             int i = wxjl.getYe() / dkdj;
             RuntimeCheck.ifTrue(i < xySl, "抵扣人数不能大于开放日学员人数");
             // 总抵扣额度
@@ -2110,6 +2110,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     jl.setYfJe(jl.getXjje());
                     jl.setZfzt("10");
                     jl.setPz(pz);
+                    jl.setDkdj(kfDj + "");
                     update(jl);
                 }
 

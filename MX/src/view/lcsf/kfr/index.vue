@@ -283,7 +283,10 @@
           {
             title: '类型', minWidth: 90, align: 'center',
             render: (h, p) => {
-              return h('div', p.row.lcLx == '20' ? '培优-' + p.row.zdxm.zdmc + '元' : '开放日')
+              if (p.row.lcLx == '30') {
+                return h('div', p.row.zdxm.by9 + "-" + p.row.zdxm.by10 + "分钟")
+              }
+              return h('div', '培优-' + p.row.zdxm.zdmc + '元')
             },
             filters: [
               {

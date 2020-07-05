@@ -3,7 +3,7 @@
     <div style="text-align: right;width: 100%">
       <DatePicker v-model="dateRange.kssj"
                   @on-change="kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm format="yyyy-MM-dd"
-                  type="daterange" :placeholder="'请输入'" style="width: 200px"></DatePicker>
+                  type="daterange" split-panels :placeholder="'请输入'" style="width: 200px"></DatePicker>
       <Button type="primary" @click="getData" style="margin-left: 10px;">
         <Icon type="md-search"></Icon>
         <!--查询-->

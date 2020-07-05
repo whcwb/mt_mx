@@ -12,7 +12,11 @@
       <Row :gutter="12">
         <Col span="8" v-for="(item,index) in list" :prop="item.zdmc" :key="item.zdId">
           <Card style="margin-top: 12px;">
-            <p slot="title">
+            <p slot="title" v-if="item.zddm.includes('K2KF')">
+              <Icon type="ios-car"></Icon>
+              {{item.by9}}-{{item.by10 + '分钟'}}
+            </p>
+            <p slot="title" v-else>
               <Icon type="ios-car"></Icon>
               {{item.by9}}
             </p>
@@ -38,7 +42,7 @@
               <Col span="20">
                 <InputNumber v-model="item.by3" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
 <!--                <span v-if="item.zddm =='K2PY'"> 元/人</span>-->
-                <span v-if="item.zddm =='K2KF' ||　(item.zddm.indexOf('K2PY') != -1)">返点金额</span>
+                <span v-if="item.zddm.includes('K2KF') ||　(item.zddm.indexOf('K2PY') != -1)">返点金额</span>
                 <span v-else> 元/分钟</span>
               </Col>
               <Col span="4">
