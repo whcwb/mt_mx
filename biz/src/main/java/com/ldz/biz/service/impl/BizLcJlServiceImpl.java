@@ -147,7 +147,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
             // 计算下支付方式
             if (bizLcJl.getKfje() != null && bizLcJl.getKfje() > 0) {
-                bizLcJl.setZffs("开放日·" + (int) (Math.ceil(bizLcJl.getKfje() * 1.0 / 200)) + "人");
+                bizLcJl.setZffs("开放日·" + (int) (Math.ceil(bizLcJl.getKfje() * 1.0 / Integer.parseInt(StringUtils.isBlank(bizLcJl.getDkdj()) ? "200" : bizLcJl.getDkdj()))) + "人");
             } else if (bizLcJl.getCardje() != null && bizLcJl.getCardje() > 0) {
                 bizLcJl.setZffs("充值卡");
             } else if (StringUtils.equals(bizLcJl.getZfzt(), "10")) {
@@ -2088,6 +2088,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     jl.setKfje(kfje);
                     jl.setXjje(0);
                     jl.setPz(pz);
+                    jl.setDkdj(kfDj + "");
                     update(jl);
                 }
             } else {
