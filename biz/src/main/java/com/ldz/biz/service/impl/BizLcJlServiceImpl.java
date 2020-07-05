@@ -2290,12 +2290,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             end = DateTime.now().toString("yyyy-MM-dd");
         }
         Map<String ,List<String>> mm = new HashMap<>();
-        // 先算科二的吧
+        // 先算科二的
         SimpleCondition condition = new SimpleCondition(BizLcJl.class);
         condition.gte(BizLcJl.InnerColumn.kssj , start + " 00:00:00");
         condition.lte(BizLcJl.InnerColumn.kssj, end + " 23:59:59");
         condition.eq(BizLcJl.InnerColumn.lcKm, "2");
         condition.eq(BizLcJl.InnerColumn.zfzt, "10");
+        condition.and().andCondition(" jssj is not null and jssj != ''");
         List<BizLcJl> jls = findByCondition(condition);
         // 根据时间分组
         Map<String, List<BizLcJl>> map = jls.stream().collect(Collectors.groupingBy(p -> p.getJssj().substring(0,10)));
@@ -2308,6 +2309,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         k3conditon.lte(BizLcJl.InnerColumn.kssj, end + " 23:59:59");
         k3conditon.eq(BizLcJl.InnerColumn.lcKm, "3");
         k3conditon.eq(BizLcJl.InnerColumn.zfzt, "10");
+        k3conditon.and().andCondition(" jssj is not null and jssj != ''");
         List<BizLcJl> k3jls = findByCondition(k3conditon);
         Map<String, List<BizLcJl>> k3map = k3jls.stream().collect(Collectors.groupingBy(p -> p.getJssj().substring(0, 10)));
 
