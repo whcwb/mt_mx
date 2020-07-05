@@ -283,7 +283,7 @@
           return
         }
 
-        this.hisPrintMess.name = localStorage.getItem("user")
+        this.hisPrintMess.name = JSON.parse(sessionStorage.getItem('userInfo')).xm
         this.componentName = 'printSignUp'
       }
     }

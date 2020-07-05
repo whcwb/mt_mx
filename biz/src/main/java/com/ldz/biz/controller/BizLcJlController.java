@@ -32,27 +32,28 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
 
     /**
      * 新增一条练车记录
+     *
      * @param entity
      * @return
      */
-    @RequestMapping(value="/save", method={RequestMethod.POST})
-    public ApiResponse<String> save(BizLcJl entity){
+    @RequestMapping(value = "/save", method = {RequestMethod.POST})
+    public ApiResponse<String> save(BizLcJl entity) {
         return service.saveEntity(entity);
     }
+
     /**
      * 手动结束一条练车记录
      */
     @PostMapping("/updateJssj")
-    public ApiResponse<BizLcJl> updateJssj(String id, String cardNo,String km) throws ParseException {
-        return service.updateJssj(id,cardNo,km);
+    public ApiResponse<BizLcJl> updateJssj(String id, String cardNo, String km) throws ParseException {
+        return service.updateJssj(id, cardNo, km);
     }
 
     /**
-     *
      * @return
      */
     @RequestMapping("/statistics")
-    public ApiResponse<List<Map<String,Object>>> statistics(){
+    public ApiResponse<List<Map<String, Object>>> statistics() {
         return ApiResponse.success(service.statistics());
     }
 
@@ -60,7 +61,7 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * 根据卡号查询最近的一条记录
      */
     @PostMapping("/getJl")
-    public ApiResponse<BizLcJl> getJl(String cardNo){
+    public ApiResponse<BizLcJl> getJl(String cardNo) {
         return service.getJl(cardNo);
     }
 
@@ -70,7 +71,7 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * @return
      */
     @RequestMapping("/jxtj")
-    public ApiResponse<List<Map<String,Object>> > drivingSchoolStatistics(){
+    public ApiResponse<List<Map<String, Object>>> drivingSchoolStatistics() {
         return ApiResponse.success(service.drivingSchoolStatistics());
     }
 
@@ -78,15 +79,15 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * 练车排队登记
      */
     @PostMapping("/saveJl")
-    public ApiResponse<String> saveJl(BizLcJl entity,String appoint){
-        return service.saveJl(entity,appoint);
+    public ApiResponse<String> saveJl(BizLcJl entity, String appoint) {
+        return service.saveJl(entity, appoint);
     }
 
     /**
      * 排队记录开始练车
      */
     @PostMapping("/kslc")
-    public ApiResponse<String> kslc(BizLcJl entity){
+    public ApiResponse<String> kslc(BizLcJl entity) {
         return service.kslc(entity);
     }
 
@@ -95,7 +96,7 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * 查询当前记录是否已经返点
      */
     @PostMapping("/getFdZt")
-    public ApiResponse<BizLcJl> getFdZt(String id){
+    public ApiResponse<BizLcJl> getFdZt(String id) {
         return service.getFdZt(id);
     }
 
@@ -103,7 +104,7 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * 训练记录返点记录接口
      */
     @PostMapping("/updateFdZt")
-    public ApiResponse<String> updateFdZt(String id){
+    public ApiResponse<String> updateFdZt(String id) {
         return service.updateFdZt(id);
     }
 
@@ -111,7 +112,7 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * 科目三模训 工作日志
      */
     @PostMapping("/getAllLog")
-    public ApiResponse<List<LcJlModel>> getAllLog(){
+    public ApiResponse<List<LcJlModel>> getAllLog() {
         return service.getAllLog();
     }
 
@@ -119,7 +120,7 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * 安全员工作日志
      */
     @PostMapping("/getOneLog")
-    public ApiResponse<LcJlModel> getOneLog(String zgId){
+    public ApiResponse<LcJlModel> getOneLog(String zgId) {
         return service.getOneLog(zgId);
     }
 
@@ -127,32 +128,32 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * 教练训练统计
      */
     @PostMapping("/jlTj")
-    public ApiResponse<List<LcJlModel>> getJlTj(){
+    public ApiResponse<List<LcJlModel>> getJlTj() {
         return service.getJlTj();
     }
 
     @PostMapping("/updateXysl")
-    public ApiResponse<String> updateXysl(String id , Integer xySl){
-        return service.updateXysl(id,xySl);
+    public ApiResponse<String> updateXysl(String id, Integer xySl) {
+        return service.updateXysl(id, xySl);
     }
 
     @PostMapping("/getLatestJl")
-    public ApiResponse<BizLcJl> getLatestJl(String clId){
+    public ApiResponse<BizLcJl> getLatestJl(String clId) {
         return service.getLatestJl(clId);
     }
 
     @PostMapping("/Tc")
-    public ApiResponse<List<SysZdxm>> getTc(String km , String by5){
-        return service.getTc(km,by5);
+    public ApiResponse<List<SysZdxm>> getTc(String km, String by5) {
+        return service.getTc(km, by5);
     }
 
     @PostMapping("/cz")
-    public ApiResponse<BizJlCz> saveCz(String id, int je, int sfje){
+    public ApiResponse<BizJlCz> saveCz(String id, int je, int sfje) {
         return service.saveCz(id, je, sfje);
     }
 
-//    @PostMapping("/pay")
-    public ApiResponse<String> savePay(String id){
+    //    @PostMapping("/pay")
+    public ApiResponse<String> savePay(String id) {
         return service.savePay(id);
     }
 
@@ -162,7 +163,7 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
     }
 
     @PostMapping("/batchPay")
-    public ApiResponse<String> saveBatchPay(String ids){
+    public ApiResponse<String> saveBatchPay(String ids) {
         return service.saveBatch(ids);
     }
 
@@ -170,75 +171,82 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * 根据打印凭证 返回需要打印的所有数据
      */
     @PostMapping("/getByPz")
-    public ApiResponse<BizLcJl> getByPz(String pz){
+    public ApiResponse<BizLcJl> getByPz(String pz) {
         return service.getByPz(pz);
     }
 
     /**
      * 支付接口 (可选择支付方式)
+     *
      * @param id
      * @param zf
      * @return
      */
     @PostMapping("/payCNY")
-    public ApiResponse<BizLcJl> payCNY(String id, String zf){
+    public ApiResponse<BizLcJl> payCNY(String id, String zf) {
         return service.payCNY(id, zf);
     }
 
     /**
      * 作废记录
+     *
      * @param id
      * @return
      */
     @PostMapping("/revokeJl")
-   public ApiResponse<String> revokeJl(String id){
+    public ApiResponse<String> revokeJl(String id) {
         return service.revokeJl(id);
-   }
+    }
 
     /**
      * 获取需要预警的车辆编号
+     *
      * @return
      */
-   @PostMapping("/getCarEnd")
-   public ApiResponse<String> getCarEnd(){
+    @PostMapping("/getCarEnd")
+    public ApiResponse<String> getCarEnd() {
         return service.getCarEnd();
-   }
+    }
 
     /**
      * 收支统计
+     *
      * @param start
      * @param end
      * @return
      */
-   @PostMapping("/statisSec")
-    public ApiResponse<List<String>> staticSec(String start, String end){
-       return service.statisSec(start,end);
-   }
+    @PostMapping("/statisSec")
+    public ApiResponse<List<String>> staticSec(String start, String end) {
+        return service.statisSec(start, end);
+    }
 
     /**
      * 主页统计
+     *
      * @return
      */
-   @PostMapping("/statisMain")
-   public ApiResponse<Map<String, Integer>> statisMain(){
-       return service.statisMain();
-   }
+    @PostMapping("/statisMain")
+    public ApiResponse<Map<String, Integer>> statisMain() {
+        return service.statisMain();
+    }
 
     /**
      * 收支统计excel导出
+     *
      * @param start
      * @param end
      * @param request
      * @param response
      * @throws Exception
      */
-   @GetMapping("/exportSec")
-   public void exportSec(String start, String end, HttpServletRequest request, HttpServletResponse response) throws Exception {
-       service.exportSec(start, end, request, response);
-   }
+    @GetMapping("/exportSec")
+    public void exportSec(String start, String end, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        service.exportSec(start, end, request, response);
+    }
 
     /**
      * 导出科目三模训明细excel
+     *
      * @param request
      * @param response
      * @throws IOException

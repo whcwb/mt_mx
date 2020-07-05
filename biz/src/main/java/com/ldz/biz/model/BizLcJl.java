@@ -220,6 +220,12 @@ public class BizLcJl implements Serializable {
     @Transient
     private Integer kfDj;
 
+    /**
+     * 抵扣时长
+     */
+    @Transient
+    private Integer dksc;
+
     private static final long serialVersionUID = 1L;
 
     public enum InnerColumn {
