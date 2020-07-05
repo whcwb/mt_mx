@@ -46,15 +46,24 @@
             </Row>
             <Row v-if="index==1" style="margin-top: 16px;">
               <Col span="20">
-                <InputNumber v-model="item.qz" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
+                <InputNumber v-model="item.qz" :placeholder="'请填写套餐时长...'" style="width: 200px;"></InputNumber>
                 <span>分钟</span>
+              </Col>
+              <Col span="4">
+              </Col>
+            </Row>
+            <Row style="margin-top: 16px;">
+              <Col span="20">
+                <InputNumber v-model="item.by10" :placeholder="'请填写抵扣时长...'" style="width: 200px;"></InputNumber>
+                <!--                <span v-if="item.zddm =='K2PY'"> 元/人</span>-->
+                <span>抵扣时长</span>
               </Col>
               <Col span="4">
               </Col>
             </Row>
             <Row v-if="index!=1" style="margin-top: 16px;">
               <Col span="20">
-                <InputNumber v-model="item.by4" :placeholder="'请填写练车单价...'" style="width: 200px;"></InputNumber>
+                <InputNumber v-model="item.by4" :placeholder="'请填写返点率...'" style="width: 200px;"></InputNumber>
                 <span>返点率</span>
               </Col>
               <Col span="4">

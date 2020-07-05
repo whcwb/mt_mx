@@ -203,6 +203,8 @@ public class BizLcJl implements Serializable {
     @Column(name = "kfje")
     private Integer kfje;
 
+    private String dkdj;
+
     @Transient
     private List<BizLcJl> jls;
 
@@ -219,6 +221,12 @@ public class BizLcJl implements Serializable {
 
     @Transient
     private Integer kfDj;
+
+    /**
+     * 抵扣时长
+     */
+    @Transient
+    private Integer dksc;
 
     private static final long serialVersionUID = 1L;
 
@@ -241,7 +249,7 @@ public class BizLcJl implements Serializable {
         lcKm("lc_km"),
         jlCx("jl_cx"),
         cardNo("card_no"),
-        fdZt("fd_zt"),jlId("jl_id"),
+        fdZt("fd_zt"), jlId("jl_id"),
         fdsj("fdsj"),
         fdr("fdr"),
         fdId("fd_id"),
@@ -250,7 +258,8 @@ public class BizLcJl implements Serializable {
         xyDh("xy_dh"),
         zddm("zddm"),
         zfzt("zfzt"),
-        pz("pz");
+        pz("pz"),
+        dkdj("dkdj");
 
         private final String column;
 
