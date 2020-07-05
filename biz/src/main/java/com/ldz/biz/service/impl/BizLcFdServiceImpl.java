@@ -158,9 +158,9 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 		lcFds.setFdje(sum);
 		lcFds.setFdlx(fds.get(0).getFdlx());
 		lcFds.setFdsl(fds.size());
-		if(CollectionUtils.size(fds) == 1){
+		if (CollectionUtils.size(fds) == 1) {
 			lcFds.setId(list.get(0));
-		}else{
+		} else {
 			lcFds.setId(genId());
 		}
 		lcFds.setJlId(fds.get(0).getJlId());
@@ -168,7 +168,7 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 		lcFds.setLcFy(lcFy);
 		lcFds.setLcKm(fds.get(0).getLcKm());
 		lcFds.setSc(sc);
-		lcFds.setLcId(fds.stream().map(BizLcFd::getId).collect(Collectors.joining(",")));
+		lcFds.setLcId(fds.stream().map(BizLcFd::getLcId).collect(Collectors.joining(",")));
 		lcFds.setBz(bz);
 		lcFds.setQrr(lcFds.getCjr());
 		lcFds.setQrsj(lcFds.getCjsj());

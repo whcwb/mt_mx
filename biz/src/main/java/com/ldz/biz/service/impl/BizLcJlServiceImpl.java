@@ -1968,7 +1968,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         } else if (StringUtils.equals(zf, "2")) {
             // 卡上余额支付
             // 1. 先计算卡上余额是否充足 , 如果充足 则 直接扣款 , 不返点
-
             // 卡上余额
             int cardJe = wxjl.getCardJe();
             RuntimeCheck.ifTrue(cardJe <= 0, "卡上余额为0 , 请选择其他支付方式");

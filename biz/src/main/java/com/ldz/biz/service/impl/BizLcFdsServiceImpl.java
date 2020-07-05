@@ -5,13 +5,16 @@ import com.github.pagehelper.PageInfo;
 import com.ldz.biz.mapper.BizLcFdsMapper;
 import com.ldz.biz.model.BizLcFd;
 import com.ldz.biz.model.BizLcFds;
+import com.ldz.biz.model.BizLcJl;
 import com.ldz.biz.model.BizLcWxjl;
 import com.ldz.biz.service.BizLcFdService;
 import com.ldz.biz.service.BizLcFdsService;
+import com.ldz.biz.service.BizLcJlService;
 import com.ldz.biz.service.BizLcWxjlService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.exception.RuntimeCheck;
 import jxl.CellView;
 import jxl.Workbook;
@@ -33,7 +36,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class BizLcFdsServiceImpl extends BaseServiceImpl<BizLcFds,String> implements BizLcFdsService {
+public class BizLcFdsServiceImpl extends BaseServiceImpl<BizLcFds, String> implements BizLcFdsService {
 
     @Autowired
     private BizLcFdsMapper baseMapper;
@@ -41,6 +44,9 @@ public class BizLcFdsServiceImpl extends BaseServiceImpl<BizLcFds,String> implem
     private BizLcFdService fdService;
     @Autowired
     private BizLcWxjlService wxjlService;
+    @Autowired
+    private BizLcJlService lcJlService;
+
     @Override
     protected Mapper<BizLcFds> getBaseMapper() {
         return baseMapper;
@@ -49,7 +55,7 @@ public class BizLcFdsServiceImpl extends BaseServiceImpl<BizLcFds,String> implem
     @Override
     public boolean fillPagerCondition(LimitedCondition condition) {
         String jlLx = getRequestParamterAsString("jlLx");
-        if(StringUtils.isNotBlank(jlLx)){
+        if (StringUtils.isNotBlank(jlLx)) {
             List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, jlLx);
             if(CollectionUtils.isEmpty(wxjls)){
                 return false;
@@ -148,37 +154,42 @@ public class BizLcFdsServiceImpl extends BaseServiceImpl<BizLcFds,String> implem
         contentFormat.setAlignment(Alignment.CENTRE);
 
         sheet.addCell(new Label(0, 2, "序号", contentFormat));
-        sheet.addCell(new Label(1, 2, "领款时间", contentFormat));
-        sheet.addCell(new Label(2, 2, "驾校名称", contentFormat));
-        sheet.addCell(new Label(3, 2, "返现笔数", contentFormat));
-        sheet.addCell(new Label(4, 2, "练车金额", contentFormat));
-        sheet.addCell(new Label(5, 2, "返现金额", contentFormat));
-        sheet.addCell(new Label(6, 2, "领款人签字", contentFormat));
-        sheet.addCell(new Label(7, 2, "备注", contentFormat));
+        sheet.addCell(new Label(1, 2, "返现日期", contentFormat));
+        sheet.addCell(new Label(2, 2, "凭证号", contentFormat));
+        sheet.addCell(new Label(3, 2, "驾校", contentFormat));
+        sheet.addCell(new Label(4, 2, "教练员", contentFormat));
+        sheet.addCell(new Label(5, 2, "练车日期", contentFormat));
+        sheet.addCell(new Label(6, 2, "练车金额", contentFormat));
+        sheet.addCell(new Label(7, 2, "返点金额", contentFormat));
 
         sheet.addCell(new Label(0, list.size() + 3, "合计", contentFormat));
-        sheet.mergeCells(1, list.size() + 3, 3, list.size() + 3);
-        sheet.mergeCells(6, list.size() + 3, 7, list.size() + 3);
+        sheet.mergeCells(1, list.size() + 3, 5, list.size() + 3);
+//        sheet.mergeCells(6, list.size() + 3, 7, list.size() + 3);
         if (CollectionUtils.isNotEmpty(list)) {
             Set<String> jlids = list.stream().map(BizLcFds::getJlId).collect(Collectors.toSet());
             List<BizLcWxjl> wxjls = wxjlService.findByIds(jlids);
-            Map<String, String> jxmcMap = new HashMap<>();
+            Map<String, BizLcWxjl> jxmcMap = new HashMap<>();
             if (CollectionUtils.isNotEmpty(wxjls)) {
-                jxmcMap = wxjls.stream().collect(Collectors.toMap(BizLcWxjl::getId, BizLcWxjl::getJlJx));
+                jxmcMap = wxjls.stream().collect(Collectors.toMap(BizLcWxjl::getId, p -> p));
             }
             for (int i = 0; i < list.size(); i++) {
                 BizLcFds fd = list.get(i);
+                BizLcWxjl wxjl = jxmcMap.get(fd.getJlId());
+                String lcId = fd.getLcId().split(",")[0];
+                SimpleCondition condition = new SimpleCondition(BizLcJl.class);
+                condition.and().andCondition(" pz = '" + lcId + "' or id = '" + lcId + "'");
+                BizLcJl jl = lcJlService.findByCondition(condition).get(0);
                 sheet.addCell(new Label(0, i + 3, i + 1 + "", contentFormat));
                 sheet.addCell(new Label(1, i + 3, fd.getCjsj().substring(0, 10), contentFormat));
-                sheet.addCell(new Label(2, i + 3, jxmcMap.get(fd.getJlId()), contentFormat));
-                sheet.addCell(new Label(3, i + 3, fd.getLcId().split(",").length + "", contentFormat));
-                sheet.addCell(new Label(4, i + 3, fd.getLcFy() + "", contentFormat));
-                sheet.addCell(new Label(5, i + 3, fd.getFdje() + "", contentFormat));
-                sheet.addCell(new Label(6, i + 3, " ", contentFormat));
-                sheet.addCell(new Label(7, i + 3, " ", contentFormat));
+                sheet.addCell(new Label(2, i + 3, fd.getId()));
+                sheet.addCell(new Label(3, i + 3, wxjl.getJlJx(), contentFormat));
+                sheet.addCell(new Label(4, i + 3, wxjl.getJlXm(), contentFormat));
+                sheet.addCell(new Label(5, i + 3, jl.getCjsj().substring(0, 10), contentFormat));
+                sheet.addCell(new Label(6, i + 3, fd.getLcFy() + "", contentFormat));
+                sheet.addCell(new Label(7, i + 3, fd.getFdje() + "", contentFormat));
             }
-            sheet.addCell(new Label(4, list.size() + 3, list.stream().mapToInt(BizLcFds::getLcFy).sum() + "", contentFormat));
-            sheet.addCell(new Label(5, list.size() + 3, list.stream().mapToInt(BizLcFds::getFdje).sum() + "", contentFormat));
+            sheet.addCell(new Label(6, list.size() + 3, list.stream().mapToInt(BizLcFds::getLcFy).sum() + "", contentFormat));
+            sheet.addCell(new Label(7, list.size() + 3, list.stream().mapToInt(BizLcFds::getFdje).sum() + "", contentFormat));
         }
         workbook.write();
         workbook.close();
