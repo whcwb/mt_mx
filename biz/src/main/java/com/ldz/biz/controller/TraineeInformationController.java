@@ -1,8 +1,5 @@
 package com.ldz.biz.controller;
 
-import com.github.pagehelper.Page;
-import com.ldz.biz.model.EChart;
-
 import com.ldz.biz.model.TraineeInformation;
 import com.ldz.biz.service.TraineeInformationService;
 import com.ldz.sys.base.BaseController;
@@ -14,19 +11,19 @@ import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 学生基本信息
  */
 @RestController
 @RequestMapping("/api/traineeinformation")
-public class TraineeInformationController extends BaseController<TraineeInformation,String> {
+public class TraineeInformationController extends BaseController<TraineeInformation, String> {
     @Autowired
     private TraineeInformationService service;
 
@@ -40,28 +37,25 @@ public class TraineeInformationController extends BaseController<TraineeInformat
     }
 
 
-
     /**
      * 获取系统报名点(机构)接口 以目录树形式展现
+     *
      * @return
      */
     @RequestMapping("/getCurrentOrgTree")
-    public ApiResponse<List<TreeNode>> getCurrentOrgTree(){
+    public ApiResponse<List<TreeNode>> getCurrentOrgTree() {
         SysYh currentUser = getCurrentUser();
         String jgdms = currentUser.getJgdms();
         List<String> list = new ArrayList<>();
         list.add(currentUser.getJgdm());
-        if(StringUtils.isNotBlank(jgdms)){
-            list.addAll( Arrays.asList(jgdms.split(",")));
+        if (StringUtils.isNotBlank(jgdms)) {
+            list.addAll(Arrays.asList(jgdms.split(",")));
         }
-        List<SysJg> orgList =  jgService.findAllSubOrg(list,null);
+        List<SysJg> orgList = jgService.findAllSubOrg(list, null);
         List<TreeNode> orgNode = jgService.convertToTreeNodeList(orgList);
         List<TreeNode> orgTree = TreeNode.buildTree(orgNode);
         return ApiResponse.success(orgTree);
     }
-
-
-
 
 
 }

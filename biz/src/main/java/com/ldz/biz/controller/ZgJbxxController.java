@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/zgjbxx")
-public class ZgJbxxController extends BaseController<Zgjbxx,String> {
+public class ZgJbxxController extends BaseController<Zgjbxx, String> {
 
     @Autowired
     private ZgjbxxService service;
@@ -26,17 +26,17 @@ public class ZgJbxxController extends BaseController<Zgjbxx,String> {
     }
 
     @PostMapping("/save")
-    public ApiResponse<String> save(Zgjbxx entity){
+    public ApiResponse<String> save(Zgjbxx entity) {
         return service.saveEntity(entity);
     }
 
     @PostMapping("/update")
-    public ApiResponse<String> update(Zgjbxx entity){
+    public ApiResponse<String> update(Zgjbxx entity) {
         return service.updateEntity(entity);
     }
 
     @PostMapping("/getAqy")
-    public ApiResponse<List<Zgjbxx>> getAqy(){
+    public ApiResponse<List<Zgjbxx>> getAqy() {
         return service.getAqy();
     }
 
@@ -44,10 +44,11 @@ public class ZgJbxxController extends BaseController<Zgjbxx,String> {
      * 安全员签到
      * id   员工ID
      * aqyQdzt  签到状态 (字典[aqyzt] 00休息 10上班)
+     *
      * @return
      */
     @PostMapping("/setaqrqd")
-    public ApiResponse<String> setSecurityOfficerSignin(Zgjbxx entity){
+    public ApiResponse<String> setSecurityOfficerSignin(Zgjbxx entity) {
         return service.setSecurityOfficerSignin(entity);
     }
 

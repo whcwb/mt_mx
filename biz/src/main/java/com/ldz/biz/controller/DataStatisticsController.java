@@ -4,17 +4,14 @@ package com.ldz.biz.controller;
 import com.ldz.biz.model.StudentAllModel;
 import com.ldz.biz.service.DataStaService;
 import com.ldz.util.bean.ApiResponse;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationPid;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 数据统计接口
@@ -27,13 +24,11 @@ public class DataStatisticsController {
     private DataStaService service;
 
 
-
-
     /**
      * 统计各个报名点， 年的招生人数
      */
     @PostMapping("/getAllStudentCount")
-    public ApiResponse<List<StudentAllModel>> getAllStudentCount(String startTime, String endTime, @RequestParam(required = false) String jgdm, @RequestParam(required = false)String[] lx) throws ParseException {
+    public ApiResponse<List<StudentAllModel>> getAllStudentCount(String startTime, String endTime, @RequestParam(required = false) String jgdm, @RequestParam(required = false) String[] lx) throws ParseException {
         return service.getAllStudentCount(startTime, endTime, jgdm, lx);
     }
 
@@ -41,7 +36,7 @@ public class DataStatisticsController {
      * 统计各个报名点，某日的招生人数
      */
     @PostMapping("/getStudentCount")
-    public ApiResponse<List<StudentAllModel>> getStudentCount(String startTime, String endTime, @RequestParam(required = false) String jgdm, @RequestParam(required = false)String[] lx) throws ParseException {
+    public ApiResponse<List<StudentAllModel>> getStudentCount(String startTime, String endTime, @RequestParam(required = false) String jgdm, @RequestParam(required = false) String[] lx) throws ParseException {
         return service.getStudentCount(startTime, endTime, jgdm, lx);
     }
 

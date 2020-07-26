@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * 已返点相关接口
+ */
 @RestController
 @RequestMapping("/api/fds")
 public class BizLcFdsController extends BaseController<BizLcFds, String> {

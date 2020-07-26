@@ -1,5 +1,5 @@
-let ajaxUrl = 'http://192.168.1.156:8080';
 // let ajaxUrl = 'http://127.0.0.1:8080';
+let ajaxUrl = 'http://172.16.0.83:8081';
 export default {
   NETWORK_ERR_STR: '网络加载异常!',
   // url:'http://192.168.3.234:10010',
@@ -36,14 +36,14 @@ export default {
   },
   FBXXY: {    //非本校学员
     PAGER: 'api/exception/pager',
-    DEAL:'/api/exception/updateException'
+    DEAL: '/api/exception/updateException'
   },
-  PJJL:{
-    PAGER:'/api/chargemanagement/getPrintLog',
-    ZF:'/api/chargemanagement/removePjbh'
+  PJJL: {
+    PAGER: '/api/chargemanagement/getPrintLog',
+    ZF: '/api/chargemanagement/removePjbh'
   },
+  PAGER: '/api/chargeitemmanagement/pager',//inOutType 00收  10 支出
   SFX: {//收费项
-    PAGER: '/api/chargeitemmanagement/pager',//inOutType 00收  10 支出
     SAVE: '/api/chargeitemmanagement/save',
     DELE: '/api/chargeitemmanagement/remove/',
     UPDATE: '/api/chargeitemmanagement/update'//GET

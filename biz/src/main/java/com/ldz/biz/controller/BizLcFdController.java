@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 练车返点接口
+ */
 @RestController
 @RequestMapping("/api/bizlcfd")
 public class BizLcFdController extends BaseController<BizLcFd, String> {
@@ -25,16 +28,16 @@ public class BizLcFdController extends BaseController<BizLcFd, String> {
     }
 
     @PostMapping("/updateZt")
-    public ApiResponse<BizLcFds> updateZt(String id, String bz){
+    public ApiResponse<BizLcFds> updateZt(String id, String bz) {
         return service.updateZt(id, bz);
     }
 
     @PostMapping("/getPj")
-    public ApiResponse<String> getPj(String id){
+    public ApiResponse<String> getPj(String id) {
         return service.getPj(id);
     }
 
-    @RequestMapping(value="/getPager", method={RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/getPager", method = {RequestMethod.POST, RequestMethod.GET})
     public ApiResponse<String> getPager(Page<BizLcFd> pager) {
         return service.getPager(pager);
     }

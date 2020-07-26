@@ -22,7 +22,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/traineeinformation")
-public class InformationExcelController  {
+public class InformationExcelController {
 
     @Autowired
     private TraineeInformationService informationService;
@@ -55,7 +55,7 @@ public class InformationExcelController  {
         tableName.put("name", "姓名");
         tableName.put("idCardNo", "证件号码");
         tableName.put("jgmc", "报名点");
-        tableName.put("referrer","推荐人");
+        tableName.put("referrer", "推荐人");
         tableName.put("serialNum", "流水号");
         tableName.put("gender", "性别");
         tableName.put("source", "本地/外地");
@@ -92,7 +92,7 @@ public class InformationExcelController  {
                 m.put("idCardNo", l.getIdCardNo());//证件号码
                 m.put("jgmc", l.getJgmc());//报名点
                 String serialNum = l.getSerialNum();
-                m.put("referrer",l.getReferrer());
+                m.put("referrer", l.getReferrer());
                 m.put("serialNum", StringUtils.isBlank(serialNum) ? "待受理" : serialNum);//流水号
                 String gender = l.getGender();
                 m.put("gender", StringUtils.equals(gender, "10") ? "男" : "女");//性别

@@ -19,6 +19,9 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 练车记录接口
+ */
 @RestController
 @RequestMapping("/api/lcjl")
 public class BizLcJlController extends BaseController<BizLcJl, String> {
