@@ -39,6 +39,7 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
      * @param entity
      * @return
      */
+    @Override
     @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public ApiResponse<String> save(BizLcJl entity) {
         return service.saveEntity(entity);

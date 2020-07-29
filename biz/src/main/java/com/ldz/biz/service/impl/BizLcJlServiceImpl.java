@@ -209,9 +209,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         // 是否有选择车辆 , 如果有需要判断车辆状态
         if (StringUtils.isNotBlank(entity.getLcClId())) {
             lcCl = clService.findById(entity.getLcClId());
-            RuntimeCheck.ifTrue(lcCl.getClZt().equalsIgnoreCase("01"), lcCl.getClBh() + "号车辆已经在训练中");
+            RuntimeCheck.ifTrue("01".equalsIgnoreCase(lcCl.getClZt()), lcCl.getClBh() + "号车辆已经在训练中");
             if (StringUtils.isNotBlank(entity.getKm())) {
-                String mess = "此车辆已绑定科目" + (lcCl.getClKm().equals("2") ? "二" : "三") + "-" + lcCl.getClBh() + "车,不能在科目" + (entity.getKm().equals("2") ? "二" : "三") + "窗口发车";
+                String mess = "此车辆已绑定科目" + ("2".equals(lcCl.getClKm()) ? "二" : "三") + "-" + lcCl.getClBh() + "车,不能在科目" + ("2".equals(entity.getKm()) ? "二" : "三") + "窗口发车";
                 RuntimeCheck.ifFalse(lcCl.getClKm().equalsIgnoreCase(entity.getKm()), mess);
             }
             entity.setLcClId(lcCl.getId());
@@ -289,7 +289,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             if (StringUtils.equals(entity.getLcLx(), "20")) {
                 // 培优价格为本身价格
                 entity.setZfzt("10");
-                if (entity.getLcKm().equals("2")) {
+                if ("2".equals(entity.getLcKm())) {
                     RuntimeCheck.ifBlank(entity.getXyXm(), "请输入学员信息");
                     // 根据学员信息计算学员的数量
                     String[] split = entity.getXyXm().split(",");
@@ -693,7 +693,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String lcKm = getRequestParamterAsString("lcKm");
 //        RuntimeCheck.ifBlank(lcKm, "请选择科目");
         String tjsj = getRequestParamterAsString("tjsj");
-        if (StringUtils.isEmpty(tjsj)) tjsj = DateUtils.getToday() + " 00:00:00," + DateUtils.getToday() + " 23:59:59";
+        if (StringUtils.isEmpty(tjsj)) {
+            tjsj = DateUtils.getToday() + " 00:00:00," + DateUtils.getToday() + " 23:59:59";
+        }
         String[] sj = tjsj.split(",");
         String kssj = sj[0];
         String jssj = sj[1];
@@ -745,8 +747,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     public List<Map<String, Object>> statistics() {
         String cjsjIn = getRequestParamterAsString("cjsjIn");
         String clId = getRequestParamterAsString("clId");
-        if (StringUtils.isEmpty(cjsjIn))
+        if (StringUtils.isEmpty(cjsjIn)) {
             cjsjIn = DateUtils.getToday() + " 00:00:00," + DateUtils.getToday() + " 23:59:59";
+        }
         String[] sj = cjsjIn.split(",");
         String kssj = sj[0];
         String jssj = sj[1];
@@ -893,9 +896,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             // 练车车辆的详细信息
             lcCl = clService.findById(entity.getLcClId());
         }
-        RuntimeCheck.ifTrue(lcCl.getClZt().equalsIgnoreCase("01"), "当前车辆已经在训练中");
+        RuntimeCheck.ifTrue("01".equalsIgnoreCase(lcCl.getClZt()), "当前车辆已经在训练中");
         if (StringUtils.isNotBlank(entity.getKm())) {
-            RuntimeCheck.ifFalse(lcCl.getClKm().equalsIgnoreCase(entity.getKm()), "此卡号已绑定科目" + (lcCl.getClKm().equals("2") ? "二" : "三") + " - " + lcCl.getClBh() + "车,不能在科目" + (entity.getKm().equals("2") ? "二" : "三") + "窗口发车");
+            RuntimeCheck.ifFalse(lcCl.getClKm().equalsIgnoreCase(entity.getKm()), "此卡号已绑定科目" + ("2".equals(lcCl.getClKm()) ? "二" : "三") + " - " + lcCl.getClBh() + "车,不能在科目" + ("2".equals(entity.getKm()) ? "二" : "三") + "窗口发车");
         }
         RuntimeCheck.ifFalse(StringUtils.equals(lcCl.getClCx(), lcJl.getJlCx()), "所选车辆车型与预约车型不一致");
         entity.setClBh(lcCl.getClBh());
@@ -1408,7 +1411,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         double rate = 0;
         BizLcJl lcJl = findById(id);
         RuntimeCheck.ifNull(lcJl, "未找到练车记录");
-        RuntimeCheck.ifTrue(lcJl.getZfzt().equals("10"), "此订单已经支付");
+        RuntimeCheck.ifTrue("10".equals(lcJl.getZfzt()), "此订单已经支付");
         BizLcFd fd = new BizLcFd();
         String pz = genId();
         lcJl.setPz(pz);

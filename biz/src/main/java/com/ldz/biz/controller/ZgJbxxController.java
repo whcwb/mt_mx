@@ -25,11 +25,13 @@ public class ZgJbxxController extends BaseController<Zgjbxx, String> {
         return service;
     }
 
+    @Override
     @PostMapping("/save")
     public ApiResponse<String> save(Zgjbxx entity) {
         return service.saveEntity(entity);
     }
 
+    @Override
     @PostMapping("/update")
     public ApiResponse<String> update(Zgjbxx entity) {
         return service.updateEntity(entity);

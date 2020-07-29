@@ -28,6 +28,7 @@ public class TcController extends BaseController<BizLcTc, String> {
         return service.saveEntity(entity);
     }
 
+    @Override
     @PostMapping("/update")
     public ApiResponse<String> update(BizLcTc entity) {
         return service.updateEntity(entity);

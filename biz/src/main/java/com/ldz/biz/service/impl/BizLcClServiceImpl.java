@@ -82,18 +82,18 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
             List<BizLcCl> lcCls = findEq(BizLcCl.InnerColumn.cardNo, entity.getCardNo());
             if (StringUtils.isNotBlank(entity.getTh()) && CollectionUtils.isNotEmpty(lcCls)) {
                 BizLcCl cl = lcCls.get(0);
-                RuntimeCheck.ifTrue(cl.getClZt().equalsIgnoreCase("01"), "此卡绑定车辆正在训练中，不能修改卡号");
+                RuntimeCheck.ifTrue("01".equalsIgnoreCase(cl.getClZt()), "此卡绑定车辆正在训练中，不能修改卡号");
                 baseMapper.updateCardNoToNull(cl.getId());
             } else {
                 if (CollectionUtils.isNotEmpty(lcCls)) {
                     BizLcCl cl = lcCls.get(0);
-                    RuntimeCheck.ifTrue(cl.getClZt().equalsIgnoreCase("01"), "此卡绑定车辆正在训练中，不能修改");
+                    RuntimeCheck.ifTrue("01".equalsIgnoreCase(cl.getClZt()), "此卡绑定车辆正在训练中，不能修改");
                     if (!cl.getClBh().equals(entity.getClBh())) {
-                        result.setMessage("当前卡号已绑定科目" + (cl.getClKm().equals("2") ? "二" : "三") + " - " + cl.getClBh() + "车 , 是否替换?");
+                        result.setMessage("当前卡号已绑定科目" + ("2".equals(cl.getClKm()) ? "二" : "三") + " - " + cl.getClBh() + "车 , 是否替换?");
                         result.setCode(505);
                         return result;
                     } else if (cl.getClBh().equals(entity.getClBh()) && !cl.getClKm().equals(entity.getClKm())) {
-                        result.setMessage("当前卡号已绑定科目" + (cl.getClKm().equals("2") ? "二" : "三") + " - " + cl.getClBh() + "车 , 是否替换?");
+                        result.setMessage("当前卡号已绑定科目" + ("2".equals(cl.getClKm()) ? "二" : "三") + " - " + cl.getClBh() + "车 , 是否替换?");
                         result.setCode(505);
                         return result;
                     }
@@ -243,7 +243,7 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
         ApiResponse<String> result = new ApiResponse<>();
         BizLcCl lcCl = findById(id);
         RuntimeCheck.ifNull(lcCl, "未找到车辆信息");
-        RuntimeCheck.ifTrue(lcCl.getClZt().equalsIgnoreCase("01"), "此车正在训练中，不能更换卡号");
+        RuntimeCheck.ifTrue("01".equalsIgnoreCase(lcCl.getClZt()), "此车正在训练中，不能更换卡号");
         SimpleCondition jlCondition = new SimpleCondition(BizLcJl.class);
         jlCondition.eq(BizLcJl.InnerColumn.cardNo, cardNo);
         jlCondition.and().andCondition(" jssj is null or jssj = ''");
@@ -255,18 +255,18 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
         List<BizLcCl> lcCls = findEq(BizLcCl.InnerColumn.cardNo, cardNo);
         if (StringUtils.isNotBlank(th) && CollectionUtils.isNotEmpty(lcCls)) {
             BizLcCl cl = lcCls.get(0);
-            RuntimeCheck.ifTrue(cl.getClZt().equalsIgnoreCase("01"), "此卡绑定车辆正在训练中，不能修改");
+            RuntimeCheck.ifTrue("01".equalsIgnoreCase(cl.getClZt()), "此卡绑定车辆正在训练中，不能修改");
             baseMapper.updateCardNoToNull(cl.getId());
         } else {
             if (CollectionUtils.isNotEmpty(lcCls)) {
                 BizLcCl cl = lcCls.get(0);
-                RuntimeCheck.ifTrue(cl.getClZt().equalsIgnoreCase("01"), "此卡绑定车辆正在训练中，不能修改");
+                RuntimeCheck.ifTrue("01".equalsIgnoreCase(cl.getClZt()), "此卡绑定车辆正在训练中，不能修改");
                 if (!cl.getClBh().equals(lcCl.getClBh())) {
-                    result.setMessage("当前卡号已绑定科目" + (cl.getClKm().equals("2") ? "二" : "三") + " - " + cl.getClBh() + "车 , 是否替换?");
+                    result.setMessage("当前卡号已绑定科目" + ("2".equals(cl.getClKm()) ? "二" : "三") + " - " + cl.getClBh() + "车 , 是否替换?");
                     result.setCode(505);
                     return result;
                 } else if (cl.getClBh().equals(lcCl.getClBh()) && !cl.getClKm().equals(lcCl.getClKm())) {
-                    result.setMessage("当前卡号已绑定科目" + (cl.getClKm().equals("2") ? "二" : "三") + " - " + cl.getClBh() + "车 , 是否替换?");
+                    result.setMessage("当前卡号已绑定科目" + ("2".equals(cl.getClKm()) ? "二" : "三") + " - " + cl.getClBh() + "车 , 是否替换?");
                     result.setCode(505);
                     return result;
                 }

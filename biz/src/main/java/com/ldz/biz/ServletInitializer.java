@@ -28,11 +28,12 @@ public class ServletInitializer extends SpringBootServletInitializer {
 		final WebApplicationContext rootAppContext = this.createRootApplicationContext(servletContext);
 		if(rootAppContext != null) {
 			servletContext.addListener(new ContextLoaderListener(rootAppContext) {
-				public void contextInitialized(ServletContextEvent event) {
-					gnService = rootAppContext.getBean(GnService.class);
-					gnService.initPermission();
-				}
-			});
+                @Override
+                public void contextInitialized(ServletContextEvent event) {
+                    gnService = rootAppContext.getBean(GnService.class);
+                    gnService.initPermission();
+                }
+            });
 		} else {
 			this.logger.debug("No ContextLoaderListener registered, as createRootApplicationContext() did not return an application context");
 		}

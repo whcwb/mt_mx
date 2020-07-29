@@ -31,11 +31,13 @@ public class CoachManagementController extends BaseController<CoachManagement, S
         return service.validAndSave(entity);
     }
 
+    @Override
     @PostMapping("/update")
     public ApiResponse<String> update(CoachManagement entity) {
         return service.updateEntity(entity);
     }
 
+    @Override
     @PostMapping("/remove/{pkid}")
     public ApiResponse<String> remove(@PathVariable("pkid") String id) {
         return service.deleteEntity(id);

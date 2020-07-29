@@ -1,6 +1,5 @@
 package com.ldz.biz.interceptor;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ldz.sys.constant.Dict;
 import com.ldz.sys.mapper.SysYhJsMapper;
 import com.ldz.sys.model.SysGn;
@@ -11,7 +10,6 @@ import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.JwtUtil;
 import com.ldz.util.spring.SpringContextUtil;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -60,7 +58,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 
 		// 查看请求类型
 		String method = request.getMethod();
-		if (method.equals("OPTIONS")) {
+		if ("OPTIONS".equals(method)) {
 			// 如果收到的是跨域预请求消息，直接响应，返回true，以便后续跨域请求成功
 			return true;
 		}

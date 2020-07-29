@@ -73,16 +73,27 @@ public class BizJlCz {
     private String xm;
 
     public enum InnerColumn {
+        // id
         id("ID"),
+        // jl_id
         jlId("JL_ID"),
+        // je
         je("je"),
+        // cjsj
         cjsj("CJSJ"),
+        // type
         type("type"),
+        // qzqje
         czqje("czqje"),
+        // czhje
         czhje("czhje"),
+        // zy
         zy("zy"),
+        // bz
         bz("bz"),
+        // pjbh
         pjbh("pjbh");
+
         private final String column;
 
         InnerColumn(String column) {

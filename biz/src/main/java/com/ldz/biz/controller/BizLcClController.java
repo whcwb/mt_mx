@@ -35,6 +35,7 @@ public class BizLcClController extends BaseController<BizLcCl, String> {
      * @param entity
      * @return
      */
+    @Override
     @PostMapping("/save")
     public ApiResponse<String> save(BizLcCl entity) {
         return service.saveEntity(entity);
@@ -58,6 +59,7 @@ public class BizLcClController extends BaseController<BizLcCl, String> {
      * @param entity
      * @return
      */
+    @Override
     @PostMapping("/update")
     public ApiResponse<String> update(BizLcCl entity) {
         return service.updateEntity(entity);

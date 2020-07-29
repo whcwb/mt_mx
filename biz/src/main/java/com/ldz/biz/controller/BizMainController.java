@@ -566,13 +566,13 @@ public class BizMainController {
         }
         List<Map<Integer, String>> collect = coll.stream().sorted((o1, o2) -> o1.get(8).compareTo(o2.get(8))).collect(Collectors.toList());
         data.addAll(collect);
-        String fileName = java.net.URLEncoder.encode((sign.equals("7") ? "科目一" : sign.equals("2") ? "科目二" : sign.equals("3") ? "科目三" : "") + "考试待缴", "UTF-8");
+        String fileName = java.net.URLEncoder.encode(("7".equals(sign) ? "科目一" : "2".equals(sign) ? "科目二" : "3".equals(sign) ? "科目三" : "") + "考试待缴", "UTF-8");
         response.setContentType("application/msexcel");
         request.setCharacterEncoding("UTF-8");
         response.setHeader("pragma", "no-cache");
         response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1") + ".xls");
         OutputStream out = response.getOutputStream();
-        ExcelUtil.createSheet(out, (sign.equals("7") ? "科目一" : sign.equals("2") ? "科目二" : sign.equals("3") ? "科目三" : "") + "考试代缴", data);
+        ExcelUtil.createSheet(out, ("7".equals(sign) ? "科目一" : "2".equals(sign) ? "科目二" : "3".equals(sign) ? "科目三" : "") + "考试代缴", data);
     }
 
 
