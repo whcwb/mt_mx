@@ -85,7 +85,6 @@
              @on-select-all="tabcheck"
              @on-select-all-cancel="tabcheck"
              :columns="tableColumns" :data="pageData"></Table>
-      <!--      <table-area :parent="v"></table-area>-->
       <Row class="margin-top-10 pageSty">
         <div style="text-align: right;padding: 6px 0">
           <Page :total=param.total
@@ -1358,8 +1357,6 @@
               return item.label.indexOf(query.toUpperCase()) != -1
             });
           }, 200);
-        } else {
-          this.searchCoachList = [];
         }
       },
       clzt(zt) {

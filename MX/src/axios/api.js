@@ -1,9 +1,7 @@
-// let ajaxUrl = 'http://127.0.0.1:8080';
-let ajaxUrl = 'http://192.168.1.156:8080';
+let ajaxUrl = 'http://127.0.0.1:8080';
+// let ajaxUrl = 'http://192.168.1.156:8080';
 export default {
   NETWORK_ERR_STR: '网络加载异常!',
-  // url:'http://192.168.3.234:10010',
-  // url:'http://47.98.39.45:9986/biz',
   url: ajaxUrl,
   upFile: ajaxUrl + '/upload',
   // getImgUrl: 'http://192.168.3.35:8889'+'/img/',
