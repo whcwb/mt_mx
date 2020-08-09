@@ -58,7 +58,6 @@ public class OperateLogAop {
             SysYh userInfo = (SysYh)request.getAttribute("userInfo");
             log.setFf(joinPoint.getTarget().getClass().getSimpleName() +"." + joinPoint.getSignature().getName());
             log.setCzsj(new Date());
-   //         log.setCzr(userInfo.getYhid()+"-"+userInfo.getXm());
             log.setZxsj(elapseTime);
             log.setCs(getArgsAsString(joinPoint));
             log.setRzId(""+idGenerator.nextId());

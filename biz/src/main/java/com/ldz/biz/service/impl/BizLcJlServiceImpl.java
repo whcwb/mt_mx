@@ -216,7 +216,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             }
             entity.setLcClId(lcCl.getId());
             entity.setClBh(lcCl.getClBh());
-
             entity.setLcKm(lcCl.getClKm());
             entity.setJlCx(lcCl.getClCx());
             // 安全员信息
