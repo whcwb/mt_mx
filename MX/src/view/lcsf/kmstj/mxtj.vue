@@ -1,23 +1,24 @@
 <template>
   <div class="boxbackborder box_col" style="padding-top:16px">
-    <search-bar :parent="v" :show-create-button="false" :buttons="searchBarButtons"
-                @print="componentName = 'print'"
-                @exportExcel="exportExcel"
-    ></search-bar>
+    <Row>
+      <Col span="17">
+        <div style="width: 100%;min-height:1px;"></div>
+      </Col>
+      <Col span="3" style="padding-right: 60px">
+        <Select v-if="JGList.length > 1" v-model="param.jgdmLike" @on-change="v.util.initTable(v)">
+          <Option v-for="item in JGList" :value="item.val">{{item.label}}</Option>
+        </Select>
+        <div v-else style="min-height: 1px"></div>
+      </Col>
+      <Col span="4">
+        <search-bar :parent="v" :show-create-button="false" :buttons="searchBarButtons"
+                    @print="componentName = 'print'"
+                    @exportExcel="exportExcel"
+        ></search-bar>
+      </Col>
+    </Row>
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-230" :pager="false"></table-area>
     <Row>
-      <!--<Col span="1" align="center" >-->
-      <!--<div @click="AnYearTJ" style="padding: 10px;border-radius: 35px;background-color: #10AEFF;color: white;font-size: 28px">年</div>-->
-      <!--</Col>-->
-      <!--<Col span="1" align="center">-->
-      <!--<div @click="AnJdTJ" style="padding: 10px;border-radius: 35px;background-color: #10AEFF;color: white;font-size: 28px">季</div>-->
-      <!--</Col>-->
-      <!--<Col span="1" align="center">-->
-      <!--<div @click="AnMonTJ" style="padding: 10px;border-radius: 35px;background-color: #10AEFF;color: white;font-size: 28px">月</div>-->
-      <!--</Col>-->
-      <!--<Col span="1" align="center">-->
-      <!--<div @click="AnWeekTJ" style="padding: 10px;border-radius: 35px;background-color: #10AEFF;color: white;font-size: 28px">周</div>-->
-      <!--</Col>-->
       <Col span="24" align="right">
         <div style="font-size: 15px;font-weight: 600">
           实收合计：<span style="color: #ed3f14"> {{addmoney | GS}} </span> 元
@@ -29,7 +30,6 @@
 </template>
 
 <script>
-  // import formData from './formModal.vue'
   import print from './print'
   import moment from 'moment'
   import Cookies from 'js-cookie'
@@ -44,12 +44,10 @@
         v: this,
         addmoney: 0,
         apiRoot: this.apis.lcjl,
+        JGList: [{val: '100', label: '所有考场'}],
         choosedItem: null,
         componentName: '',
-        searchBarButtons: [
-          // {title: '打印', click: 'print'},
-          // {title: '导出', click: 'exportExcel'}
-        ],
+        searchBarButtons: [],
         dateRange: {
           kssj: ''
         },
@@ -158,12 +156,6 @@
               return h('div', p.row.sc + '分钟')
             }
           },
-          // {
-          //   title: '应收', minWidth: 90, defaul: '0', align: 'center',
-          //   render: (h, p) => {
-          //     return h('div', p.row.lcFy + '元');
-          //   }
-          // },
           {
             title: '实收', minWidth: 90, defaul: '0', align: 'center',
             render: (h, p) => {
@@ -237,7 +229,8 @@
           lcKm: '3',
           zhLike: '',
           zfzt: '10',
-          jlCxIn:''
+          jlCxIn: '',
+          jgdmLike: '100'
         },
       }
     },
@@ -249,10 +242,22 @@
         this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
         this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       }
-
+      this.getJgsByOrgCode();
       this.util.initTable(this);
     },
     methods: {
+      getJgsByOrgCode() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          if (res.result.length <= 1) {
+            this.JGList = []
+          }
+          for (let r of res.result) {
+            let t = {val: r.jgdm, label: r.jgmc}
+            this.JGList.push(t)
+          }
+          this.param.jgdmLike = this.JGList[0].val
+        })
+      },
       AnYearTJ() {
         let startTime = moment().subtract(1, 'year').format('YYYY[-]MM[-]DD HH[:]mm[:]ss')
         let endTime = moment().format('YYYY[-]MM[-]DD HH[:]mm[:]ss')
@@ -283,7 +288,10 @@
           p += '&' + k + '=' + this.param[k];
         }
         p = p.substr(1);
-        window.open(this.apis.url + '/pub/pagerExcelK3?' + p);
+        let accessToken = JSON.parse(Cookies.get('accessToken'));
+        let token = accessToken.token;
+        let userid = accessToken.userId;
+        window.open(this.apis.url + '/api/lcjl/pagerExcelK3?token=' + token + '&userid=' + userid + '&' + p);
       },
       afterPager(list) {
         let arr1 = []

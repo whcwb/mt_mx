@@ -6,14 +6,14 @@ import com.ldz.biz.model.BizLcCl;
 import com.ldz.biz.service.BizLcClService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
+import com.ldz.sys.model.SysJg;
 import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.List;
 
 /**
  * 练车车辆相关接口
@@ -89,5 +89,22 @@ public class BizLcClController extends BaseController<BizLcCl, String> {
     public ApiResponse<BizLcCl> getCarInfo(String cardNo, String km) {
         return service.getCarInfo(cardNo, km);
     }
+
+    /**
+     * 获取当前用户下所有的考场的机构信息 , 因为当前考场的机构在第三阶段 , 此处固定机构代码为9位数
+     */
+    @GetMapping("/getJgsByOrgCode")
+    public ApiResponse<List<SysJg>> getJgsByOrgCode(HttpServletRequest request) {
+        return service.getJgsByOrgCode(request);
+    }
+
+    /**
+     * 获取考场下方的科二科三机构
+     */
+    @GetMapping("/getNextJg")
+    public ApiResponse<List<SysJg>> getNextJg(String jgdm) {
+        return service.getNextJg(jgdm);
+    }
+
 
 }

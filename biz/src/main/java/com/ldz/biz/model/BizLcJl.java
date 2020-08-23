@@ -210,6 +210,12 @@ public class BizLcJl implements Serializable {
 
     @Column(name = "pz")
     private String pz;
+
+    /**
+     * 机构代码
+     */
+    private String jgdm;
+
     @Transient
     private SysZdxm zdxm;
 
@@ -259,7 +265,8 @@ public class BizLcJl implements Serializable {
         zddm("zddm"),
         zfzt("zfzt"),
         pz("pz"),
-        dkdj("dkdj");
+        dkdj("dkdj"),
+        jgdm("jgdm");
 
         private final String column;
 

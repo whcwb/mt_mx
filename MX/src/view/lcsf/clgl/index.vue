@@ -1,10 +1,10 @@
 <template>
   <div class="box_col">
-    <Menu mode="horizontal" :theme="theme1" active-name="2"
-          style="font-size: 48px;font-weight: bold;margin-bottom: 8px">
-      <MenuItem name="2">
-        科目二考试车
-      </MenuItem>
+    <Menu mode="horizontal" :theme="theme1" :active-name="activeName" ref="activeName"
+          style="font-size: 48px;font-weight: bold;margin-bottom: 8px" @on-select="selectKc">
+      <Menu-item v-for="item in JGList" :value="item.jgdm" :name="item.jgdm">
+        {{item.jgmc}}
+      </Menu-item>
     </Menu>
     <Row style="margin-bottom: 8px">
       <Col span="24">
@@ -34,7 +34,7 @@
             </Button>
           </Col>
           <Col span="1" align="center" >
-            <Button type="primary" @click="compName='cjcar'">
+            <Button type="primary" @click=" jgdm = param.jgdmLike , compName='cjcar'">
               <Icon type="md-add"></Icon>
               <!--查询-->
             </Button>
@@ -43,8 +43,6 @@
       </Col>
     </Row>
     <div class="box_col_auto">
-      <!--<Row>-->
-        <!--<Col span="6" v-for="(item,index) in tabdata" :key="index">-->
       <div class="box_row_list" :style="{height:AF.getPageHeight()-240+'px'}">
         <div style="width: 25%;min-width: 320px;padding: 8px" v-for="(item,index) in tabdata" :key="index">
           <Card style="width:100%">
@@ -78,11 +76,6 @@
                 </Row>
               </Col>
             </Row>
-            <!--<div style="padding: 6px 0">-->
-              <!--磁卡编码：-->
-              <!--<span v-if="item.cardNo" style="color: #19be6b">{{cardNo(item.cardNo)}}</span>-->
-              <!--<span v-else style="color:#ed3f14">车辆未绑卡</span>-->
-            <!--</div>-->
             <div style="padding-top: 5px">
               <div class="box_row" style="padding-top: 6px; ">
                 <div class="box_col_100">
@@ -110,7 +103,7 @@
       <!--</Row>-->
     </div>
     <!--<Table :height="AF.getPageHeight()-290" size="small" :columns="tabTit" :data="tabdata"></Table>-->
-    <component :is=compName :param="this.a"></component>
+    <component :is=compName :param="this.a" :jgdm="jgdm"></component>
   </div>
 </template>
 
@@ -126,6 +119,8 @@
     },
     data() {
       return {
+        activeName: '',
+        JGList: [],
         KXsty: {
           'background': '#57c5f7',
           'color': '#fff'
@@ -142,6 +137,7 @@
         param: {
           pageNum: 1,
           pageSize: 99999,
+          jgdmLike: '',
           clBh: '',
           clHm: '',
           clKm: '2',
@@ -149,6 +145,7 @@
           notShowLoading: 'true'
         },
         a: {},
+        jgdm: '',
         value1: '',
         value2: '',
         compName: '',
@@ -162,14 +159,29 @@
 
     },
     methods: {
-      cardNo(val){
-        return val.substring(0,2)+'******'
+      selectKc(val) {
+        this.param.jgdmLike = val
+        this.getPagerList()
+      },
+      getJgs() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          this.JGList = res.result;
+          this.param.jgdmLike = this.JGList[0].jgdm
+          this.getPagerList()
+          this.activeName = this.JGList[0].jgdm
+          this.$nextTick(() => {
+            this.$refs.activeName.updateActiveName();
+          })
+        })
+      },
+      cardNo(val) {
+        return val.substring(0, 2) + '******'
       },
       keerkesan(val) {
         this.param.clKm = val;
         this.getPagerList()
       },
-      bindCard(item){
+      bindCard(item) {
         this.a = item
         this.compName = 'bindcard'
       },
@@ -238,11 +250,12 @@
       }
     },
     created() {
-      this.getPagerList()
+      this.getJgs()
       this.carTypList = this.dictUtil.getByCode(this, 'ZDCLK1044')
       this.carTypList.forEach((item, index) => {
         item.background = '#fff'
       })
+
     }
   }
 </script>

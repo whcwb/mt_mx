@@ -6,7 +6,6 @@ import com.ldz.sys.model.SysGn;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.GnService;
 import com.ldz.sys.service.YhService;
-import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.JwtUtil;
 import com.ldz.util.spring.SpringContextUtil;
 import lombok.extern.log4j.Log4j2;
@@ -26,24 +25,17 @@ import java.util.List;
  * 访问接口控制
  *
  * @author 李彬彬
- *
  */
 @Log4j2
 public class AccessInterceptor extends HandlerInterceptorAdapter {
 
-	private GnService gnService;
+	private final GnService gnService;
 
-	private YhService yhService;
+	private final YhService yhService;
 
-	private SysYhJsMapper sysYhJsMapper;
+	private final SysYhJsMapper sysYhJsMapper;
 
-	private StringRedisTemplate redisDao;
-
-	// 只要登录的用户都能访问
-	private List<String> whiteList = Arrays.asList("/api/traineeinformation/pager","/api/jg/getOrgPath","/api/gn/getPermissionTreeWithChecked","/api/gn/getRolePermissionTree","/api/jg/getCurrentOrgTree","/api/gn/getMenuTree","/api/jg/pager","/api/zd/pager","/api/jg/getTree","/api/gn/getMenuTree","/api/jg/pager","/api/jg/getOrgTree","/api/jg/getOrgTree","/api/clsbyxsjjl/history","/api/clsbyxsjjl/history","/api/jg/getCurrentUserOrgTree","/api/yh/mdfPwd","/api/traineeinformation/exportTestCharge","/api/exception/dashboard");
-
-	public AccessInterceptor() {
-	}
+	private final StringRedisTemplate redisDao;
 
 	public AccessInterceptor(StringRedisTemplate redisTemp) {
 		this.gnService = SpringContextUtil.getBean(GnService.class);
@@ -70,7 +62,6 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		// "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3Y3BtcyIsImF1ZCI6IndjcG1zIiwibG9naW5OYW1lIjoiYWRtaW5pIiwiaXNzIjoid2NwbXMiLCJ1c2VySWQiOiIxIn0.vok82zo-zveVlXrjKxgJiRRdXqKGpv1PFBngxhyR-Cg";
 		String userid = request.getHeader("userid");
 		String token = request.getHeader("token");
-		String url = request.getHeader("url");
 
 		if (token == null)
 		{
@@ -85,12 +76,6 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			request.getRequestDispatcher("/authFiled").forward(request, response);
 			return false;
 		}
-		log.debug("访问地址[{}]", request.getRequestURI());
-
-		log.info("uri-->" + request.getRequestURI());
-		log.info("token-->" + token);
-		log.info("userid-->" + userid);
-		log.info("params-->" + JsonUtil.toJson(request.getParameterMap()));
 
 		// 验证用户状态
 		SysYh user = yhService.findById(userid);
@@ -101,13 +86,11 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		try {
 			// 验证访问者是否合法
 			String userId = JwtUtil.getClaimAsString(token, "userId");
-			log.info("userId-->" + userId);
 			if (!userid.equals(userId)){
 				request.getRequestDispatcher("/authFiled").forward(request, response);
 				return false;
 			}
 			String value = redisDao.boundValueOps(userid).get();
-			log.info("TOKEN-->" + value);
 			if (StringUtils.isEmpty(value) || !value.equals(token)){
 				request.getRequestDispatcher("/authFiled").forward(request, response);
 				return false;
@@ -115,15 +98,6 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			request.setAttribute("userInfo", user);
 			request.setAttribute("orgCode", user.getJgdm());
 			request.setAttribute("orgCodes",user.getJgdms());
-//			String userInfoJson = redisDao.boundValueOps(userid + "-userInfo").get();
-//			ObjectMapper mapper = new ObjectMapper();
-//			SysYh userInfo = mapper.readValue(userInfoJson, SysYh.class);
-//			if (!whiteList.contains(request.getRequestURI()) && !"su".equals(userInfo.getLx())) { // su 用户可访问所有权限
-//					if (!checkPermission(userInfo, request)) {
-//						request.getRequestDispatcher("/403").forward(request, response);
-//						return false;
-//					}
-//			}
 		} catch (Exception e) {
 			return false;
 		}
@@ -203,32 +177,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 	}
 
 	private String getApiQz(String uri){
-		String apiPrefix = uri.substring(0, uri.indexOf("/", 5) + 1);
-		return apiPrefix;
-//
-//		Map<String,Object> requestMappings = SpringContextUtil.getByAnnotation(RequestMapping.class);
-//		for (Map.Entry<String, Object> entry : requestMappings.entrySet()) {
-//			if (excludeCtrls.contains(entry.getKey()))continue;
-//			RequestMapping requestMapping = entry.getValue().getClass().getDeclaredAnnotation(RequestMapping.class);
-//			if (requestMapping == null)continue;
-//			String name = requestMapping.name();
-//			if (StringUtils.isEmpty(name))continue;
-//			if (uri.contains(name)){
-//				return entry.getKey();
-//			}
-//		}
-//		return null;
+		return uri.substring(0, uri.indexOf("/", 5) + 1);
 	}
-
-	/*public void afterCompletion(HttpServletRequest req, HttpServletResponse resp, Object arg2, Exception arg3)	throws Exception {
-		long begin_nao_time = (Long) req.getAttribute("begin_nao_time");
-		long interval = System.currentTimeMillis() - begin_nao_time;
-
-		String uri = req.getRequestURI();
-		System.out.println(uri+"请求结束时间：" + System.currentTimeMillis());
-		System.out.println(uri + "请求时长" + interval);
-		//
-	}*/
-
 
 }

@@ -16,7 +16,7 @@
           <Row>
             <Col span="12">
               <FormItem label="编号">
-                <Input v-model="param.clBh" :maxlength=2 size="large" placeholder="请输入车辆编号" />
+                <Input v-model="param.clBh" :maxlength=3 size="large" placeholder="请输入车辆编号"/>
               </FormItem>
             </Col>
             <Col span="12">
@@ -42,8 +42,8 @@
           <Row>
             <Col span="12">
               <FormItem label="科目">
-                <Select v-model="param.clKm">
-                  <Option v-for="item in KM" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                <Select @on-change="changeJgdm" :label-in-value="true">
+                  <Option v-for="item in KM" :value="item.jgdm" :key="item.jgdm">{{ item.jgmc }}</Option>
                 </Select>
               </FormItem>
             </Col>
@@ -77,38 +77,37 @@
   // import upImg from '@/components/Upload/UploadImg'
   import upImg from '../../../../components/Upload/UploadImg'
   import readCard from '../../comp/readCard'
+
   export default {
     name: '',
-    components:{
+    components: {
       upImg
+    },
+    props: {
+      jgdm: {
+        type: String,
+        default: ''
+      }
     },
     data() {
       return {
-        KM: [
-          {
-            value: '2',
-            label: '科目二'
-          },
-          {
-            value: '3',
-            label: '科目三'
-          }
-        ],
-        ZT:[],
-        CX:[],
-        model1:'',
+        KM: [],
+        ZT: [],
+        CX: [],
+        model1: '',
         v: this,
-        param:{
-          clBh:'',
-          clHm:'',
-          clCx:'',
-          clKc:'',
-          clZt:'00',
-          zgId:'',
-          clKm:'',
-          clImg:'',
-          cardNo:'',
-          th:''
+        param: {
+          clBh: '',
+          clHm: '',
+          clCx: '',
+          clKc: '',
+          clZt: '00',
+          zgId: '',
+          clKm: '',
+          clImg: '',
+          cardNo: '',
+          th: '',
+          jgdm: ''
         },
         cardNo:'',
         showModal: true,
@@ -120,46 +119,39 @@
       }
     },
     created() {
+      this.getNextJg();
       this.getCLZT();
       this.getSafemanList();
       this.util.initFormModal(this)
       //
     },
     methods: {
-      getCardNum(){
-        readCard.getCardNum((key,res)=>{
-          if(key){
+      changeJgdm(val) {
+        if (val.label == '科目二') {
+          this.param.clKm = '2';
+        } else {
+          this.param.clKm = '3';
+        }
+        this.param.jgdm = val.value
+      },
+      getNextJg() {
+        this.$http.get("/api/lccl/getNextJg", {params: {jgdm: this.jgdm}}).then(res => {
+          this.KM = res.result
+        })
+      },
+      getCardNum() {
+        readCard.getCardNum((key, res) => {
+          if (key) {
             this.param.cardNo = res
-            this.cardNo = res.substring(0,2)+ '******'
-          }else {
+            this.cardNo = res.substring(0, 2) + '******'
+          } else {
             this.swal({
-              title:'请重新放置卡片',
-              type:'error'
+              title: '请重新放置卡片',
+              type: 'error'
             })
           }
         })
       },
-      // changeNum(res){
-      //   this.$http.post('/api/lccl/updateCardNo',this.chCarNum).then(res=>{
-      //     if (res.code == 200){
-      //       this.params.cardNo = res
-      //       this.cardNo = res.substring(0,2)+ '******'
-      //     } else {
-      //       this.swal({
-      //         title:'卡片已绑定车辆,是否替换？',
-      //         type:'warning',
-      //         showCancelButton: true,
-      //         confirmButtonText: '替换',
-      //         cancelButtonText: '取消',
-      //       }).then(p=>{
-      //         if(p.value){
-      //           this.chCarNum.th = '****'
-      //           this.changeNum(res)
-      //         }
-      //       })
-      //     }
-      //   }).catch((err)=>{})
-      // },
       txImg(A, url){
           this.param[A] = url
       },

@@ -86,6 +86,12 @@ public class BizLcCl implements Serializable {
     private String cardNo;
 
     /**
+     * 机构代码
+     */
+    private String jgdm;
+
+
+    /**
      * 练车记录(正在训练的)
      */
     @Transient
@@ -136,7 +142,8 @@ public class BizLcCl implements Serializable {
         cjsj("cjsj"),
         cjr("cjr"),
         clCx("cl_cx"),
-        cardNo("card_no");
+        cardNo("card_no"),
+        jgdm("JGDM");
 
         private final String column;
 

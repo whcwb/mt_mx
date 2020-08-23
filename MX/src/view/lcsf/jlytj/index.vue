@@ -2,21 +2,32 @@
   <div class="boxbackborder box_col" style="padding-top:16px">
     <!--<pager-tit title="教练员统计"></pager-tit>-->
     <div style="text-align: right;width: 100%">
-      <DatePicker v-model="dateRange.kssj"
-                  @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm format="yyyy-MM-dd"
-                  type="daterange" :placeholder="'请输入'" style="width: 200px"></DatePicker>
-      <Button type="primary" @click="v.util.getPageData(v)" style="margin-left: 10px;">
-        <Icon type="md-search"></Icon>
-        <!--查询-->
-      </Button>
-      <!--<Button type="primary" @click="componentName = 'print'" style="margin-left: 10px;">-->
-        <!--打印-->
-      <!--</Button>-->
-      <Button type="primary" @click="exportExcel" style="margin-left: 10px;">
-        <Icon type="ios-cloud-download" />
-      </Button>
+      <Row>
+        <Col span="17">
+          <div style="min-height: 1px"></div>
+        </Col>
+        <Col span="2" style="text-align: left">
+          <Select v-if="JGList.length > 1" v-model="param.jgdmLike" @on-change="v.util.getPageData(v)">
+            <Option v-for="item in JGList" :value="item.val">{{item.label}}</Option>
+          </Select>
+          <div v-else style="min-height: 1px"></div>
+        </Col>
+        <Col span="5">
+          <DatePicker v-model="dateRange.kssj"
+                      @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm
+                      format="yyyy-MM-dd"
+                      type="daterange" :placeholder="'请输入'" style="width: 200px"></DatePicker>
+          <Button type="primary" @click="v.util.getPageData(v)" style="margin-left: 10px;">
+            <Icon type="md-search"></Icon>
+            <!--查询-->
+          </Button>
+          <!--打印-->
+          <Button type="primary" @click="exportExcel" style="margin-left: 10px;">
+            <Icon type="ios-cloud-download"/>
+          </Button>
+        </Col>
+      </Row>
     </div>
-    <!--<search-bar :parent="v" :show-create-button="false" :buttons="searchBarButtons" @print="componentName = 'print'" :show-search-button="false"></search-bar>-->
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
     <Row>
       <Col span="24" align="right">
@@ -30,7 +41,6 @@
 </template>
 
 <script>
-  // import formData from './formModal.vue'
   import Cookies from 'js-cookie'
   import print from './print'
 
@@ -46,10 +56,11 @@
     data() {
       return {
         v: this,
-        addmoney:0,
+        addmoney: 0,
         pagerUrl: this.apis.lcjl.jlTj,
         choosedItem: null,
         componentName: '',
+        JGList: [{val: '100', label: '所有考场'}],
         searchBarButtons: [
           {title: '打印', click: 'print'}
         ],
@@ -57,8 +68,9 @@
           kssj: ''
         },
         tableColumns: [
-            {title: '序号', type: 'index'},
-          {title: '驾校', key: 'jlJx',
+          {title: '序号', type: 'index'},
+          {
+            title: '驾校', key: 'jlJx',
             filters: [
               {
                 label: '本校',
@@ -71,26 +83,19 @@
             ],
             filterMultiple: false,
             filterRemote(value, row) {
-              var _self =  this.$options.parent.parent
-              _self.param.lx=value[0]?value[0]:''
+              var _self = this.$options.parent.parent
+              _self.param.lx = value[0] ? value[0] : ''
               _self.util.getPageData(_self)
             },
           },
           {title: '教练员', key: 'jlXm'},
           {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
-          {title: '实收', minWidth: 90, defaul: '0',
+          {
+            title: '实收', minWidth: 90, defaul: '0',
             render: (h, p) => {
-              return h('div', p.row.zj+'元')
+              return h('div', p.row.zj + '元')
             }
           },
-          // {title:'操作',render:(h,p)=>{
-          //     let buttons = [];
-          //     buttons.push(this.util.buildeditButton(this,h,p));
-          //     buttons.push(this.util.buildDeleteButton(this,h,p.row.yhid));
-          //     return h('div',buttons);
-          //   }
-          //   },
-
         ],
         pageData: [],
         pager: false,
@@ -101,31 +106,48 @@
           lcKm: '',
           pageNum: 1,
           pageSize: 8,
-          zfzt: '10'
+          zfzt: '10',
+          jgdmLike: '100'
         },
       }
     },
     created() {
-      if(Cookies.get("daterange")!=undefined&&Cookies.get("daterange")!=''){
+      if (Cookies.get("daterange") != undefined && Cookies.get("daterange") != '') {
         this.dateRange.kssj = Cookies.get("daterange").split(',')
         this.param.kssjInRange = Cookies.get("daterange")
-      }else {
+      } else {
         this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
         this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       }
-
+      this.getJgsByOrgCode();
       this.param.lcKm = this.lcKm
       this.util.initTable(this);
     },
     methods: {
-        exportExcel(){
-            let p = '';
-            for (let k in this.param){
-                p += '&'+k + '=' +this.param[k];
-            }
-            p = p.substr(1);
-            window.open(this.apis.url + '/pub/jlExcel?'+p);
-        },
+      getJgsByOrgCode() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          if (res.result.length <= 1) {
+            this.JGList = []
+          }
+
+          res.result.forEach((item, index) => {
+            let t = {val: item.jgdm, label: item.jgmc}
+            this.JGList.push(t)
+          })
+          this.param.jgdmLike = this.JGList[0].val
+        })
+      },
+      exportExcel() {
+        let p = '';
+        for (let k in this.param) {
+          p += '&' + k + '=' + this.param[k];
+        }
+        p = p.substr(1);
+        let accessToken = JSON.parse(Cookies.get('accessToken'));
+        let token = accessToken.token;
+        let userid = accessToken.userId;
+        window.open(this.apis.url + '/api/lcjl/jlExcel?token=' + token + '&userid=' + userid + '&' + p);
+      },
       parseTime(s) {
         s = parseInt(s);
         let h = parseInt(s / 60);
@@ -137,7 +159,7 @@
       afterPager(list) {
         this.addmoney = 0
         for (let r of list) {
-          r.sc  = this.parseTime(r.sc)
+          r.sc = this.parseTime(r.sc)
           this.addmoney += r.zj;
         }
       },

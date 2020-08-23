@@ -113,7 +113,8 @@
       getData() {
         let param = {
           zdlmdm: 'ZDCLK1045',
-          by1: '科三'
+          by1: '科三',
+          orderBy: 'jgdm asc,zddm asc'
         }
         this.$http.get(this.apis.DICTIONARY_LIST.list, {params: param}).then((res) => {
           if (res.code == 200 && res.result) {
@@ -123,9 +124,9 @@
               r.zdmc = parseInt(r.zdmc)
               r.by3 = parseFloat(r.by3)
               r.by4 = parseFloat(r.by4)
-              r.by2 = r.by2 === '0' || r.by2 === '' ? false : true
-              r.by6 = r.by6 === '0' || r.by6 === '' ? false : true
-              r.by7 = r.by7 === '0' || r.by7 === '' ? false : true
+              r.by2 = !(r.by2 === '0' || r.by2 === '')
+              r.by6 = !(r.by6 === '0' || r.by6 === '')
+              r.by7 = !(r.by7 === '0' || r.by7 === '')
             }
           } else {
             this.$Message.error(res.message)

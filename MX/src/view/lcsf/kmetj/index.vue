@@ -1,6 +1,5 @@
 <template>
   <div class="boxbackborder box_col">
-    <!--<pager-tit title="科目二统计"></pager-tit>-->
     <Menu mode="horizontal" theme="light" active-name="mxtj" @on-select="MenuClick">
       <MenuItem name="mxtj">
         <Icon type="ios-paper"/>
@@ -20,15 +19,15 @@
 </template>
 
 <script>
-  // import formData from './formModal.vue'
   import print from './print'
   //明细统计
   import mxtj from './mxtj'
   //驾校统计
-  import jxtj from  '../jxtj'
+  import jxtj from '../jxtj'
   //教练统计
-  import jltj from  '../jlytj'
+  import jltj from '../jlytj'
   import Cookies from 'js-cookie'
+
   export default {
     name: 'char',
     components: {print,jxtj,mxtj,jltj},

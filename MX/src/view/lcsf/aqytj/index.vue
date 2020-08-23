@@ -1,17 +1,33 @@
 <template>
   <div class="boxbackborder box_col" style="padding-top:16px">
     <div style="text-align: right;width: 100%">
-      <DatePicker v-model="dateRange.kssj"
-                  @on-ok="getData"
-                  @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm format="yyyy-MM-dd"
-                  type="daterange" :placeholder="'请输入'" style="width: 200px"></DatePicker>
-      <Button type="primary" @click="getData" style="margin-left: 10px;">
-        <Icon type="md-search"></Icon>
-        <!--查询-->
-      </Button>
-      <!--<Button type="primary" @click="doPrint" style="margin-left: 10px;">打印</Button>-->
-      <Button type="primary" @click="exportExcel" style="margin-left: 10px;"><Icon type="ios-cloud-download" /></Button>
+      <Row>
+        <Col span="17">
+          <div style="width: 100%;min-height:1px;"></div>
+        </Col>
+        <Col span="2" style="text-align: left">
+          <Select v-if="JGList.length > 1" v-model="param.jgdmLike" @on-change="getData">
+            <Option v-for="item in JGList" :value="item.val">{{item.label}}</Option>
+          </Select>
+          <div v-else style="min-height: 1px"></div>
+        </Col>
+        <Col span="5">
+          <DatePicker v-model="dateRange.kssj"
+                      @on-ok="getData"
+                      @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm
+                      format="yyyy-MM-dd"
+                      type="daterange" :placeholder="'请输入'" style="width: 200px"></DatePicker>
+          <Button type="primary" @click="getData" style="margin-left: 10px;">
+            <Icon type="md-search"></Icon>
+            <!--查询-->
+          </Button>
+          <Button type="primary" @click="exportExcel" style="margin-left: 10px;">
+            <Icon type="ios-cloud-download"/>
+          </Button>
+        </Col>
+      </Row>
     </div>
+
     <div class="box_col_100" id="page1" style="width: 100%">
       <div style="text-align: center"><span style="font-weight: 600;font-size: 20px">科目三模拟训练工作日志</span></div>
       <table border="1" cellpadding="0" cellspacing="0" style="width: 100%">
@@ -87,6 +103,7 @@
         pagerUrl: this.apis.lcjl.getAllLog,
         choosedItem: null,
         componentName: '',
+        JGList: [{val: '100', label: '所有考场'}],
         list: [],
         dateRange: {
           kssj: ''
@@ -97,7 +114,8 @@
           zhLike: '',
           pageNum: 1,
           pageSize: 8,
-          zfzt: '10'
+          zfzt: '10',
+          jgdmLike: ''
         },
         total: 0,
       }
@@ -110,16 +128,32 @@
         this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
         this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       }
+      this.getJgsByOrgCode();
       this.getData();
     },
     methods: {
+      getJgsByOrgCode() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          if (res.result.length <= 1) {
+            this.JGList = []
+          }
+          for (let r of res.result) {
+            let t = {val: r.jgdm, label: r.jgmc}
+            this.JGList.push(t)
+          }
+          this.param.jgdmLike = this.JGList[0].val
+        })
+      },
       exportExcel() {
         let p = '';
         for (let k in this.param) {
           p += '&' + k + '=' + this.param[k];
         }
         p = p.substr(1);
-        window.open(this.apis.url + '/pub/aqyExcel?' + p);
+        let accessToken = JSON.parse(Cookies.get('accessToken'));
+        let token = accessToken.token;
+        let userid = accessToken.userId;
+        window.open(this.apis.url + '/api/lcjl/aqyExcel?token=' + token + "&userid=" + userid + "&" + p);
       },
       doPrint(how) {
         this.componentName = 'print';
@@ -130,8 +164,6 @@
           let sj = this.param.kssjInRange.split(',');
           let st = sj[0];
           let et = sj[1];
-          // st += ' 00:00:00'
-          // et += ' 23:59:59'
           this.param.kssjInRange = st + ',' + et;
         }
         this.$http.post(this.apis.lcjl.getAllLog, this.param).then((res) => {

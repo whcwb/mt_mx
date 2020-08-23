@@ -742,6 +742,7 @@
           this.Ch_LcTime()
         }, 1000),
         columns1: [
+
           {
             title: '车号',
             key: 'clBh',
@@ -754,6 +755,20 @@
                   type: 'volcano',
                 }
               }, p.row.clBh)
+            }
+          },
+          {
+            title: '考场',
+            key: 'clKc',
+            align: 'center',
+            width: 150,
+            fixed: 'left',
+            render: (h, p) => {
+              return h('Tag', {
+                props: {
+                  type: 'white'
+                }
+              }, p.row.clKc)
             }
           },
           {
@@ -1117,7 +1132,7 @@
             this.QRmessxj.zf = this.QRmess.fdr
             if (this.QRmessxj.zf == '3') {
               this.QRmessxj.c = this.QRmess.kfje / this.QRmess.kfDj
-              var a = this.QRmess.kfje / this.QRmess.kfDj
+              const a = this.QRmessxj.c;
               this.RS = []
               for (let i = 0; i < a; i++) {
                 this.RS.push(i + 1)
@@ -1140,15 +1155,12 @@
         let ids = []
         for (let r of selection) {
           ids.push(r.id)
-          console.log(r);
         }
-        let a = ids.join(',')
-        this.qrids = a
+        this.qrids = ids.join(',')
         if (selection.length === 0) this.qrids = ''
-        console.log(this.qrids)
       },
       MenuClick(name) {
-        var v = this
+        const v = this;
         this.activeName = name;
         if (name == '1') {
           this.getCarList()
@@ -1157,13 +1169,12 @@
           const start = new Date();
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
           this.dateRange.jssj = [start, end]
-          var d = start;
-          var c = end;
-          var datetimed = this.AF.trimDate(start) + ' ' + '00:00:00';
-          var datetimec = this.AF.trimDate() + ' 23:59:59';
+          const d = start;
+          const c = end;
+          const datetimed = this.AF.trimDate(start) + ' ' + '00:00:00';
+          const datetimec = this.AF.trimDate() + ' 23:59:59';
           this.param.jssjInRange = datetimed + ',' + datetimec
           v.param.pageSize = 15;
-          console.log(this.param);
           v.util.getPageData(v)
         } else {
 
@@ -1541,7 +1552,7 @@
           pageSize: 99999,
           clKm: "2",
           clBh: this.formData.clBh,
-          orderBy: 'clZt asc,clBh asc,clCx asc',
+          orderBy: 'jgdm asc,clZt asc,clBh asc,clCx asc',
           clZt: this.formData.clZt,
           clCx: this.formData.clCx
         }).then((res) => {
@@ -1598,7 +1609,7 @@
         var ifCard = false;
         this.fylist.map((val, index, arr) => {
           if (val.zddm === this.formData.zddm) {
-            ifCard = val.by2 === '0' ? false : true
+            ifCard = val.by2 !== '0'
           }
         })
 

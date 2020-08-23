@@ -1,6 +1,5 @@
 <template>
   <div class="boxbackborder box_col">
-    <!--<pager-tit title="科目二统计"></pager-tit>-->
     <Menu mode="horizontal" theme="light" active-name="mxtj" @on-select="MenuClick">
       <MenuItem name="mxtj">
         <Icon type="ios-paper"/>
@@ -20,15 +19,15 @@
 </template>
 
 <script>
-  // import formData from './formModal.vue'
   import print from './print'
   //明细统计
   import mxtj from './mxtj'
   //驾校统计
-  import jxtj from  '../jxtj'
+  import jxtj from '../jxtj'
   //教练统计
-  import jltj from  '../jlytj'
+  import jltj from '../jlytj'
   import Cookies from 'js-cookie'
+
   export default {
     name: 'char',
     components: {print,jxtj,mxtj,jltj},
@@ -67,15 +66,7 @@
           {title: '驾校/队号', key: 'jlJx', searchKey: 'jlJxLike', minWidth: 90},
           {title: '学员数量', key: 'xySl', minWidth: 90, defaul: '0'},
           {title: '计费类型', key: 'lcLx', minWidth: 90, dict: 'ZDCLK1048'},
-          {title: '练车费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0'},
-          // {title:'操作',render:(h,p)=>{
-          //     let buttons = [];
-          //     buttons.push(this.util.buildeditButton(this,h,p));
-          //     buttons.push(this.util.buildDeleteButton(this,h,p.row.yhid));
-          //     return h('div',buttons);
-          //   }
-          //   },
-
+          {title: '练车费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0'}
         ],
         pageData: [],
         param: {

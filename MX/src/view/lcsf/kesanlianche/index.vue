@@ -750,24 +750,6 @@
             align: 'center',
             fixed: "left",
             minWidth: 100,
-            // render: (h, p) => {
-            //   return h('div', {
-            //     style: {
-            //       // height:'30px',width:'30px',
-            //       fontSize: '16px', fontWeight: '600',
-            //       // backgroundColor:'#ffbb96',borderRadius:"25px",
-            //       // color:'#ffbb96',
-            //     }
-            //   }, p.row.clBh)
-            //   // return h('Tag', {
-            //   //   props: {
-            //   //     type: 'volcano',
-            //   //   },
-            //   //   style:{
-            //   //       font_size:'24px'
-            //   //   }
-            //   // }, p.row.clBh)
-            // }
             render: (h, p) => {
               return h('Tag', {
                 props: {
@@ -776,19 +758,20 @@
               }, p.row.clBh)
             }
           },
-          // {
-          //   title: '车牌号',
-          //   key: 'clHm',
-          //   align: 'center',
-          //   width: 120,
-          //   fixed: "left",
-          // },
-          // {
-          //     title: '所属考场',
-          //     key: 'clKc',
-          //     align:'center',
-          //     width:120
-          // },
+          {
+            title: '考场',
+            key: 'clKc',
+            align: 'center',
+            width: 150,
+            fixed: 'left',
+            render: (h, p) => {
+              return h('Tag', {
+                props: {
+                  type: 'white'
+                }
+              }, p.row.clKc)
+            }
+          },
           {
             title: '车型',
             key: 'clCx',
@@ -796,20 +779,6 @@
             minWidth: 80,
             fixed: "left",
           },
-          // {
-          //   title: '车辆状态',
-          //   key: 'clZt',
-          //   align: 'center',
-          //     minWidth: 150,
-          //   fixed: "left",
-          //   render: (h, p) => {
-          //     if (p.row.clZt == '00') {
-          //       return h('div', '空闲')
-          //     } else {
-          //       return h('div', '在训')
-          //     }
-          //   }
-          // },
           {
             title: '操作',
             align: 'center',

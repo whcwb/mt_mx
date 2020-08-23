@@ -1,9 +1,22 @@
 <template>
   <div class="boxbackborder box_col" style="padding-top:16px">
-    <search-bar :parent="v" :showSearchButton="true" :showDownLoadButton="true" :show-create-button="false"
-                :buttons="searchBarButtons" @print="componentName = 'print'"
-                @exportExcel="exportExcel"></search-bar>
-
+    <Row>
+      <Col span="17">
+        <div style="width: 100%;min-height:1px;"></div>
+      </Col>
+      <Col span="3" style="padding-right: 60px">
+        <Select v-if="JGList.length > 1" v-model="param.jgdmLike" @on-change="getPageData">
+          <Option v-for="item in JGList" :value="item.val">{{item.label}}</Option>
+        </Select>
+        <div v-else style="min-height: 1px"></div>
+      </Col>
+      <Col span="4">
+        <search-bar :parent="v" :showSearchButton="true" :showDownLoadButton="true" :show-create-button="false"
+                    :buttons="searchBarButtons" @print="componentName = 'print'"
+                    @exportExcel="exportExcel">
+        </search-bar>
+      </Col>
+    </Row>
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
     <Row>
       <Col span="24" align="right">
@@ -17,13 +30,12 @@
 </template>
 
 <script>
-  // import formData from './formModal.vue'
-  // import formData from './formModal.vue'
   import Cookies from 'js-cookie'
   import print from './print'
   //驾校统计
   import jxtj from '../jxtj'
   import mixin from '@/mixins'
+
 
   export default {
     name: 'char',
@@ -34,48 +46,13 @@
         v: this,
         addmoney: 0,
         apiRoot: this.apis.lcjl,
+        JGList: [{val: '100', label: '所有考场'}],
         choosedItem: null,
         componentName: '',
-        searchBarButtons: [
-          // {title: '打印', click: 'print'},
-          //   {title: '导出', click: 'exportExcel'}
-        ],
+        searchBarButtons: [],
         dateRange: {
           kssj: ''
         },
-        // tableColumns: [
-        //   {
-        //     type: 'index2', align: 'center', minWidth: 60,title: '序号',
-        //     render: (h, params) => {
-        //       return h('span', params.index + (this.param.pageNum - 1) * this.param.pageSize + 1);
-        //     }
-        //   },
-        //   {
-        //     title: '车号', key: 'clBh', align: 'center',minWidth: 60, render: (h, p) => {
-        //       return h('Tag', {
-        //         props: {
-        //           type: 'volcano',
-        //         }
-        //       }, p.row.clBh)
-        //     }
-        //   },
-        //   {title: '驾校', key: 'jlJx', minWidth: 90},
-        //   {title: '教练员', key: 'jlXm',  minWidth: 90},
-        //   {title: '学员数量', key: 'xySl', minWidth: 70, defaul: '0'},
-        //   {title: '开始时间', key: 'kssj', searchType: 'daterange', minWidth: 150},
-        //   {title: '结束时间', key: 'jssj', minWidth: 150},
-        //   {title: '时长', key: 'sc', minWidth: 80, default: '0'},
-        //   // {title: '计费类型', key: 'lcLx', minWidth: 90, dict: 'ZDCLK1048'},
-        //   {title: '费用', key: 'lcFy', append: '元', minWidth: 90, defaul: '0'},
-        //   // {title:'操作',render:(h,p)=>{
-        //   //     let buttons = [];
-        //   //     buttons.push(this.util.buildeditButton(this,h,p));
-        //   //     buttons.push(this.util.buildDeleteButton(this,h,p.row.yhid));
-        //   //     return h('div',buttons);
-        //   //   }
-        //   //   },
-        //
-        // ],
         tableColumns: [
           {
             type: 'index2', minWidth: 60, align: 'center', title: '序号',
@@ -105,18 +82,6 @@
           {title: '教练员', align: 'center', key: 'jlXm', minWidth: 80},
           {title: '开始时间', align: 'center', key: 'kssj', searchType: 'daterange', minWidth: 135},
           {title: '结束时间', align: 'center', key: 'jssj', minWidth: 135},
-          // {
-          //   title: '时长', align: 'center', key: 'sc', minWidth: 70, defaul: '0',
-          //   render: (h, p) => {
-          //     return h('div', p.row.sc);
-          //   }
-          // },
-          // {
-          //   title: '应收', align: 'center', minWidth: 70, defaul: '0',
-          //   render: (h, p) => {
-          //     return h('div', p.row.lcFy + '元');
-          //   }
-          // },
           {
             title: '实收', align: 'center', minWidth: 70, defaul: '0',
             render: (h, p) => {
@@ -160,25 +125,6 @@
           },
           {
             title: '类型', align: 'center', minWidth: 100,
-            // filters: [
-            //   {
-            //     label: '计时',
-            //     value: 'JS'
-            //   },
-            //   {
-            //     label: '培优',
-            //     value: 'PY'
-            //   },
-            //   {
-            //     label: '开放日',
-            //     value: 'KF'
-            //   },
-            // ],
-            // filterMultiple: false,
-            // filterRemote(value, row) {
-            //   this.param.zddmLike = value;
-            //   this.util.getPageData(this);
-            // },
             render: (h, p) => {
               if (p.row.zdxm != '') {
                 return h('div', p.row.zdxm.by9)
@@ -198,7 +144,8 @@
           pageNum: 1,
           pageSize: 8,
           zfzt: '10',
-          zflx: ''
+          zflx: '',
+          jgdmLike: '100'
         },
       }
     },
@@ -210,16 +157,35 @@
         this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
         this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       }
+      this.getJgsByOrgCode();
       this.util.initTable(this);
     },
     methods: {
+      getJgsByOrgCode() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          if (res.result.length <= 1) {
+            this.JGList = []
+          }
+          for (let r of res.result) {
+            let t = {val: r.jgdm, label: r.jgmc}
+            this.JGList.push(t)
+          }
+          this.param.jgdmLike = this.JGList[0].val
+        })
+      },
+      getPageData() {
+        this.util.initTable(this);
+      },
       exportExcel() {
         let p = '';
         for (let k in this.param) {
           p += '&' + k + '=' + this.param[k];
         }
         p = p.substr(1);
-        window.open(this.apis.url + '/pub/pagerExcel?' + p);
+        let accessToken = JSON.parse(Cookies.get('accessToken'));
+        let token = accessToken.token;
+        let userid = accessToken.userId;
+        window.open(this.apis.url + '/api/lcjl/pagerExcel?token=' + token + "&userid=" + userid + "&" + p);
       },
       parseTime(s) {
         s = parseInt(s);

@@ -58,6 +58,8 @@ public class SysZdxm implements Serializable {
 
     private String by10;
 
+    private String jgdm;
+
     private static final long serialVersionUID = 1L;
 
     public String getBy10() {
@@ -256,6 +258,14 @@ public class SysZdxm implements Serializable {
         this.by3 = by3;
     }
 
+    public String getJgdm() {
+        return jgdm;
+    }
+
+    public void setJgdm(String jgdm) {
+        this.jgdm = jgdm;
+    }
+
     public enum InnerColumn {
         zdId("ZD_ID"),
         zdlmdm("ZDLMDM"),
@@ -273,7 +283,8 @@ public class SysZdxm implements Serializable {
         by7("BY7"),
         by8("BY8"),
         by9("BY9"),
-        by10("BY10");
+        by10("BY10"),
+        jgdm("JGDM");
 
         private final String column;
 

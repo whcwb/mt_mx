@@ -1,6 +1,5 @@
 <template>
   <div class="boxbackborder box_col">
-    <!--<pager-tit title="模训记录"></pager-tit>-->
     <Menu mode="horizontal" active-name="1" style="margin-bottom: 8px">
       <MenuItem name="1">
         <div style="font-weight: 700;font-size: 16px">
@@ -9,12 +8,8 @@
       </MenuItem>
     </Menu>
     <Row type="flex" justify="end" :gutter="8" style="margin:8px 0;">
-      <!--        <Col span="6" style="padding: 10px 20px">-->
-      <!--          <Button type="warning" @click="plzf">批量结算</Button>-->
-      <!--        </Col>-->
 
 
-      <!--<Col span="5" style="margin-right: -40px">-->
       <DatePicker v-model="dateRange.kssj"
                   style="margin-right: 5px"
                   @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)"
@@ -22,7 +17,11 @@
                   format="yyyy-MM-dd"
                   split-panels
                   type="daterange" :placeholder="'请输入时间'"></DatePicker>
-      <!--</Col>-->
+      <Col span="3" v-if="JGList.length > 1">
+        <Select v-model="param.jgdmLike" @on-change="getData" placeholder="请选择考场">
+          <Option v-for="item in JGList" :value="item.val">{{item.label}}</Option>
+        </Select>
+      </Col>
       <Col span="3">
         <Input size="large" v-model="param.jlJx" clearable placeholder="请输入驾校"
                @on-enter="getData"/>
@@ -46,14 +45,12 @@
         </Button>
       </Col>
     </Row>
-        <!--<search-bar :parent="v" :show-create-button="false" :showDownLoadButton="false"></search-bar>-->
         <table-area :parent="v" :TabHeight="AF.getPageHeight()-260"></table-area>
         <component :is="componentName"></component>
   </div>
 </template>
 
 <script>
-  // import formData from './formModal.vue'
 
   export default {
     name: 'char',
@@ -63,6 +60,7 @@
         v: this,
         apiRoot: this.apis.lcjl,
         choosedItem: null,
+        JGList: [{val: '100', label: '所有考场'}],
         componentName: '',
         searchBarButtons: [
           {title: '打印', click: 'print'}
@@ -262,7 +260,8 @@
           kssjInRange: '',
           zhLike: '',
           pageNum: 1,
-          pageSize: 15
+          pageSize: 15,
+          jgdmLike: '100'
         },
         dateRange: {
           kssj: ''
@@ -272,7 +271,7 @@
     created() {
       // this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
       // this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
-
+      this.getJgsByOrgCode();
       const end = new Date();
       const start = new Date();
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
@@ -285,10 +284,23 @@
       this.util.initTable(this);
     },
     methods: {
+      getJgsByOrgCode() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          if (res.result.length <= 1) {
+            this.JGList = []
+          }
+
+          res.result.forEach((item, index) => {
+            let t = {val: item.jgdm, label: item.jgmc}
+            this.JGList.push(t)
+          })
+          this.param.jgdmLike = this.JGList[0].val
+        })
+      },
       chpageNum() {
         this.param.pageNum = 1
       },
-      getData(){
+      getData() {
         this.util.getPageData(this)
       },
       parseTime(s) {

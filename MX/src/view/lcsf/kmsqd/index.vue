@@ -9,10 +9,6 @@
       </MenuItem>
     </Menu>
     <div style="text-align: right">
-      <!--<Input v-model="param.xmLike" placeholder="请输入姓名" style="width: 200px;margin-right: 10px;"></Input>-->
-      <!--<Button type="primary" @click="getData">-->
-      <!--<Icon type="md-search"></Icon>-->
-      <!--</Button>-->
       <span
         style="cursor: pointer;width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
         @click="param.aqyQdzt='',getData()">总计{{total}}人</span>
@@ -30,28 +26,11 @@
         <!--查询-->
       </Button>
     </div>
-    <!--<div class="box_col_auto">-->
-    <!--<div class="box_row_list" >-->
-    <!--<div  v-for="(item,ri) in pageData" :key="ri" style="width: 20%;padding: 8px;">-->
-    <!--<Card>-->
-    <!--<div slot="title">-->
-    <!--<div class="number" :style="{background:item.rzt?'#19be6b':'#ed4014',color:'#fff'}">{{item.idx}}</div>-->
-    <!--</div>-->
-    <!--<div slot="extra">-->
-    <!--<i-switch v-model="item.rzt" @on-change="change(item)" :disabled="item.km == '2'">-->
-    <!--<span slot="open">签到</span>-->
-    <!--<span slot="close">休息</span>-->
-    <!--</i-switch>-->
-    <!--</div>-->
-    <!--<div style="text-align: center" class="box_row colBottom"><h2>{{item.xm}}</h2>__<Icon type="md-call" size="22"/><h3>{{item.sjhm}}</h3></div>-->
-    <!--</Card>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-210" :pager="false"></table-area>
 
     <Modal
       v-model="showModal"
+      :JGList="JGList"
       height="400"
       width="900"
       :closable='false'
@@ -86,6 +65,15 @@
               </FormItem>
             </Col>
           </Row>
+          <Row style="display: flex;justify-content: space-between">
+            <Col span="10">
+              <FormItem label="所属考场">
+                <Select v-model="AQY.jgdm">
+                  <Option v-for="item in JGList" :value="item.val">{{item.label}}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+          </Row>
         </div>
       </Form>
       <div slot='footer'>
@@ -113,13 +101,6 @@
         tableColumns: [
           {
             title: '序号', align: 'center', minWidth: 90,
-            // render: (h, p) => {
-            //   return h('div', {
-            //     style: {
-            //       fontWeight: '800'
-            //     },
-            //   }, p.row.idx)
-            // }
             render: (h, p) => {
               return h('Tag', {
                 props: {
@@ -186,21 +167,34 @@
           pageNum: 1,
           pageSize: 9999,
           notShowLoading: 'true',
-          aqyQdzt: ''
+          aqyQdzt: '',
         },
         yqdNum: 0,
         wqdNum: 0,
         total: 0,
         showModal: false,
         AQY: {},
-        modalTitle: ''
+        modalTitle: '',
+        JGList: []
       }
     },
     created() {
-      // this.getData()
+      this.getJgsByOrgCode();
       this.util.initTable(this);
     },
     methods: {
+      getJgsByOrgCode() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          if (res.result.length <= 1) {
+            this.JGList = []
+          }
+          for (let r of res.result) {
+            let t = {val: r.jgdm, label: r.jgmc}
+            this.JGList.push(t)
+          }
+        })
+        console.log("log", this.JGList);
+      },
       getData() {
         this.util.getPageData(this)
       },

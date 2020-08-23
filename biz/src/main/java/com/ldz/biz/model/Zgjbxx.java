@@ -1190,7 +1190,8 @@ public class Zgjbxx implements Serializable {
         jlId("JL_ID"),
         jlZt("JL_ZT"),
         jlzOn("JLZ_ON"),
-        aqyQdzt("aqy_qdzt");
+        aqyQdzt("aqy_qdzt"),
+        jgdm("JGDM");
 
         private final String column;
 

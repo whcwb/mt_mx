@@ -1,6 +1,7 @@
 package com.ldz.biz.controller;
 
 
+import com.github.pagehelper.Page;
 import com.ldz.biz.model.BizJlCz;
 import com.ldz.biz.model.BizLcJl;
 import com.ldz.biz.model.LcJlModel;
@@ -9,6 +10,7 @@ import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.sys.model.SysZdxm;
 import com.ldz.util.bean.ApiResponse;
+import jxl.write.WriteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -268,6 +270,58 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
     @GetMapping("/getKfDj")
     public ApiResponse<String> getKfDj(String jlId) {
         return service.getKfDj(jlId);
+    }
+
+
+    /**
+     * 明细统计 Excel导出(科二)
+     */
+    @GetMapping("/pagerExcel")
+    public void pagerExcel(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        service.pagerExcel(page, request, response);
+    }
+
+    /**
+     * 驾校统计 Excel 导出
+     */
+    @GetMapping("/jxtjExcel")
+    public void jxtjExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        service.jxtjExcel(request, response);
+    }
+
+    /**
+     * 教练统计 Excel 导出
+     */
+    @GetMapping("/jlExcel")
+    public void jlExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        service.jlExcel(request, response);
+
+    }
+
+    /**
+     * 明细统计 Exclel导出 (科三)
+     */
+    @GetMapping("/pagerExcelK3")
+    public void pagerExcelK3(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        service.pagerExcelK3(page, request, response);
+    }
+
+    /**
+     * 科三安全员日志 Excel导出
+     */
+    @GetMapping("/aqyExcel")
+    public void aqyExcel(HttpServletRequest request, HttpServletResponse response) throws WriteException, IOException {
+        service.aqyExcel(request, response);
+    }
+
+    @GetMapping("/pagerExcelAll")
+    public void pagerExcelAll(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        service.pagerExcelAll(page, request, response);
+    }
+
+    @PostMapping("/saveTc")
+    public ApiResponse<String> saveTc(SysZdxm zdxm) {
+        return service.saveTc(zdxm);
     }
 
 

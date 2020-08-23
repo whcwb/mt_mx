@@ -11,6 +11,7 @@ import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.model.SysZdxm;
+import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.ZdxmService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
@@ -40,7 +41,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -76,6 +79,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     private StringRedisTemplate redis;
     @Autowired
     private BizLcFdsService fdsService;
+    @Autowired
+    private JgService jgService;
 
     @Override
     protected Mapper<BizLcJl> getBaseMapper() {
@@ -104,18 +109,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         return true;
     }
 
-    @Override
-    public void afterQuery(List<BizLcJl> result) {
-        if (CollectionUtils.isEmpty(result)) {
-            return;
-        }
-        result.forEach(bizLcJl -> {
-            SimpleCondition condition = new SimpleCondition(BizLcJlXy.class);
-            condition.eq(BizLcJlXy.InnerColumn.lcJlId, bizLcJl.getId());
-            List<BizLcJlXy> xies = xyService.findByCondition(condition);
-            bizLcJl.setXyList(xies);
-        });
-    }
 
     @Override
     public void afterPager(PageInfo<BizLcJl> pageInfo) {
@@ -132,16 +125,12 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         SimpleCondition djcondition = new SimpleCondition(SysZdxm.class);
         djcondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
         djcondition.in(SysZdxm.InnerColumn.zddm, zddms);
+        djcondition.startWith(SysZdxm.InnerColumn.jgdm, getJgdm());
         List<SysZdxm> items = zdxmService.findByCondition(djcondition);
         // 根据套餐代码分组
-        Map<String, SysZdxm> map = items.stream().collect(Collectors.toMap(SysZdxm::getZddm, p -> p));
+        Map<String, List<SysZdxm>> map = items.stream().collect(Collectors.groupingBy(SysZdxm::getZddm));
 
         pageInfo.getList().forEach(bizLcJl -> {
-            SimpleCondition condition = new SimpleCondition(BizLcJlXy.class);
-            condition.eq(BizLcJlXy.InnerColumn.lcJlId, bizLcJl.getId());
-            List<BizLcJlXy> xies = xyService.findByCondition(condition);
-            bizLcJl.setXyList(xies);
-
             // 计算下支付方式
             if (bizLcJl.getKfje() != null && bizLcJl.getKfje() > 0) {
                 bizLcJl.setZffs("开放日·" + (int) (Math.ceil(bizLcJl.getKfje() * 1.0 / Integer.parseInt(StringUtils.isBlank(bizLcJl.getDkdj()) ? "200" : bizLcJl.getDkdj()))) + "人");
@@ -151,7 +140,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 bizLcJl.setZffs("现金");
             }
 
-            SysZdxm zdxm = map.get(bizLcJl.getZddm());
+            SysZdxm zdxm = map.get(bizLcJl.getZddm()).get(0);
             if (zdxm != null) {
                 bizLcJl.setLcDj(Float.parseFloat(StringUtils.isBlank(zdxm.getBy4()) ? "0" : zdxm.getBy4()));
                 bizLcJl.setZdxm(zdxm);
@@ -172,7 +161,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
     @Override
     public ApiResponse<String> saveEntity(BizLcJl entity) {
-
         String s = JSON.toJSONString(entity);
         // 避免数据重复提交
         String lc = redis.boundValueOps("lcjl").get();
@@ -181,6 +169,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         }
         redis.boundValueOps("lcjl").set(s, 2, TimeUnit.SECONDS);
         SysYh currentUser = getCurrentUser();
+        entity.setJgdm(currentUser.getJgdm());
         //  判断所有必填字段
         RuntimeCheck.ifBlank(entity.getJlId(), "请选择教练");
         BizLcWxjl wxjl = wxjlService.findById(entity.getJlId());
@@ -196,6 +185,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         SimpleCondition condition = new SimpleCondition(SysZdxm.class);
         condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
         condition.eq(SysZdxm.InnerColumn.zddm, entity.getZddm());
+        condition.startWith(SysZdxm.InnerColumn.jgdm, getJgdm());
         List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
         RuntimeCheck.ifEmpty(zdxms, "未找到套餐信息");
         // 拿到练车套餐的内容
@@ -484,6 +474,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         int xjje = 0;
         SysYh yh = getCurrentUser();
         SimpleCondition jlCondition = new SimpleCondition(BizLcJl.class);
+        jlCondition.startWith(BizLcJl.InnerColumn.jgdm, yh.getJgdm());
         if (StringUtils.isNotBlank(id)) {
             jlCondition.eq(BizLcJl.InnerColumn.id, id);
         }
@@ -640,6 +631,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             condition.eq(BizLcJl.InnerColumn.jlId, lcJl.getJlId());
             condition.eq(BizLcJl.InnerColumn.zfzt, "00");
             condition.eq(BizLcJl.InnerColumn.lcKm, lcJl.getLcKm());
+            condition.startWith(BizLcJl.InnerColumn.jgdm, yh.getJgdm());
             List<BizLcJl> lcJls = findByCondition(condition);
             String s1 = lcJls.stream().map(BizLcJl::getId).collect(Collectors.joining(","));
             ApiResponse<BizLcJl> response = getBatchPay(s1);
@@ -652,6 +644,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             condition.and().andCondition(" kssj like '%" + DateTime.now().toString("yyyy-MM-dd") + "%' or zfzt = '00'");
             condition.and().andNotEqualTo(BizLcJl.InnerColumn.lcLx.name(), "30");
             condition.eq(BizLcJl.InnerColumn.lcKm, lcJl.getLcKm());
+            condition.startWith(BizLcJl.InnerColumn.jgdm, getJgdm());
             List<BizLcJl> bizLcJls = findByCondition(condition);
             Set<String> set = bizLcJls.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
             SimpleCondition condition1 = new SimpleCondition(SysZdxm.class);
@@ -701,6 +694,12 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String sql = "SELECT jl_jx,sum(sc) as sc,sum(xjje) as fy  from BIZ_LC_JL where 1=1 ";
         sql += " and zfzt = '10' ";
         sql += " and kssj >= '" + kssj + "' and jssj <= '" + jssj + "'";
+        String jgdmLike = getRequestParamterAsString("jgdmLike");
+        if (StringUtils.isNotBlank(jgdmLike)) {
+            sql += " and jgdm like '" + jgdmLike + "%'";
+        }
+        sql += " and jgdm like '" + getJgdm() + "%'";
+
         if (StringUtils.isNotBlank(lcKm)) {
             sql += " and lc_km ='" + lcKm + "'";
         }
@@ -992,19 +991,12 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     public ApiResponse<List<LcJlModel>> getAllLog() {
         List<LcJlModel> list = new ArrayList<>();
         LimitedCondition condition = getQueryCondition();
-       /* String cjsjGte = getRequestParamterAsString("cjsjGte");
-        String cjsjLte = getRequestParamterAsString("cjsjLte");
-        if(StringUtils.isBlank(cjsjGte)){
-            condition.gte(BizLcJl.InnerColumn.cjsj, DateUtils.getDateStr(new Date(),"yyyy-MM-dd")+ " 00:00:00");
-        }
-        if(StringUtils.isBlank(cjsjLte)){
-            condition.lte(BizLcJl.InnerColumn.cjsj, DateUtils.getDateStr(new Date(),"yyyy-MM-dd") + " 23:59:59");
-        }*/
-        /*String cjsjLike = getRequestParamterAsString("cjsjLike");
-        if(StringUtils.isBlank(cjsjLike)){
-            condition.like(BizLcJl.InnerColumn.cjsj,DateUtils.getDateStr(new Date(), "yyyy-MM-dd"));
-        }*/
         condition.and().andIsNotNull(BizLcJl.InnerColumn.lcFy.name());
+        String jgdmLike = getRequestParamterAsString("jgdmLike");
+        if (StringUtils.isNotBlank(jgdmLike)) {
+            condition.startWith(BizLcJl.InnerColumn.jgdm, jgdmLike);
+        }
+        condition.startWith(BizLcJl.InnerColumn.jgdm, getJgdm());
         List<BizLcJl> jls = findByCondition(condition);
         if (CollectionUtils.isNotEmpty(jls)) {
             // 根据安全员分组
@@ -1089,6 +1081,11 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         List<LcJlModel> list = new ArrayList<>();
         LimitedCondition queryCondition = getQueryCondition();
         queryCondition.and().andIsNotNull(BizLcJl.InnerColumn.lcFy.name());
+        String jgdmLike = getRequestParamterAsString("jgdmLike");
+        if (StringUtils.isNotBlank(jgdmLike)) {
+            queryCondition.startWith(BizLcJl.InnerColumn.jgdm, jgdmLike);
+        }
+        queryCondition.startWith(BizLcJl.InnerColumn.jgdm, getJgdm());
         String lx = getRequestParamterAsString("lx");
         if (StringUtils.isNotBlank(lx)) {
             List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, lx);
@@ -1337,6 +1334,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         SimpleCondition condition = new SimpleCondition(SysZdxm.class);
         condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
         condition.eq(SysZdxm.InnerColumn.by1, map.get(km));
+        condition.startWith(SysZdxm.InnerColumn.jgdm, getJgdm());
         if (StringUtils.isNotBlank(by5)) {
             condition.eq(SysZdxm.InnerColumn.by5, by5);
         }
@@ -1557,6 +1555,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         if (StringUtils.equals(jls.get(0).getLcKm(), "3")) {
             ye = 0;
         }
+        ApiResponse<String> kfDj = getKfDj(jls.get(0).getJlId());
+        if (kfDj.getMessage().split("-")[0].equals("0")) {
+            ye = 0;
+        }
         if (ye > 0) {
             int sfje = ye - sum;
             if (sfje < 0) {
@@ -1606,6 +1608,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         condition1.and().andNotEqualTo(BizLcJl.InnerColumn.lcLx.name(), "30");
         condition1.eq(BizLcJl.InnerColumn.lcKm, jls.get(0).getLcKm());
         condition1.in(BizLcJl.InnerColumn.id, list);
+        condition1.startWith(BizLcJl.InnerColumn.jgdm, getJgdm());
         List<BizLcJl> lcJls = findByCondition(condition1);
         BizLcJl lcJl = new BizLcJl();
         lcJl.setId(ids);
@@ -1622,7 +1625,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         lcJl.setJls(lcJls);
         lcJl.setClBh(jls.stream().map(BizLcJl::getClBh).collect(Collectors.joining(",")));
         lcJl.setJlCx(jls.stream().map(BizLcJl::getJlCx).collect(Collectors.joining(",")));
-        ApiResponse<String> kfDj = getKfDj(jls.get(0).getJlId());
+
         RuntimeCheck.ifFalse(kfDj.getCode() == 200, "数据异常 , 请联系开发人员处理");
         lcJl.setKfDj(Integer.parseInt(kfDj.getMessage().split("-")[0]));
         lcJl.setDksc(Integer.parseInt(kfDj.getMessage().split("-")[1]));
@@ -2708,13 +2711,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xls");
         ServletOutputStream outputStream = response.getOutputStream();
         ExcelUtil.createSheet(outputStream, "明细统计", data);
-
     }
 
     @Override
     public ApiResponse<String> getKfDj(String jlId) {
         RuntimeCheck.ifBlank(jlId, "请上传教练id");
         SimpleCondition condition = new SimpleCondition(BizLcJl.class);
+        condition.startWith(BizLcJl.InnerColumn.jgdm, getJgdm());
         condition.eq(BizLcJl.InnerColumn.jlId, jlId);
         condition.setOrderByClause(" id desc ");
         condition.like(BizLcJl.InnerColumn.zddm, "K2KF");
@@ -2728,6 +2731,199 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             return ApiResponse.success("0-0");
         }
         return ApiResponse.success(zdxms.get(0).getZdmc() + "-" + zdxms.get(0).getBy10());
+    }
+
+    @Override
+    public void jxtjExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
+        String fileName = time + "驾校统计";
+        List<Map<String, Object>> maps = drivingSchoolStatistics();
+        List<Map<Integer, String>> data = new ArrayList<>();
+        Map<Integer, String> map = new HashMap<>();
+        map.put(0, "序号");
+        map.put(1, "驾校");
+        map.put(2, "时长");
+        map.put(3, "收费（元）");
+        data.add(map);
+        long zj = 0;
+        for (int i = 0; i < maps.size(); i++) {
+            Map<String, Object> objectMap = maps.get(i);
+            Map<Integer, String> dataMap = new HashMap<>();
+            dataMap.put(0, i + 1 + "");
+            dataMap.put(1, objectMap.get("jlJx") + "");
+            dataMap.put(2, objectMap.get("lcSc") + "");
+            dataMap.put(3, objectMap.get("lcFy") + "");
+            zj += ((BigDecimal) objectMap.get("lcFy")).longValue();
+            data.add(dataMap);
+        }
+        Map<Integer, String> dataMap = new HashMap<>();
+        dataMap.put(0, "合计:");
+        dataMap.put(1, "");
+        dataMap.put(2, "");
+        dataMap.put(3, zj + "");
+        data.add(dataMap);
+        response.setContentType("application/msexcel");
+        request.setCharacterEncoding("UTF-8");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1") + ".xls");
+        OutputStream out = response.getOutputStream();
+        ExcelUtil.createSheet(out, "驾校统计", data);
+    }
+
+    @Override
+    public void jlExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
+        String fileName = time + "教练统计";
+        ApiResponse<List<LcJlModel>> jlTj = getJlTj();
+        List<LcJlModel> result = jlTj.getResult();
+        List<Map<Integer, String>> data = new ArrayList<>();
+        Map<Integer, String> map = new HashMap<>();
+        map.put(0, "姓名");
+        map.put(1, "驾校");
+        map.put(2, "时长");
+        map.put(3, "收费（元）");
+        data.add(map);
+        long zj = 0;
+        for (int i = 0; i < result.size(); i++) {
+            LcJlModel model = result.get(i);
+            Map<Integer, String> dataMap = new HashMap<>();
+            dataMap.put(0, model.getJlXm());
+            dataMap.put(1, model.getJlJx());
+            Integer l = model.getSc();
+            if (l / 60 == 0) {
+                dataMap.put(2, l + "分");
+            } else {
+                dataMap.put(2, (l / 60) + "时" + (l % 60) + "分");
+            }
+            dataMap.put(3, model.getZj() + "");
+            zj += model.getZj();
+            data.add(dataMap);
+        }
+        Map<Integer, String> dataMap = new HashMap<>();
+        dataMap.put(0, "合计:");
+        dataMap.put(1, "");
+        dataMap.put(2, "");
+        dataMap.put(3, zj + "");
+        data.add(dataMap);
+        response.setContentType("application/msexcel");
+        request.setCharacterEncoding("UTF-8");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1") + ".xls");
+        OutputStream out = response.getOutputStream();
+        ExcelUtil.createSheet(out, "教练统计", data);
+    }
+
+    @Override
+    public void aqyExcel(HttpServletRequest request, HttpServletResponse response) throws WriteException, IOException {
+        String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
+        String fileName = time + "安全员工作日志";
+        ApiResponse<List<LcJlModel>> allLog = getAllLog();
+        List<LcJlModel> result = allLog.getResult();
+        WritableCellFormat cellFormat = new WritableCellFormat();
+        cellFormat.setAlignment(Alignment.CENTRE);
+        cellFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+        cellFormat.setBorder(jxl.format.Border.ALL, BorderLineStyle.THIN);
+        response.setContentType("application/msexcel");
+        request.setCharacterEncoding("UTF-8");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1") + ".xls");
+        OutputStream out = response.getOutputStream();
+
+
+        WritableWorkbook workbook = Workbook.createWorkbook(out);
+        WritableSheet sheet = workbook.createSheet("工作日志", 0);
+
+        sheet.mergeCells(0, 0, 0, 1);
+        sheet.mergeCells(1, 0, 1, 1);
+        sheet.mergeCells(2, 0, 2, 1);
+        sheet.mergeCells(3, 0, 4, 0);
+        sheet.mergeCells(5, 0, 6, 0);
+        sheet.mergeCells(7, 0, 8, 0);
+        sheet.mergeCells(9, 0, 10, 0);
+        sheet.mergeCells(11, 0, 12, 0);
+        sheet.mergeCells(13, 0, 14, 0);
+        sheet.mergeCells(15, 0, 15, 1);
+        sheet.addCell(new Label(0, 0, "序号", cellFormat));
+        sheet.addCell(new Label(1, 0, "姓名", cellFormat));
+        sheet.addCell(new Label(2, 0, "车号", cellFormat));
+        sheet.addCell(new Label(3, 0, "第一趟", cellFormat));
+        sheet.addCell(new Label(3, 1, "人数", cellFormat));
+        sheet.addCell(new Label(4, 1, "金额", cellFormat));
+        sheet.addCell(new Label(5, 0, "第二趟", cellFormat));
+        sheet.addCell(new Label(5, 1, "人数", cellFormat));
+        sheet.addCell(new Label(6, 1, "金额", cellFormat));
+        sheet.addCell(new Label(7, 0, "第三趟", cellFormat));
+        sheet.addCell(new Label(7, 1, "人数", cellFormat));
+        sheet.addCell(new Label(8, 1, "金额", cellFormat));
+        sheet.addCell(new Label(9, 0, "第四趟", cellFormat));
+        sheet.addCell(new Label(9, 1, "人数", cellFormat));
+        sheet.addCell(new Label(10, 1, "金额", cellFormat));
+        sheet.addCell(new Label(11, 0, "第五趟", cellFormat));
+        sheet.addCell(new Label(11, 1, "人数", cellFormat));
+        sheet.addCell(new Label(12, 1, "金额", cellFormat));
+        sheet.addCell(new Label(13, 0, "第六趟", cellFormat));
+        sheet.addCell(new Label(13, 1, "人数", cellFormat));
+        sheet.addCell(new Label(14, 1, "金额", cellFormat));
+        sheet.addCell(new Label(15, 0, "合计", cellFormat));
+
+
+        for (int i = 0; i < result.size(); i++) {
+            LcJlModel lcJlModel = result.get(i);
+            sheet.addCell(new Label(0, i + 2, i + 1 + "", cellFormat));
+            sheet.addCell(new Label(1, i + 2, lcJlModel.getZgXm(), cellFormat));
+            sheet.addCell(new Label(2, i + 2, lcJlModel.getClBh(), cellFormat));
+            for (int j = 0; j < lcJlModel.getJls().size(); j++) {
+                BizLcJl bizLcJl = lcJlModel.getJls().get(j);
+                sheet.addCell(new Label(j * 2 + 3, i + 2, bizLcJl.getXySl() + "", cellFormat));
+                sheet.addCell(new Label(j * 2 + 4, i + 2, bizLcJl.getLcFy() + "", cellFormat));
+            }
+            sheet.addCell(new Label(15, i + 2, lcJlModel.getZj() + "", cellFormat));
+        }
+        sheet.mergeCells(0, result.size() + 2, 14, result.size() + 2);
+        sheet.addCell(new Label(0, result.size() + 2, "合计", cellFormat));
+        sheet.addCell(new Label(15, result.size() + 2, result.size() == 0 ? (0 + "") : (result.stream().mapToInt(LcJlModel::getZj).sum() + ""), cellFormat));
+        workbook.write();
+        workbook.close();
+
+    }
+
+    @Override
+    public ApiResponse<String> saveTc(SysZdxm zdxm) {
+        RuntimeCheck.ifBlank(zdxm.getZdmc(), "请填写套餐单价");
+        RuntimeCheck.ifBlank(zdxm.getBy5(), "套餐类型不能为空");
+        String km = getRequestParamterAsString("km");
+        RuntimeCheck.ifBlank(km, "科目不能为空");
+        String fd = getRequestParamterAsString("fd");
+        NumberFormat format = NumberFormat.getNumberInstance();
+        format.setMaximumFractionDigits(2);
+        SysYh user = getCurrentUser();
+
+        zdxm.setZdlmdm("ZDCLK1045");
+        zdxm.setZdId(genId());
+        zdxm.setJgdm(user.getJgdm());
+        zdxm.setCjsj(new Date());
+        zdxm.setCjr(user.getXm() + "-" + user.getZh());
+        zdxm.setBy2("0");
+        zdxm.setBy1(StringUtils.equals(km, "K2") ? "科二" : "科三");
+        if (StringUtils.equals(zdxm.getBy5(), "00")) {
+            // 计时套餐 , by3为每分钟费用
+            double miu = (Integer.parseInt(zdxm.getZdmc()) * 1.0) / 60;
+            zdxm.setBy3(format.format(miu));
+            // 计时套餐返点放在by4
+            if (StringUtils.isNotBlank(fd)) {
+                try {
+                    Double.parseDouble(fd);
+                } catch (Exception e) {
+                    return ApiResponse.fail("");
+                }
+            }
+        } else if (StringUtils.equals(zdxm.getBy5(), "10")) {
+
+        }
+
+        return null;
+
     }
 
 

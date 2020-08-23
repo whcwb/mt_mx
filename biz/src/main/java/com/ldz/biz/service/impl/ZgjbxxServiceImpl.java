@@ -158,15 +158,22 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
         simpleCondition.and().andCondition(" jssj is null or jssj = ''");
         List<BizLcJl> lcCls = jlService.findByCondition(simpleCondition);
         List<String> list = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(lcCls)){
-            list= lcCls.stream().map(BizLcJl::getZgId).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(lcCls)) {
+            list = lcCls.stream().map(BizLcJl::getZgId).collect(Collectors.toList());
         }
         SimpleCondition condition = new SimpleCondition(Zgjbxx.class);
-        if(CollectionUtils.isNotEmpty(list)){
-            condition.notIn(Zgjbxx.InnerColumn.id,list);
+        if (CollectionUtils.isNotEmpty(list)) {
+            condition.notIn(Zgjbxx.InnerColumn.id, list);
         }
-        condition.eq(Zgjbxx.InnerColumn.gzgw,"0005");
-        condition.eq(Zgjbxx.InnerColumn.aqyQdzt,"10");
+        condition.eq(Zgjbxx.InnerColumn.gzgw, "0005");
+        condition.eq(Zgjbxx.InnerColumn.aqyQdzt, "10");
+        String jgdm = getJgdm();
+        if (StringUtils.length(jgdm) > 9) {
+            condition.startWith(Zgjbxx.InnerColumn.jgdm, jgdm.substring(0, 9));
+        } else {
+            condition.startWith(Zgjbxx.InnerColumn.jgdm, jgdm);
+        }
+
         condition.setOrderByClause(" CONVERT(xm using gbk) asc ");
         List<Zgjbxx> zgjbxxes = findByCondition(condition);
         return ApiResponse.success(zgjbxxes);
@@ -176,10 +183,16 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
     public boolean fillPagerCondition(LimitedCondition condition) {
         HttpServletRequest requset = getRequset();
         String aqybx = requset.getParameter("aqybx");//是否按安全员姓名排序
-        if(StringUtils.equals("1",aqybx)){
-            condition.setOrderByClause( " convert(XM using gbk) ASC ");
-        }else{
-            condition.setOrderByClause( " dabh1 asc ");
+        String jgdm = getJgdm();
+        if (StringUtils.length(jgdm) > 9) {
+            condition.startWith(Zgjbxx.InnerColumn.jgdm, jgdm.substring(0, 9));
+        } else {
+            condition.startWith(Zgjbxx.InnerColumn.jgdm, jgdm);
+        }
+        if (StringUtils.equals("1", aqybx)) {
+            condition.setOrderByClause(" convert(XM using gbk) ASC ");
+        } else {
+            condition.setOrderByClause(" dabh1 asc ");
         }
         return true;
     }

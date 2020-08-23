@@ -59,7 +59,6 @@
             <Row style="margin-top: 16px;">
               <Col span="20">
                 <InputNumber v-model="item.by10" :placeholder="'请填写抵扣时长...'" style="width: 200px;"></InputNumber>
-                <!--                <span v-if="item.zddm =='K2PY'"> 元/人</span>-->
                 <span>抵扣时长</span>
               </Col>
               <Col span="4">
@@ -141,7 +140,8 @@
       getData() {
         let param = {
           zdlmdm: 'ZDCLK1045',
-          by1: '科二'
+          by1: '科二',
+          orderBy: 'jgdm asc,zddm asc'
         }
         this.$http.get(this.apis.DICTIONARY_LIST.list, {params: param}).then((res) => {
           if (res.code == 200 && res.result) {

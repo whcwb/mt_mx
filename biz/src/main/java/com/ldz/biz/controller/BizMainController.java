@@ -4,7 +4,6 @@ import com.github.pagehelper.Page;
 import com.google.common.collect.Maps;
 import com.ldz.biz.constant.Status;
 import com.ldz.biz.model.BizLcJl;
-import com.ldz.biz.model.LcJlModel;
 import com.ldz.biz.model.StudentAllModel;
 import com.ldz.biz.model.TraineeInformation;
 import com.ldz.biz.service.BizLcJlService;
@@ -16,15 +15,11 @@ import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.*;
-import jxl.Workbook;
-import jxl.format.Alignment;
-import jxl.format.BorderLineStyle;
-import jxl.format.VerticalAlignment;
-import jxl.write.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -35,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.*;
@@ -575,191 +569,6 @@ public class BizMainController {
         ExcelUtil.createSheet(out, ("7".equals(sign) ? "科目一" : "2".equals(sign) ? "科目二" : "3".equals(sign) ? "科目三" : "") + "考试代缴", data);
     }
 
-
-    /**
-     * 明细统计 Excel导出(科二)
-     */
-    @GetMapping("/pagerExcel")
-    public void pagerExcel(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        jlService.pagerExcel(page, request, response);
-    }
-
-    /**
-     * 明细统计 Exclel导出 (科三)
-     */
-    @GetMapping("/pagerExcelK3")
-    public void pagerExcelK3(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        jlService.pagerExcelK3(page, request, response);
-    }
-
-    @GetMapping("/pagerExcelAll")
-    public void pagerExcelAll(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        jlService.pagerExcelAll(page, request, response);
-    }
-
-    /**
-     * 驾校统计 Excel 导出
-     */
-    @GetMapping("/jxtjExcel")
-    public void jxtjExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
-        String fileName = time + "驾校统计";
-        List<Map<String, Object>> maps = jlService.drivingSchoolStatistics();
-        List<Map<Integer, String>> data = new ArrayList<>();
-        Map<Integer, String> map = new HashMap<>();
-        map.put(0, "序号");
-        map.put(1, "驾校");
-        map.put(2, "时长");
-        map.put(3, "收费（元）");
-        data.add(map);
-        long zj = 0;
-        for (int i = 0; i < maps.size(); i++) {
-            Map<String, Object> objectMap = maps.get(i);
-            Map<Integer, String> dataMap = new HashMap<>();
-            dataMap.put(0, i + 1 + "");
-            dataMap.put(1, objectMap.get("jlJx") + "");
-            dataMap.put(2, objectMap.get("lcSc") + "");
-            dataMap.put(3, objectMap.get("lcFy") + "");
-            zj += ((BigDecimal) objectMap.get("lcFy")).longValue();
-            data.add(dataMap);
-        }
-        Map<Integer, String> dataMap = new HashMap<>();
-        dataMap.put(0, "合计:");
-        dataMap.put(1, "");
-        dataMap.put(2, "");
-        dataMap.put(3, zj + "");
-        data.add(dataMap);
-        response.setContentType("application/msexcel");
-        request.setCharacterEncoding("UTF-8");
-        response.setHeader("pragma", "no-cache");
-        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1") + ".xls");
-        OutputStream out = response.getOutputStream();
-        ExcelUtil.createSheet(out, "驾校统计", data);
-    }
-
-    /**
-     * 教练统计 Excel 导出
-     */
-    @GetMapping("/jlExcel")
-    public void jlExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
-        String fileName = time + "教练统计";
-
-        ApiResponse<List<LcJlModel>> jlTj = jlService.getJlTj();
-        List<LcJlModel> result = jlTj.getResult();
-        List<Map<Integer, String>> data = new ArrayList<>();
-        Map<Integer, String> map = new HashMap<>();
-        map.put(0, "姓名");
-        map.put(1, "驾校");
-        map.put(2, "时长");
-        map.put(3, "收费（元）");
-        data.add(map);
-        long zj = 0;
-        for (int i = 0; i < result.size(); i++) {
-            LcJlModel model = result.get(i);
-            Map<Integer, String> dataMap = new HashMap<>();
-            dataMap.put(0, model.getJlXm());
-            dataMap.put(1, model.getJlJx());
-            Integer l = model.getSc();
-            if (l / 60 == 0) {
-                dataMap.put(2, l + "分");
-            } else {
-                dataMap.put(2, (l / 60) + "时" + (l % 60) + "分");
-            }
-            dataMap.put(3, model.getZj() + "");
-            zj += model.getZj();
-            data.add(dataMap);
-        }
-        Map<Integer, String> dataMap = new HashMap<>();
-        dataMap.put(0, "合计:");
-        dataMap.put(1, "");
-        dataMap.put(2, "");
-        dataMap.put(3, zj + "");
-        data.add(dataMap);
-        response.setContentType("application/msexcel");
-        request.setCharacterEncoding("UTF-8");
-        response.setHeader("pragma", "no-cache");
-        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1") + ".xls");
-        OutputStream out = response.getOutputStream();
-        ExcelUtil.createSheet(out, "教练统计", data);
-    }
-
-    /**
-     * 科三安全员日志 Excel导出
-     */
-    @GetMapping("/aqyExcel")
-    public void aqyExcel(HttpServletRequest request, HttpServletResponse response) throws WriteException, IOException {
-        String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
-        String fileName = time + "安全员工作日志";
-        ApiResponse<List<LcJlModel>> allLog = jlService.getAllLog();
-        List<LcJlModel> result = allLog.getResult();
-        WritableCellFormat cellFormat = new WritableCellFormat();
-        cellFormat.setAlignment(Alignment.CENTRE);
-        cellFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
-        cellFormat.setBorder(jxl.format.Border.ALL, BorderLineStyle.THIN);
-        response.setContentType("application/msexcel");
-        request.setCharacterEncoding("UTF-8");
-        response.setHeader("pragma", "no-cache");
-        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1") + ".xls");
-        OutputStream out = response.getOutputStream();
-
-
-        WritableWorkbook workbook = Workbook.createWorkbook(out);
-        WritableSheet sheet = workbook.createSheet("工作日志", 0);
-
-        sheet.mergeCells(0, 0, 0, 1);
-        sheet.mergeCells(1, 0, 1, 1);
-        sheet.mergeCells(2, 0, 2, 1);
-        sheet.mergeCells(3, 0, 4, 0);
-        sheet.mergeCells(5, 0, 6, 0);
-        sheet.mergeCells(7, 0, 8, 0);
-        sheet.mergeCells(9, 0, 10, 0);
-        sheet.mergeCells(11, 0, 12, 0);
-        sheet.mergeCells(13, 0, 14, 0);
-        sheet.mergeCells(15, 0, 15, 1);
-        sheet.addCell(new Label(0, 0, "序号", cellFormat));
-        sheet.addCell(new Label(1, 0, "姓名", cellFormat));
-        sheet.addCell(new Label(2, 0, "车号", cellFormat));
-        sheet.addCell(new Label(3, 0, "第一趟", cellFormat));
-        sheet.addCell(new Label(3, 1, "人数", cellFormat));
-        sheet.addCell(new Label(4, 1, "金额", cellFormat));
-        sheet.addCell(new Label(5, 0, "第二趟", cellFormat));
-        sheet.addCell(new Label(5, 1, "人数", cellFormat));
-        sheet.addCell(new Label(6, 1, "金额", cellFormat));
-        sheet.addCell(new Label(7, 0, "第三趟", cellFormat));
-        sheet.addCell(new Label(7, 1, "人数", cellFormat));
-        sheet.addCell(new Label(8, 1, "金额", cellFormat));
-        sheet.addCell(new Label(9, 0, "第四趟", cellFormat));
-        sheet.addCell(new Label(9, 1, "人数", cellFormat));
-        sheet.addCell(new Label(10, 1, "金额", cellFormat));
-        sheet.addCell(new Label(11, 0, "第五趟", cellFormat));
-        sheet.addCell(new Label(11, 1, "人数", cellFormat));
-        sheet.addCell(new Label(12, 1, "金额", cellFormat));
-        sheet.addCell(new Label(13, 0, "第六趟", cellFormat));
-        sheet.addCell(new Label(13, 1, "人数", cellFormat));
-        sheet.addCell(new Label(14, 1, "金额", cellFormat));
-        sheet.addCell(new Label(15, 0, "合计", cellFormat));
-
-
-        for (int i = 0; i < result.size(); i++) {
-            LcJlModel lcJlModel = result.get(i);
-            sheet.addCell(new Label(0, i + 2, i + 1 + "", cellFormat));
-            sheet.addCell(new Label(1, i + 2, lcJlModel.getZgXm(), cellFormat));
-            sheet.addCell(new Label(2, i + 2, lcJlModel.getClBh(), cellFormat));
-            for (int j = 0; j < lcJlModel.getJls().size(); j++) {
-                BizLcJl bizLcJl = lcJlModel.getJls().get(j);
-                sheet.addCell(new Label(j * 2 + 3, i + 2, bizLcJl.getXySl() + "", cellFormat));
-                sheet.addCell(new Label(j * 2 + 4, i + 2, bizLcJl.getLcFy() + "", cellFormat));
-            }
-            sheet.addCell(new Label(15, i + 2, lcJlModel.getZj() + "", cellFormat));
-        }
-        sheet.mergeCells(0, result.size() + 2, 14, result.size() + 2);
-        sheet.addCell(new Label(0, result.size() + 2, "合计", cellFormat));
-        sheet.addCell(new Label(15, result.size() + 2, result.size() == 0 ? (0 + "") : (result.stream().mapToInt(LcJlModel::getZj).sum() + ""), cellFormat));
-        workbook.write();
-        workbook.close();
-    }
-
     @GetMapping("/exportBigCarExcel")
     public void exportBigCarExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, String> m = new HashMap<>();
@@ -869,6 +678,43 @@ public class BizMainController {
     @GetMapping("/exportXymx")
     public void exportXymx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
         jlService.exportXymx(page, request, response);
+    }
+
+    @GetMapping("/updateZdxmTc")
+    public ApiResponse<String> updateZdxmTc() {
+        SimpleCondition condition = new SimpleCondition(SysZdxm.class);
+        condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        condition.startWith(SysZdxm.InnerColumn.zddm, "K2");
+        List<SysZdxm> zdxms = zdxmMapper.selectByExample(condition);
+        for (SysZdxm zdxm : zdxms) {
+            SysZdxm z = new SysZdxm();
+            BeanUtils.copyProperties(zdxm, z);
+            z.setZdId(idWorker.nextId() + "");
+            z.setJgdm("100001001001");
+            zdxmMapper.insert(z);
+        }
+
+        for (SysZdxm zdxm : zdxms) {
+            SysZdxm z = new SysZdxm();
+            BeanUtils.copyProperties(zdxm, z);
+            z.setZdId(idWorker.nextId() + "");
+            z.setJgdm("100001001003");
+            zdxmMapper.insert(z);
+        }
+
+        condition = new SimpleCondition(SysZdxm.class);
+        condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+        condition.startWith(SysZdxm.InnerColumn.zddm, "K3");
+        zdxms = zdxmMapper.selectByExample(condition);
+
+        for (SysZdxm zdxm : zdxms) {
+            SysZdxm z = new SysZdxm();
+            BeanUtils.copyProperties(zdxm, z);
+            z.setZdId(idWorker.nextId() + "");
+            z.setJgdm("100001001002");
+            zdxmMapper.insert(z);
+        }
+        return ApiResponse.success();
     }
 
 

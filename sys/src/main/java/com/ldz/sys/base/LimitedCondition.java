@@ -21,23 +21,26 @@ public class LimitedCondition extends SimpleCondition {
     /**
      * 有些对象在查询的时候并不需要做机构权限处理   BizCarGas "CoachValuation","ComplainRecord",  BizCarAnnualExam
      */
-    private static final List<String> excludeEntityName = Arrays.asList("SysZdxm","BizLcFd","WxModule","WxModuleSys","SysMessage","FeedBack","CoachValuation","ComplainRecord","InviteFriends","PicRotation","RecordManagement","ChargeItemManagement","ReduceManagement","ChargeManagement","SysGn","SysYjfk","SysRz","ClZnzp","ClLsdw","ClLsc","ClDzwlCl","ClSbyxsjjl","SysHsgs","SysZdlm","TrainingRecord","TraineeTestInfo","RateDetail","ComplainRecord","FeedBack","InviteFriends","CoachValuation","Zgjbxx","BizKc","BizCk","BizRk","BizLcCl","BizLcJl","BizLcJlXy","BizLcWxjl","BizKcLb","BizException", "BizLcFds");
-    private static final List<String> jgdmsList = Arrays.asList("TraineeInformation","CoachManagement");
+    private static final List<String> EXCLUD_EENTITY_NAME = Arrays.asList("Zgjbxx", "BizLcFd", "WxModule", "WxModuleSys", "SysMessage", "FeedBack", "CoachValuation", "ComplainRecord", "InviteFriends", "PicRotation", "RecordManagement", "ChargeItemManagement", "ReduceManagement", "ChargeManagement", "SysGn", "SysYjfk", "SysRz", "ClZnzp", "ClLsdw", "ClLsc", "ClDzwlCl", "ClSbyxsjjl", "SysHsgs", "SysZdlm", "TrainingRecord", "TraineeTestInfo", "RateDetail", "ComplainRecord", "FeedBack", "InviteFriends", "CoachValuation", "BizKc", "BizCk", "BizRk", "BizLcJlXy", "BizLcWxjl", "BizKcLb", "BizException", "BizLcFds");
+    private static final List<String> JGDMSLIST = Arrays.asList("TraineeInformation", "CoachManagement");
+
     public LimitedCondition(Class<?> entityClass) {
         super(entityClass);
-
-        if (excludeEntityName.contains(entityClass.getSimpleName()))return;
+        if (EXCLUD_EENTITY_NAME.contains(entityClass.getSimpleName())) {
+            return;
+        }
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String orgCode = (String) request.getAttribute("orgCode");
-        if(jgdmsList.contains(entityClass.getSimpleName())){
+
+        if (JGDMSLIST.contains(entityClass.getSimpleName())) {
             String orgCodes = (String) request.getAttribute("orgCodes");
-            if(StringUtils.isNotBlank(orgCodes)){
-                List<String> list = Arrays.asList(orgCodes.split(","));
+            if (StringUtils.isNotBlank(orgCodes)) {
+                String[] list = orgCodes.split(",");
                 String condi = "";
                 for (String s : list) {
-                    if(StringUtils.isNotEmpty(condi)) {
+                    if (StringUtils.isNotEmpty(condi)) {
                         condi += " or jgdm like '" + s + "%'";
-                    }else{
+                    } else {
                         condi += " jgdm like '" + s + "%'";
                     }
                 }
@@ -50,7 +53,6 @@ public class LimitedCondition extends SimpleCondition {
                 this.and().andLike("jgdm",orgCode+"%");
             }
         }else{
-
             RuntimeCheck.ifBlank(orgCode,"未找到机构");
             this.and().andLike("jgdm",orgCode+"%");
         }

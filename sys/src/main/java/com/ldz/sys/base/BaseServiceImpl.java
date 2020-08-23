@@ -372,14 +372,19 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
         return getCurrentUser(true);
     }
 
+    public static String getJgdm() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        return (String) request.getAttribute("orgCode");
+    }
+
     public static SysYh getCurrentUser(boolean require) {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if(requestAttributes != null){
+        if (requestAttributes != null) {
             HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
             SysYh userInfo = (SysYh) request.getAttribute("userInfo");
             RuntimeCheck.ifTrue(require && userInfo == null, "当前登录用户未空！");
             return userInfo;
-        }else{
+        } else {
             return null;
         }
 

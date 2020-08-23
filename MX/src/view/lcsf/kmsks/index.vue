@@ -1,9 +1,9 @@
 <template>
   <div class="box_col">
-    <Menu mode="horizontal" :theme="theme1" active-name="3"
-          style="font-size: 48px;font-weight: bold;margin-bottom: 8px">
-      <MenuItem name="3">
-        科目三考试车
+    <Menu mode="horizontal" :theme="theme1" :active-name="activeName" ref="activeName"
+          style="font-size: 48px;font-weight: bold;margin-bottom: 8px" @on-select="selectKc">
+      <MenuItem v-for="item in JGList" :value="item.jgdm" :name="item.jgdm">
+        {{item.jgmc}}
       </MenuItem>
     </Menu>
     <Row style="margin-bottom: 8px">
@@ -14,7 +14,6 @@
               <span
                 style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;">
 
-              <!--                style="width: 100px;height: 80px;background-color: #ffbb96;color:white;padding:6px;border-radius: 4px;margin-left: 16px;">-->
                 共{{tabdata.length}}台
               </span>
               <span
@@ -41,7 +40,7 @@
             </Button>
           </Col>
           <Col span="1" align="center">
-            <Button type="primary" @click="compName='cjcar'">
+            <Button type="primary" @click="jgdm=param.jgdmLike,compName='cjcar'">
               <Icon type="md-add"></Icon>
               <!--查询-->
             </Button>
@@ -50,8 +49,6 @@
       </Col>
     </Row>
     <div class="box_col_auto" :style="{height:AF.getPageHeight()-220+'px',flex:'unset'}">
-      <!--<Row>-->
-        <!--<Col span="6" v-for="(item,index) in tabdata" :key="index">-->
       <div class="box_row_list">
         <div style="width: 25%;min-width: 320px;padding: 8px" v-for="(item,index) in tabdata" :key="index">
           <Card style="width:100%">
@@ -85,11 +82,6 @@
                 </Row>
               </Col>
             </Row>
-            <!--<div style="padding: 6px 0">-->
-              <!--磁卡编码：-->
-              <!--<span v-if="item.cardNo" style="color: #19be6b">{{cardNo(item.cardNo)}}</span>-->
-              <!--<span v-else style="color:#ed3f14">车辆未绑卡</span>-->
-            <!--</div>-->
             <div style="padding-top: 5px">
               <div class="box_row" style="padding-top: 6px; ">
                 <div class="box_col_100">
@@ -113,11 +105,8 @@
           </Card>
         </div>
       </div>
-        <!--</Col>-->
-      <!--</Row>-->
     </div>
-    <!--<Table :height="AF.getPageHeight()-290" size="small" :columns="tabTit" :data="tabdata"></Table>-->
-    <component :is=compName :param="this.a"></component>
+    <component :is=compName :param="this.a" :jgdm="jgdm"></component>
   </div>
 </template>
 
@@ -133,6 +122,8 @@
     },
     data() {
       return {
+        activeName: '',
+        JGList: [],
         KXsty: {
           'background': '#57c5f7',
           'color': '#fff'
@@ -151,11 +142,13 @@
           pageSize: 99999,
           clBh: '',
           clHm: '',
+          jgdmLike: '',
           clKm: '3',
           orderBy: 'clKm asc,clBh asc',
           notShowLoading: 'true'
         },
         a: {},
+        jgdm: '',
         value1: '',
         value2: '',
         compName: '',
@@ -169,8 +162,23 @@
 
     },
     methods: {
-      cardNo(val){
-        return val.substring(0,2)+'******'
+      selectKc(val) {
+        this.param.jgdmLike = val
+        this.getPagerList()
+      },
+      getJgs() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          this.JGList = res.result;
+          this.param.jgdmLike = this.JGList[0].jgdm
+          this.getPagerList()
+          this.activeName = this.JGList[0].jgdm
+          this.$nextTick(() => {
+            this.$refs.activeName.updateActiveName();
+          })
+        })
+      },
+      cardNo(val) {
+        return val.substring(0, 2) + '******'
       },
       keerkesan(val) {
         this.param.clKm = val;
@@ -245,7 +253,8 @@
       }
     },
     created() {
-      this.getPagerList()
+      this.getJgs();
+      this.getPagerList();
       this.carTypList = this.dictUtil.getByCode(this, 'ZDCLK1044')
       this.carTypList.forEach((item, index) => {
         item.background = '#fff'

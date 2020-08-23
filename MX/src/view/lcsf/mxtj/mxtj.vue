@@ -3,10 +3,15 @@
     <div style="display: flex;justify-content: space-between;align-items: center">
     <span
       style="cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
-     @click="toPrint">收款凭证</span>
-    <search-bar :parent="v" :showSearchButton="true" :showDownLoadButton="true" :show-create-button="false"
-                :buttons="searchBarButtons" @print="componentName = 'print'"
-                @exportExcel="exportExcel"></search-bar>
+      @click="toPrint">收款凭证</span>
+      <div style="margin-left: 70%">
+        <Select v-model="param.jgdmLike" @on-change="v.util.initTable(v)">
+          <Option v-for="item in JGList" :value="item.val">{{item.label}}</Option>
+        </Select>
+      </div>
+      <search-bar :parent="v" :showSearchButton="true" :showDownLoadButton="true" :show-create-button="false"
+                  :buttons="searchBarButtons" @print="componentName = 'print'"
+                  @exportExcel="exportExcel"></search-bar>
     </div>
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
     <Row>
@@ -40,11 +45,9 @@
         apiRoot: this.apis.lcjl,
         choosedItem: null,
         componentName: '',
-        hisPrintMess:{},
-        searchBarButtons: [
-          // {title: '打印', click: 'print'},
-          //   {title: '导出', click: 'exportExcel'}
-        ],
+        hisPrintMess: {},
+        JGList: [{val: '100', label: '所有考场'}],
+        searchBarButtons: [],
         dateRange: {
           kssj: ''
         },
@@ -217,7 +220,8 @@
           pageNum: 1,
           pageSize: 8,
           zfzt: '10',
-          lcKm:''
+          lcKm: '',
+          jgdmLike: '100'
         },
       }
     },
@@ -229,17 +233,33 @@
         this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
         this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       }
+      this.getJgsByOrgCode();
       this.util.initTable(this);
     },
     methods: {
+      getJgsByOrgCode() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          if (res.result.length <= 1) {
+            this.JGList = []
+          }
+
+          res.result.forEach((item, index) => {
+            let t = {val: item.jgdm, label: item.jgmc}
+            this.JGList.push(t)
+          })
+          this.param.jgdmLike = this.JGList[0].val
+        })
+      },
       exportExcel() {
         let p = '';
         for (let k in this.param) {
           p += '&' + k + '=' + this.param[k];
         }
         p = p.substr(1);
-        // console.log(this.apis.url + '/pub/pagerExcelK3?'+p)
-        window.open(this.apis.url + '/pub/pagerExcelAll?' + p);
+        let accessToken = JSON.parse(Cookies.get('accessToken'));
+        let token = accessToken.token;
+        let userid = accessToken.userId;
+        window.open(this.apis.url + '/api/lcjl/pagerExcelAll?token=' + token + '&userid=' + userid + "&" + p);
       },
       parseTime(s) {
         s = parseInt(s);

@@ -18,17 +18,12 @@
         <Icon type="ios-paper"/>
         安全员统计
       </MenuItem>
-      <!--<MenuItem name="pxmx">-->
-        <!--<Icon type="ios-paper"/>-->
-        <!--大车培训明细-->
-      <!--</MenuItem>-->
     </Menu>
     <component :is="componentName"  lcKm="3"></component>
   </div>
 </template>
 
 <script>
-  // import formData from './formModal.vue'
   import print from './print'
   //明细统计
   import mxtj from './mxtj'
