@@ -652,9 +652,12 @@ public class BizMainController {
         map.put(0, "姓名");
         map.put(1, "驾校");
         map.put(2, "时长");
-        map.put(3, "收费（元）");
+        map.put(3, "应收");
+        map.put(4, "实收（元）");
         data.add(map);
+        long zjes = 0;
         long zj = 0;
+        long zsc = 0;
         for (int i = 0; i < result.size(); i++) {
             LcJlModel model = result.get(i);
             Map<Integer, String> dataMap = new HashMap<>();
@@ -666,15 +669,19 @@ public class BizMainController {
             } else {
                 dataMap.put(2, (l / 60) + "时" + (l % 60) + "分");
             }
-            dataMap.put(3, model.getZj() + "");
+            dataMap.put(3, model.getZje() + "");
+            dataMap.put(4, model.getZj() + "");
             zj += model.getZj();
+            zjes += model.getZje();
+            zsc += model.getSc();
             data.add(dataMap);
         }
         Map<Integer, String> dataMap = new HashMap<>();
         dataMap.put(0, "合计:");
         dataMap.put(1, "");
-        dataMap.put(2, "");
-        dataMap.put(3, zj + "");
+        dataMap.put(2, zsc + "");
+        dataMap.put(3, zjes + "");
+        dataMap.put(4, zj + "");
         data.add(dataMap);
         response.setContentType("application/msexcel");
         request.setCharacterEncoding("UTF-8");

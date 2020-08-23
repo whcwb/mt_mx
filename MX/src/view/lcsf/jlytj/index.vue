@@ -2,6 +2,12 @@
   <div class="boxbackborder box_col" style="padding-top:16px">
     <!--<pager-tit title="教练员统计"></pager-tit>-->
     <div style="text-align: right;width: 100%">
+      <Select v-model="param.lcKm" style="width: 100px;text-align: left" @on-change="v.util.initTable(v)">
+        <Option v-for="item in kmList" :value="item.val"> {{item.label}}</Option>
+      </Select>
+      <Select v-model="param.lcLx" style="width: 100px;text-align: left" @on-change="v.util.initTable(v)">
+        <Option v-for="item in lcLxList" :value="item.val"> {{item.label}}</Option>
+      </Select>
       <DatePicker v-model="dateRange.kssj"
                   @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm format="yyyy-MM-dd"
                   type="daterange" :placeholder="'请输入'" style="width: 200px"
@@ -11,7 +17,7 @@
         <!--查询-->
       </Button>
       <!--<Button type="primary" @click="componentName = 'print'" style="margin-left: 10px;">-->
-        <!--打印-->
+      <!--打印-->
       <!--</Button>-->
       <Button type="primary" @click="exportExcel" style="margin-left: 10px;">
         <Icon type="ios-cloud-download" />
@@ -20,7 +26,17 @@
     <!--<search-bar :parent="v" :show-create-button="false" :buttons="searchBarButtons" @print="componentName = 'print'" :show-search-button="false"></search-bar>-->
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
     <Row>
-      <Col span="24" align="right">
+      <Col span="8" align="right">
+        <div style="font-size: 15px;font-weight: 600">
+          时长合计：<span style="color: #ed3f14"> {{zsc}} </span> 分钟
+        </div>
+      </Col>
+      <Col span="8" align="right">
+        <div style="font-size: 15px;font-weight: 600">
+          应收合计：<span style="color: #ed3f14"> {{zjes}} </span> 元
+        </div>
+      </Col>
+      <Col span="8" align="right">
         <div style="font-size: 15px;font-weight: 600">
           合计：<span style="color: #ed3f14"> {{addmoney}} </span> 元
         </div>
@@ -47,6 +63,7 @@
     data() {
       return {
         v: this,
+        zjes: 0,
         zsc: 0,
         addmoney: 0,
         pagerUrl: this.apis.lcjl.jlTj,
@@ -73,13 +90,14 @@
             ],
             filterMultiple: false,
             filterRemote(value, row) {
-              var _self =  this.$options.parent.parent
-              _self.param.lx=value[0]?value[0]:''
+              var _self = this.$options.parent.parent
+              _self.param.lx = value[0] ? value[0] : ''
               _self.util.getPageData(_self)
             },
           },
           {title: '教练员', key: 'jlXm'},
           {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
+          {title: '应收', key: 'zje'},
           {
             title: '实收', minWidth: 90, defaul: '0',
             render: (h, p) => {
@@ -94,6 +112,7 @@
         lcLxList: [
           {val: '00', label: '计时'}, {val: '10', label: '按把'}, {val: '20', label: '培优'}, {val: '30', label: '开放'}
         ],
+        kmList: [{val: '2', label: '科二'}, {val: '3', label: '科三'}],
         param: {
           total: 0,
           zhLike: '',
@@ -135,9 +154,11 @@
         return r + m + '分钟'
       },
       afterPager(list) {
+        this.zjes = 0;
         this.zsc = 0;
         this.addmoney = 0
         for (let r of list) {
+          this.zjes += r.zje;
           this.zsc += r.sc;
           r.sc = this.parseTime(r.sc)
           this.addmoney += r.zj;

@@ -34,6 +34,11 @@ public class LcJlModel {
      */
     private Integer sc;
     /**
+     * 应收总金额
+     */
+    private Integer zje;
+
+    /**
      * 总价
      */
     private Integer zj;

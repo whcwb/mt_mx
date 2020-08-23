@@ -1109,6 +1109,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 int sum = jlList.stream().mapToInt(BizLcJl::getSc).sum();
                 // 累计费用
                 int sum1 = jlList.stream().mapToInt(BizLcJl::getXjje).sum();
+
+                int sum2 = jlList.stream().mapToInt(BizLcJl::getLcFy).sum();
                 if (StringUtils.equals(jlList.get(0).getJlLx(), "00")) {
                     model.setJlXm(jlList.get(0).getJlXm() + "_" + jlList.get(0).getJlJx());
                     model.setJlJx("明涛驾校");
@@ -1118,6 +1120,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 }
                 model.setSc(sum);
                 model.setZj(sum1);
+                model.setZje(sum2);
                 list.add(model);
             }
         }
