@@ -4,7 +4,8 @@
     <div style="text-align: right;width: 100%">
       <DatePicker v-model="dateRange.kssj"
                   @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm format="yyyy-MM-dd"
-                  type="daterange" :placeholder="'请输入'" style="width: 200px"></DatePicker>
+                  type="daterange" :placeholder="'请输入'" style="width: 200px"
+                  split-panels></DatePicker>
       <Button type="primary" @click="v.util.getPageData(v)" style="margin-left: 10px;">
         <Icon type="md-search"></Icon>
         <!--查询-->
@@ -46,7 +47,8 @@
     data() {
       return {
         v: this,
-        addmoney:0,
+        zsc: 0,
+        addmoney: 0,
         pagerUrl: this.apis.lcjl.jlTj,
         choosedItem: null,
         componentName: '',
@@ -78,30 +80,28 @@
           },
           {title: '教练员', key: 'jlXm'},
           {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
-          {title: '实收', minWidth: 90, defaul: '0',
+          {
+            title: '实收', minWidth: 90, defaul: '0',
             render: (h, p) => {
-              return h('div', p.row.zj+'元')
+              return h('div', p.row.zj + '元')
             }
           },
-          // {title:'操作',render:(h,p)=>{
-          //     let buttons = [];
-          //     buttons.push(this.util.buildeditButton(this,h,p));
-          //     buttons.push(this.util.buildDeleteButton(this,h,p.row.yhid));
-          //     return h('div',buttons);
-          //   }
-          //   },
 
         ],
         pageData: [],
         pager: false,
         specialPageSize: 9999,
+        lcLxList: [
+          {val: '00', label: '计时'}, {val: '10', label: '按把'}, {val: '20', label: '培优'}, {val: '30', label: '开放'}
+        ],
         param: {
           total: 0,
           zhLike: '',
           lcKm: '',
           pageNum: 1,
           pageSize: 8,
-          zfzt: '10'
+          zfzt: '10',
+          lcLx: ''
         },
       }
     },
@@ -135,11 +135,14 @@
         return r + m + '分钟'
       },
       afterPager(list) {
+        this.zsc = 0;
         this.addmoney = 0
         for (let r of list) {
-          r.sc  = this.parseTime(r.sc)
+          this.zsc += r.sc;
+          r.sc = this.parseTime(r.sc)
           this.addmoney += r.zj;
         }
+        console.log(this.zsc)
       },
       getTime(s) {
         s = parseInt(s);
