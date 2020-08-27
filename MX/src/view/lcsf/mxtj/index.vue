@@ -3,15 +3,19 @@
     <Menu mode="horizontal" theme="light" active-name="mxtj" @on-select="MenuClick">
       <MenuItem name="mxtj">
         <Icon type="ios-paper"/>
-         明细统计
+        明细统计
       </MenuItem>
       <MenuItem name="jxtj">
         <Icon type="ios-paper"/>
-         驾校统计
+        驾校统计
       </MenuItem>
       <MenuItem name="jltj">
         <Icon type="ios-paper"/>
-         教练统计
+        教练统计
+      </MenuItem>
+      <MenuItem name="dhtj">
+        <Icon type="ios-paper"/>
+        队号统计
       </MenuItem>
     </Menu>
     <component :is="componentName"></component>
@@ -19,28 +23,31 @@
 </template>
 
 <script>
-  import print from './print'
-  //明细统计
-  import mxtj from './mxtj'
-  //驾校统计
-  import jxtj from '../jxtj'
-  //教练统计
-  import jltj from '../jlytj'
-  import Cookies from 'js-cookie'
+import print from './print'
+//明细统计
+import mxtj from './mxtj'
+//驾校统计
+import jxtj from '../jxtj'
+//教练统计
+import jltj from '../jlytj'
+//队号统计
+import dhtj from './dhtj'
 
-  export default {
-    name: 'char',
-    components: {print,jxtj,mxtj,jltj},
-    data() {
-      return {
-        v: this,
-        apiRoot: this.apis.lcjl,
-        choosedItem: null,
-        componentName: 'mxtj',
-        searchBarButtons: [
-          {title: '打印', click: 'print'}
-        ],
-        dateRange: {
+import Cookies from 'js-cookie'
+
+export default {
+  name: 'char',
+  components: {print, jxtj, mxtj, jltj, dhtj},
+  data() {
+    return {
+      v: this,
+      apiRoot: this.apis.lcjl,
+      choosedItem: null,
+      componentName: 'mxtj',
+      searchBarButtons: [
+        {title: '打印', click: 'print'}
+      ],
+      dateRange: {
           kssj: ''
         },
         tableColumns: [
@@ -104,7 +111,6 @@
           }
         },
       MenuClick(name) {
-        console.log(name);
         this.componentName = name
       },
       print() {

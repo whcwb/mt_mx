@@ -56,7 +56,9 @@
           <Row style="display: flex;justify-content: space-between">
             <Col span="10">
               <FormItem label="准驾车型">
-                <Input v-model="AQY.zjcx" size="large" placeholder="请输入准驾车型"/>
+                <Select v-model="zjcx" multiple @on-change="changeCx" size="small">
+                  <Option v-for="item in cxList" :value="item.val">{{ item.val }}</Option>
+                </Select>
               </FormItem>
             </Col>
             <Col span="10">
@@ -94,10 +96,12 @@
     data() {
       return {
         v: this,
+        zjcx: [],
         apiRoot: this.apis.zgjbxx,
         choosedItem: null,
         componentName: '',
         pageData: [],
+        cxList: [{val: 'C1'}, {val: "C2"}, {val: 'B1'}, {val: 'B2'}, {val: 'A1'}, {val: 'A2'}, {val: 'A3'}],
         tableColumns: [
           {
             title: '序号', align: 'center', minWidth: 90,
@@ -145,6 +149,7 @@
                       on: {
                         click: () => {
                           this.AQY = JSON.parse(JSON.stringify(p.row));
+                          this.zjcx = this.AQY.zjcx.split(',')
                           this.modalTitle = '更改安全员信息'
                           this.showModal = true
                         }
@@ -183,6 +188,10 @@
       this.util.initTable(this);
     },
     methods: {
+      changeCx(val) {
+        this.AQY.zjcx = val.join(',')
+        console.log('zjcx', this.AQY.zjcx)
+      },
       getJgsByOrgCode() {
         this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
           if (res.result.length <= 1) {
@@ -192,6 +201,7 @@
             let t = {val: r.jgdm, label: r.jgmc}
             this.JGList.push(t)
           }
+          this.AQY.jgdm = this.JGList[0].val
         })
         console.log("log", this.JGList);
       },

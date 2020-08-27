@@ -36,11 +36,15 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
 
     ApiResponse<LcJlModel> getOneLog(String zgId);
 
-    ApiResponse<BizLcJl> updateJssj(String id,String cardNo, String km) throws ParseException;
+    ApiResponse<BizLcJl> updateJssj(String id, String cardNo, String km) throws ParseException;
 
-    List<Map<String,Object>>  drivingSchoolStatistics();
+    List<Map<String, Object>> drivingSchoolStatistics();
 
     ApiResponse<List<LcJlModel>> getJlTj();
+
+    ApiResponse<List<LcJlModel>> getDhTj();
+
+    void exportDhTj(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     void pagerExcel(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
@@ -89,4 +93,6 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
     void aqyExcel(HttpServletRequest request, HttpServletResponse response) throws WriteException, IOException;
 
     ApiResponse<String> saveTc(SysZdxm zdxm);
+
+
 }

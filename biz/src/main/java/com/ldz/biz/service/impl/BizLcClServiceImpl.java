@@ -50,6 +50,7 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
 
     @Override
     public boolean fillPagerCondition(LimitedCondition condition) {
+        condition.setOrderByClause(" left(cl_bh,1) asc , convert( substr( cl_bh, 2, length(cl_bh) - 1), signed) asc");
         return true;
     }
 
@@ -61,14 +62,14 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
         RuntimeCheck.ifBlank(entity.getClKc(), "所属考场不能为空");
         RuntimeCheck.ifBlank(entity.getClKm(), "车辆科目不能为空");
         RuntimeCheck.ifBlank(entity.getClCx(), "车型不能为空");
-        RuntimeCheck.ifBlank(entity.getJgdm(), "车辆所属考场不能为空");
         SimpleCondition condition = new SimpleCondition(BizLcCl.class);
         condition.eq(BizLcCl.InnerColumn.clBh, entity.getClBh());
         condition.eq(BizLcCl.InnerColumn.clKm, entity.getClKm());
         condition.eq(BizLcCl.InnerColumn.clCx, entity.getClCx());
-        condition.startWith(BizLcCl.InnerColumn.jgdm, entity.getJgdm());
+        condition.startWith(BizLcCl.InnerColumn.jgdm, getJgdm());
         List<BizLcCl> bizLcClList = findByCondition(condition);
         RuntimeCheck.ifTrue(CollectionUtils.isNotEmpty(bizLcClList), "该科目的车辆编号已经存在,请勿重复添加");
+        entity.setJgdm(getJgdm());
         if (StringUtils.isNotBlank(entity.getCardNo())) {
             SimpleCondition jlCondition = new SimpleCondition(BizLcJl.class);
             jlCondition.eq(BizLcJl.InnerColumn.cardNo, entity.getCardNo());
@@ -111,7 +112,7 @@ public class BizLcClServiceImpl extends BaseServiceImpl<BizLcCl, String> impleme
         ApiResponse<String> result = new ApiResponse<>();
         LimitedCondition queryCondition = getQueryCondition();
         queryCondition.in(BizLcCl.InnerColumn.clZt, Arrays.asList("00", "01"));
-        queryCondition.setOrderByClause(" jgdm asc , cl_bh asc ");
+        queryCondition.setOrderByClause(" jgdm asc , left(cl_bh ,1) asc , convert(substr(cl_bh,2,length(cl_bh)-1),signed) ");
         queryCondition.startWith(BizLcCl.InnerColumn.jgdm, getJgdm());
         PageInfo<BizLcCl> pageInfo = findPage(page, queryCondition);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

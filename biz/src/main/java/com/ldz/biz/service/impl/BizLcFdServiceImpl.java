@@ -163,19 +163,20 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 		} else {
 			lcFds.setId(genId());
 		}
-		lcFds.setJlId(fds.get(0).getJlId());
-		lcFds.setJlXm(fds.get(0).getJlXm());
-		lcFds.setLcFy(lcFy);
-		lcFds.setLcKm(fds.get(0).getLcKm());
-		lcFds.setSc(sc);
-		lcFds.setLcId(fds.stream().map(BizLcFd::getLcId).collect(Collectors.joining(",")));
-		lcFds.setBz(bz);
-		lcFds.setQrr(lcFds.getCjr());
-		lcFds.setQrsj(lcFds.getCjsj());
-		lcFds.setJx(jx.get());
-		fdsService.save(lcFds);
-		return ApiResponse.success(lcFds);
-	}
+        lcFds.setJlId(fds.get(0).getJlId());
+        lcFds.setJlXm(fds.get(0).getJlXm());
+        lcFds.setLcFy(lcFy);
+        lcFds.setLcKm(fds.get(0).getLcKm());
+        lcFds.setSc(sc);
+        lcFds.setLcId(fds.stream().map(BizLcFd::getLcId).collect(Collectors.joining(",")));
+        lcFds.setBz(bz);
+        lcFds.setQrr(lcFds.getCjr());
+        lcFds.setQrsj(lcFds.getCjsj());
+        lcFds.setJx(jx.get());
+        lcFds.setJgdm(fds.get(0).getJgdm());
+        fdsService.save(lcFds);
+        return ApiResponse.success(lcFds);
+    }
 
 	@Override
 	public ApiResponse<String> getPj(String id) {
@@ -193,26 +194,27 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 		LimitedCondition condition = getQueryCondition();
 		ApiResponse<String> res = new ApiResponse<>();
 		String jlLx = getRequestParamterAsString("jlLx");
-		if(StringUtils.isNotBlank(jlLx)){
-			List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, jlLx);
-			if(CollectionUtils.isEmpty(wxjls)){
-				res.setResult("0");
-				return res;
-			}else {
-				List<String> list = wxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toList());
-				condition.in(BizLcFd.InnerColumn.jlId, list);
-			}
-		}
-		PageInfo<BizLcFd> pageInfo = findPage(pager, condition);
-		List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, "00");
-		List<String> collect = wxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toList());
-		List<BizLcFd> lcFds = pageInfo.getList();
+        if (StringUtils.isNotBlank(jlLx)) {
+            List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, jlLx);
+            if (CollectionUtils.isEmpty(wxjls)) {
+                res.setResult("0");
+                return res;
+            } else {
+                List<String> list = wxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toList());
+                condition.in(BizLcFd.InnerColumn.jlId, list);
+            }
+        }
+        condition.startWith(BizLcFd.InnerColumn.jgdm, getJgdm());
+        PageInfo<BizLcFd> pageInfo = findPage(pager, condition);
+        List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.jlLx, "00");
+        List<String> collect = wxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toList());
+        List<BizLcFd> lcFds = pageInfo.getList();
 
-		lcFds.forEach(bizLcFd -> {
-			if(StringUtils.isNotBlank(bizLcFd.getLcId())){
-				List<BizLcJl> jlList = jlService.findIn(BizLcJl.InnerColumn.id, Arrays.asList(bizLcFd.getLcId().split(",")));
-				// 计算练车总费用
-				int sum = jlList.stream().mapToInt(BizLcJl::getXjje).sum();
+        lcFds.forEach(bizLcFd -> {
+            if (StringUtils.isNotBlank(bizLcFd.getLcId())) {
+                List<BizLcJl> jlList = jlService.findIn(BizLcJl.InnerColumn.id, Arrays.asList(bizLcFd.getLcId().split(",")));
+                // 计算练车总费用
+                int sum = jlList.stream().mapToInt(BizLcJl::getXjje).sum();
 				int zsc = jlList.stream().mapToInt(BizLcJl::getSc).sum();
 
 				bizLcFd.setLcFy(sum);

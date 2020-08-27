@@ -138,6 +138,20 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         return service.getJlTj();
     }
 
+    /**
+     * 根据教练队号统计各项数据 (本校)
+     */
+    @PostMapping("/getDhTj")
+    public ApiResponse<List<LcJlModel>> getDhTj() {
+        return service.getDhTj();
+    }
+
+
+    @GetMapping("/exportDhTj")
+    public void exportDhTj(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        service.exportDhTj(request, response);
+    }
+
     @PostMapping("/updateXysl")
     public ApiResponse<String> updateXysl(String id, Integer xySl) {
         return service.updateXysl(id, xySl);

@@ -1,6 +1,10 @@
 <template>
   <div class="boxbackborder box_col" style="padding-top:16px">
     <div style="text-align: right;width: 100%">
+      <Select v-if="JGList.length > 1" style="margin-right: 10px;text-align: left;width: 100px" v-model="param.jgdmLike"
+              @on-change="getData" placeholder="请选择考场">
+        <Option v-for="item in JGList" :value="item.val">{{ item.label }}</Option>
+      </Select>
       <DatePicker v-model="dateRange.kssj"
                   @on-change="kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm format="yyyy-MM-dd"
                   type="daterange" split-panels :placeholder="'请输入'" style="width: 200px"></DatePicker>
@@ -73,29 +77,31 @@
 
 <script>
 
-  import print from './print'
-  import Cookies from 'js-cookie'
-  import mixin from '@/mixins'
+import print from './print'
+import Cookies from 'js-cookie'
+import mixin from '@/mixins'
 
-  export default {
-    name: 'char',
-    mixins:[mixin],
-    components: {print},
-    data() {
-      return {
-        v: this,
-        pagerUrl: this.apis.lcjl.getAllLog,
-        choosedItem: null,
-        componentName: '',
-        list: [],
-        dateRange: {
-          kssj: ''
-        },
-        kssjInRange: '',
-        param: {
-          start:'',
-          end:''
-        },
+export default {
+  name: 'char',
+  mixins: [mixin],
+  components: {print},
+  data() {
+    return {
+      v: this,
+      JGList: [{val: '100', label: '所有考场'}],
+      pagerUrl: this.apis.lcjl.getAllLog,
+      choosedItem: null,
+      componentName: '',
+      list: [],
+      dateRange: {
+        kssj: ''
+      },
+      kssjInRange: '',
+      param: {
+        start: '',
+        end: '',
+        jgdmLike: '100'
+      },
         total: [],
       }
     },
@@ -109,12 +115,23 @@
       var datetimed = this.AF.trimDate(start) + ' ' + '00:00:00';
       var datetimec = this.AF.trimDate() + ' 23:59:59';
       this.kssjInRange = datetimed + ',' + datetimec
-
-      // this.dateRange.kssj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
-      // this.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
+      this.getJgsByOrgCode();
       this.getData();
     },
     methods: {
+      getJgsByOrgCode() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          if (res.result.length <= 1) {
+            this.JGList = []
+          }
+
+          res.result.forEach((item, index) => {
+            let t = {val: item.jgdm, label: item.jgmc}
+            this.JGList.push(t)
+          })
+          this.param.jgdmLike = this.JGList[0].val
+        })
+      },
       exportExcel() {
         let p = '';
         this.param.start = this.kssjInRange.split(',')[0].substring(0, 10);

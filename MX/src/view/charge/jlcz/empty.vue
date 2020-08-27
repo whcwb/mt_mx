@@ -32,8 +32,12 @@
     name: "empty",
     props:{
       QRmodal: {
-        type:Boolean,
-        default:false
+        type: Boolean,
+        default: false
+      },
+      jgdm: {
+        type: String,
+        default: ''
       }
     },
     data() {
@@ -46,7 +50,8 @@
           jlJx: '',
           jlLx: '',
           yeGte: '1',
-          orderBy: 'cjsj desc'
+          orderBy: 'cjsj desc',
+          jgdmLike: ''
         },
         columns: [
           {title: '序号', type: 'index',align: 'center'},
@@ -99,6 +104,7 @@
       }
     },
     created(){
+      this.param.jgdmLike = this.jgdm
       this.getData()
     },
     methods: {

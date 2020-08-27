@@ -95,6 +95,7 @@ public class BizLcFdsServiceImpl extends BaseServiceImpl<BizLcFds, String> imple
                 condition.in(BizLcFd.InnerColumn.jlId, list);
             }
         }
+        condition.startWith(BizLcFds.InnerColumn.jgdm, getJgdm());
         PageInfo<BizLcFds> pageInfo = findPage(pager, condition);
         List<BizLcFds> list = pageInfo.getList();
         list.forEach(bizLcFds -> {

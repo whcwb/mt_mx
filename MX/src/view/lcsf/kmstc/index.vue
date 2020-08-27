@@ -1,11 +1,10 @@
 <template>
   <div class="box_col" style="margin-left: 20px;">
-    <Menu mode="horizontal" active-name="1">
-      <MenuItem name="1">
-        <div style="font-weight: 700;font-size: 16px">
-          套餐维护
-        </div>
-      </MenuItem>
+    <Menu mode="horizontal" :theme="theme1" :active-name="activeName" ref="activeName"
+          style="font-size: 48px;font-weight: bold;margin-bottom: 8px" @on-select="selectKc">
+      <Menu-item v-for="item in JGList" :value="item.jgdm" :name="item.jgdm">
+        {{ item.jgmc }}
+      </Menu-item>
     </Menu>
     <div class="box_col_auto" :style="{height:AF.getPageHeight()-150+'px',overflowX:'hidden',flex:'unset'}">
       <Row :gutter="12">
@@ -13,7 +12,7 @@
           <Card style="margin-top: 12px;">
             <p slot="title">
               <Icon type="ios-car"></Icon>
-              {{item.by9}}【{{item.by8}}】
+              {{ item.by9 }}【{{ item.by8 }}】
             </p>
             <Row>
               <Col span="20" v-if="item.zddm =='K3KF'">
@@ -87,13 +86,37 @@
     data() {
       return {
         v: this,
+        activeName: '',
+        JGList: [],
+        theme1: 'light',
         formItem: {},
         ruleInline: {},
         formItemGroup: [],
-        list: []
+        list: [],
+        param: {
+          zdlmdm: 'ZDCLK1045',
+          by1: '科三',
+          orderBy: 'jgdm asc,zddm asc',
+          jgdmLike: ''
+        }
       }
     },
     methods: {
+      selectKc(val) {
+        this.param.jgdmLike = val
+        this.getData()
+      },
+      getJgs() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          this.JGList = res.result;
+          this.param.jgdmLike = this.JGList[0].jgdm
+          this.getData()
+          this.activeName = this.JGList[0].jgdm
+          this.$nextTick(() => {
+            this.$refs.activeName.updateActiveName();
+          })
+        })
+      },
       change(item) {
         item.by3 = parseInt(item.zdmc / 60);
       },
@@ -111,12 +134,7 @@
         })
       },
       getData() {
-        let param = {
-          zdlmdm: 'ZDCLK1045',
-          by1: '科三',
-          orderBy: 'jgdm asc,zddm asc'
-        }
-        this.$http.get(this.apis.DICTIONARY_LIST.list, {params: param}).then((res) => {
+        this.$http.get(this.apis.DICTIONARY_LIST.list, {params: this.param}).then((res) => {
           if (res.code == 200 && res.result) {
             this.list = res.result
             for (let r of this.list) {
@@ -138,7 +156,7 @@
 
     },
     created() {
-      this.getData();
+      this.getJgs();
     }
   }
 </script>

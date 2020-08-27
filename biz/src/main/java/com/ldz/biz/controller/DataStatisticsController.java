@@ -40,4 +40,5 @@ public class DataStatisticsController {
         return service.getStudentCount(startTime, endTime, jgdm, lx);
     }
 
+
 }

@@ -19,7 +19,10 @@
                    :menu-list="menuList">
           <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
           <div class="logo-con">
-            <div v-show="!collapsed" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">知音考场管理系统</div>
+            <div v-show="!collapsed"
+                 style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">
+              明涛考场管理系统
+            </div>
 
             <div v-show="collapsed" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">W</div>
 
@@ -57,30 +60,30 @@
   </Layout>
 </template>
 <script>
-  import moment from 'moment'
+import moment from 'moment'
 
-  import {getNewTagList, getNextName, showTitle} from '@/libs/util'
-  import SideMenu from './components/side-menu'
-  import HeaderBar from './components/header-bar'
-  import TagsNav from './components/tags-nav'
-  import User from './components/user'
-  import Language from './components/language'
-  import {mapActions, mapMutations} from 'vuex'
-  import minLogo from '@/assets/images/logo-minN.png'
-  import maxLogo from '@/assets/images/logoNMax8.png'
-  import './main.less'
+import {getNewTagList, getNextName, showTitle} from '@/libs/util'
+import SideMenu from './components/side-menu'
+import HeaderBar from './components/header-bar'
+import TagsNav from './components/tags-nav'
+import User from './components/user'
+import Language from './components/language'
+import {mapActions, mapMutations} from 'vuex'
+import minLogo from '@/assets/images/logo-minN.png'
+import maxLogo from '@/assets/images/logoNMax8.png'
+import './main.less'
 
-  export default {
-    name: 'Main',
-    components: {
-      SideMenu,
-      HeaderBar,
-      Language,
-      TagsNav,
-      User
-    },
-    data() {
-      return {
+export default {
+  name: 'Main',
+  components: {
+    SideMenu,
+    HeaderBar,
+    Language,
+    TagsNav,
+    User
+  },
+  data() {
+    return {
         textTime:'',
         collapsed: false,
         minLogo,

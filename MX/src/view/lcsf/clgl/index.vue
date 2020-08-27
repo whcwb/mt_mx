@@ -34,7 +34,7 @@
             </Button>
           </Col>
           <Col span="1" align="center" >
-            <Button type="primary" @click=" jgdm = param.jgdmLike , compName='cjcar'">
+            <Button type="primary" @click=" jgdm = param.jgdmLike ,compName='cjcar'">
               <Icon type="md-add"></Icon>
               <!--查询-->
             </Button>
@@ -103,26 +103,26 @@
       <!--</Row>-->
     </div>
     <!--<Table :height="AF.getPageHeight()-290" size="small" :columns="tabTit" :data="tabdata"></Table>-->
-    <component :is=compName :param="this.a" :jgdm="jgdm"></component>
+    <component :is=compName :param="this.a" :jgdm="jgdm" :activeName="activeName"></component>
   </div>
 </template>
 
 <script>
-  import clxq from './comp/clxq'
-  import cjcar from './comp/cjcar'
-  import bindcard from './comp/bindcard'
+import clxq from './comp/clxq'
+import cjcar from './comp/cjcar'
+import bindcard from './comp/bindcard'
 
-  export default {
-    name: "index",
-    components: {
-      clxq, cjcar,bindcard
-    },
-    data() {
-      return {
-        activeName: '',
-        JGList: [],
-        KXsty: {
-          'background': '#57c5f7',
+export default {
+  name: "index",
+  components: {
+    clxq, cjcar, bindcard
+  },
+  data() {
+    return {
+      activeName: '',
+      JGList: [],
+      KXsty: {
+        'background': '#57c5f7',
           'color': '#fff'
         },
         theme1: 'light',

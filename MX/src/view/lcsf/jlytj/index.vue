@@ -2,37 +2,50 @@
   <div class="boxbackborder box_col" style="padding-top:16px">
     <!--<pager-tit title="教练员统计"></pager-tit>-->
     <div style="text-align: right;width: 100%">
-      <Row>
-        <Col span="17">
-          <div style="min-height: 1px"></div>
-        </Col>
-        <Col span="2" style="text-align: left">
-          <Select v-if="JGList.length > 1" v-model="param.jgdmLike" @on-change="v.util.getPageData(v)">
-            <Option v-for="item in JGList" :value="item.val">{{item.label}}</Option>
-          </Select>
-          <div v-else style="min-height: 1px"></div>
-        </Col>
-        <Col span="5">
-          <DatePicker v-model="dateRange.kssj"
-                      @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm
-                      format="yyyy-MM-dd"
-                      type="daterange" :placeholder="'请输入'" style="width: 200px"></DatePicker>
-          <Button type="primary" @click="v.util.getPageData(v)" style="margin-left: 10px;">
-            <Icon type="md-search"></Icon>
-            <!--查询-->
-          </Button>
-          <!--打印-->
-          <Button type="primary" @click="exportExcel" style="margin-left: 10px;">
-            <Icon type="ios-cloud-download"/>
-          </Button>
-        </Col>
-      </Row>
+      <div v-if="lcKm" style="width: 100px;text-align: left; margin-right: 5px"></div>
+      <Select v-else v-model="param.lcKm" style="width: 100px;text-align: left; margin-right: 5px" clearable
+              @on-change="v.util.initTable(v)" placeholder="科目">
+        <Option v-for="item in kmList" :value="item.val"> {{ item.label }}</Option>
+      </Select>
+      <Select v-if="JGList.length > 1" v-model="param.jgdmLike" style="width: 100px;text-align: left; margin-right: 5px"
+              @on-change="v.util.initTable(v)">
+        <Option v-for="item in JGList" :value="item.val">{{ item.label }}</Option>
+      </Select>
+      <Select v-model="param.lcLx" style="width: 100px;text-align: left;margin-right: 5px"
+              @on-change="v.util.initTable(v)" placeholder="计费类型">
+        <Option v-for="item in lcLxList" :value="item.val"> {{ item.label }}</Option>
+      </Select>
+      <DatePicker v-model="dateRange.kssj"
+                  @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)" confirm format="yyyy-MM-dd"
+                  type="daterange" :placeholder="'请输入'" style="width: 200px"
+                  split-panels></DatePicker>
+      <Button type="primary" @click="v.util.getPageData(v)" style="margin-left: 10px;">
+        <Icon type="md-search"></Icon>
+        <!--查询-->
+      </Button>
+      <!--<Button type="primary" @click="componentName = 'print'" style="margin-left: 10px;">-->
+      <!--打印-->
+      <!--</Button>-->
+      <Button type="primary" @click="exportExcel" style="margin-left: 10px;">
+        <Icon type="ios-cloud-download"/>
+      </Button>
     </div>
+    <!--<search-bar :parent="v" :show-create-button="false" :buttons="searchBarButtons" @print="componentName = 'print'" :show-search-button="false"></search-bar>-->
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
     <Row>
-      <Col span="24" align="right">
+      <Col span="8" align="right">
         <div style="font-size: 15px;font-weight: 600">
-          合计：<span style="color: #ed3f14"> {{addmoney}} </span> 元
+          时长合计：<span style="color: #ed3f14"> {{ zsc }} </span> 分钟
+        </div>
+      </Col>
+      <Col span="8" align="right">
+        <div style="font-size: 15px;font-weight: 600">
+          应收合计：<span style="color: #ed3f14"> {{ zjes }} </span> 元
+        </div>
+      </Col>
+      <Col span="8" align="right">
+        <div style="font-size: 15px;font-weight: 600">
+          合计：<span style="color: #ed3f14"> {{ addmoney }} </span> 元
         </div>
       </Col>
     </Row>
@@ -41,31 +54,33 @@
 </template>
 
 <script>
-  import Cookies from 'js-cookie'
-  import print from './print'
+import Cookies from 'js-cookie'
+import print from './print'
 
-  export default {
-    name: 'char',
-    components: {print},
-    props: {
-      lcKm: {
-        type: String,
-        default: ''
-      }
-    },
-    data() {
-      return {
-        v: this,
-        addmoney: 0,
-        pagerUrl: this.apis.lcjl.jlTj,
-        choosedItem: null,
-        componentName: '',
-        JGList: [{val: '100', label: '所有考场'}],
-        searchBarButtons: [
-          {title: '打印', click: 'print'}
-        ],
-        dateRange: {
-          kssj: ''
+export default {
+  name: 'char',
+  components: {print},
+  props: {
+    lcKm: {
+      type: String,
+      default: ''
+    }
+  },
+  data() {
+    return {
+      v: this,
+      zjes: 0,
+      zsc: 0,
+      addmoney: 0,
+      pagerUrl: this.apis.lcjl.jlTj,
+      choosedItem: null,
+      componentName: '',
+      JGList: [{val: '100', label: '所有考场'}],
+      searchBarButtons: [
+        {title: '打印', click: 'print'}
+      ],
+      dateRange: {
+        kssj: ''
         },
         tableColumns: [
           {title: '序号', type: 'index'},
@@ -90,25 +105,32 @@
           },
           {title: '教练员', key: 'jlXm'},
           {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
+          {title: '应收', key: 'zje'},
           {
             title: '实收', minWidth: 90, defaul: '0',
             render: (h, p) => {
               return h('div', p.row.zj + '元')
             }
           },
+
         ],
-        pageData: [],
-        pager: false,
-        specialPageSize: 9999,
-        param: {
-          total: 0,
-          zhLike: '',
-          lcKm: '',
-          pageNum: 1,
-          pageSize: 8,
-          zfzt: '10',
-          jgdmLike: '100'
-        },
+      pageData: [],
+      pager: false,
+      specialPageSize: 9999,
+      lcLxList: [
+        {val: '00', label: '计时'}, {val: '10', label: '按把'}, {val: '20', label: '培优'}, {val: '30', label: '开放'}
+      ],
+      kmList: [{val: '2', label: '科二'}, {val: '3', label: '科三'}],
+      param: {
+        total: 0,
+        zhLike: '',
+        lcKm: '',
+        pageNum: 1,
+        pageSize: 8,
+        zfzt: '10',
+        lcLx: '',
+        jgdmLike: '100'
+      },
       }
     },
     created() {
@@ -129,7 +151,6 @@
           if (res.result.length <= 1) {
             this.JGList = []
           }
-
           res.result.forEach((item, index) => {
             let t = {val: item.jgdm, label: item.jgmc}
             this.JGList.push(t)
@@ -157,8 +178,12 @@
         return r + m + '分钟'
       },
       afterPager(list) {
+        this.zjes = 0;
+        this.zsc = 0;
         this.addmoney = 0
         for (let r of list) {
+          this.zjes += r.zje;
+          this.zsc += r.sc;
           r.sc = this.parseTime(r.sc)
           this.addmoney += r.zj;
         }

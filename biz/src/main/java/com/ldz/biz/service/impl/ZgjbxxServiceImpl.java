@@ -168,12 +168,7 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
         condition.eq(Zgjbxx.InnerColumn.gzgw, "0005");
         condition.eq(Zgjbxx.InnerColumn.aqyQdzt, "10");
         String jgdm = getJgdm();
-        if (StringUtils.length(jgdm) > 9) {
-            condition.startWith(Zgjbxx.InnerColumn.jgdm, jgdm.substring(0, 9));
-        } else {
-            condition.startWith(Zgjbxx.InnerColumn.jgdm, jgdm);
-        }
-
+        condition.startWith(Zgjbxx.InnerColumn.jgdm, jgdm);
         condition.setOrderByClause(" CONVERT(xm using gbk) asc ");
         List<Zgjbxx> zgjbxxes = findByCondition(condition);
         return ApiResponse.success(zgjbxxes);
@@ -184,11 +179,9 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
         HttpServletRequest requset = getRequset();
         String aqybx = requset.getParameter("aqybx");//是否按安全员姓名排序
         String jgdm = getJgdm();
-        if (StringUtils.length(jgdm) > 9) {
-            condition.startWith(Zgjbxx.InnerColumn.jgdm, jgdm.substring(0, 9));
-        } else {
-            condition.startWith(Zgjbxx.InnerColumn.jgdm, jgdm);
-        }
+
+        condition.startWith(Zgjbxx.InnerColumn.jgdm, jgdm);
+
         if (StringUtils.equals("1", aqybx)) {
             condition.setOrderByClause(" convert(XM using gbk) ASC ");
         } else {

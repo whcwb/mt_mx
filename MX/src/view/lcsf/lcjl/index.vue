@@ -8,8 +8,6 @@
       </MenuItem>
     </Menu>
     <Row type="flex" justify="end" :gutter="8" style="margin:8px 0;">
-
-
       <DatePicker v-model="dateRange.kssj"
                   style="margin-right: 5px"
                   @on-change="param.kssjInRange = v.util.dateRangeChange(dateRange.kssj)"

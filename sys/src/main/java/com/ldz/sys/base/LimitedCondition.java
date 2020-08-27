@@ -21,7 +21,7 @@ public class LimitedCondition extends SimpleCondition {
     /**
      * 有些对象在查询的时候并不需要做机构权限处理   BizCarGas "CoachValuation","ComplainRecord",  BizCarAnnualExam
      */
-    private static final List<String> EXCLUD_EENTITY_NAME = Arrays.asList("Zgjbxx", "BizLcFd", "WxModule", "WxModuleSys", "SysMessage", "FeedBack", "CoachValuation", "ComplainRecord", "InviteFriends", "PicRotation", "RecordManagement", "ChargeItemManagement", "ReduceManagement", "ChargeManagement", "SysGn", "SysYjfk", "SysRz", "ClZnzp", "ClLsdw", "ClLsc", "ClDzwlCl", "ClSbyxsjjl", "SysHsgs", "SysZdlm", "TrainingRecord", "TraineeTestInfo", "RateDetail", "ComplainRecord", "FeedBack", "InviteFriends", "CoachValuation", "BizKc", "BizCk", "BizRk", "BizLcJlXy", "BizLcWxjl", "BizKcLb", "BizException", "BizLcFds");
+    private static final List<String> EXCLUD_EENTITY_NAME = Arrays.asList("Zgjbxx", "WxModule", "WxModuleSys", "SysMessage", "FeedBack", "CoachValuation", "ComplainRecord", "InviteFriends", "PicRotation", "RecordManagement", "ChargeItemManagement", "ReduceManagement", "ChargeManagement", "SysGn", "SysYjfk", "SysRz", "ClZnzp", "ClLsdw", "ClLsc", "ClDzwlCl", "ClSbyxsjjl", "SysHsgs", "SysZdlm", "TrainingRecord", "TraineeTestInfo", "RateDetail", "ComplainRecord", "FeedBack", "InviteFriends", "CoachValuation", "BizKc", "BizCk", "BizRk", "BizLcJlXy", "BizKcLb", "BizException");
     private static final List<String> JGDMSLIST = Arrays.asList("TraineeInformation", "CoachManagement");
 
     public LimitedCondition(Class<?> entityClass) {

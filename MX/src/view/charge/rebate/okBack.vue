@@ -1,7 +1,10 @@
 <template>
   <div>
     <Row style="padding: 12px 0" :gutter="12" type="flex" justify="end">
-      <!--<Col span="4">-->
+      <Select v-if="JGList.length > 1" v-model="param.jgdmLike" style="width: 100px;margin-right: 10px"
+              @on-change="getOldData" placeholder="请选择考场">
+        <Option v-for="item in JGList" :value="item.val">{{ item.label }}</Option>
+      </Select>
       <DatePicker v-model="dateRange.cjsj"
                   confirm format="yyyy-MM-dd"
                   @on-change="param.cjsjInRange = v.util.dateRangeChange(dateRange.cjsj)"
@@ -72,30 +75,37 @@
 </template>
 
 <script>
-  import fdms from './comp/fdms'
-  import printSignUp from './comp/printSignUp'
-  import Cookies from 'js-cookie'
-  import mixin from '@/mixins'
+import fdms from './comp/fdms'
+import printSignUp from './comp/printSignUp'
+import Cookies from 'js-cookie'
+import mixin from '@/mixins'
 
-  export default {
-    name: "okBack",
-    components: {fdms, printSignUp},
-    mixins: [mixin],
-    data() {
-      return {
-        v: this,
-        hisPrintMess: {},
-        componentName: '',
-        compName: '',
-        MSList: [],
-        tableData: [],
-        tableColumns: [
-          {title: '序号', type: 'index', fixed: 'left', align: 'center', minWidth: 80},
-          {title: '操作人', key: 'cjr', align: 'center', minWidth: 120},
-          {title: '驾校', key: 'jx', align: 'center', minWidth: 120},
-          {title: '教练员', key: 'jlXm', align: 'center', minWidth: 120},
-          {
-            title: '返点时间', key: 'cjsj', align: 'center', minWidth: 120, render: (h, p) => {
+export default {
+  name: "okBack",
+  components: {fdms, printSignUp},
+  mixins: [mixin],
+  props: {
+    JGList: {
+      type: Array,
+      default: []
+    }
+  },
+  data() {
+    return {
+      v: this,
+      hisPrintMess: {},
+      componentName: '',
+      JGList: [],
+      compName: '',
+      MSList: [],
+      tableData: [],
+      tableColumns: [
+        {title: '序号', type: 'index', fixed: 'left', align: 'center', minWidth: 80},
+        {title: '操作人', key: 'cjr', align: 'center', minWidth: 120},
+        {title: '驾校', key: 'jx', align: 'center', minWidth: 120},
+        {title: '教练员', key: 'jlXm', align: 'center', minWidth: 120},
+        {
+          title: '返点时间', key: 'cjsj', align: 'center', minWidth: 120, render: (h, p) => {
               let a = p.row.cjsj.substring(0, 16)
               return h('div', a)
             }
@@ -146,7 +156,8 @@
           pageNum: 1,
           pageSize: 15,
           cjsjInRange: '',
-          lcKm: ''
+          lcKm: '',
+          jgdmLike: ''
         }
       }
     },
@@ -156,18 +167,12 @@
       }
     },
     mounted() {
-      this.switch1 = Cookies.get('showMessFD') === 'true' ? true : false
+      this.switch1 = Cookies.get('showMessFD') === 'true'
     },
     created() {
-      // const end = new Date();
-      // const start = new Date();
-      // start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-      // this.dateRange.cjsj = [start, end]
-      // var d = start;
-      // var c = end;
-      // var datetimed = this.AF.trimDate(start) + ' ' + '00:00:00';
-      // var datetimec = this.AF.trimDate() + ' 23:59:59';
-      // this.param.cjsjInRange = datetimed + ',' + datetimec
+      if (this.JGList.length > 1) {
+        this.param.jgdmLike = this.JGList[0].val
+      }
       this.dateRange.cjsj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
       this.param.cjsjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
       this.getOldData()

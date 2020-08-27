@@ -67,6 +67,8 @@ public class BizLcFds {
 
     private String jx;
 
+    private String jgdm;
+
     public enum InnerColumn {
         id("id"),
         cjsj("cjsj"),
@@ -78,7 +80,8 @@ public class BizLcFds {
         jlXm("JL_XM"),
         qrsj("qrsj"),
         qrr("qrr"),
-        lcId("LC_ID");
+        lcId("LC_ID"),
+        jgdm("JGDM");
 
         private final String column;
 

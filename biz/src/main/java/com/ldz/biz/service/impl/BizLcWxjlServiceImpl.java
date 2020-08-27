@@ -6,7 +6,6 @@ import com.github.pagehelper.PageInfo;
 import com.ldz.biz.mapper.BizJlCzMapper;
 import com.ldz.biz.mapper.BizLcWxjlMapper;
 import com.ldz.biz.model.BizJlCz;
-import com.ldz.biz.model.BizLcFd;
 import com.ldz.biz.model.BizLcWxjl;
 import com.ldz.biz.service.BizLcWxjlService;
 import com.ldz.sys.base.BaseServiceImpl;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
-import javax.management.relation.RoleUnresolved;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -45,13 +43,21 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
     }
 
     @Override
+    public boolean fillQueryCondition(LimitedCondition condition) {
+        return true;
+    }
+
+    @Override
     public ApiResponse<String> saveEntity(BizLcWxjl entity) {
         SysYh user = getCurrentUser();
         RuntimeCheck.ifBlank(entity.getJlXm(), "教练姓名不能为空");
         RuntimeCheck.ifBlank(entity.getJlLxdh(), "教练联系电话不能为空");
-        List<BizLcWxjl> wxjls = findEq(BizLcWxjl.InnerColumn.jlLxdh, entity.getJlLxdh());
+        SimpleCondition condition = new SimpleCondition(BizLcWxjl.class);
+        condition.eq(BizLcWxjl.InnerColumn.jlLxdh, entity.getJlLxdh());
+        condition.startWith(BizLcWxjl.InnerColumn.jgdm, user.getJgdm());
+        List<BizLcWxjl> wxjls = findByCondition(condition);
         if (CollectionUtils.isNotEmpty(wxjls)) {
-            return ApiResponse.fail( wxjls.get(0).getJlJx() + "-" + wxjls.get(0).getJlXm() + "在系统中已存在该手机号码(" + entity.getJlLxdh() +  ") , 请勿重复绑定");
+            return ApiResponse.fail(wxjls.get(0).getJlJx() + "-" + wxjls.get(0).getJlXm() + "在系统中已存在该手机号码(" + entity.getJlLxdh() + ") , 请勿重复绑定");
         }
         entity.setId(genId());
         entity.setCjr(user.getZh() + "-" + user.getXm());
@@ -59,6 +65,7 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
         if (StringUtils.isBlank(entity.getJlJx())) {
             entity.setJlJx("无驾校");
         }
+        entity.setJgdm(user.getJgdm());
         save(entity);
         ApiResponse<String> res = new ApiResponse<>();
         res.setMessage("操作成功");
@@ -80,8 +87,8 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
     public ApiResponse<String> bindCardNo(String id) {
         BizLcWxjl wxjl = findById(id);
         RuntimeCheck.ifTrue(StringUtils.isNotBlank(wxjl.getCardNo()), "教练员已经绑定卡号, 请勿重复操作");
-        String maxNo = baseMapper.getMaxNo();
-        String cardNo = genCardNo(Integer.parseInt(maxNo.replaceAll("VIP","")));
+        String maxNo = baseMapper.getMaxNo(wxjl.getJgdm());
+        String cardNo = genCardNo(Integer.parseInt(maxNo.replaceAll("VIP", "")));
         List<BizLcWxjl> eq = findEq(BizLcWxjl.InnerColumn.cardNo, cardNo);
         while (CollectionUtils.isNotEmpty(eq)) {
             int anInt = Integer.parseInt(cardNo.replaceAll("VIP","")) + 1;
@@ -137,6 +144,7 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
             condition.in(BizJlCz.InnerColumn.type, Arrays.asList("10","20"));
         }
         condition.eq(BizJlCz.InnerColumn.jlId, id);
+        condition.startWith(BizJlCz.InnerColumn.jgdm, getJgdm());
         PageInfo<BizJlCz> info = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(() -> czMapper.selectByExample(condition));
         if (CollectionUtils.isNotEmpty(info.getList())) {
             Set<String> set = info.getList().stream().map(BizJlCz::getJlId).collect(Collectors.toSet());
@@ -159,6 +167,7 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
         SimpleCondition condition = new SimpleCondition(BizJlCz.class);
         condition.startWith(BizJlCz.InnerColumn.pjbh, time);
         condition.setOrderByClause(" pjbh desc ");
+        condition.startWith(BizJlCz.InnerColumn.jgdm, getJgdm());
         List<BizJlCz> czs = czMapper.selectByExample(condition);
         if (CollectionUtils.isEmpty(czs)) {
             return ApiResponse.success(time + "-0001");
@@ -188,13 +197,16 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
 
     @Override
     public ApiResponse<String> updateEntity(BizLcWxjl entity) {
-        List<BizLcWxjl> wxjls = findEq(BizLcWxjl.InnerColumn.jlLxdh, entity.getJlLxdh());
+        SimpleCondition condition = new SimpleCondition(BizLcWxjl.class);
+        condition.eq(BizLcWxjl.InnerColumn.jlLxdh, entity.getJlLxdh());
+        condition.startWith(BizLcWxjl.InnerColumn.jgdm, getJgdm());
+        List<BizLcWxjl> wxjls = findByCondition(condition);
         if (CollectionUtils.isNotEmpty(wxjls)) {
             BizLcWxjl lcWxjl = wxjls.get(0);
             RuntimeCheck.ifTrue(!StringUtils.equals(lcWxjl.getId(), entity.getId()), "手机号码已绑定" + lcWxjl.getJlJx() + "-" + lcWxjl.getJlXm());
         }
         BizLcWxjl wxjl = findById(entity.getId());
-        if(!StringUtils.equals(wxjl.getJlLx(), entity.getJlLx())){
+        if (!StringUtils.equals(wxjl.getJlLx(), entity.getJlLx())) {
             baseMapper.updateAllJl(entity.getId(), entity.getJlLx());
         }
         update(entity);
