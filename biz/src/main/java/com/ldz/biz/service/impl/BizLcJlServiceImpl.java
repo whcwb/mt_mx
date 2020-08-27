@@ -2239,9 +2239,18 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         titleMap.put(4, "学员证件号码");
         titleMap.put(5, "学员联系方式");
         titleMap.put(6, "培训车型");
+        titleMap.put(7, "套餐");
         data.add(titleMap);
         List<BizLcJl> list = info.getList();
         if (CollectionUtils.isNotEmpty(list)) {
+            Set<String> zddms = list.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
+            SimpleCondition djcondition = new SimpleCondition(SysZdxm.class);
+            djcondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+            djcondition.in(SysZdxm.InnerColumn.zddm, zddms);
+            List<SysZdxm> items = zdxmService.findByCondition(djcondition);
+            // 根据套餐代码分组
+            Map<String, SysZdxm> zdmap = items.stream().collect(Collectors.toMap(SysZdxm::getZddm, p -> p));
+
             int xh = 0;
             Map<String, List<BizLcJl>> map = list.stream().collect(Collectors.groupingBy(BizLcJl::getJlId));
             for (Map.Entry<String, List<BizLcJl>> entry : map.entrySet()) {
@@ -2274,6 +2283,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                             dataMap.put(5, "");
                         }
                         dataMap.put(6, split[i1].split("-")[1]);
+                        SysZdxm zdxm = zdmap.get(jl.getZddm());
+                        dataMap.put(7, zdxm.getBy9() + "-" + zdxm.getBy3() + "元");
                         data.add(dataMap);
                         i++;
                     }

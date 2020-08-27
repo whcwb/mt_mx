@@ -345,7 +345,7 @@
     <Modal
       v-model="mx"
       :closable="false"
-      width="1000"
+      width="1200"
       :mask-closable="false">
       <div slot="header">
         <div class="box_row">
@@ -371,32 +371,32 @@
 </template>
 
 <script>
-  import carCard from '../comp/carCard'
-  import jlwh from '../comp/jlWh'
-  import addjl from '../comp/addJL'
-  import carStatistics from '../statistics/carStatistics'
-  import keyypd from '../comp/keyypd'
-  import print from './comp/print'
-  import radioCar from '../comp/RadioCar'
-  //还车
-  import giveCar from '../comp/readCard'
-  import {mapMutations} from 'vuex'
-  import moment from 'moment'
-  import Cookies from 'js-cookie'
-  import printNew from '../../../components/printNew'
-  import mixin from '@/mixins'
+import carCard from '../comp/carCard'
+import jlwh from '../comp/jlWh'
+import addjl from '../comp/addJL'
+import carStatistics from '../statistics/carStatistics'
+import keyypd from '../comp/keyypd'
+import print from './comp/print'
+import radioCar from '../comp/RadioCar'
+//还车
+import giveCar from '../comp/readCard'
+import {mapMutations} from 'vuex'
+import moment from 'moment'
+import Cookies from 'js-cookie'
+import printNew from '../../../components/printNew'
+import mixin from '@/mixins'
 
-  export default {
-    name: "index",
-    mixins:[mixin],
-    components: {
-      carCard, jlwh, addjl,
-      print, radioCar, carStatistics, printNew,
-      keyypd,
-    },
-    data() {
-      return {
-        Pmess: {
+export default {
+  name: "index",
+  mixins: [mixin],
+  components: {
+    carCard, jlwh, addjl,
+    print, radioCar, carStatistics, printNew,
+    keyypd,
+  },
+  data() {
+    return {
+      Pmess: {
           cartype: ''
         },
         AMess: [
@@ -617,15 +617,21 @@
                 return row.xyCx == 'A2'
               }else if(value === 7){
                 return row.xyCx == 'A3'
-              }else if(value === 8){
+              } else if (value === 8) {
                 return row.xyCx == 'B1'
-              }else if(value === 9){
+              } else if (value === 9) {
                 return row.xyCx == 'B2'
-              }else if(value === 10){
+              } else if (value === 10) {
                 return row.xyCx == 'B3'
               }
             }
           },
+          {
+            title: '套餐',
+            align: 'center',
+            minWidth: 90,
+            key: 'tc'
+          }
         ],
         compName: '',
         componentName: '',
@@ -1243,6 +1249,7 @@
             obj.xyCx = xmArr[i].split('-')[1]
             obj.xyZjhm = zjhmArr[i]
             obj.xyDh = dhArr[i]
+            obj.tc = val.zdxm.by9 + "-" + val.zdxm.by3 + "元"
 
             this.mxList.push(obj)
           }
