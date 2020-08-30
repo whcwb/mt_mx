@@ -59,31 +59,32 @@
 </template>
 
 <script>
-  import mixins from '@/mixins'
-  import ukey from './comp/ukey.vue'
-  import newmess from './comp/newmes.vue'
-  import changemes from './comp/changmes.vue'
+import mixins from '@/mixins'
+import ukey from './comp/ukey.vue'
+import newmess from './comp/newmes.vue'
+import changemes from './comp/changmes.vue'
 
-  export default {
-    name: 'char',
-    components: {
-      ukey,
-      newmess,
-      changemes
-    },
-    mixins: [mixins],
-    data() {
-      return {
-        //tab高度
-        tabHeight: 220,
-        //动态组建
-        compName: '',
-        //动态组建数据
-        usermes: {},
-        userMesType: true,
-        //分页
-        //---数据总数
-        pageTotal: 2,
+export default {
+  name: 'char',
+  components: {
+    ukey,
+    newmess,
+    changemes
+  },
+  mixins: [mixins],
+  data() {
+    return {
+      JGList: {},
+      //tab高度
+      tabHeight: 220,
+      //动态组建
+      compName: '',
+      //动态组建数据
+      usermes: {},
+      userMesType: true,
+      //分页
+      //---数据总数
+      pageTotal: 2,
         tableTiT: [{
           title: "序号",
           width: 80,
@@ -130,7 +131,8 @@
             key: 'lx',
             render: (h, p) => {
               let val = this.dictUtil.getValByCode(this, this.yhlxDictCode, p.row.lx)
-              return h('div', val)
+              let key = this.JGList.get(p.row.jgdm)
+              return h('div', key + '/' + val)
             }
           },
           {
@@ -220,25 +222,34 @@
             }
           }
         ],
-        tableData: [],
-        //收索
-        param: {
-          sjhLike: '',
-          xmLike: '',
-          timers:'',
-          pageNum: 1,
-          pageSize: 8
-        },
-        yhlxDict: [],
-        yhlxDictCode: 'ZDCLK0003'
-      }
+      tableData: [],
+      //收索
+      param: {
+        sjhLike: '',
+        xmLike: '',
+        timers: '',
+        pageNum: 1,
+        pageSize: 8
+      },
+      yhlxDict: [],
+      yhlxDictCode: 'ZDCLK0003',
+    }
     },
     watch: {},
     created() {
+      this.getJgs();
       this.getmess()
       this.getDict()
     },
     methods: {
+      getJgs() {
+        this.JGList = new Map()
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          for (let val of res.result) {
+            this.JGList.set(val.jgdm, val.jgmc)
+          }
+        })
+      },
       getDict() {
         this.yhlxDict = this.dictUtil.getByCode(this, this.yhlxDictCode);
         console.log(this.yhlxDict);

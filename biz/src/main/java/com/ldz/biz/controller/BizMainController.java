@@ -3,10 +3,10 @@ package com.ldz.biz.controller;
 import com.github.pagehelper.Page;
 import com.google.common.collect.Maps;
 import com.ldz.biz.constant.Status;
-import com.ldz.biz.model.BizLcJl;
 import com.ldz.biz.model.StudentAllModel;
 import com.ldz.biz.model.TraineeInformation;
 import com.ldz.biz.service.BizLcJlService;
+import com.ldz.biz.service.BizLcWxjlService;
 import com.ldz.biz.service.DataStaService;
 import com.ldz.biz.service.TraineeInformationService;
 import com.ldz.sys.mapper.SysZdxmMapper;
@@ -19,7 +19,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -68,6 +67,9 @@ public class BizMainController {
 
     @Autowired
     private JgService jgService;
+
+    @Autowired
+    private BizLcWxjlService wxjlService;
 
     @GetMapping("/saveJx")
     public ApiResponse<String> saveJx() throws IOException {
@@ -674,48 +676,5 @@ public class BizMainController {
         OutputStream out = response.getOutputStream();
         ExcelUtil.createSheet(out, "今日招生", dataList);
     }
-
-    @GetMapping("/exportXymx")
-    public void exportXymx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        jlService.exportXymx(page, request, response);
-    }
-
-    @GetMapping("/updateZdxmTc")
-    public ApiResponse<String> updateZdxmTc() {
-        SimpleCondition condition = new SimpleCondition(SysZdxm.class);
-        condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-        condition.startWith(SysZdxm.InnerColumn.zddm, "K2");
-        List<SysZdxm> zdxms = zdxmMapper.selectByExample(condition);
-        for (SysZdxm zdxm : zdxms) {
-            SysZdxm z = new SysZdxm();
-            BeanUtils.copyProperties(zdxm, z);
-            z.setZdId(idWorker.nextId() + "");
-            z.setJgdm("100001001001");
-            zdxmMapper.insert(z);
-        }
-
-        for (SysZdxm zdxm : zdxms) {
-            SysZdxm z = new SysZdxm();
-            BeanUtils.copyProperties(zdxm, z);
-            z.setZdId(idWorker.nextId() + "");
-            z.setJgdm("100001001003");
-            zdxmMapper.insert(z);
-        }
-
-        condition = new SimpleCondition(SysZdxm.class);
-        condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
-        condition.startWith(SysZdxm.InnerColumn.zddm, "K3");
-        zdxms = zdxmMapper.selectByExample(condition);
-
-        for (SysZdxm zdxm : zdxms) {
-            SysZdxm z = new SysZdxm();
-            BeanUtils.copyProperties(zdxm, z);
-            z.setZdId(idWorker.nextId() + "");
-            z.setJgdm("100001001002");
-            zdxmMapper.insert(z);
-        }
-        return ApiResponse.success();
-    }
-
 
 }

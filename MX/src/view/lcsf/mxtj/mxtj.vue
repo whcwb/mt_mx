@@ -5,8 +5,8 @@
       style="cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
       @click="toPrint">收款凭证</span>
       <div style="margin-left: 70%">
-        <Select v-model="param.jgdmLike" @on-change="v.util.initTable(v)">
-          <Option v-for="item in JGList" :value="item.val">{{item.label}}</Option>
+        <Select v-if="JGList.length > 1" v-model="param.jgdmLike" @on-change="v.util.initTable(v)">
+          <Option v-for="item in JGList" :value="item.val">{{ item.label }}</Option>
         </Select>
       </div>
       <search-bar :parent="v" :showSearchButton="true" :showDownLoadButton="true" :show-create-button="false"
@@ -26,25 +26,25 @@
 </template>
 
 <script>
-  // import formData from './formModal.vue'
-  import Cookies from 'js-cookie'
-  import print from './print'
-  import mixin from '@/mixins'
-  //驾校统计
-  import jxtj from '../jxtj'
-  import printSignUp from './comp/printSignUp'
+// import formData from './formModal.vue'
+import Cookies from 'js-cookie'
+import print from './print'
+import mixin from '@/mixins'
+//驾校统计
+import jxtj from '../jxtj'
+import printSignUp from './comp/printSignUp'
 
-  export default {
-    name: 'char',
-    components: {print, jxtj,printSignUp},
-    mixins:[mixin],
-    data() {
-      return {
-        v: this,
-        addmoney: 0,
-        apiRoot: this.apis.lcjl,
-        choosedItem: null,
-        componentName: '',
+export default {
+  name: 'char',
+  components: {print, jxtj, printSignUp},
+  mixins: [mixin],
+  data() {
+    return {
+      v: this,
+      addmoney: 0,
+      apiRoot: this.apis.lcjl,
+      choosedItem: null,
+      componentName: '',
         hisPrintMess: {},
         JGList: [{val: '100', label: '所有考场'}],
         searchBarButtons: [],

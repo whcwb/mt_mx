@@ -333,10 +333,25 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         service.pagerExcelAll(page, request, response);
     }
 
+    /**
+     * 新增练车套餐
+     *
+     * @param zdxm
+     * @return
+     */
     @PostMapping("/saveTc")
     public ApiResponse<String> saveTc(SysZdxm zdxm) {
         return service.saveTc(zdxm);
     }
 
+    @GetMapping("/removetc/{id}")
+    public ApiResponse<String> removeTc(@PathVariable("id") String id) {
+        return service.removeTc(id);
+    }
+
+    @GetMapping("/exportXymx")
+    public void exportXymx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        service.exportXymx(page, request, response);
+    }
 
 }

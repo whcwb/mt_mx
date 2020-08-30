@@ -1,24 +1,24 @@
 <template>
   <div class="boxbackborder box_col">
     <!--<pager-tit title="安全员签到"></pager-tit>-->
-    <Menu mode="horizontal" active-name="1" style="margin-bottom: 8px">
-      <MenuItem name="1">
-        <div style="font-weight: 700;font-size: 16px">
-          安全员签到
-        </div>
-      </MenuItem>
+    <Menu mode="horizontal" theme="light" :active-name="activeName" ref="activeName"
+          style="font-size: 48px;font-weight: bold;margin-bottom: 8px" @on-select="selectKc">
+      <Menu-item v-for="item in JGList1" :value="item.jgdm" :name="item.jgdm">
+        {{ item.jgmc }}
+      </Menu-item>
     </Menu>
     <div style="text-align: right">
       <span
-        style="cursor: pointer;width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
-        @click="param.aqyQdzt='',getData()">总计{{total}}人</span>
+          style="cursor: pointer;width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
+          @click="param.aqyQdzt='',getData()">总计{{ total }}人</span>
       <span
-        style="cursor: pointer;width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
-        @click="param.aqyQdzt='10',getData()">已签到{{yqdNum}}人</span>
+          style="cursor: pointer;width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
+          @click="param.aqyQdzt='10',getData()">已签到{{ yqdNum }}人</span>
       <span
-        style="cursor: pointer;width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
+          style="cursor: pointer;width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
         @click="param.aqyQdzt='00',getData()">未签到{{wqdNum}}人</span>
-      <Button style="margin-left: 10px;" type="primary" @click="modalTitle='新增安全员',showModal=true">
+      <Button style="margin-left: 10px;" type="primary"
+              @click="() => {this.AQY.jgdm=this.activeName; this.modalTitle='新增安全员';this.showModal=true}">
         <Icon type="md-add"></Icon>
       </Button>
       <Button type="primary" @click="param.aqyQdzt='',getData()" style="margin-left: 10px">
@@ -70,6 +70,7 @@
           <Row style="display: flex;justify-content: space-between">
             <Col span="10">
               <FormItem label="所属考场">
+                <!--                <Input v-model="AQY.jgdm"></Input>-->
                 <Select v-model="AQY.jgdm">
                   <Option v-for="item in JGList" :value="item.val">{{item.label}}</Option>
                 </Select>
@@ -97,6 +98,7 @@
       return {
         v: this,
         zjcx: [],
+        activeName: '',
         apiRoot: this.apis.zgjbxx,
         choosedItem: null,
         componentName: '',
@@ -173,6 +175,7 @@
           pageSize: 9999,
           notShowLoading: 'true',
           aqyQdzt: '',
+          jgdmLike: ''
         },
         yqdNum: 0,
         wqdNum: 0,
@@ -180,17 +183,34 @@
         showModal: false,
         AQY: {},
         modalTitle: '',
-        JGList: []
+        JGList: [],
+        JGList1: []
       }
     },
     created() {
+      this.getJgs();
       this.getJgsByOrgCode();
       this.util.initTable(this);
     },
     methods: {
+      selectKc(val) {
+        this.param.jgdmLike = val
+        this.activeName = val
+        this.getData()
+      },
+      getJgs() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          this.JGList1 = res.result;
+          this.param.jgdmLike = this.JGList1[0].jgdm
+          this.getData()
+          this.activeName = this.JGList1[0].jgdm
+          this.$nextTick(() => {
+            this.$refs.activeName.updateActiveName();
+          })
+        })
+      },
       changeCx(val) {
         this.AQY.zjcx = val.join(',')
-        console.log('zjcx', this.AQY.zjcx)
       },
       getJgsByOrgCode() {
         this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {

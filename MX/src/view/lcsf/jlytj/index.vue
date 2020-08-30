@@ -105,7 +105,7 @@ export default {
           },
           {title: '教练员', key: 'jlXm'},
           {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
-          {title: '应收', key: 'zje'},
+          {title: '应收', key: 'clBh'},
           {
             title: '实收', minWidth: 90, defaul: '0',
             render: (h, p) => {
@@ -182,7 +182,7 @@ export default {
         this.zsc = 0;
         this.addmoney = 0
         for (let r of list) {
-          this.zjes += r.zje;
+          this.zjes += parseInt(r.clBh);
           this.zsc += r.sc;
           r.sc = this.parseTime(r.sc)
           this.addmoney += r.zj;

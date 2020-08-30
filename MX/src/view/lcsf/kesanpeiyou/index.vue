@@ -1,43 +1,19 @@
 <template>
   <div class="box_col">
     <!--<pager-tit title="开放日训练" style="float: left"></pager-tit>-->
-    <Menu mode="horizontal" active-name="1" style="margin-bottom: 8px">
-      <MenuItem name="1">
-        <div style="font-weight: 700;font-size: 16px">
-          科目三培优
-        </div>
-      </MenuItem>
+    <Menu mode="horizontal" theme="light" :active-name="activeName" ref="activeName"
+          style="font-size: 48px;font-weight: bold;margin-bottom: 8px" @on-select="selectKc">
+      <Menu-item v-for="item in JGList" :value="item.jgdm" :name="item.jgdm">
+        {{ item.jgmc }}
+      </Menu-item>
     </Menu>
     <Row style="" type="flex" align="bottom">
-      <!--      <Col span="4">-->
-      <!--        &lt;!&ndash;<div style="float: left;margin-top: 8px;cursor: pointer">&ndash;&gt;-->
-      <!--        &lt;!&ndash;<span style="width: 100px;height: 80px;background-color: #ff9900;color:white;padding:6px;border-radius: 4px;margin-left: 16px;" @click="formData.clZt = '',getCarList()">共{{carList.length}}台</span>&ndash;&gt;-->
-      <!--        &lt;!&ndash;<span style="width: 100px;height: 80px;cursor: pointer;background-color: red;color:white;padding:6px;border-radius: 4px;margin-left: 16px;"&ndash;&gt;-->
-      <!--        &lt;!&ndash;@click="formData.clZt = '01',getCarList()">&ndash;&gt;-->
-      <!--        &lt;!&ndash;在训{{zxNum}}台</span>&ndash;&gt;-->
-      <!--        &lt;!&ndash;<span style="width: 100px;height: 80px;background-color: #66CD00;color:white;padding:6px;border-radius: 4px;margin-left: 16px;cursor: pointer;"&ndash;&gt;-->
-      <!--        &lt;!&ndash;@click="formData.clZt = '00',getCarList()"&ndash;&gt;-->
-      <!--        &lt;!&ndash;&gt;空闲{{xxNum}}台</span>&ndash;&gt;-->
-      <!--        &lt;!&ndash;</div>&ndash;&gt;-->
-      <!--      </Col>-->
-      <!--      <Col span="8">-->
-      <!--        <div class="box_row">-->
-      <!--          &lt;!&ndash;          <div  style="font-size: 24px;color: #e91b10;line-height: 45px;">&ndash;&gt;-->
-      <!--          &lt;!&ndash;            累计：{{total}} 元&ndash;&gt;-->
-      <!--          &lt;!&ndash;          </div>&ndash;&gt;-->
-      <!--          &lt;!&ndash;          <div @click="compName='keyypd'" style="font-size: 24px;color: #2baee9;line-height: 45px;margin: 0 6px"> 当前排队中</div>&ndash;&gt;-->
-      <!--          &lt;!&ndash;          <div style="margin: 0 6px">&ndash;&gt;-->
-      <!--          &lt;!&ndash;            <Button style="font-size: 20px;font-weight: 600" @click="componentName='keyypd'" type="error">{{yyrs}}</Button>&ndash;&gt;-->
-      <!--          &lt;!&ndash;          </div>&ndash;&gt;-->
-
-      <!--        </div>-->
-      <!--      </Col>-->
       <Col span="24">
         <Row type="flex" style="justify-content: space-between;align-items: center" :gutter="8">
           <Col span="2" align="center">
             <span
-              style="cursor: pointer;width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
-              @click="mxShow">培优明细</span>
+                style="cursor: pointer;width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
+                @click="mxShow">培优明细</span>
           </Col>
 
           <Col span="19" style="display: flex;justify-content: flex-end">
@@ -80,30 +56,6 @@
     <div>
       <Row>
         <table-area :pager="false" :TabHeight="AF.getPageHeight()-230" :parent="v"></table-area>
-
-
-        <!--          <Row style="padding: 5px 10px">-->
-        <!--            <Button class="rbutton" size="large" type="Default" long @click="faCar('kk')">开卡训练</Button>-->
-        <!--          </Row>-->
-        <!--          <Row style="padding: 5px 10px">-->
-        <!--            <Button class="rbutton" size="large" type="Default" long @click="faCar('py')">培优训练</Button>-->
-        <!--          </Row>-->
-        <!--          <Row style="padding: 5px 10px">-->
-        <!--            <Button class="rbutton" size="large" type="Default" long @click="faCar('kf')">开放训练</Button>-->
-        <!--          </Row>-->
-        <!--          <Row style="padding: 5px 10px">-->
-        <!--            <Button class="rbutton" size="large" long type="Default"-->
-        <!--                    @click="giveCar.overCar(v,'2'),printClose=true">-->
-        <!--              结束训练-->
-        <!--            </Button>-->
-        <!--          </Row>-->
-        <!--<Row style="padding: 5px 10px">-->
-        <!--<Button class="rbutton" size="large" type="Default" long @click="yyClick">预约</Button>-->
-        <!--</Row>-->
-        <!--<Row style="padding: 5px 10px">-->
-        <!--<Button class="rbutton" size="large" type="Default" long @click="componentName='keyypd'">预约排队:{{yyrs}}</Button>-->
-        <!--</Row>-->
-
       </Row>
 
       <Row style="display: flex;align-items: center;height: 36px">
@@ -124,13 +76,6 @@
       </Row>
 
     </div>
-    <!--<div class="box_col_auto" style="background-color: #f2f2f2">-->
-    <!--<div class="box_row_list">-->
-    <!--<div v-for="(it,index) in carList">-->
-    <!--<car-card :carMess="it" @carClick="carClick" @print="print" @his="his(it),printClose=false"></car-card>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
     <Modal
       title="分配车辆"
       v-model="DrawerVal"
@@ -177,11 +122,6 @@
               <Col>
                 <div style="float: left">
                   <FormItem label="选择车型" label-position="top">
-                    <!--<Select v-model="formData.jlCx" @on-change="cxChange" style="width:70px">-->
-                    <!--<Option v-for="(it,index) in cxlist" :value="it.key" :key="it.key">-->
-                    <!--{{it.key}}-->
-                    <!--</Option>-->
-                    <!--</Select>-->
                     <Select v-model="cx" @on-change="cxChange" style="width:70px">
                       <Option v-for="(it,index) in ['C','A','B']" :value="it" :key="it">
                         {{it}}
@@ -250,36 +190,6 @@
             </p>
           </Card>
         </Row>
-        <!--        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2PY'">-->
-        <!--          <Col span="8">-->
-        <!--            <FormItem label="安全员" label-position="top">-->
-        <!--              <Input v-model="formData.zgXm"/>-->
-        <!--            </FormItem>-->
-        <!--          </Col>-->
-        <!--        </Row>-->
-
-        <!--        <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2PY'">-->
-        <!--          <Col span="8">-->
-        <!--            <FormItem label="学员姓名" label-position="top">-->
-        <!--              <Input v-model="formData.xyXm"/>-->
-        <!--            </FormItem>-->
-        <!--          </Col>-->
-        <!--          <Col span="8">-->
-        <!--            <FormItem label="学员电话" label-position="top">-->
-        <!--              <Input v-model="formData.xyDh"/>-->
-        <!--            </FormItem>-->
-        <!--          </Col>-->
-        <!--          <Col span="8">-->
-        <!--            <FormItem label="学员身份证号码" label-position="top">-->
-        <!--              <Input v-model="formData.xyZjhm"/>-->
-        <!--            </FormItem>-->
-        <!--          </Col>-->
-        <!--        </Row>-->
-        <!--<radio-car v-if="carMess == null"-->
-        <!--clKm="2"-->
-        <!--@getCarItemMess="getCarItemMess"-->
-        <!--&gt;</radio-car>-->
-
         <component :is="compName" :jxmc="jlJx"
                    @SaveOk="addjlSaveOk"
                    @colse="clearYY"
@@ -303,10 +213,6 @@
 
       </div>
     </Modal>
-    <!--    <yyModel ref="yyModel"-->
-    <!--             @close="close"-->
-    <!--             @getCarList='getCarList'-->
-    <!--    ></yyModel>-->
     <component :is="componentName" :printClose="printClose" :hisPrintMess="hisPrintMess"
                @SaveOk="addjlSaveOk"
                @colse="clearYY"
@@ -343,10 +249,10 @@
 
 
     <Modal
-      v-model="mx"
-      :closable="false"
-      width="1000"
-      :mask-closable="false">
+        v-model="mx"
+        :closable="false"
+        width="1200"
+        :mask-closable="false">
       <div slot="header">
         <div class="box_row">
           <div style="font-size: 16px;margin-right: 28px;width: 100%;margin-top: 7px;display: flex;justify-content: space-between">
@@ -371,41 +277,43 @@
 </template>
 
 <script>
-  import carCard from '../comp/carCard'
-  import jlwh from '../comp/jlWh'
-  import addjl from '../comp/addJL'
-  import carStatistics from '../statistics/carStatistics'
-  import keyypd from '../comp/keyypd'
-  import print from './comp/print'
-  import radioCar from '../comp/RadioCar'
-  //还车
-  import giveCar from '../comp/readCard'
-  import {mapMutations} from 'vuex'
-  import moment from 'moment'
-  import Cookies from 'js-cookie'
-  import printNew from '../../../components/printNew'
-  import mixin from '@/mixins'
+import carCard from '../comp/carCard'
+import jlwh from '../comp/jlWh'
+import addjl from '../comp/addJL'
+import carStatistics from '../statistics/carStatistics'
+import keyypd from '../comp/keyypd'
+import print from './comp/print'
+import radioCar from '../comp/RadioCar'
+//还车
+import giveCar from '../comp/readCard'
+import {mapMutations} from 'vuex'
+import moment from 'moment'
+import Cookies from 'js-cookie'
+import printNew from '../../../components/printNew'
+import mixin from '@/mixins'
 
-  export default {
-    name: "index",
-    mixins:[mixin],
-    components: {
-      carCard, jlwh, addjl,
-      print, radioCar, carStatistics, printNew,
-      keyypd,
-    },
-    data() {
-      return {
-        Pmess: {
-          cartype: ''
-        },
-        AMess: [
-          {cartype: ''}
-        ],
-        hj: 0,
-        rs: 0,
-        mxlx: '',
-        switch1: true,
+export default {
+  name: "index",
+  mixins: [mixin],
+  components: {
+    carCard, jlwh, addjl,
+    print, radioCar, carStatistics, printNew,
+    keyypd,
+  },
+  data() {
+    return {
+      activeName: '',
+      JGList: [],
+      Pmess: {
+        cartype: ''
+      },
+      AMess: [
+        {cartype: ''}
+      ],
+      hj: 0,
+      rs: 0,
+      mxlx: '',
+      switch1: true,
         total: 0,
         ifFinish: false,
         giveCar: giveCar,
@@ -419,14 +327,6 @@
         tableColumns: [
           {
             title: '序号', align: 'center', minWidth: 80,
-            // render: (h, params) => {
-            //   return h('div', params.index + 1)
-            // return h('Tag', {
-            //   props: {
-            //     type: 'volcano',
-            //   }
-            // }, params.index + 1)
-            // }
             render: (h, p) => {
               return h('div', p.index + 1)
             },
@@ -446,20 +346,6 @@
               return h('div', p.row.xySl + '人')
             },
           },
-          // // {
-          //     title: '车辆类型', key: 'jlCx', minWidth: 90, render: (h, p) => {
-          //         return h('Button', {
-          //             props: {
-          //                 type: 'error',
-          //                 size: 'small'
-          //             },
-          //             style: {
-          //                 borderRadius: '15px'
-          //             }
-          //         }, p.row.jlCx)
-          //     }
-          // },
-          // {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
           {
             title: '练车费用', align: 'center', minWidth: 90, defaul: '0',
             render: (h, p) => {
@@ -469,19 +355,6 @@
           {title: '创建时间', align: 'center', key: 'kssj', searchType: 'daterange', minWidth: 140},
           {title: '安全员', align: 'center', key: 'zgXm', minWidth: 80},
           {title: '备注', align: 'center', key: 'bz', minWidth: 100},
-          // {
-          //     title: '状态', minWidth: 120, render: (h, p) => {
-          //         let s = '';
-          //         if (!p.row.kssj || p.row.kssj === '') {
-          //             s = '预约中'
-          //         } else if ((p.row.kssj && p.row.kssj.length > 0) && (!p.row.jssj || p.row.jssj == '')) {
-          //             s = '训练中'
-          //         } else {
-          //             s = '已结束'
-          //         }
-          //         return h('div', s);
-          //     }
-          // },
           {
             title: '操作', fixed: 'right', width: 80, render: (h, p) => {
               let buttons = [];
@@ -617,15 +490,21 @@
                 return row.xyCx == 'A2'
               }else if(value === 7){
                 return row.xyCx == 'A3'
-              }else if(value === 8){
+              } else if (value === 8) {
                 return row.xyCx == 'B1'
-              }else if(value === 9){
+              } else if (value === 9) {
                 return row.xyCx == 'B2'
-              }else if(value === 10){
+              } else if (value === 10) {
                 return row.xyCx == 'B3'
               }
             }
           },
+          {
+            title: '套餐',
+            align: 'center',
+            minWidth: 90,
+            key: 'tc'
+          }
         ],
         compName: '',
         componentName: '',
@@ -668,13 +547,13 @@
         param: {
           notShowLoading: 'true',
           orderBy: 'kssj desc',
-          // kssjIsNotNull: '1',
           total: 0,
           lcKm: 3,
           lcLxIn: '20,30',
           cjsjInRange: '',
           zhLike: '',
-          jlCxIn: "A1,A2,A3,B1,B2,A,B,C1,C2,C"
+          jlCxIn: "A1,A2,A3,B1,B2,A,B,C1,C2,C",
+          jgdmLike: ''
         },
         pageData: [],
         specialPageSize: 99999999,
@@ -683,10 +562,6 @@
         },
         showCAR: false,
         carMess: null,
-        /*IntervalKE: setInterval(() => {
-          // this.Ch_LcTime()
-          // this.jump()
-        }, 60000),*/
         fylist: [],
         fy: [],
         cxlist: [],
@@ -695,27 +570,19 @@
     },
     directives: {
       focus: function (el,is) {
-        // console.log('sssss',is)
         if(is.value) el.focus();
       }
     },
     watch: {
-      // 'formData.xySl': function (val, oldVal) {//普通的watch监听
-      //   this.formData.lcFy = val * 300
-      // },
       DrawerVal: function (n, o) {
         var v = this
         if (n == false) {
           this.compName = ''
           this.formData = {}
           this.formData.xySl = ''
-          // this.formData.jlCx = 'C1'
           this.formData.jlJx = ''
         } else {
           this.cx = 'C'
-          // if (this.formData.lcClId == '') {
-          //   this.showCAR = true
-          // }
         }
       },
       switch1: function (val) {
@@ -732,55 +599,56 @@
     created() {
       this.dateRange.cjsj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
       this.param.cjsjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
-      this.util.initTable(this);
+      this.getJgs();
+      // this.util.initTable(this);
       this.getCoachList()
       this.getCarList();
       this.getSafemanList()
       this.cxlist = this.dictUtil.getByCode(this, 'ZDCLK0040');
-      // setTimeout(() => {
-      //   this.jump()
-      // }, 1000)
-      // this.getYYdj()
       this.getzdlist()
-      // this.pr()
       this.zy()
     },
     beforeDestroy() {
       clearInterval(this.IntervalKE)
     },
     methods: {
-      zy(){
+      selectKc(val) {
+        this.param.jgdmLike = val
+        this.activeName = val
+        this.getData()
+      },
+      getJgs() {
+        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+          this.JGList = res.result;
+          this.param.jgdmLike = this.JGList[0].jgdm
+          this.getData()
+          this.activeName = this.JGList[0].jgdm
+          this.$nextTick(() => {
+            this.$refs.activeName.updateActiveName();
+          })
+        })
+      },
+      getData() {
+        this.util.initTable(this);
+      },
+      zy() {
         var _this = this;
-        // console.log(_this.focusList);
         document.onkeydown = function (e) {
           let key = window.event.keyCode;
           if (key == 39) {
             console.log(_this.AMess, "amess")
-            // console.log("点击了右键");
-            // console.log(_this.$refs['input3']);
-            // // _this.$nextTick(() => {
-            //   _this.$refs['input3'][0].focus()
-            // // })
-
-            // console.log(_this.focusList.length);
-            for (let a = 0; a < 9; a++) {  //从左往右，所以下一个input框是a+1
-              // console.log(a, "A")
-              // console.log(_this.focusList[a]);
-              // console.log(_this.$refs['input' + (a + 1)]);
+            for (let a = 0; a < 30; a++) {  //从左往右，所以下一个input框是a+1
               if (_this.focusList[a] && _this.$refs['input' + (a + 1)]) {
-                // console.log('input' + (a + 1));
                 _this.focusList[a] = false
                 _this.focusList[a + 1] = true;
-                _this.$nextTick(()=>{
+                _this.$nextTick(() => {
                   _this.$refs['input' + (a + 1)][0].focus()
                 })
-                // console.log(_this.focusList,"end");
                 return;
               }
             }
           }
           if(key == 37){
-            // console.log("点击了左键");
             for (let a = 0; a < _this.focusList.length; a++) {   //从右向左，所以上一个input框是a-1
               if (_this.focusList[a] && _this.$refs['input' + (a - 1)]) {
                 _this.focusList[a] = false
@@ -792,19 +660,9 @@
               }
             }
           }
-          // if (key == 107){
-          //   console.log('++++++++')
-          //   _this.pushmess()
-          // }
-          // if (key == 109){
-          //   console.log('--------')
-          //   _this.remove(_this.AMess.length-1)
-          // }
         };
       },
       getInputFocus(index) {
-        // console.log(this.focusList.length , "--------")
-        // console.log(index, "index")
         for (let a = 0; a < this.focusList.length; a++) {
           if (index == a) {
             this.focusList[a] = true
@@ -819,18 +677,8 @@
 
       },
       pushmess() {
-        // if (this.cx == 'C'){
-        //   this.Pmess.cartype = 'C1'
-        // }
-        // if (this.cx == 'B'){
-        //   this.Pmess.cartype = 'B2'
-        // }
-        // if (this.cx == 'A'){
-        //   this.Pmess.cartype = 'A1'
-        // }
         let a = JSON.parse(JSON.stringify(this.Pmess));
         this.AMess.push(a);
-        // let b = [false,false,false]
         this.focusList.push(false,false,false)
       },
       getWXXY(AMess) {
@@ -840,7 +688,6 @@
         let dxarr = [];
         let sfzarr = [];
         let a = true
-        // console.log(AMess, 'AMess');
         for (let i = 0; i < AMess.length; i++) {
           if (AMess[i].xyXm == undefined || AMess[i].xyXm == '' || AMess[i].xyXm == null) {
             this.swal({
@@ -854,8 +701,6 @@
             dxarr.push(AMess[i].xyDh)
             sfzarr.push(AMess[i].bz)
             if (i == arrAMess) {
-              // console.log(dxarr.join(','))
-              // console.log(messarr.join(','))
               this.formData.xyXm = messarr.join(',');
               this.formData.xyDh = dxarr.join(',');
               this.formData.xyZjhm = sfzarr.join(',');
@@ -864,10 +709,6 @@
 
         }
         return a
-        // AMess.forEach((item, index) => {
-        //     console.log(item.xyXm);
-        //
-        // })
       },
       scXY(e) {
         this.AMess = [{}];
@@ -908,10 +749,8 @@
           }
           let now = new Date();
           let duration = moment(moment(now) - moment(startTime));
-          // console.log(duration);
           if ((r.kssj && r.kssj.length > 0) && (!r.jssj || r.jssj == '') && (r.lcLx != '20' || r.lcLx != '30')) {
             let min = parseInt(duration / 60000);
-            // console.log(min);
             r.sc = duration.subtract(8, 'hour').format("HH时mm分钟");//this.parseTime(min);
             r.lcFy = Math.round(min * 500 / 60);
             r.showlcFy = r.lcFy + '元';
@@ -920,7 +759,6 @@
           if (!this.total) {
             this.total = 0;
           }
-          // console.log(r.lcFy);
         }
       },
       parseTime(s) {
@@ -1018,57 +856,8 @@
         this.formData.zddm = v
         console.log(v)
         console.log(this.formData.zddm);
-
-        // var ifCard = false;
-        // this.fylist.map((val, index, arr) => {
-        //   if (val.zddm === v) {
-        //     ifCard = val.by2 === '0' ? false : true
-        //   }
-        // })
-        //
-        // if (ifCard) {
-        //   if (!!window.ActiveXObject || "ActiveXObject" in window) {
-        //   } else {
-        //     this.swal({
-        //       title: '该套餐已启用刷卡模式，请使用IE10以上的浏览器',
-        //       type: 'warning',
-        //       confirmButtonText: '关闭'
-        //     })
-        //     return
-        //   }
-        // }
-
       },
       cxChange(a) {
-          // for (let i=0;i<this.AMess.length;i++){
-          //
-          //   if (this.cx == 'C'){
-          //     console.log('c')
-          //     this.AMess[i].cartype = 'C1'
-          //     console.log( this.AMess)
-          //     this.$nextTick()
-          //   }
-          //   if (this.cx == 'B'){
-          //     console.log('B')
-          //
-          //
-          //     this.AMess[i].cartype = 'B2'
-          //     console.log( this.AMess)
-          //     this.$nextTick()
-          //   }
-          //   if (this.cx == 'A'){
-          //     console.log('A')
-          //     this.AMess[i].cartype = 'A1'
-          //     console.log( this.AMess)
-          //     this.$nextTick()
-          //   }
-          // }
-        // this.fy = []
-        // this.fylist.map((val, index, arr) => {
-        //   if (val.by8.includes(this.formData.jlCx)) {
-        //     this.fy.push(val)
-        //   }
-        // })
       },
       faCar(name) {
         if (name === 'kk') {
@@ -1225,7 +1014,6 @@
         })
       },
       searchJlyaq(query) {
-        // console.log(query);
       },
       mxShow() {
         this.mx = true
@@ -1243,27 +1031,14 @@
             obj.xyCx = xmArr[i].split('-')[1]
             obj.xyZjhm = zjhmArr[i]
             obj.xyDh = dhArr[i]
-
+            obj.tc = val.zdxm.by9 + "-" + val.zdxm.by3 + "元"
             this.mxList.push(obj)
           }
 
 
         })
 
-        // console.log(this.mxList)
       },
-      // print(mess) {//还车
-      //   this.hisPrintMess = mess
-      //   // setTimeout(()=>{
-      //   //   this.$refs['backcar'].doPrint()
-      //   // },1000)
-      //   this.componentName = 'print'
-      // },
-      // printHc(mess) {
-      //   this.hisPrintMess = mess
-      //   this.componentName = 'print'
-      //   // console.log('dayin')
-      // },
       his(item) {//历史练车记录
         this.clId = item.id;
         this.componentName = 'carStatistics'
@@ -1345,15 +1120,20 @@
           }
         })
       },
-      download(){
-        window.open(this.apis.url + '/pub/exportXymx?'+`notShowLoading=${this.param.notShowLoading}&total=${this.param.total}&lcKm=${this.param.lcKm}&lcLxIn=${this.param.lcLxIn}&cjsjInRange=${this.param.cjsjInRange}&zhLike=${this.param.zhLike}&pageSize=${this.param.pageSize}&clBh=${this.param.clBh}`);
+      download() {
+        let p = '';
+        for (let k in this.param) {
+          p += '&' + k + '=' + this.param[k];
+        }
+        p = p.substr(1);
+        let accessToken = JSON.parse(Cookies.get('accessToken'));
+        let token = accessToken.token;
+        let userid = accessToken.userId;
+        window.open(this.apis.url + '/api/lcjl/exportXymx?token=' + token + '&userid=' + userid + '&' + `notShowLoading=${this.param.notShowLoading}&total=${this.param.total}&lcKm=${this.param.lcKm}&lcLxIn=${this.param.lcLxIn}&cjsjInRange=${this.param.cjsjInRange}&zhLike=${this.param.zhLike}&pageSize=${this.param.pageSize}&clBh=${this.param.clBh}`);
       },
       save() {//发车
-
         if (this.mxlx == 'py') {
           this.formData.lcLx = '20'
-
-
         }
         this.formData.jlCx = this.cx
         this.formData.lcKm = 3

@@ -1117,6 +1117,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 }
                 model.setSc(sum);
                 model.setZj(sum1);
+                model.setClBh(jlList.stream().mapToInt(BizLcJl::getLcFy).sum() + "");
                 list.add(model);
             }
         }
@@ -1409,6 +1410,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             condition.eq(SysZdxm.InnerColumn.by5, by5);
         }
 //        condition.eq(SysZdxm.InnerColumn.by2, carType);
+        condition.setOrderByClause("zddm asc");
         List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
         return ApiResponse.success(zdxms);
     }
@@ -2294,6 +2296,11 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     @Override
     public void exportXymx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
         LimitedCondition condition = getQueryCondition();
+        String jgdmLike = request.getParameter("jgdmLike");
+        condition.startWith(BizLcJl.InnerColumn.jgdm, getJgdm());
+        if (StringUtils.isNotBlank(jgdmLike)) {
+            condition.startWith(BizLcJl.InnerColumn.jgdm, jgdmLike);
+        }
         condition.setOrderByClause(" kssj desc");
         PageInfo<BizLcJl> info = findPage(page, condition);
         List<Map<Integer, String>> data = new ArrayList<>();
@@ -2305,9 +2312,23 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         titleMap.put(4, "学员证件号码");
         titleMap.put(5, "学员联系方式");
         titleMap.put(6, "培训车型");
+        titleMap.put(7, "套餐");
         data.add(titleMap);
         List<BizLcJl> list = info.getList();
         if (CollectionUtils.isNotEmpty(list)) {
+            Set<String> zddms = list.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
+            SimpleCondition djcondition = new SimpleCondition(SysZdxm.class);
+            djcondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+            djcondition.in(SysZdxm.InnerColumn.zddm, zddms);
+            djcondition.startWith(SysZdxm.InnerColumn.jgdm, getJgdm());
+
+            if (StringUtils.isNotBlank(jgdmLike)) {
+                djcondition.startWith(SysZdxm.InnerColumn.jgdm, jgdmLike);
+            }
+            List<SysZdxm> items = zdxmService.findByCondition(djcondition);
+            // 根据套餐代码分组
+            Map<String, SysZdxm> zdmap = items.stream().collect(Collectors.toMap(SysZdxm::getZddm, p -> p));
+
             int xh = 0;
             Map<String, List<BizLcJl>> map = list.stream().collect(Collectors.groupingBy(BizLcJl::getJlId));
             for (Map.Entry<String, List<BizLcJl>> entry : map.entrySet()) {
@@ -2340,6 +2361,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                             dataMap.put(5, "");
                         }
                         dataMap.put(6, split[i1].split("-")[1]);
+                        SysZdxm zdxm = zdmap.get(jl.getZddm());
+                        dataMap.put(7, zdxm.getBy9() + "-" + zdxm.getBy3() + "元");
                         data.add(dataMap);
                         i++;
                     }
@@ -2971,6 +2994,8 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     public ApiResponse<String> saveTc(SysZdxm zdxm) {
         RuntimeCheck.ifBlank(zdxm.getZdmc(), "请填写套餐单价");
         RuntimeCheck.ifBlank(zdxm.getBy5(), "套餐类型不能为空");
+        RuntimeCheck.ifBlank(zdxm.getBy9(), "请填写套餐名称");
+        RuntimeCheck.ifBlank(zdxm.getJgdm(), "请上传机构代码");
         String km = getRequestParamterAsString("km");
         RuntimeCheck.ifBlank(km, "科目不能为空");
         String fd = getRequestParamterAsString("fd");
@@ -2980,30 +3005,93 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
         zdxm.setZdlmdm("ZDCLK1045");
         zdxm.setZdId(genId());
-        zdxm.setJgdm(user.getJgdm());
+//        zdxm.setJgdm(user.getJgdm());
         zdxm.setCjsj(new Date());
         zdxm.setCjr(user.getXm() + "-" + user.getZh());
         zdxm.setBy2("0");
         zdxm.setBy1(StringUtils.equals(km, "K2") ? "科二" : "科三");
+        zdxm.setBy6("0");
+        zdxm.setBy7("0");
+        if (km.equals("K2")) {
+            zdxm.setBy8("");
+        } else {
+            String cx = getRequestParamterAsString("cx");
+            RuntimeCheck.ifBlank(cx, "科目三套餐需要填写准驾车型");
+            zdxm.setBy8(cx);
+        }
         if (StringUtils.equals(zdxm.getBy5(), "00")) {
-            // 计时套餐 , by3为每分钟费用
-            double miu = (Integer.parseInt(zdxm.getZdmc()) * 1.0) / 60;
-            zdxm.setBy3(format.format(miu));
+            if (zdxm.getQz() != null && zdxm.getQz() > 0) {
+                RuntimeCheck.ifBlank(zdxm.getBy3(), "个人套餐需要填写超时后每分钟单价");
+            } else {
+                // 计时套餐 , by3为每分钟费用
+                double miu = (Integer.parseInt(zdxm.getZdmc()) * 1.0) / 60;
+                zdxm.setBy3(format.format(miu));
+            }
+            zdxm.setBy10("0");
             // 计时套餐返点放在by4
             if (StringUtils.isNotBlank(fd)) {
                 try {
-                    Double.parseDouble(fd);
+                    double aDouble = Double.parseDouble(fd);
+                    RuntimeCheck.ifFalse(aDouble < 1 && aDouble > 0, "返点率必须小于1大于0");
+                    zdxm.setBy4(aDouble + "");
                 } catch (Exception e) {
-                    return ApiResponse.fail("");
+                    return ApiResponse.fail("返点数据异常");
+                }
+            } else {
+                zdxm.setBy4("0");
+            }
+            // 字典代码生成
+            zdxm.setZddm(km + "JS-" + zdxm.getZdId());
+        } else if (StringUtils.equals(zdxm.getBy5(), "10")) {
+            // 按把套餐 by3 为返点金额
+            if (StringUtils.isNotBlank(fd)) {
+                zdxm.setBy3(fd);
+            } else {
+                zdxm.setBy3("0");
+            }
+            zdxm.setBy10("0");
+            zdxm.setBy4("0");
+            zdxm.setZddm(km + "AB-" + zdxm.getZdId());
+        } else if (StringUtils.equals(zdxm.getBy5(), "20")) {
+            // 培优套餐k3没有返点操作
+            if (StringUtils.equals(km, "K3")) {
+                zdxm.setBy3(zdxm.getZdmc());
+            } else {
+                if (StringUtils.isNotBlank(fd)) {
+                    zdxm.setBy3(fd);
+                } else {
+                    zdxm.setBy3("0");
                 }
             }
-        } else if (StringUtils.equals(zdxm.getBy5(), "10")) {
-
+            zdxm.setBy4("0");
+            zdxm.setBy10("0");
+            zdxm.setZddm(km + "PY-" + zdxm.getZdId());
+        } else {
+            // 开放日套餐只在科目二
+            if (StringUtils.isNotBlank(fd)) {
+                zdxm.setBy4(fd);
+            } else {
+                zdxm.setBy4("0");
+            }
+            String fdje = getRequestParamterAsString("fdje");
+            if (StringUtils.isNotBlank(fdje)) {
+                zdxm.setBy3(fdje);
+            } else {
+                zdxm.setBy3("0");
+            }
+//            zdxm.setBy10("0");
+            zdxm.setZddm(km + "KF-" + zdxm.getZdId());
         }
-
-        return null;
+        zdxmService.save(zdxm);
+        return ApiResponse.saveSuccess();
 
     }
 
+    @Override
+    public ApiResponse<String> removeTc(String id) {
+        RuntimeCheck.ifBlank(id, "请选择要删除的套餐");
+        zdxmService.remove(id);
+        return ApiResponse.deleteSuccess();
+    }
 
 }
