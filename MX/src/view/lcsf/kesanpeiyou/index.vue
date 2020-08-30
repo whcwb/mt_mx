@@ -743,12 +743,7 @@ export default {
       this.getCarList();
       this.getSafemanList()
       this.cxlist = this.dictUtil.getByCode(this, 'ZDCLK0040');
-      // setTimeout(() => {
-      //   this.jump()
-      // }, 1000)
-      // this.getYYdj()
       this.getzdlist()
-      // this.pr()
       this.zy()
     },
     beforeDestroy() {
@@ -757,36 +752,22 @@ export default {
     methods: {
       zy(){
         var _this = this;
-        // console.log(_this.focusList);
         document.onkeydown = function (e) {
           let key = window.event.keyCode;
           if (key == 39) {
             console.log(_this.AMess, "amess")
-            // console.log("点击了右键");
-            // console.log(_this.$refs['input3']);
-            // // _this.$nextTick(() => {
-            //   _this.$refs['input3'][0].focus()
-            // // })
-
-            // console.log(_this.focusList.length);
-            for (let a = 0; a < 9; a++) {  //从左往右，所以下一个input框是a+1
-              // console.log(a, "A")
-              // console.log(_this.focusList[a]);
-              // console.log(_this.$refs['input' + (a + 1)]);
+            for (let a = 0; a < 30; a++) {  //从左往右，所以下一个input框是a+1
               if (_this.focusList[a] && _this.$refs['input' + (a + 1)]) {
-                // console.log('input' + (a + 1));
                 _this.focusList[a] = false
                 _this.focusList[a + 1] = true;
-                _this.$nextTick(()=>{
+                _this.$nextTick(() => {
                   _this.$refs['input' + (a + 1)][0].focus()
                 })
-                // console.log(_this.focusList,"end");
                 return;
               }
             }
           }
           if(key == 37){
-            // console.log("点击了左键");
             for (let a = 0; a < _this.focusList.length; a++) {   //从右向左，所以上一个input框是a-1
               if (_this.focusList[a] && _this.$refs['input' + (a - 1)]) {
                 _this.focusList[a] = false
@@ -798,19 +779,9 @@ export default {
               }
             }
           }
-          // if (key == 107){
-          //   console.log('++++++++')
-          //   _this.pushmess()
-          // }
-          // if (key == 109){
-          //   console.log('--------')
-          //   _this.remove(_this.AMess.length-1)
-          // }
         };
       },
       getInputFocus(index) {
-        // console.log(this.focusList.length , "--------")
-        // console.log(index, "index")
         for (let a = 0; a < this.focusList.length; a++) {
           if (index == a) {
             this.focusList[a] = true
@@ -820,23 +791,11 @@ export default {
         }
       },
       remove(i) {
-
           this.AMess.splice(i, 1)
-
       },
       pushmess() {
-        // if (this.cx == 'C'){
-        //   this.Pmess.cartype = 'C1'
-        // }
-        // if (this.cx == 'B'){
-        //   this.Pmess.cartype = 'B2'
-        // }
-        // if (this.cx == 'A'){
-        //   this.Pmess.cartype = 'A1'
-        // }
         let a = JSON.parse(JSON.stringify(this.Pmess));
         this.AMess.push(a);
-        // let b = [false,false,false]
         this.focusList.push(false,false,false)
       },
       getWXXY(AMess) {
@@ -846,7 +805,6 @@ export default {
         let dxarr = [];
         let sfzarr = [];
         let a = true
-        // console.log(AMess, 'AMess');
         for (let i = 0; i < AMess.length; i++) {
           if (AMess[i].xyXm == undefined || AMess[i].xyXm == '' || AMess[i].xyXm == null) {
             this.swal({
@@ -860,8 +818,6 @@ export default {
             dxarr.push(AMess[i].xyDh)
             sfzarr.push(AMess[i].bz)
             if (i == arrAMess) {
-              // console.log(dxarr.join(','))
-              // console.log(messarr.join(','))
               this.formData.xyXm = messarr.join(',');
               this.formData.xyDh = dxarr.join(',');
               this.formData.xyZjhm = sfzarr.join(',');
@@ -1253,24 +1209,8 @@ export default {
 
             this.mxList.push(obj)
           }
-
-
         })
-
-        // console.log(this.mxList)
       },
-      // print(mess) {//还车
-      //   this.hisPrintMess = mess
-      //   // setTimeout(()=>{
-      //   //   this.$refs['backcar'].doPrint()
-      //   // },1000)
-      //   this.componentName = 'print'
-      // },
-      // printHc(mess) {
-      //   this.hisPrintMess = mess
-      //   this.componentName = 'print'
-      //   // console.log('dayin')
-      // },
       his(item) {//历史练车记录
         this.clId = item.id;
         this.componentName = 'carStatistics'
