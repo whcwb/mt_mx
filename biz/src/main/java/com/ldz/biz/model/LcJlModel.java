@@ -41,4 +41,8 @@ public class LcJlModel {
      * 教练驾校
      */
     private String jlJx;
+    /**
+     * 学员人数
+     */
+    private String xySl;
 }

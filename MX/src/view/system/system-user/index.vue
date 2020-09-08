@@ -4,7 +4,6 @@
 <!--用户管理-->
 <template>
   <div class="boxbackborder box_col">
-    <!--<pager-tit title="用户管理"></pager-tit>-->
     <Menu mode="horizontal" active-name="1">
       <MenuItem name="1">
         <div style="font-weight: 700;font-size: 16px">
@@ -14,13 +13,17 @@
     </Menu>
     <div class="box_row colCenter rowRight pageFindSty" style="border: none;padding: 8px 0;">
       <div>
+        <Select v-model="param.jgdm" placeholder="请选择考场" clearable @on-change="findMessList">
+          <Option v-for="item in JG" :value="item.jgdm">{{ item.jgmc }}</Option>
+        </Select>
+      </div>
+      <div>
         <Icon type="md-person" size="34"/>
         <Input v-model="param.xmLike"
                placeholder="请输入用户姓名" style="width: 200px"
                @on-keyup.enter="findMessList()"
                @on-change="findMessList"></Input>
       </div>
-
       <div>
         <Icon type="ios-call" size="34"/>
         <Input v-model="param.sjhLike"
@@ -74,6 +77,7 @@ export default {
   mixins: [mixins],
   data() {
     return {
+      JG: [],
       JGList: {},
       //tab高度
       tabHeight: 220,
@@ -229,7 +233,8 @@ export default {
         xmLike: '',
         timers: '',
         pageNum: 1,
-        pageSize: 8
+        pageSize: 8,
+        jgdm: ''
       },
       yhlxDict: [],
       yhlxDictCode: 'ZDCLK0003',
@@ -244,7 +249,8 @@ export default {
     methods: {
       getJgs() {
         this.JGList = new Map()
-        this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
+        this.$http.get("/api/jg/query").then(res => {
+          this.JG = res.result
           for (let val of res.result) {
             this.JGList.set(val.jgdm, val.jgmc)
           }
@@ -258,7 +264,6 @@ export default {
         var v = this
         this.param.timers = new Date().getTime()
         this.$http.get(this.apis.USER.QUERY, {params: v.param}).then((res) => {
-//					log(res)
           v.tableData = res.page.list
           v.pageTotal = res.page.total
         })
@@ -274,7 +279,6 @@ export default {
         var v = this
         this.param.timers = new Date().getTime()
         this.$http.get(this.apis.USER.QUERY, {params: v.param}).then((res) => {
-//					log(res)
           v.tableData = res.page.list
         })
       },

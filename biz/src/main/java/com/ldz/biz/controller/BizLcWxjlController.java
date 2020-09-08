@@ -9,6 +9,9 @@ import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/api/lcwxjl")
 public class BizLcWxjlController extends BaseController<BizLcWxjl, String> {
@@ -86,5 +89,13 @@ public class BizLcWxjlController extends BaseController<BizLcWxjl, String> {
         return service.unbindCardNo(id);
     }
 
+    @GetMapping("/exportWxjl")
+    public void exportWxjl(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        service.exportWxjl(request, response);
+    }
 
+    @PostMapping("/updateZhye")
+    public ApiResponse<String> updateZhye(String id) {
+        return service.updateZhye(id);
+    }
 }

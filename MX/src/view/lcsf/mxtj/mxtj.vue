@@ -26,7 +26,6 @@
 </template>
 
 <script>
-// import formData from './formModal.vue'
 import Cookies from 'js-cookie'
 import print from './print'
 import mixin from '@/mixins'

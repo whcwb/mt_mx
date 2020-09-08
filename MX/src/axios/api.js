@@ -1,15 +1,15 @@
-let ajaxUrl = 'http://127.0.0.1:8080';
-// let ajaxUrl = 'http://47.110.39.144:8083';
+// let ajaxUrl = 'http://127.0.0.1:8080';
+let ajaxUrl = 'http://47.110.39.144:8083';
 export default {
-    NETWORK_ERR_STR: '网络加载异常!',
-    url: ajaxUrl,
-    upFile: ajaxUrl + '/upload',
-    // getImgUrl: 'http://192.168.3.35:8889'+'/img/',
-    getImgUrl: ajaxUrl + '/img/',
-    LOGIN: {
-        QUERY: 'login',
-        YZ: '/pub/image/Kaptcha/',
-        getUKeyPwd: '/getUKeyPwd',
+  NETWORK_ERR_STR: '网络加载异常!',
+  url: ajaxUrl,
+  upFile: ajaxUrl + '/upload',
+  // getImgUrl: 'http://192.168.3.35:8889'+'/img/',
+  getImgUrl: ajaxUrl + '/img/',
+  LOGIN: {
+    QUERY: 'login',
+    YZ: '/pub/image/Kaptcha/',
+    getUKeyPwd: '/getUKeyPwd',
     getUserLoginType: '/getUserLoginType',
   },
   USERROOT: {

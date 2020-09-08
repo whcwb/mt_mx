@@ -17,11 +17,17 @@
           <Col span="4">
             <Select filterable clearable v-model="param.jlJx" @on-change="getData" :label-in-value="true"
                     placeholder="请输入驾校">
-              <Option v-for="(item,index) in JX" :key="index" :value="item.val">{{item.val}}-{{item.by1}}</Option>
+              <Option v-for="(item,index) in JX" :key="index" :value="item.val">{{ item.val }}-{{ item.by1 }}</Option>
             </Select>
           </Col>
           <Col span="4">
             <Input size="large" v-model="param.jlXmLike" @on-keyup.enter="getData" clearable placeholder="请输入教练姓名"/>
+          </Col>
+          <Col span="1" align="center" style="margin-right: 16px">
+            <Button type="primary" @click="exportExcel">
+              <Icon type="md-download"></Icon>
+              <!--查询-->
+            </Button>
           </Col>
           <Col span="1" align="center" style="margin-right: 16px">
             <Button type="primary" @click="getData">
@@ -261,6 +267,7 @@ import mxb from '../jlcz/mxb'
 import empty from '../jlcz/empty'
 import {mapMutations} from 'vuex'
 import printSignUp from '../../lcsf/comp/printSignUp'
+import Cookies from 'js-cookie'
 
 export default {
   name: "index",
@@ -398,6 +405,17 @@ export default {
               _self.param.jlLx = value[0] ? value[0] : ''
               _self.getData()
             },
+          },
+          {
+            title: '队号',
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.dm) {
+                return h('div', p.row.dm)
+              } else {
+                return h('div', '-')
+              }
+            }
           },
           {
             title: '卡号',
@@ -605,6 +623,18 @@ export default {
       clearInterval(this.IntervalKE)
     },
     methods: {
+      exportExcel() {
+        alert('aaaaa')
+        let p = '';
+        for (let k in this.param) {
+          p += '&' + k + '=' + this.param[k];
+        }
+        p = p.substr(1);
+        let accessToken = JSON.parse(Cookies.get('accessToken'));
+        let token = accessToken.token;
+        let userid = accessToken.userId;
+        window.open(this.apis.url + '/api/lcwxjl/exportWxjl?token=' + token + "&userid=" + userid + "&" + p);
+      },
       ...mapMutations([
         'set_LcTime',
         'Ch_LcTime'

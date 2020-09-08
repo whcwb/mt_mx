@@ -23,27 +23,29 @@
         <Icon type="md-search"></Icon>
         <!--查询-->
       </Button>
-      <!--<Button type="primary" @click="componentName = 'print'" style="margin-left: 10px;">-->
       <!--打印-->
-      <!--</Button>-->
       <Button type="primary" @click="exportExcel" style="margin-left: 10px;">
         <Icon type="ios-cloud-download"/>
       </Button>
     </div>
-    <!--<search-bar :parent="v" :show-create-button="false" :buttons="searchBarButtons" @print="componentName = 'print'" :show-search-button="false"></search-bar>-->
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
     <Row>
-      <Col span="8" align="right">
+      <Col span="6" align="right">
+        <div style="font-size: 15px;font-weight: 600">
+          人数合计：<span style="color: #ed3f14"> {{ zrs }} </span> 人
+        </div>
+      </Col>
+      <Col span="6" align="right">
         <div style="font-size: 15px;font-weight: 600">
           时长合计：<span style="color: #ed3f14"> {{ zsc }} </span> 分钟
         </div>
       </Col>
-      <Col span="8" align="right">
+      <Col span="6" align="right">
         <div style="font-size: 15px;font-weight: 600">
           应收合计：<span style="color: #ed3f14"> {{ zjes }} </span> 元
         </div>
       </Col>
-      <Col span="8" align="right">
+      <Col span="6" align="right">
         <div style="font-size: 15px;font-weight: 600">
           合计：<span style="color: #ed3f14"> {{ addmoney }} </span> 元
         </div>
@@ -69,6 +71,7 @@ export default {
   data() {
     return {
       v: this,
+      zrs: 0,
       zjes: 0,
       zsc: 0,
       addmoney: 0,
@@ -104,10 +107,15 @@ export default {
             },
           },
           {title: '教练员', key: 'jlXm'},
-          {title: '时长', key: 'sc', minWidth: 80, defaul: '0'},
-          {title: '应收', key: 'clBh'},
+          {title: '时长', key: 'sc', minWidth: 80, default: '0'},
+          {title: '人数', key: 'xySl', minWidth: 80, default: '0'},
           {
-            title: '实收', minWidth: 90, defaul: '0',
+            title: '应收', key: 'clBh', render: (h, p) => {
+              return h('div', p.row.clBh + '元')
+            }
+          },
+          {
+            title: '实收', minWidth: 90, default: '0',
             render: (h, p) => {
               return h('div', p.row.zj + '元')
             }
@@ -180,10 +188,12 @@ export default {
       afterPager(list) {
         this.zjes = 0;
         this.zsc = 0;
-        this.addmoney = 0
+        this.addmoney = 0;
+        this.zrs = 0;
         for (let r of list) {
           this.zjes += parseInt(r.clBh);
           this.zsc += r.sc;
+          this.zrs += parseInt(r.xySl);
           r.sc = this.parseTime(r.sc)
           this.addmoney += r.zj;
         }

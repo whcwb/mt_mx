@@ -10,7 +10,8 @@
               @on-change="getData" placeholder="科目">
         <Option v-for="item in kmList" :value="item.val"> {{ item.label }}</Option>
       </Select>
-      <Select v-model="param.lcLx" style="width: 100px;text-align: left;margin-right: 5px" @on-change="getData"
+      <Select v-model="param.lcLx" style="width: 100px;text-align: left;margin-right: 5px" clearable
+              @on-change="getData"
               placeholder="计费类型">
         <Option v-for="item in lcLxList" :value="item.val"> {{ item.label }}</Option>
       </Select>

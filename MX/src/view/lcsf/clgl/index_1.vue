@@ -3,7 +3,7 @@
     <Menu mode="horizontal" :theme="theme1" :active-name="activeName" ref="activeName"
           style="font-size: 48px;font-weight: bold;margin-bottom: 8px" @on-select="selectKc">
       <Menu-item v-for="item in JGList" :value="item.jgdm" :name="item.jgdm">
-        {{item.jgmc}}
+        {{ item.jgmc }}
       </Menu-item>
     </Menu>
     <Row style="margin-bottom: 8px">
@@ -33,7 +33,7 @@
               <!--查询-->
             </Button>
           </Col>
-          <Col span="1" align="center" >
+          <Col span="1" align="center">
             <Button type="primary" @click=" jgdm = param.jgdmLike ,compName='cjcar'">
               <Icon type="md-add"></Icon>
               <!--查询-->
@@ -59,7 +59,9 @@
               <Col span="6" style="padding-top: 6px">
                 <Tag color="cyan" style="font-weight: bold">{{ item.clCx }}</Tag>
                 <Tooltip :content="item.cardNo?'卡片已绑定':'卡片_未_绑定'" placement="top">
-                  <Button type="text" :style="{background:item.cardNo?'#47cb89':'#747b8b',color:'#fff'}" @click="bindCard(item)" size="small">卡</Button>
+                  <Button type="text" :style="{background:item.cardNo?'#47cb89':'#747b8b',color:'#fff'}"
+                          @click="bindCard(item)" size="small">卡
+                  </Button>
                 </Tooltip>
               </Col>
               <Col span="6">
@@ -80,10 +82,10 @@
             <div style="padding-top: 5px">
               <div class="box_row" style="padding-top: 6px; ">
                 <div class="box_col_100">
-                  <Button v-if="item.clZt == '00' || item.clZt == '01'" type="success"  size="default" long ghost
+                  <Button v-if="item.clZt == '00' || item.clZt == '01'" type="success" size="default" long ghost
                           @click="changeZT(item,'00')">启用
                   </Button>
-                  <Button v-if="item.clZt == '02' || item.clZt == '03'" type="default"  size="default" long
+                  <Button v-if="item.clZt == '02' || item.clZt == '03'" type="default" size="default" long
                           @click="changeZT(item,'00')">启用
                   </Button>
                 </div>
@@ -101,6 +103,11 @@
         </div>
       </div>
     </div>
+    <Page :total=param.total :current=param.pageNum :page-size=param.pageSize
+          :page-size-opts=[8,10,15,20,30,40,50]
+          @on-page-size-change='(e)=>{param.pageSize=e;getPagerList()}'
+          show-total show-elevator show-sizer placement='top'
+          @on-change='(e)=>{param.pageNum=e;getPagerList()}'></Page>
     <component :is=compName :param="this.a" :jgdm="jgdm" :activeName="activeName"></component>
   </div>
 </template>
@@ -134,13 +141,13 @@ export default {
       },
       param: {
         pageNum: 1,
-        pageSize: 999,
+        pageSize: 5,
         jgdmLike: '',
         clBh: '',
         clHm: '',
         clKm: '2',
         orderBy: 'clKm asc,clBh asc',
-        // notShowLoading: 'true'
+        notShowLoading: 'true'
       },
       a: {},
       jgdm: '',

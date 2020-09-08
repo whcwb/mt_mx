@@ -1129,7 +1129,7 @@ export default {
         let accessToken = JSON.parse(Cookies.get('accessToken'));
         let token = accessToken.token;
         let userid = accessToken.userId;
-        window.open(this.apis.url + '/api/lcjl/exportXymx?token=' + token + '&userid=' + userid + '&' + `notShowLoading=${this.param.notShowLoading}&total=${this.param.total}&lcKm=${this.param.lcKm}&lcLxIn=${this.param.lcLxIn}&cjsjInRange=${this.param.cjsjInRange}&zhLike=${this.param.zhLike}&pageSize=${this.param.pageSize}&clBh=${this.param.clBh}`);
+        window.open(this.apis.url + '/api/lcjl/exportXymx?token=' + token + '&userid=' + userid + '&' + `notShowLoading=${this.param.notShowLoading}&total=${this.param.total}&lcKm=${this.param.lcKm}&jgdmLike=${this.param.jgdmLike}&lcLxIn=${this.param.lcLxIn}&cjsjInRange=${this.param.cjsjInRange}&zhLike=${this.param.zhLike}&pageSize=${this.param.pageSize}&clBh=${this.param.clBh}`);
       },
       save() {//发车
         if (this.mxlx == 'py') {

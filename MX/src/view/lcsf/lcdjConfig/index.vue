@@ -25,11 +25,7 @@
       <Row :gutter="12">
         <Col span="8" v-for="(item,index) in list" :prop="item.zdmc" :key="item.zdId">
           <Card style="margin-top: 12px;">
-            <p slot="title" v-if="item.zddm.includes('K2KF')">
-              <Icon type="ios-car"></Icon>
-              {{ item.by9 }}-{{ item.by10 + '分钟' }}
-            </p>
-            <p slot="title" v-else>
+            <p slot="title">
               <Icon type="ios-car"></Icon>
               {{ item.by9 }}
             </p>
@@ -90,7 +86,7 @@
                 </Col>
               </Row>
               <Row>
-                <Col span="20" v-if="item.by10 != '0'">
+                <Col span="20" v-if="item.zddm.includes('K2KF')">
                   <FormItem label="抵扣时长(仅开放日):">
                     <InputNumber v-model="item.by10" :placeholder="'请填写抵扣时长...'" style="width: 100px;"></InputNumber>
                     <span>分钟</span>

@@ -40,20 +40,20 @@
 </template>
 
 <script>
-  import print from './print'
-  import Cookies from 'js-cookie'
+import print from './print'
+import Cookies from 'js-cookie'
 
-  export default {
-    name: 'char',
-    components: {print},
-    props: {
-      lcKm: {
-        type: String,
-        default: ''
-      }
-    },
-    data() {
-      return {
+export default {
+  name: 'char',
+  components: {print},
+  props: {
+    lcKm: {
+      type: String,
+      default: ''
+    }
+  },
+  data() {
+    return {
         v: this,
         addmoney: 0,
         pagerUrl: this.apis.lcjl.jxtj,
@@ -82,15 +82,17 @@
             ],
             filterMultiple: false,
             filterRemote(value, row) {
-              var _self =  this.$options.parent.parent
-              _self.param.lx=value[0]?value[0]:''
+              var _self = this.$options.parent.parent
+              _self.param.lx = value[0] ? value[0] : ''
               _self.util.getPageData(_self)
             },
           },
           {title: '时长', key: 'lcSc', minWidth: 80, defaul: '0'},
-          {title: '实收', minWidth: 90, defaul: '0',
+          {title: '人数', key: 'xySl', minWidth: 80, defaul: '0'},
+          {
+            title: '实收', minWidth: 90, defaul: '0',
             render: (h, p) => {
-              return h('div', p.row.lcFy+'元')
+              return h('div', p.row.lcFy + '元')
             },
           },
         ],

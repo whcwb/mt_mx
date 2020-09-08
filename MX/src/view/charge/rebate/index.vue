@@ -21,7 +21,7 @@
         </Col>
         <Col span="18" style="display: flex;justify-content: flex-end">
           <Col span="3" v-if="JGList.length > 1" style="margin-right: 10px">
-            <Select v-model="param.jgdmLike" @on-change="getData" placeholder="请选择考场">
+            <Select v-model="param.jgdmLike" @on-change="getOldData" placeholder="请选择考场">
               <Option v-for="item in JGList" :value="item.val">{{ item.label }}</Option>
             </Select>
           </Col>

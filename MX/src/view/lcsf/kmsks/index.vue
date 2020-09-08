@@ -8,16 +8,16 @@
     </Menu>
     <Row style="margin-bottom: 8px">
       <Col span="24">
-        <Row :gutter="6" type="flex" justify="start">
+        <Row :gutter="6" type="flex">
           <Col span="14">
             <div style="float: left;margin-top: 8px;">
               <span
-                style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;">
+                  style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;">
 
-                共{{tabdata.length}}台
+                共{{ tabdata.length }}台
               </span>
               <span
-                style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;"
+                  style="width: 60px;height: 80px;cursor: pointer;border:1px solid #30bff5;color:black;padding:6px; border-radius: 4px;margin-left: 16px;"
 
               >停用{{zxNum}}台</span>
               <span
@@ -52,23 +52,24 @@
       <div class="box_row_list">
         <div style="width: 25%;min-width: 320px;padding: 8px" v-for="(item,index) in tabdata" :key="index">
           <Card style="width:100%">
-            <Row justify="center" align="middle">
+            <Row align="middle">
               <Col span="3" align="left">
-                <Avatar style="color: white;background-color: #ffbb96;line-height: 38px;font-size: 24px;font-weight: bold">
-                  {{item.clBh}}
+                <Avatar
+                    style="color: white;background-color: #ffbb96;line-height: 38px;font-size: 24px;font-weight: bold">
+                  {{ item.clBh }}
                 </Avatar>
               </Col>
               <Col span="9" style="margin-top: 6px;padding-left: 10px">
-                <span style="font-weight: bold;font-size: 18px">{{item.clHm}}</span>
+                <span style="font-weight: bold;font-size: 18px">{{ item.clHm }}</span>
               </Col>
               <Col span="6" style="padding-top: 6px">
-                <Tag color="cyan" style="font-weight: bold">{{item.clCx}}</Tag>
+                <Tag color="cyan" style="font-weight: bold">{{ item.clCx }}</Tag>
                 <Tooltip :content="item.cardNo?'卡片已绑定':'卡片_未_绑定'" placement="top">
                   <Button type="text" :style="{background:item.cardNo?'#47cb89':'#747b8b',color:'#fff'}"  size="small" @click="bindCard(item)">卡</Button>
                 </Tooltip>
               </Col>
               <Col span="6">
-                <Row type="flex" justify="end">
+                <Row type="flex">
                   <Col span="12" style="margin-top: 6px">
                     <Tooltip content="修改">
                       <Button type="info" icon="ios-create" size="small" @click="a = item,compName = 'clxq'"></Button>
@@ -111,21 +112,21 @@
 </template>
 
 <script>
-  import clxq from './comp/clxq'
-  import cjcar from './comp/cjcar'
-  import bindcard from './comp/bindcard'
+import clxq from './comp/clxq'
+import cjcar from './comp/cjcar'
+import bindcard from './comp/bindcard'
 
-  export default {
-    name: "index",
-    components: {
-      clxq, cjcar,bindcard
-    },
-    data() {
-      return {
-        activeName: '',
-        JGList: [],
-        KXsty: {
-          'background': '#57c5f7',
+export default {
+  name: "index",
+  components: {
+    clxq, cjcar, bindcard
+  },
+  data() {
+    return {
+      activeName: '',
+      JGList: [],
+      KXsty: {
+        'background': '#57c5f7',
           'color': '#fff'
         },
         theme1: 'light',
@@ -170,11 +171,11 @@
         this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
           this.JGList = res.result;
           this.param.jgdmLike = this.JGList[0].jgdm
-          this.getPagerList()
           this.activeName = this.JGList[0].jgdm
           this.$nextTick(() => {
             this.$refs.activeName.updateActiveName();
           })
+          this.getPagerList()
         })
       },
       cardNo(val) {
@@ -253,12 +254,12 @@
       }
     },
     created() {
-      this.getJgs();
-      this.getPagerList();
+
       this.carTypList = this.dictUtil.getByCode(this, 'ZDCLK1044')
       this.carTypList.forEach((item, index) => {
         item.background = '#fff'
       })
+      this.getJgs();
     }
   }
 </script>

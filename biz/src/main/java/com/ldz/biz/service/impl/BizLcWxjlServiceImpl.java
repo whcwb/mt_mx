@@ -15,6 +15,7 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.EncryptUtil;
+import com.ldz.util.commonUtil.ExcelUtil;
 import com.ldz.util.exception.RuntimeCheck;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,10 +24,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -222,6 +225,36 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
         return ApiResponse.success();
     }
 
+
+    @Override
+    public ApiResponse<String> updateZhye(String id) {
+        RuntimeCheck.ifBlank(id, "请选择教练");
+        String[] split = id.split(",");
+        List<BizLcWxjl> wxjls = findByIds(Arrays.asList(split));
+        SysYh sysYh = getCurrentUser();
+        wxjls.forEach(bizLcWxjl -> {
+            if (bizLcWxjl.getYe() > 0) {
+                BizJlCz cz = new BizJlCz();
+                cz.setId(genId());
+                cz.setXm(bizLcWxjl.getJlXm());
+                cz.setType("30");
+                cz.setSfje(0);
+                cz.setJx(bizLcWxjl.getJlJx());
+                cz.setJlId(bizLcWxjl.getId());
+                cz.setJe(bizLcWxjl.getYe());
+                cz.setCzhje(0);
+                cz.setCjsj(DateUtils.getNowTime());
+                cz.setBz(sysYh.getXm() + "-" + sysYh.getZh() + " 余额清零");
+                cz.setCzqje(bizLcWxjl.getYe());
+                cz.setZy("余额清零");
+                czMapper.insert(cz);
+                bizLcWxjl.setYe(0);
+                update(bizLcWxjl);
+            }
+        });
+        return ApiResponse.success();
+    }
+
     @Override
     public ApiResponse<String> unbindCardNo(String id) {
         RuntimeCheck.ifBlank(id, "请选择教练");
@@ -231,6 +264,46 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
         wxjl.setPwd(null);
         baseMapper.updateByPrimaryKey(wxjl);
         return ApiResponse.success();
+    }
+
+    @Override
+    public void exportWxjl(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        LimitedCondition condition = getQueryCondition();
+        List<BizLcWxjl> jls = findByCondition(condition);
+        List<Map<Integer, String>> data = new ArrayList<>();
+        Map<Integer, String> titleMap = new HashMap<>();
+        titleMap.put(0, "序号");
+        titleMap.put(1, "驾校");
+        titleMap.put(2, "教练员");
+        titleMap.put(3, "教练联系电话");
+        titleMap.put(4, "本/外校");
+        titleMap.put(5, "队号");
+        titleMap.put(6, "卡号");
+        titleMap.put(7, "充值卡余额");
+        titleMap.put(8, "开放日余额");
+        data.add(titleMap);
+        if (CollectionUtils.isNotEmpty(jls)) {
+            for (int i = 0, jlsSize = jls.size(); i < jlsSize; i++) {
+                BizLcWxjl bizLcWxjl = jls.get(i);
+                Map<Integer, String> dataMap = new HashMap<>();
+                dataMap.put(0, i + 1 + "");
+                dataMap.put(1, bizLcWxjl.getJlJx());
+                dataMap.put(2, bizLcWxjl.getJlXm());
+                dataMap.put(3, bizLcWxjl.getJlLxdh());
+                dataMap.put(4, "00".equals(bizLcWxjl.getJlLx()) ? "本校" : "外校");
+                dataMap.put(5, bizLcWxjl.getDm());
+                dataMap.put(6, bizLcWxjl.getCardNo());
+                dataMap.put(7, bizLcWxjl.getCardJe() + "");
+                dataMap.put(8, bizLcWxjl.getYe() + "");
+                data.add(dataMap);
+            }
+        }
+        request.setCharacterEncoding("utf-8");
+        response.setContentType("application/msexcel");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment;filename=" + new String("教练信息".getBytes(StandardCharsets.UTF_8), "iso-8859-1") + ".xls");
+        ServletOutputStream stream = response.getOutputStream();
+        ExcelUtil.createSheet(stream, "教练信息", data);
     }
 
     private String genCardNo(int maxNo) {
