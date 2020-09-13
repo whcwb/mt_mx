@@ -21,7 +21,6 @@ export default {
   },
   DATASTA: {
     // （统计收费或缴费的人数）   参数 chargeCode 收费代码，字典可见 0000 为报名 ， 0001 为体检,9996 （科目三初考）,9997（科目二初考）,9998（科目一初考）等   startTime 开始时间 例：2018-09-09 ，endTime 结束时间 ， 例：2018-09-09  （开始结束时间可不填，不填默认为当天时间）
-    // /api/chargemanagement/countType
     //（统计报名人数） 参数  startTime 开始时间 例：2018-09-09 ，endTime 结束时间 ， 例：2018-09-09  （开始结束时间可不填，不填默认为当天时间
     BM: '/api/traineeinformation/countReg',
     //（统计科目考试人数）  参数 sub （科目一：10 ， 科目二 ：20  科目三： 30） startTime 开始时间 例：2018-09-09 ，endTime 结束时间 ， 例：2018-09-09  （开始结束时间可不填，不填默认为当天时间）

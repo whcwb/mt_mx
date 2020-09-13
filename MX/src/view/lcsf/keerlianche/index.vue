@@ -232,7 +232,7 @@
               <p slot="title" style="font-size: 20px;font-weight: 600">训练信息</p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">教练员 : {{QRmess.jlXm}}</p>
               <p style="font-size: 18px;font-weight: 500;padding: 10px">总时长 : {{QRmess.sc}}分钟</p>
-              <p style="font-size: 18px;font-weight: 500;padding: 10px;color: red">总费用 : {{QRmess.lcFy}}元</p>
+              <p style="font-size: 18px;font-weight: 500;padding: 10px;color: red">总费用 : {{ QRmess.yfJe }}元</p>
             </Card>
           </Col>
           <Col span="12">
@@ -312,31 +312,31 @@
 
 
 <script>
-  import carCard from '../comp/carCard'
-  import jlwh from '../comp/jlWh'
-  import addjl from '../comp/addJL'
-  import carStatistics from '../statistics/carStatistics'
-  import keyypd from '../comp/keyypd'
-  import print from '../comp/print'
-  import printNew from '../../../components/printNew'
-  import yydrawer from './yydrawer'
-  import yyModel from './yyModel'
-  import radioCar from '../comp/RadioCar'
-  //还车
-  import giveCar from '../comp/readCard'
-  import {mapMutations} from 'vuex'
+import carCard from '../comp/carCard'
+import jlwh from '../comp/jlWh'
+import addjl from '../comp/addJL'
+import carStatistics from '../statistics/carStatistics'
+import keyypd from '../comp/keyypd'
+import print from '../comp/print'
+import printNew from '../../../components/printNew'
+import yydrawer from './yydrawer'
+import yyModel from './yyModel'
+import radioCar from '../comp/RadioCar'
+//还车
+import giveCar from '../comp/readCard'
+import {mapMutations} from 'vuex'
 
-  export default {
-    name: "index",
-    components: {
-      carCard, jlwh, addjl, printNew,
-      print, radioCar, carStatistics,
-      keyypd, yydrawer, yyModel
-    },
-    data() {
-      return {
-        kfdj: 0,
-        b: false,
+export default {
+  name: "index",
+  components: {
+    carCard, jlwh, addjl, printNew,
+    print, radioCar, carStatistics,
+    keyypd, yydrawer, yyModel
+  },
+  data() {
+    return {
+      kfdj: 0,
+      b: false,
         RS: [1, 2],
         tcIndex: 0,
         columns2: [
@@ -459,7 +459,7 @@
           {
             title: '应收', align: 'center', minWidth: 110, defaul: '0',
             render: (h, p) => {
-              return h('div', p.row.lcFy + '元');
+              return h('div', p.row.yfJe + '元');
             }
           },
           {

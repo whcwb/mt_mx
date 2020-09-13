@@ -92,9 +92,16 @@
                     <span>分钟</span>
                   </FormItem>
                 </Col>
+                <Col span="20" v-else-if="item.zddm.includes('K2JS')">
+                  <FormItem label="保底时长:">
+                    <InputNumber v-model="item.by10" :placeholder="'请填写保底时长...'"
+                                 style="width: 100px;"></InputNumber>
+                    <span>分钟</span>
+                  </FormItem>
+                </Col>
                 <Col span="20" v-else>
-                  <FormItem label="抵扣时长(仅开放日):">
-                    <InputNumber v-model="item.by10" readonly :placeholder="'请填写抵扣时长...'"
+                  <FormItem label="抵扣时长(不可用):">
+                    <InputNumber v-model="item.by10" readonly :placeholder="'抵扣时长...'"
                                  style="width: 100px;"></InputNumber>
                     <span>分钟</span>
                   </FormItem>

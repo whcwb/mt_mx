@@ -94,6 +94,5 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
 
     ApiResponse<String> saveTc(SysZdxm zdxm);
 
-
     ApiResponse<String> removeTc(String id);
 }

@@ -70,6 +70,9 @@
             <FormItem v-if="param.by5 == '30'" label="抵扣时长:">
               <Input v-model="param.by10" placeholder="开放日抵扣时长"></Input>
             </FormItem>
+            <FormItem v-if="param.by5 == '00' && lx == '小时计费'" label="保底时长:">
+              <Input v-model="param.by10" placeholder="保底时长(没有可不填)"></Input>
+            </FormItem>
           </Col>
           <Col span="12" v-if="lx=='单人套餐'">
             <FormItem label="超出单价(分钟):">

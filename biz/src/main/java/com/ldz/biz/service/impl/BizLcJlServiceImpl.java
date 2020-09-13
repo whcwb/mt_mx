@@ -178,10 +178,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         entity.setJlLx(wxjl.getJlLx());
         entity.setId(genId());
         // 科目二 190 套餐 ,  需要根据人数计费
-        if (StringUtils.equals(entity.getZddm(), "K2JS-S")) {
-            RuntimeCheck.ifNull(entity.getXySl(), "此套餐需要填写学员数量");
-            RuntimeCheck.ifTrue(entity.getXySl() <= 0, "学员数量不能小于0");
-        }
         RuntimeCheck.ifBlank(entity.getZddm(), "请选择套餐");
         SimpleCondition condition = new SimpleCondition(SysZdxm.class);
         condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
@@ -189,6 +185,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         condition.startWith(SysZdxm.InnerColumn.jgdm, getJgdm());
         List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
         RuntimeCheck.ifEmpty(zdxms, "未找到套餐信息");
+        if (zdxms.get(0).getZddm().startsWith("K2JS") && zdxms.get(0).getQz() != null) {
+            RuntimeCheck.ifNull(entity.getXySl(), "此套餐需要填写学员数量");
+            RuntimeCheck.ifTrue(entity.getXySl() <= 0, "学员数量不能小于0");
+        }
         // 拿到练车套餐的内容
         SysZdxm zdxm = zdxms.get(0);
         // 科目三培优需要填写学员人数
@@ -472,7 +472,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
     @Override
     public ApiResponse<BizLcJl> updateJssj(String id, String cardNo, String km) throws ParseException {
-
         // 定义三个 数字
         int kfje = 0;
         int card = 0;
@@ -498,6 +497,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         SimpleCondition condition = new SimpleCondition(SysZdxm.class);
         condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
         condition.eq(SysZdxm.InnerColumn.zddm, lcJl.getZddm());
+        condition.startWith(SysZdxm.InnerColumn.jgdm, getJgdm());
 //            condition.eq(SysZdxm.InnerColumn.by2, lcJl.getJlCx());
         List<SysZdxm> items = zdxmService.findByCondition(condition);
         RuntimeCheck.ifTrue(CollectionUtils.isEmpty(items), "此套餐未设置费用 , 请先设置套餐费用");
@@ -515,7 +515,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         int kfye = 0;
         int cardye = 0;
         String fdr = "";
-        // 计算实际时长  (所有车辆免费前五分钟)
         long ksfz = start.getTime() / (60 * 1000);
         long jsfz = end.getTime() / (60 * 1000);
         int lcSc = (int) (jsfz - ksfz);
@@ -524,7 +523,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             RuntimeCheck.ifTrue(StringUtils.equals(km, "2") && !StringUtils.equals(km, lcJl.getLcKm()), "请前往科目二窗口还车");
             RuntimeCheck.ifTrue(StringUtils.equals(km, "3") && !StringUtils.equals(km, lcJl.getLcKm()), "请前往科目三窗口还车");
             int v;
-            if (StringUtils.equals(lcJl.getLcKm(), "2") && StringUtils.equals(lcJl.getZddm(), "K2JS-S")) {
+            if (StringUtils.equals(lcJl.getLcKm(), "2") && StringUtils.startsWith(lcJl.getZddm(), "K2JS") && management.getQz() != null) {
                 // 科目二的 190 35分钟 , 超出时间按照 8.33计算
                 String by3 = management.getBy3();
                 // 190
@@ -534,7 +533,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 } else {
                     v = Integer.parseInt(hour) * lcJl.getXySl();
                 }
+                lcJl.setYfJe(v);
             } else {
+
                 // 每小时的费用
                 String hour = management.getZdmc();
                 String by3 = management.getBy3();
@@ -545,7 +546,26 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 // 不能除尽的按分钟算
                 float mv = m * Float.parseFloat(by3);
                 // 总费用
+                int yfv = (int) Math.ceil(hv + mv);
+
+                // 查看科目二计时套餐中是否有设置保底时长 , 如果有 则查看练车时长是否超出了保底时长, 没有的话就按照保底时长计算
+                if (StringUtils.startsWith(management.getZddm(), "K2JS") && StringUtils.isNotBlank(management.getBy10())) {
+                    int bdSc = Integer.parseInt(management.getBy10());
+                    if (lcSc < bdSc) {
+                        lcSc = bdSc;
+                    }
+
+                }
+                h = lcSc / 60;
+                m = lcSc % 60;
+                // 小时能除尽的按小时计费
+                hv = Float.parseFloat(hour) * h;
+                // 不能除尽的按分钟算
+                mv = m * Float.parseFloat(by3);
+                // 总费用
                 v = (int) Math.ceil(hv + mv);
+                lcJl.setYfJe(yfv);
+
             }
             lcJl.setLcDj(Float.parseFloat(management.getZdmc()));
             lcJl.setLcFy(v);
@@ -599,7 +619,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             fdr = "3";
             str = " 应收现金: " + lcJl.getLcFy() + "元";
         }
-
         // 更新这辆车的状态
         if (StringUtils.equals(lcJl.getLcKm(), "3") || StringUtils.isNotBlank(lcJl.getLcClId())) {
             BizLcCl lcCl = clService.findById(lcJl.getLcClId());
@@ -777,7 +796,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         String lcClId = lcJl.getLcClId();
         BizLcCl cl = clService.findById(lcClId);
         lcJl.setLcCl(cl);
-
         return ApiResponse.success(lcJl);
     }
 
@@ -1703,6 +1721,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         lcJl.setLcKm(jls.get(0).getLcKm());
         lcJl.setKm(lcJl.getLcKm());
         lcJl.setJls(lcJls);
+        lcJl.setYfJe(jls.stream().filter(bizLcJl -> bizLcJl.getYfJe() != null).mapToInt(BizLcJl::getYfJe).sum());
         lcJl.setClBh(jls.stream().map(BizLcJl::getClBh).collect(Collectors.joining(",")));
         lcJl.setJlCx(jls.stream().map(BizLcJl::getJlCx).collect(Collectors.joining(",")));
 
@@ -2023,7 +2042,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 Integer fy = jl.getLcFy();
                 jl.setZfzt("10");
                 jl.setCardje(0);
-                jl.setYfJe(fy);
+//                jl.setYfJe(fy);
                 jl.setXjje(fy);
                 jl.setPz(pz);
                 update(jl);
@@ -2187,7 +2206,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                         jl.setXjje(jl.getLcFy());
                     }
                     jl.setCardje(0);
-                    jl.setYfJe(jl.getXjje());
+//                    jl.setYfJe(jl.getXjje());
                     jl.setZfzt("10");
                     jl.setPz(pz);
                     jl.setDkdj(kfDj + "");
@@ -3046,7 +3065,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 double miu = (Integer.parseInt(zdxm.getZdmc()) * 1.0) / 60;
                 zdxm.setBy3(format.format(miu));
             }
-            zdxm.setBy10("0");
+            if (StringUtils.isBlank(zdxm.getBy10())) {
+                zdxm.setBy10("0");
+            }
             // 计时套餐返点放在by4
             if (StringUtils.isNotBlank(fd)) {
                 try {
@@ -3086,6 +3107,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             zdxm.setBy10("0");
             zdxm.setZddm(km + "PY-" + zdxm.getZdId());
         } else {
+            RuntimeCheck.ifBlank(zdxm.getBy10(), "开放日套餐需要指定抵扣时长");
             // 开放日套餐只在科目二
             if (StringUtils.isNotBlank(fd)) {
                 zdxm.setBy4(fd);
@@ -3098,7 +3120,6 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             } else {
                 zdxm.setBy3("0");
             }
-//            zdxm.setBy10("0");
             zdxm.setZddm(km + "KF-" + zdxm.getZdId());
         }
         zdxmService.save(zdxm);
