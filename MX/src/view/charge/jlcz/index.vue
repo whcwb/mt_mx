@@ -21,9 +21,6 @@
               <Option v-for="(item,index) in JX" :key="index" :value="item.val">{{item.val}}-{{item.by1}}</Option>
             </Select>
           </Col>
-          <!--<Col span="4">-->
-          <!--<Input size="large" v-model="param.cardNo" @on-keyup.enter="getData" clearable placeholder="请输入卡号"/>-->
-          <!--</Col>-->
           <Col span="4">
             <Input size="large" v-model="param.jlXmLike" @on-keyup.enter="getData" clearable placeholder="请输入教练姓名"/>
           </Col>
