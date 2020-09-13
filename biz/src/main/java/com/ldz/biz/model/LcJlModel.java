@@ -46,4 +46,12 @@ public class LcJlModel {
      * 教练驾校
      */
     private String jlJx;
+
+    private Integer yfd;
+
+    private Integer dfd;
+
+    private Integer zfd;
+
+    private String dm;
 }

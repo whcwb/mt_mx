@@ -1101,9 +1101,39 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         }
         List<BizLcJl> lcJls = findByCondition(queryCondition);
         if (CollectionUtils.isNotEmpty(lcJls)) {
-            Map<String, List<BizLcJl>> collect = lcJls.stream().collect(Collectors.groupingBy(BizLcJl::getJlXm));
+            String range = getRequestParamterAsString("cjsjInRange");
+            Set<String> jlids = lcJls.stream().map(BizLcJl::getJlId).collect(Collectors.toSet());
+
+            SimpleCondition fd = new SimpleCondition(BizLcFd.class);
+            fd.in(BizLcFd.InnerColumn.jlId, jlids);
+            if (StringUtils.isNotBlank(range)) {
+                String[] split = range.split(",");
+                fd.gte(BizLcFd.InnerColumn.cjsj, split[0]);
+                fd.lte(BizLcFd.InnerColumn.cjsj, split[1]);
+            }
+            List<BizLcFd> lcFds = fdService.findByCondition(fd);
+            Map<String, List<BizLcFd>> fdMap = new HashMap<>();
+            if (CollectionUtils.isNotEmpty(lcFds)) {
+                fdMap = lcFds.stream().collect(Collectors.groupingBy(BizLcFd::getJlId));
+            }
+
+            List<BizLcWxjl> wxjls = wxjlService.findByIds(jlids);
+            Map<String, BizLcWxjl> map = new HashMap<>();
+            if (CollectionUtils.isNotEmpty(wxjls)) {
+                map = wxjls.stream().collect(Collectors.toMap(BizLcWxjl::getId, p -> p));
+            }
+            Map<String, List<BizLcJl>> collect = lcJls.stream().collect(Collectors.groupingBy(BizLcJl::getJlId));
             for (String s : collect.keySet()) {
                 LcJlModel model = new LcJlModel();
+                List<BizLcFd> fds = fdMap.get(s);
+                if (CollectionUtils.isNotEmpty(fds)) {
+                    int yfd = fds.stream().filter(lcFd -> StringUtils.isNotBlank(lcFd.getQrsj())).mapToInt(BizLcFd::getFdje).sum();
+                    int dfd = fds.stream().filter(lcFd -> StringUtils.isBlank(lcFd.getQrsj())).mapToInt(BizLcFd::getFdje).sum();
+                    model.setYfd(yfd);
+                    model.setDfd(dfd);
+                    model.setZfd(yfd + dfd);
+                }
+                BizLcWxjl wxjl = map.get(s);
                 List<BizLcJl> jlList = collect.get(s);
                 // 累计时长
                 int sum = jlList.stream().mapToInt(BizLcJl::getSc).sum();
@@ -1121,6 +1151,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 model.setSc(sum);
                 model.setZj(sum1);
                 model.setZje(sum2);
+                if (wxjl != null) {
+                    model.setDm(wxjl.getDm());
+                }
+
                 list.add(model);
             }
         }

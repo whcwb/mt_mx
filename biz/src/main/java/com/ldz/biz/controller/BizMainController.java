@@ -649,39 +649,47 @@ public class BizMainController {
         List<LcJlModel> result = jlTj.getResult();
         List<Map<Integer, String>> data = new ArrayList<>();
         Map<Integer, String> map = new HashMap<>();
-        map.put(0, "姓名");
+        map.put(0, "序号");
         map.put(1, "驾校");
-        map.put(2, "时长");
-        map.put(3, "应收");
-        map.put(4, "实收（元）");
+        map.put(2, "队号");
+        map.put(3, "教练员");
+        map.put(4, "练车金额");
+        map.put(5, "返点金额");
+        map.put(6, "已返点");
+        map.put(7, "待返点");
         data.add(map);
         long zjes = 0;
         long zj = 0;
         long zsc = 0;
+        long dfds = 0;
         for (int i = 0; i < result.size(); i++) {
             LcJlModel model = result.get(i);
             Map<Integer, String> dataMap = new HashMap<>();
-            dataMap.put(0, model.getJlXm());
+            dataMap.put(0, i + 1 + "");
             dataMap.put(1, model.getJlJx());
-            Integer l = model.getSc();
-            if (l / 60 == 0) {
-                dataMap.put(2, l + "分");
-            } else {
-                dataMap.put(2, (l / 60) + "时" + (l % 60) + "分");
-            }
-            dataMap.put(3, model.getZje() + "");
+            dataMap.put(2, model.getDm());
+            dataMap.put(3, model.getJlXm() + "");
             dataMap.put(4, model.getZj() + "");
+            dataMap.put(5, model.getZfd() == null ? "0" : model.getZfd() + "");
+            dataMap.put(6, model.getYfd() == null ? "0" : model.getYfd() + "");
+            dataMap.put(7, model.getDfd() == null ? "0" : model.getDfd() + "");
             zj += model.getZj();
-            zjes += model.getZje();
-            zsc += model.getSc();
+            zjes += model.getZfd() == null ? 0 : model.getZfd();
+            zsc += model.getYfd() == null ? 0 : model.getYfd();
+            dfds += model.getDfd() == null ? 0 : model.getDfd();
+//            zjes += model.getZje();
+//            zsc += model.getSc();
             data.add(dataMap);
         }
         Map<Integer, String> dataMap = new HashMap<>();
         dataMap.put(0, "合计:");
         dataMap.put(1, "");
-        dataMap.put(2, zsc + "");
-        dataMap.put(3, zjes + "");
+        dataMap.put(2, "");
+        dataMap.put(3, "");
         dataMap.put(4, zj + "");
+        dataMap.put(5, zjes + "");
+        dataMap.put(6, zsc + "");
+        dataMap.put(7, dfds + "");
         data.add(dataMap);
         response.setContentType("application/msexcel");
         request.setCharacterEncoding("UTF-8");
