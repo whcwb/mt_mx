@@ -1,11 +1,14 @@
 package com.ldz.biz.model;
 
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 
 @Table(name = "biz_lc_wxjl")
+@Data
 public class BizLcWxjl implements Serializable {
     @Id
     private String id;
@@ -49,141 +52,13 @@ public class BizLcWxjl implements Serializable {
     @Column(name = "JL_LX")
     private String jlLx;
 
+    @Column(name = "DH")
+    private String dh;
+
+    @Column(name = "DM")
+    private String dm;
+
     private static final long serialVersionUID = 1L;
-
-    public String getJlLx() {
-        return jlLx;
-    }
-
-    public void setJlLx(String jlLx) {
-        this.jlLx = jlLx;
-    }
-
-    public int getCardJe() {
-        return cardJe;
-    }
-
-    public void setCardJe(int cardJe) {
-        this.cardJe = cardJe;
-    }
-
-    public int getYe() {
-        return ye;
-    }
-
-    public void setYe(int ye) {
-        this.ye = ye;
-    }
-
-    public String getCardNo() {
-        return cardNo;
-    }
-
-    public void setCardNo(String cardNo) {
-        this.cardNo = cardNo;
-    }
-
-    public String getPayType() {
-        return payType;
-    }
-
-    public void setPayType(String payType) {
-        this.payType = payType;
-    }
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
-    }
-
-    public String getJlLxdh() {
-        return jlLxdh;
-    }
-
-    public void setJlLxdh(String jlLxdh) {
-        this.jlLxdh = jlLxdh;
-    }
-
-    /**
-     * @return id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * 获取教练姓名
-     *
-     * @return jl_xm - 教练姓名
-     */
-    public String getJlXm() {
-        return jlXm;
-    }
-
-    /**
-     * 设置教练姓名
-     *
-     * @param jlXm 教练姓名
-     */
-    public void setJlXm(String jlXm) {
-        this.jlXm = jlXm;
-    }
-
-    /**
-     * 获取教练所属驾校
-     *
-     * @return jl_jx - 教练所属驾校
-     */
-    public String getJlJx() {
-        return jlJx;
-    }
-
-    /**
-     * 设置教练所属驾校
-     *
-     * @param jlJx 教练所属驾校
-     */
-    public void setJlJx(String jlJx) {
-        this.jlJx = jlJx;
-    }
-
-    /**
-     * @return cjr
-     */
-    public String getCjr() {
-        return cjr;
-    }
-
-    /**
-     * @param cjr
-     */
-    public void setCjr(String cjr) {
-        this.cjr = cjr;
-    }
-
-    /**
-     * @return cjsj
-     */
-    public String getCjsj() {
-        return cjsj;
-    }
-
-    /**
-     * @param cjsj
-     */
-    public void setCjsj(String cjsj) {
-        this.cjsj = cjsj;
-    }
 
     public enum InnerColumn {
         id("id"),
@@ -196,7 +71,9 @@ public class BizLcWxjl implements Serializable {
         cardNo("card_no"),
         payType("pay_type"),
         pwd("pwd"),
-        jlLx("JL_LX");
+        jlLx("JL_LX"),
+        dh("DH"),
+        dm("DM");
 
         private final String column;
 
