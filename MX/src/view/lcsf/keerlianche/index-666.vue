@@ -106,25 +106,10 @@
                   <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm!='K2KF'">{{it.by9}}
                   </Option>
                 </Select>
-                <!--              <CheckboxGroup v-model="formData.lcFy">-->
-                <!--                <Checkbox label="900"></Checkbox>-->
-                <!--              </CheckboxGroup>-->
               </FormItem>
             </div>
           </Col>
         </Row>
-        <!--        <Row :gutter="32" style="padding-top: 5px" v-if="formData.lcLx == '20'">-->
-        <!--          <Col span="12">-->
-        <!--            <FormItem label="计费套餐" label-position="top">-->
-        <!--              <Select v-model="formData.lcFy" style="width:200px">-->
-        <!--                <Option v-for="(it,index) in fylist" :value="it.zddm" :key="index" v-if="it.zddm!=''">{{it.zddm}}</Option>-->
-        <!--              </Select>-->
-        <!--              <CheckboxGroup v-model="formData.lcFy">-->
-        <!--                <Checkbox label="900"></Checkbox>-->
-        <!--              </CheckboxGroup>-->
-        <!--            </FormItem>-->
-        <!--          </Col>-->
-        <!--        </Row>-->
         <Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm == 'K2PY'">
           <Col span="12">
             <FormItem label="安全员" label-position="top">
@@ -235,31 +220,31 @@
 
 
 <script>
-  import carCard from '../comp/carCard'
-  import jlwh from '../comp/jlWh'
-  import addjl from '../comp/addJL'
-  import carStatistics from '../statistics/carStatistics'
-  import keyypd from '../comp/keyypd'
-  import print from '../comp/print'
-  import yydrawer from './yydrawer'
-  import yyModel from './yyModel'
-  import radioCar from '../comp/RadioCar'
-  //还车
-  import giveCar from '../comp/readCard'
-  import {mapMutations} from 'vuex'
-  import kemxjl from "./kemxjl";
+import carCard from '../comp/carCard'
+import jlwh from '../comp/jlWh'
+import addjl from '../comp/addJL'
+import carStatistics from '../statistics/carStatistics'
+import keyypd from '../comp/keyypd'
+import print from '../comp/print'
+import yydrawer from './yydrawer'
+import yyModel from './yyModel'
+import radioCar from '../comp/RadioCar'
+//还车
+import giveCar from '../comp/readCard'
+import {mapMutations} from 'vuex'
+import kemxjl from "./kemxjl";
 
-  export default {
-    name: "index",
-    components: {
-      carCard, jlwh, addjl,
-      print, radioCar, carStatistics,
-      keyypd, yydrawer, yyModel,kemxjl
-    },
-    data() {
-      return {
-        tcIndex: 0,
-        columns2: [
+export default {
+  name: "index",
+  components: {
+    carCard, jlwh, addjl,
+    print, radioCar, carStatistics,
+    keyypd, yydrawer, yyModel, kemxjl
+  },
+  data() {
+    return {
+      tcIndex: 0,
+      columns2: [
           {
             type: 'index',
             width: 60,

@@ -38,29 +38,9 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem prop="by8" label='训练车型:'>
-              <CheckboxGroup v-model="social" :size="'small'" @on-change="changeCx">
-                <Checkbox label="C1">
-                  <span>C1</span>
-                </Checkbox>
-                <Checkbox label="C2">
-                  <span>C2</span>
-                </Checkbox>
-                <Checkbox label="B1">
-                  <span>B1</span>
-                </Checkbox>
-                <Checkbox label="B2">
-                  <span>B2</span>
-                </Checkbox>
-                <Checkbox label="A1">
-                  <span>A1</span>
-                </Checkbox>
-                <Checkbox label="A2">
-                  <span>A2</span>
-                </Checkbox>
-                <Checkbox label="A3">
-                  <span>A3</span>
-                </Checkbox>
+            <FormItem prop="cx" label='训练车型:'>
+              <CheckboxGroup v-model="cx" size="small" @on-change="checkAllGroupChange">
+                <Checkbox v-for="item in cxList" :label="item.label" :value="item.label">{{ item.label }}</Checkbox>
               </CheckboxGroup>
             </FormItem>
           </Col>
@@ -100,6 +80,7 @@ export default {
       showModal: true,
       ruleInline: {},
       tcList: [{val: '00', label: '计时'}, {val: '10', label: '按把'}, {val: '20', label: '培优'}],
+      cxList: [{label: 'C1'}, {label: 'C2'}, {label: 'B2'}, {label: 'A1'}, {label: 'A2'}, {label: 'A3'}],
       param: {
         zdmc: '',
         by5: '',
@@ -108,8 +89,10 @@ export default {
         km: 'K3',
         fd: '',
         by10: '',
-        qz: ''
+        qz: '',
+        cx: ''
       },
+      cx: [],
       JGList: [],
       social: []
     }
@@ -119,8 +102,8 @@ export default {
     this.getJgs();
   },
   methods: {
-    changeCx(val) {
-      console.log("val", val)
+    checkAllGroupChange(val) {
+      this.param.cx = val.join(',')
     },
     selectBy5(val) {
       if (val == '00') {
