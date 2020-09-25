@@ -137,10 +137,10 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         Map<String, SysZdxm> map = items.stream().collect(Collectors.toMap(SysZdxm::getZddm, p -> p));
 
         pageInfo.getList().forEach(bizLcJl -> {
-            SimpleCondition condition = new SimpleCondition(BizLcJlXy.class);
-            condition.eq(BizLcJlXy.InnerColumn.lcJlId, bizLcJl.getId());
-            List<BizLcJlXy> xies = xyService.findByCondition(condition);
-            bizLcJl.setXyList(xies);
+//            SimpleCondition condition = new SimpleCondition(BizLcJlXy.class);
+//            condition.eq(BizLcJlXy.InnerColumn.lcJlId, bizLcJl.getId());
+//            List<BizLcJlXy> xies = xyService.findByCondition(condition);
+//            bizLcJl.setXyList(xies);
 
             // 计算下支付方式
             if (bizLcJl.getKfje() != null && bizLcJl.getKfje() > 0) {
@@ -2664,9 +2664,13 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
     @Override
     public void pagerExcelAll(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        String lx = getRequestParamterAsString("lx");
         String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
         String fileName = time + "-明细统计";
         LimitedCondition condition = getQueryCondition();
+        if (StringUtils.isNotBlank(lx)) {
+            condition.eq(BizLcJl.InnerColumn.jlLx, lx);
+        }
         condition.and().andCondition(" jssj is not null and jssj != ''");
         PageInfo<BizLcJl> info = findPage(page, condition);
         List<BizLcJl> list = info.getList();
