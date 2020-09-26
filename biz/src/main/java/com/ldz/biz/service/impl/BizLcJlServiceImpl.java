@@ -467,6 +467,16 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         if (StringUtils.isBlank(entity.getZgXm())) {
             entity.setZgXm(" ");
         }
+        entity.setZdxm(zdxm);
+        if (zdxm.getLjjs().equals("1")) {
+            try {
+                ApiResponse<BizLcJl> response = updateJssj(entity.getId(), entity.getCardNo(), entity.getLcKm());
+                BizLcJl result = response.getResult();
+                return ApiResponse.success(JSON.toJSONString(result));
+            } catch (Exception e) {
+                return ApiResponse.fail("数据异常,请联系管理员处理");
+            }
+        }
         return ApiResponse.success(JsonUtil.toJson(entity));
     }
 
@@ -622,14 +632,14 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         // 更新这辆车的状态
         if (StringUtils.equals(lcJl.getLcKm(), "3") || StringUtils.isNotBlank(lcJl.getLcClId())) {
             BizLcCl lcCl = clService.findById(lcJl.getLcClId());
-            if (StringUtils.equals(lcCl.getClZt(), "01")) {
+//            if (StringUtils.equals(lcCl.getClZt(), "01")) {
                 lcCl.setClZt("00");
                 lcCl.setZgId(null);
                 lcCl.setZgXm(null);
                 lcCl.setXgr(yh.getZh() + "-" + yh.getXm());
                 lcCl.setXgsj(DateUtils.getNowTime());
                 clService.update(lcCl);
-            }
+//            }
         }
         lcJl.setJssj(s);
         lcJl.setXgr(yh.getZh() + "-" + yh.getXm());
@@ -1436,9 +1446,12 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         if (StringUtils.isNotBlank(by5)) {
             condition.eq(SysZdxm.InnerColumn.by5, by5);
         }
-        condition.setOrderByClause("zddm asc");
+        condition.setOrderByClause("substr(zddm,1,4) asc,cast(zdmc as unsigned ) asc");
         List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
-        return ApiResponse.success(zdxms);
+        List<SysZdxm> sysZdxms = zdxms.stream().filter(sysZdxm -> StringUtils.contains(sysZdxm.getZddm(), "JS")).collect(Collectors.toList());
+        List<SysZdxm> zdxmList = zdxms.stream().filter(sysZdxm -> !StringUtils.contains(sysZdxm.getZddm(), "JS")).collect(Collectors.toList());
+        sysZdxms.addAll(zdxmList);
+        return ApiResponse.success(sysZdxms);
     }
 
     @Override

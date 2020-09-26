@@ -10,8 +10,12 @@ import java.util.List;
  * auther chenwei
  * create at 2018/2/27
  */
-public interface ZdxmService extends BaseService<SysZdxm,String>{
+public interface ZdxmService extends BaseService<SysZdxm, String> {
     List<SysZdxm> findByTypeCode(String typeCode);
+
     List<SysZdxm> findByZdlms(List<String> zdlms);
+
     ApiResponse<String> add(SysZdxm zdxm);
+
+    ApiResponse<List<SysZdxm>> queryTc();
 }

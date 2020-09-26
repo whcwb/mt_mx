@@ -1,15 +1,17 @@
 package com.ldz.sys.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.sys.model.SysZdxm;
 import com.ldz.sys.service.ZdxmService;
 import com.ldz.util.bean.ApiResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 平台字典
@@ -26,10 +28,15 @@ public class ZdxmController extends BaseController<SysZdxm, String> {
     }
 
     @Override
-    @RequestMapping(value="/save", method={RequestMethod.POST})
+    @RequestMapping(value = "/save", method = {RequestMethod.POST})
     public ApiResponse<String> save(SysZdxm entity) {
         this.zdxmService.add(entity);
         return ApiResponse.success();
+    }
+
+    @GetMapping("/queryTc")
+    public ApiResponse<List<SysZdxm>> queryTc() {
+        return zdxmService.queryTc();
     }
 
 }

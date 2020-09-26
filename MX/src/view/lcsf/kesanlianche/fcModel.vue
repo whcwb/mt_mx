@@ -109,22 +109,22 @@
 </template>
 
 <script>
-  import addjl from '../comp/addJL'
-  import jlwh from '../comp/jlWh'
-  import giveCar from '../comp/readCard'
-  import radioCar from '../comp/RadioCar'
+import addjl from '../comp/addJL'
+import jlwh from '../comp/jlWh'
+import giveCar from '../comp/readCard'
+import radioCar from '../comp/RadioCar'
 
-  export default {
-    name: "fcdrawer",
-    components: {addjl, jlwh, radioCar},
+export default {
+  name: "fcdrawer",
+  components: {addjl, jlwh, radioCar},
 
-    data() {
-      return {
-        compName: '',
-        DrawerVal: false,
-        giveCar: giveCar,
+  data() {
+    return {
+      compName: '',
+      DrawerVal: false,
+      giveCar: giveCar,
 
-        lcLxList: [],
+      lcLxList: [],
         showCoachSelector: true,
         wxjldis: true,
         JXCode: 'ZDCLK1017',
@@ -328,6 +328,7 @@
         this.formData.notShowLoading = 'true';
         this.$http.post('/api/lcjl/save', this.formData).then((res) => {
           if (res.code == 200) {
+            alert('-----------')
             this.DrawerVal = false;
             this.$emit('getCarList');
             this.AMess = [{}];
@@ -337,6 +338,7 @@
             this.formData.lcLx = '00';
             this.$Message.info('发车成功');
             this.util.getPageData(this.$parent)
+
           } else {
             this.swal({
               title: res.message,
@@ -344,8 +346,7 @@
               showCancelButton: false,
               confirmButtonText: '确定',
             })
-            //this.formData.cardNo = ''
-            //this.close()
+
           }
         })
       },

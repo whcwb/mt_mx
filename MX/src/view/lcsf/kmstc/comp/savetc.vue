@@ -55,6 +55,14 @@
               <Input v-model="param.fd" placeholder="请输入返点金额"> </Input>
             </FormItem>
           </Col>
+          <Col span="12" v-if="param.by5=='10'">
+            <FormItem prop="ljjs" label='是否立即结算:'>
+              <RadioGroup v-model="param.ljjs">
+                <Radio label="0" value="0">否</Radio>
+                <Radio label="1" value="1">是</Radio>
+              </RadioGroup>
+            </FormItem>
+          </Col>
         </div>
       </Form>
       <div slot='footer'>
@@ -90,7 +98,8 @@ export default {
         fd: '',
         by10: '',
         qz: '',
-        cx: ''
+        cx: '',
+        ljjs: '0'
       },
       cx: [],
       JGList: [],
@@ -140,10 +149,8 @@ export default {
           let val = {val: v.jgdm, label: v.jgmc}
           this.JGList.push(val)
         }
-
       })
     }
-
   }
 }
 </script>

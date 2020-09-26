@@ -68,6 +68,18 @@
                 <Button type="error" @click="deleteTc(item)">删除</Button>
               </Col>
             </Row>
+            <Row style="margin-top: 16px;" v-if="item.zddm.includes('AB')">
+              <Col span="24">
+                <i-switch v-model="item.ljjs" @on-change="confirm(item)"></i-switch>
+                <span>启用【立即结算】</span>
+              </Col>
+            </Row>
+            <Row style="margin-top: 16px;" v-else>
+              <Col span="24">
+                <i-switch v-model="item.ljjs" disabled @on-change="confirm(item)"></i-switch>
+                <span>启用【立即结算】</span>
+              </Col>
+            </Row>
             <Row style="margin-top: 16px;">
               <Col span="24">
                 <i-switch v-model="item.by2" @on-change="confirm(item)"></i-switch>
@@ -115,7 +127,6 @@ export default {
       param: {
         zdlmdm: 'ZDCLK1045',
         by1: '科三',
-        orderBy: 'jgdm asc,zddm asc',
         jgdmLike: '',
         by5: ''
       }
@@ -172,6 +183,7 @@ export default {
         item.by2 = item.by2 ? '1' : '0'
         item.by6 = item.by6 ? '1' : '0'
         item.by7 = item.by7 ? '1' : '0'
+        item.ljjs = item.ljjs ? '1' : '0'
         this.$http.post(this.apis.DICTIONARY_LIST.CHANGE, item).then((res) => {
           if (res.code == 200) {
             this.$Message.success(res.message);
@@ -183,7 +195,7 @@ export default {
       },
       getData() {
         this.list = []
-        this.$http.get(this.apis.DICTIONARY_LIST.list, {params: this.param}).then((res) => {
+        this.$http.get('/api/zdxm/queryTc', {params: this.param}).then((res) => {
           if (res.code == 200 && res.result) {
             this.list = res.result
             for (let r of this.list) {
@@ -194,6 +206,7 @@ export default {
               r.by2 = !(r.by2 === '0' || r.by2 === '')
               r.by6 = !(r.by6 === '0' || r.by6 === '')
               r.by7 = !(r.by7 === '0' || r.by7 === '')
+              r.ljjs = !(r.ljjs === '0' || r.ljjs === '')
             }
           }
         })

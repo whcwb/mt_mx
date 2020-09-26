@@ -2,8 +2,8 @@
   <div class="boxbackborder box_col" style="padding-top:16px">
     <div style="display: flex;justify-content: space-between;align-items: center">
     <span
-      style="cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
-      @click="toPrint">收款凭证</span>
+        style="cursor: pointer;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
+        @click="toPrint">收款凭证</span>
       <div style="margin-left: 70%">
         <Select v-if="JGList.length > 1" v-model="param.jgdmLike" @on-change="v.util.initTable(v)">
           <Option v-for="item in JGList" :value="item.val">{{ item.label }}</Option>
@@ -13,11 +13,20 @@
                   :buttons="searchBarButtons" @print="componentName = 'print'"
                   @exportExcel="exportExcel"></search-bar>
     </div>
-    <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
+    <Table :columns="tableColumns" :height="40"></Table>
+    <div>
+      <virtual-list style="height: 660px; overflow-y: auto;"
+                    :data-key="'id'"
+                    :data-sources="pageData"
+                    :data-component="itemComponent"
+                    @child-event="parentevent"
+      />
+    </div>
+    <!--    <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>-->
     <Row>
       <Col span="24" align="right">
         <div style="font-size: 15px;font-weight: 600">
-          实收合计：<span style="color: #ed3f14"> {{addmoney|GS}} </span> 元
+          实收合计：<span style="color: #ed3f14"> {{ addmoney|GS }} </span> 元
         </div>
       </Col>
     </Row>
@@ -32,24 +41,27 @@ import mixin from '@/mixins'
 //驾校统计
 import jxtj from '../jxtj'
 import printSignUp from './comp/printSignUp'
+import virtualList from 'vue-virtual-scroll-list'
+import Item from './comp/Item'
 
 export default {
   name: 'char',
-  components: {print, jxtj, printSignUp},
+  components: {print, jxtj, printSignUp, virtualList},
   mixins: [mixin],
   data() {
     return {
       v: this,
+      itemComponent: Item,
       addmoney: 0,
       apiRoot: this.apis.lcjl,
       choosedItem: null,
       componentName: '',
-        hisPrintMess: {},
-        JGList: [{val: '100', label: '所有考场'}],
-        searchBarButtons: [],
-        dateRange: {
-          kssj: ''
-        },
+      hisPrintMess: {},
+      JGList: [{val: '100', label: '所有考场'}],
+      searchBarButtons: [],
+      dateRange: {
+        kssj: ''
+      },
         tableColumns: [
           {
             type: 'index2', minWidth: 60, align: 'center', title: '序号',
@@ -74,9 +86,9 @@ export default {
             ],
             filterMultiple: false,
             filterRemote(value, row) {
-              var _self = this.$options.parent.parent
+              var _self = this
               _self.param.lcKm = value[0] ? value[0] : ''
-              _self.util.getPageData(_self)
+              _self.getPageData()
             },
           },
           {
@@ -93,9 +105,9 @@ export default {
             ],
             filterMultiple: false,
             filterRemote(value, row) {
-              var _self = this.$options.parent.parent
+              var _self = this
               _self.param.lx = value[0] ? value[0] : ''
-              _self.util.getPageData(_self)
+              _self.getPageData()
             },
           },
           {title: '教练员', align: 'center', key: 'jlXm', minWidth: 80},
@@ -113,14 +125,14 @@ export default {
             ],
             filterMultiple: false,
             filterRemote(value, row) {
-              var _self = this.$options.parent.parent
+              var _self = this
               if (value[0] === '0') {
                 _self.param.jlCxIn = 'A,A1,A2,A3,B,B1,B2'
               } else if (value[0] === '1') {
                 _self.param.jlCxIn = 'C,C1,C2'
               }
               else _self.param.jlCxIn = ''
-              _self.util.getPageData(_self)
+              _self.getPageData()
             },
           },
           {
@@ -146,12 +158,12 @@ export default {
             filterMultiple: false,
             filterRemote(value, row) {
 
-              var _self = this.$options.parent.parent
+              var _self = this
               if (value[0]) {
                 _self.param.zddmLike = value;
               }
               else _self.param.zddmLike = ''
-              _self.util.getPageData(_self)
+              _self.getPageData()
             },
             render: (h, p) => {
               if (p.row.zdxm != '') {
@@ -209,19 +221,19 @@ export default {
             }
           },
         ],
-        pageData: [],
-        specialPageSize: 9999,
-        param: {
-          orderBy: 'jssj desc',
-          notShowLoading: 'true',
-          total: 0,
-          zhLike: '',
-          pageNum: 1,
-          pageSize: 8,
-          zfzt: '10',
-          lcKm: '',
-          jgdmLike: '100'
-        },
+      pageData: [],
+      specialPageSize: 99999,
+      param: {
+        orderBy: 'jssj desc',
+        notShowLoading: 'true',
+        total: 0,
+        zhLike: '',
+        pageNum: 1,
+        pageSize: 99999,
+        zfzt: '10',
+        lcKm: '',
+        jgdmLike: '100'
+      },
       }
     },
     created() {
@@ -233,10 +245,26 @@ export default {
         this.param.kssjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59'
       }
       this.getJgsByOrgCode();
-      this.util.initTable(this);
+      this.getPageData();
     },
     methods: {
+      getPageData() {
+        this.$http.get('/api/lcjl/pager', {params: this.param}).then(res => {
+          if (res.code == 200) {
+            this.pageData = res.page.list
+            this.addmoney = 0
+            var v = this
+            for (let r of this.pageData) {
+              r.sc = this.parseTime(r.sc)
+              r.kssj = r.kssj.substring(0, 16)
+              r.jssj = r.jssj.substring(0, 16)
+              v.addmoney = v.addmoney + Number(r.xjje);
+            }
+          }
+        })
+      },
       getJgsByOrgCode() {
+
         this.$http.get("/api/lccl/getJgsByOrgCode").then(res => {
           if (res.result.length <= 1) {
             this.JGList = []

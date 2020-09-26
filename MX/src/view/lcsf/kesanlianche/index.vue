@@ -303,32 +303,32 @@
 
 
 <script>
-  import carCard from '../comp/carCard'
-  import jlwh from '../comp/jlWh'
-  import addjl from '../comp/addJL'
-  import carStatistics from '../statistics/carStatistics'
-  import keyypd from '../comp/keyypd'
-  import print from '../comp/print'
-  import yydrawer from './yydrawer'
-  import yyModel from './yyModel'
-  import radioCar from '../comp/RadioCar'
-  //还车
-  import giveCar from '../comp/readCard'
-  import {mapMutations} from 'vuex'
-  import printNew from '../../../components/printNew'
-  import Cookies from 'js-cookie'
+import carCard from '../comp/carCard'
+import jlwh from '../comp/jlWh'
+import addjl from '../comp/addJL'
+import carStatistics from '../statistics/carStatistics'
+import keyypd from '../comp/keyypd'
+import print from '../comp/print'
+import yydrawer from './yydrawer'
+import yyModel from './yyModel'
+import radioCar from '../comp/RadioCar'
+//还车
+import giveCar from '../comp/readCard'
+import {mapMutations} from 'vuex'
+import printNew from '../../../components/printNew'
+import Cookies from 'js-cookie'
 
-  export default {
-    name: "index",
-    components: {
-      carCard, jlwh, addjl,
-      print, radioCar, carStatistics,
-      keyypd, yydrawer, yyModel, printNew
-    },
-    data() {
-      return {
-        Pmess: {},
-        AMess: [
+export default {
+  name: "index",
+  components: {
+    carCard, jlwh, addjl,
+    print, radioCar, carStatistics,
+    keyypd, yydrawer, yyModel, printNew
+  },
+  data() {
+    return {
+      Pmess: {},
+      AMess: [
           {}
         ],
         tcIndex: 0,
@@ -815,22 +815,6 @@
                             }
                           }
                         })
-                        // console.log(p.row)
-                        // console.log(ifCard)
-
-                        // var ifCard = p.row.zdxm.by2 === '0' ? false : true
-                        // if (ifCard) {
-                        //   if (!!window.ActiveXObject || "ActiveXObject" in window) {
-                        //
-                        //   } else {
-                        //     this.swal({
-                        //       title: '已启用刷卡模式，请使用IE10以上的浏览器',
-                        //       type: 'warning',
-                        //       confirmButtonText: '关闭'
-                        //     })
-                        //     return
-                        //   }
-                        // }
 
                         this.DrawerVal = true;
                         this.showFQfzkp = false;
@@ -1118,8 +1102,6 @@
             dxarr.push(AMess[i].xyDh)
             sfzarr.push(AMess[i].bz)
             if (i == arrAMess) {
-              console.log(dxarr.join(','))
-              console.log(messarr.join(','))
               this.formData.xyXm = messarr.join(',');
               this.formData.xyDh = dxarr.join(',');
               this.formData.xyZjhm = sfzarr.join(',');
@@ -1128,12 +1110,9 @@
 
         }
         return a
-        // AMess.forEach((item, index) => {
-        //     console.log(item.xyXm);
-        //
-        // })
       },
       scXY(e) {
+        h
         this.AMess = [{}];
         e = parseInt(e);
         for (let i = 1; i < e; i++) {
@@ -1142,23 +1121,16 @@
       },
       getSafemanList() {
         this.$http.post('/api/zgjbxx/getAqy', {notShowLoading: 'true'}).then((res) => {
-          if (res.code == 200) {
+          if (res.code == 200 || res.result) {
             res.result.forEach((item, index) => {
               let py = this.util.parsePY(item.xm)
               item.label = item.xm + ' [' + py + ']'
               item.value = item.id
               if (index == res.result.length - 1) {
-                console.log("--------------")
                 this.sfaemanlist = res.result
-                console.log(res.result + "====");
-                console.log(this.sfaemanlist[0].label + "+++++");
               }
             })
             this.formData.zgId = ''
-            console.log(this.sfaemanlist);
-            // this.$nextTick()
-          } else {
-            this.$Message.info(res.message);
           }
         })
       },
@@ -1592,17 +1564,13 @@
         })
       },
       save() {//发车
-
         this.formData.notShowLoading = 'true'
-
         var ifCard = false;
         this.fylist.map((val, index, arr) => {
           if (val.zddm === this.formData.zddm) {
             ifCard = val.by2 === '0' ? false : true
           }
         })
-
-        console.log(this.formData.cardNo, '455')
 
         if (!ifCard || (ifCard && (this.formData.cardNo != '' && this.formData.cardNo != undefined && this.formData.cardNo != null))) {
           //判断是否需要刷卡 by2 0不刷 1刷
@@ -1615,16 +1583,10 @@
                 this.formData = {zgId: ''};
                 this.getSafemanList()
                 this.AMess = [{}];
-                // this.swal({
-                //   title: '发车成功',
-                //   type: 'success',
-                //   confirmButtonText: '确定',
-                // })
                 this.carMess = null
                 this.$refs.re.clearSingleSelect();
               } else {
                 this.formData.cardNo = '';
-                console.log(this.formData.cardNo)
                 this.swal({
                   title: res.message,
                   type: 'warning'
@@ -1633,13 +1595,9 @@
             }).catch(err => {
             })
           }
-
-        }
-        else {
+        } else {
           var v = this
           this.giveCar.readCardChrome((key, mess) => {
-
-            console.log(key, mess)
             if (mess === 'None') {
               this.swal({
                 title: '请重新放置卡片',
@@ -1667,25 +1625,8 @@
                 }
               })
             } else {
-              // this.AF.carCard('2', mess, (type, res) => {
-              //   console.log('**********', res);
               this.formData.cardNo = mess;
               this.save()
-              // if (type) {
-              //   if (res.result) {
-              //     //如果车辆已经绑卡   返回车辆信息
-              //     v.carMess = res.result
-              //     this.formData.lcClId = v.carMess.id
-              //   }
-              //   this.DrawerVal = true;
-              //   v.showFQfzkp = false;
-              //   this.formData.cardNo = mess;
-              //   v.save()
-              // } else {
-              //   this.DrawerVal = false;
-              //   return
-              // }
-              // })
             }
           })
 
