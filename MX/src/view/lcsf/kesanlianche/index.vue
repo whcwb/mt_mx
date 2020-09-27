@@ -649,7 +649,7 @@ export default {
           // {title: '凭证号', key: 'pz', minWidth: 150, align: 'center',},
 
           {
-            title: '补打', minWidth: 60, align: 'center', render: (h, p) => {
+            title: '补打', minWidth: 60, align: 'center', fixed: 'right', render: (h, p) => {
               let buttons = [];
               if (p.row.zfzt == '10') {
                 buttons.push(this.util.buildButton(this, h, 'success', 'ios-print', '补打', () => {

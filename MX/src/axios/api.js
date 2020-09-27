@@ -1,5 +1,5 @@
-// let ajaxUrl = 'http://127.0.0.1:8080';
-let ajaxUrl = 'http://47.110.39.144:8083';
+let ajaxUrl = 'http://127.0.0.1:8080';
+// let ajaxUrl = 'http://47.110.39.144:8083';
 export default {
   NETWORK_ERR_STR: '网络加载异常!',
   url: ajaxUrl,

@@ -33,8 +33,15 @@ import session from './libs/session';
 import pagerTit from './components/header'
 import NoData from './components/NoDataPage'
 import newTree from './components/newTree'
+import VirtualScroller from 'vue-virtual-scroller'
 //兼容IE11
 import 'babel-polyfill'
+import searchBar from './view/components/searchBar'
+import tableArea from './view/components/tableArea'
+import formItems from './view/components/formItems'
+import table from './components/table'
+
+Vue.component('virtual-scroller', VirtualScroller)
 // import '@/mock'
 // 实际打包时应该不引入mock
 // import env from '../config/env'
@@ -42,9 +49,9 @@ import 'babel-polyfill'
 // env === 'development' ? require('@/mock') : ''
 
 Vue.use(iView, {
-  i18n: (key, value) => i18n.t(key, value),
-  transfer:true,
-  size:"large",
+    i18n: (key, value) => i18n.t(key, value),
+    transfer: true,
+    size: "large",
   'split-panels':true
 })
 
@@ -87,11 +94,8 @@ Vue.component('pagerTit',pagerTit)
 Vue.component('NoData',NoData)
 Vue.component('newTree',newTree)
 
-import searchBar from './view/components/searchBar'
 Vue.component('searchBar',searchBar)
-import tableArea from './view/components/tableArea'
 Vue.component('tableArea',tableArea)
-import formItems from './view/components/formItems'
 Vue.component('formItems',formItems)
 
 Date.prototype.format = function (format) {
@@ -114,7 +118,6 @@ Date.prototype.format = function (format) {
 }
 
 
-import table from './components/table'
 Vue.component('tab',table)
 /* eslint-disable no-new */
 window.vueObject = new Vue({
