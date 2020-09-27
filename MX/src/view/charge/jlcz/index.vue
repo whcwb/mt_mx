@@ -617,7 +617,6 @@ export default {
     },
     methods: {
       exportExcel() {
-        alert('aaaaa')
         let p = '';
         for (let k in this.param) {
           p += '&' + k + '=' + this.param[k];

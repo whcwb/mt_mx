@@ -1,6 +1,7 @@
 package com.ldz.biz.controller;
 
 
+import com.github.pagehelper.Page;
 import com.ldz.biz.model.BizJlCz;
 import com.ldz.biz.model.BizLcJl;
 import com.ldz.biz.model.LcJlModel;
@@ -268,6 +269,14 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
     @GetMapping("/getKfDj")
     public ApiResponse<String> getKfDj(String jlId) {
         return service.getKfDj(jlId);
+    }
+
+    /**
+     * 练车明细导出
+     */
+    @GetMapping("/exportMx")
+    public void exportMx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        service.exportMx(page, request, response);
     }
 
 
