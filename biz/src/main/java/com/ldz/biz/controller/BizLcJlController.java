@@ -354,4 +354,12 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         service.exportXymx(page, request, response);
     }
 
+    /**
+     * 练车明细导出
+     */
+    @GetMapping("/exportMx")
+    public void exportMx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        service.exportMx(page, request, response);
+    }
+
 }

@@ -3147,4 +3147,66 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         return ApiResponse.deleteSuccess();
     }
 
+    @Override
+    public void exportMx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        LimitedCondition condition = getQueryCondition();
+        condition.setOrderByClause(" kssj asc");
+        PageInfo<BizLcJl> info = findPage(page, condition);
+        List<Map<Integer, String>> data = new ArrayList<>();
+        Map<Integer, String> titleMap = new HashMap<>();
+        titleMap.put(0, "序号");
+        titleMap.put(1, "日期");
+        titleMap.put(2, "姓名");
+        titleMap.put(3, "身份证号码");
+        titleMap.put(4, "电话号码");
+        titleMap.put(5, "车型");
+        titleMap.put(6, "陪练员");
+        titleMap.put(7, "陪考员");
+        titleMap.put(8, "驾校名称");
+        titleMap.put(9, "是否合格");
+        titleMap.put(10, "培优费");
+        data.add(titleMap);
+        List<BizLcJl> list = info.getList();
+        if (CollectionUtils.isNotEmpty(list)) {
+            Set<String> zddms = list.stream().map(BizLcJl::getZddm).collect(Collectors.toSet());
+            SimpleCondition djcondition = new SimpleCondition(SysZdxm.class);
+            djcondition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK1045");
+            djcondition.in(SysZdxm.InnerColumn.zddm, zddms);
+            List<SysZdxm> items = zdxmService.findByCondition(djcondition);
+            // 根据套餐代码分组
+            Map<String, SysZdxm> zdmap = items.stream().collect(Collectors.toMap(SysZdxm::getZddm, p -> p));
+
+            int xh = 0;
+            for (int i = 0; i < list.size(); i++) {
+                BizLcJl jl = list.get(i);
+                String[] split = jl.getXyXm().split(",");
+                String[] dhs = jl.getXyDh().split(",");
+                String[] zjhms = jl.getXyZjhm().split(",");
+                for (int i1 = 0; i1 < split.length; i1++) {
+                    Map<Integer, String> dataMap = new HashMap<>();
+                    xh++;
+                    dataMap.put(0, xh + "");
+                    dataMap.put(1, jl.getKssj().substring(0, 10).replaceAll("-", "."));
+                    dataMap.put(2, split[i1].split("-")[0]);
+                    dataMap.put(3, zjhms[i1]);
+                    dataMap.put(4, dhs[i1]);
+                    dataMap.put(5, split[i1].split("-")[1]);
+                    dataMap.put(6, "");
+                    dataMap.put(7, "");
+                    dataMap.put(8, jl.getJlXm());
+                    dataMap.put(9, "");
+                    SysZdxm zdxm = zdmap.get(jl.getZddm());
+                    dataMap.put(10, zdxm.getBy9() + "-" + zdxm.getBy3() + "元");
+                    data.add(dataMap);
+                }
+            }
+        }
+        response.setContentType("application/msexcel");
+        request.setCharacterEncoding("UTF-8");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String(("培优明细").getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xls");
+        OutputStream out = response.getOutputStream();
+        ExcelUtil.createSheet(out, "培优明细", data);
+    }
+
 }
