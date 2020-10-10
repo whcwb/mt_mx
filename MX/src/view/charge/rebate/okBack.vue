@@ -6,9 +6,15 @@
                   confirm format="yyyy-MM-dd"
                   @on-change="param.cjsjInRange = v.util.dateRangeChange(dateRange.cjsj)"
                   @on-open-change="pageSizeChange(param.pageSize)"
-                  type="daterange" :placeholder="'请输入返点时间'"  style="width: 200px"></DatePicker>
+                  type="daterange" :placeholder="'请输入返点时间'" style="width: 200px"></DatePicker>
       <!--</Col>-->
-        <Col span="4">
+      <Col span="3">
+        <Select v-model="param.lcKm" placeholder="练车科目" @on-change="getOldData" clearable>
+          <Option value="2">科目二</Option>
+          <Option value="3">科目三</Option>
+        </Select>
+      </Col>
+      <Col span="3">
         <Input v-model="param.cjrLike" placeholder="操作人"
                @on-enter="getOldData()"/>
       </Col>
@@ -18,6 +24,16 @@
             <Icon type="md-search"></Icon>
             <!--查询-->
           </Button>
+        </span>
+      </Col>
+      <Col span="1" style="margin-right: 10px">
+        <span>
+          <Tooltip content="下载返现登记表" placement="top">
+          <Button type="primary" @click="downLoadExcel">
+            <Icon type="ios-cloud-download"></Icon>
+            <!--查询-->
+          </Button>
+            </Tooltip>
         </span>
       </Col>
     </Row>
@@ -51,7 +67,7 @@
       </Col>
     </Row>
     <component :is="compName" :MSList="MSList"></component>
-    <component :is="componentName"  :hisPrintMess="hisPrintMess"></component>
+    <component :is="componentName" :hisPrintMess="hisPrintMess"></component>
   </div>
 </template>
 
@@ -60,23 +76,24 @@
   import printSignUp from './comp/printSignUp'
   import Cookies from 'js-cookie'
   import mixin from '@/mixins'
+
   export default {
     name: "okBack",
-    components: {fdms,printSignUp},
-    mixins:[mixin],
+    components: {fdms, printSignUp},
+    mixins: [mixin],
     data() {
       return {
         v: this,
-          hisPrintMess:{},
-          componentName:'',
+        hisPrintMess: {},
+        componentName: '',
         compName: '',
-        MSList:[],
+        MSList: [],
         tableData: [],
         tableColumns: [
           {title: '序号', type: 'index', fixed: 'left', align: 'center', minWidth: 80},
           {title: '操作人', key: 'cjr', align: 'center', minWidth: 120},
           {title: '驾校', key: 'jx', align: 'center', minWidth: 120},
-            {title: '教练员', key: 'jlXm', align: 'center', minWidth: 120},
+          {title: '教练员', key: 'jlXm', align: 'center', minWidth: 120},
           {
             title: '返点时间', key: 'cjsj', align: 'center', minWidth: 120, render: (h, p) => {
               let a = p.row.cjsj.substring(0, 16)
@@ -99,18 +116,17 @@
                       }
                     }
                   }, '明细'),
-                    h('Button', {
-                        props: {type: 'success', size: 'small',},
-                        style: {marginRight: '10px'},
-                        on: {
-                            click: () => {
-                                this.hisPrintMess = p.row
-                                this.componentName = 'printSignUp'
-                            }
-                        }
-                    }, '打印')
+                  h('Button', {
+                    props: {type: 'success', size: 'small',},
+                    style: {marginRight: '10px'},
+                    on: {
+                      click: () => {
+                        this.hisPrintMess = p.row
+                        this.componentName = 'printSignUp'
+                      }
+                    }
+                  }, '打印')
                 ]
-
               )
             }
           }
@@ -120,26 +136,27 @@
         dateRange: {
           cjsj: ''
         },
-        hj:0,
+        hj: 0,
         switch1: true,
         param: {
-            qrsjIsNotNull:'1',
-            orderBy: 'qrsj desc',
+          qrsjIsNotNull: '1',
+          orderBy: 'qrsj desc',
           cjrLike: '',
           fdZt: '10',
           pageNum: 1,
           pageSize: 15,
-          cjsjInRange:''
+          cjsjInRange: '',
+          lcKm: ''
         }
       }
     },
     watch: {
-      switch1:function (val) {
-        Cookies.set('showMessFD',val)
+      switch1: function (val) {
+        Cookies.set('showMessFD', val)
       }
     },
     mounted() {
-      this.switch1=Cookies.get('showMessFD')==='true'?true:false
+      this.switch1 = Cookies.get('showMessFD') === 'true' ? true : false
     },
     created() {
       // const end = new Date();
@@ -156,6 +173,22 @@
       this.getOldData()
     },
     methods: {
+      downLoadExcel() {
+        if (this.param.lcKm == undefined || this.param.lcKm == "") {
+          this.swal({
+            title: '导出文件时请选择科目',
+            type: 'warning',
+          })
+          return
+        }
+
+        let accessToken = JSON.parse(Cookies.get('accessToken'));
+        let token = accessToken.token;
+        let userid = accessToken.userId;
+        window.open(this.apis.url + "/api/fds/fdExcel?token=" + token + "&userid=" + userid + "&qrsjIsNotNull=1&orderBy=qrsj desc&cjrLike=" + this.param.cjrLike + "&fdZt=10&" +
+          "cjsjInRange=" + this.param.cjsjInRange + "&lcKm=" + this.param.lcKm)
+
+      },
       pageChange(val) {
         this.param.pageNum = val
         this.getOldData();
@@ -164,14 +197,14 @@
         this.param.pageSize = val
         this.getOldData();
       },
-      showMS(list){
+      showMS(list) {
         this.MSList = list
         console.log(list)
         this.compName = fdms
       },
       getOldData() {
-        this.hj= 0
-        this.$http.post('/api/fds/getPager',this.param).then((res) => {
+        this.hj = 0
+        this.$http.post('/api/fds/getPager', this.param).then((res) => {
           if (res.code == 200 && res.page.list) {
             this.hj = res.result
             this.totalS = res.page.total

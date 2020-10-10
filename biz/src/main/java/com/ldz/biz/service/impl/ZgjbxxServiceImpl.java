@@ -75,7 +75,7 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
             coachManagement.setIdCardNo(entity.getSfzh());
             coachManagement.setId(genId());
             coachManagement.setCoachName(entity.getXm());
-            coachManagement.setGender(entity.getXb().equals("男")? "10":"00");
+            coachManagement.setGender("男".equals(entity.getXb()) ? "10" : "00");
             coachManagement.setDrivingType(entity.getZjcx1());
             coachManagement.setPhone(entity.getSjhm());
             coachManagement.setCoachNum(entity.getJlzh());
@@ -105,7 +105,7 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
             coach.setOperater(currentUser.getZh() + "-" + currentUser.getXm());
             coach.setOperateTime(DateUtils.getNowTime());
             coach.setCoachName(entity.getXm());
-            coach.setGender(entity.getXb().equals("男")?"10":"00");
+            coach.setGender("男".equals(entity.getXb()) ? "10" : "00");
             coach.setDrivingType(entity.getZjcx1());
             coach.setPhone(entity.getSjhm());
             coach.setCoachNum(entity.getJlzh());
@@ -123,7 +123,7 @@ public class ZgjbxxServiceImpl extends BaseServiceImpl<Zgjbxx, String> implement
             coach.setOperater(currentUser.getZh() + "-" + currentUser.getXm());
             coach.setOperateTime(DateUtils.getNowTime());
             coach.setCoachName(entity.getXm());
-            coach.setGender(entity.getXb().equals("男")?"10":"00");
+            coach.setGender("男".equals(entity.getXb()) ? "10" : "00");
             coach.setDrivingType(entity.getZjcx1());
             coach.setPhone(entity.getSjhm());
             coach.setCoachNum(entity.getJlzh());

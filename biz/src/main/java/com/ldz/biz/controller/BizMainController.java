@@ -1,7 +1,6 @@
 package com.ldz.biz.controller;
 
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
 import com.ldz.biz.constant.Status;
 import com.ldz.biz.model.BizLcJl;
@@ -36,7 +35,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -45,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * 处理用户登陆、登出、查询字典信息等相关访问接口
+ * 此控制层不需要用户信息验证
  *
  * @author Lee
  * @date 2017年8月12日
@@ -61,20 +59,21 @@ public class BizMainController {
 
     @Autowired
     private TraineeInformationService informationService;
-    
+
     @Autowired
     private BizLcJlService jlService;
 
     @Autowired
     private DataStaService staService;
+
     @Autowired
     private SysZdxmMapper zdxmMapper;
+
     @Autowired
     private SnowflakeIdWorker idWorker;
 
     @Autowired
     private JgService jgService;
-
 
     @GetMapping("/saveJx")
     public ApiResponse<String> saveJx() throws IOException {
@@ -82,10 +81,10 @@ public class BizMainController {
         File f = new File("C://jx.txt");
         List<String> list = FileUtils.readLines(f, "UTF-8");
         list.forEach(s -> {
-            if(StringUtils.isNotBlank(s)){
+            if (StringUtils.isNotBlank(s)) {
                 String[] split = s.split(",");
                 SysZdxm sysZdxm = new SysZdxm();
-                sysZdxm.setZdId(idWorker.nextId() +"");
+                sysZdxm.setZdId(idWorker.nextId() + "");
                 sysZdxm.setZdlmdm("ZDCLK1017");
                 sysZdxm.setZddm(split[0]);
                 sysZdxm.setZdmc(split[1]);
@@ -458,9 +457,6 @@ public class BizMainController {
     }
 
 
-
-
-
     /**
      * 科目待缴费学员导出
      */
@@ -570,13 +566,13 @@ public class BizMainController {
         }
         List<Map<Integer, String>> collect = coll.stream().sorted((o1, o2) -> o1.get(8).compareTo(o2.get(8))).collect(Collectors.toList());
         data.addAll(collect);
-        String fileName = java.net.URLEncoder.encode((sign.equals("7") ? "科目一" : sign.equals("2") ? "科目二" : sign.equals("3") ? "科目三" : "") + "考试待缴", "UTF-8");
+        String fileName = java.net.URLEncoder.encode(("7".equals(sign) ? "科目一" : "2".equals(sign) ? "科目二" : "3".equals(sign) ? "科目三" : "") + "考试待缴", "UTF-8");
         response.setContentType("application/msexcel");
         request.setCharacterEncoding("UTF-8");
         response.setHeader("pragma", "no-cache");
         response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1") + ".xls");
         OutputStream out = response.getOutputStream();
-        ExcelUtil.createSheet(out, (sign.equals("7") ? "科目一" : sign.equals("2") ? "科目二" : sign.equals("3") ? "科目三" : "") + "考试代缴", data);
+        ExcelUtil.createSheet(out, ("7".equals(sign) ? "科目一" : "2".equals(sign) ? "科目二" : "3".equals(sign) ? "科目三" : "") + "考试代缴", data);
     }
 
 
@@ -592,12 +588,12 @@ public class BizMainController {
      * 明细统计 Exclel导出 (科三)
      */
     @GetMapping("/pagerExcelK3")
-    public void pagerExcelK3(Page<BizLcJl> page , HttpServletRequest request , HttpServletResponse response) throws IOException {
+    public void pagerExcelK3(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
         jlService.pagerExcelK3(page, request, response);
     }
 
     @GetMapping("/pagerExcelAll")
-    public void pagerExcelAll(Page<BizLcJl> page , HttpServletRequest request , HttpServletResponse response) throws IOException {
+    public void pagerExcelAll(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
         jlService.pagerExcelAll(page, request, response);
     }
 
@@ -653,32 +649,47 @@ public class BizMainController {
         List<LcJlModel> result = jlTj.getResult();
         List<Map<Integer, String>> data = new ArrayList<>();
         Map<Integer, String> map = new HashMap<>();
-        map.put(0, "姓名");
+        map.put(0, "序号");
         map.put(1, "驾校");
-        map.put(2, "时长");
-        map.put(3, "收费（元）");
+        map.put(2, "队号");
+        map.put(3, "教练员");
+        map.put(4, "练车金额");
+        map.put(5, "返点金额");
+        map.put(6, "已返点");
+        map.put(7, "待返点");
         data.add(map);
+        long zjes = 0;
         long zj = 0;
+        long zsc = 0;
+        long dfds = 0;
         for (int i = 0; i < result.size(); i++) {
             LcJlModel model = result.get(i);
             Map<Integer, String> dataMap = new HashMap<>();
-            dataMap.put(0, model.getJlXm());
+            dataMap.put(0, i + 1 + "");
             dataMap.put(1, model.getJlJx());
-            Integer l = model.getSc();
-            if (l / 60 == 0) {
-                dataMap.put(2, l + "分");
-            } else {
-                dataMap.put(2, (l / 60) + "时" + (l % 60) + "分");
-            }
-            dataMap.put(3, model.getZj() + "");
+            dataMap.put(2, model.getDm());
+            dataMap.put(3, model.getJlXm() + "");
+            dataMap.put(4, model.getZj() + "");
+            dataMap.put(5, model.getZfd() == null ? "0" : model.getZfd() + "");
+            dataMap.put(6, model.getYfd() == null ? "0" : model.getYfd() + "");
+            dataMap.put(7, model.getDfd() == null ? "0" : model.getDfd() + "");
             zj += model.getZj();
+            zjes += model.getZfd() == null ? 0 : model.getZfd();
+            zsc += model.getYfd() == null ? 0 : model.getYfd();
+            dfds += model.getDfd() == null ? 0 : model.getDfd();
+//            zjes += model.getZje();
+//            zsc += model.getSc();
             data.add(dataMap);
         }
         Map<Integer, String> dataMap = new HashMap<>();
         dataMap.put(0, "合计:");
         dataMap.put(1, "");
         dataMap.put(2, "");
-        dataMap.put(3, zj + "");
+        dataMap.put(3, "");
+        dataMap.put(4, zj + "");
+        dataMap.put(5, zjes + "");
+        dataMap.put(6, zsc + "");
+        dataMap.put(7, dfds + "");
         data.add(dataMap);
         response.setContentType("application/msexcel");
         request.setCharacterEncoding("UTF-8");
@@ -836,10 +847,10 @@ public class BizMainController {
         ApiResponse<List<StudentAllModel>> studentCount = staService.getStudentCount(startTime, endTime, jgdm, lx);
 
         List<StudentAllModel> models = studentCount.getResult();
-        List<Map<Integer,String>> dataList = new ArrayList<>();
+        List<Map<Integer, String>> dataList = new ArrayList<>();
 
-        Map<Integer,String> titleMap = new HashMap<>();
-        titleMap.put(0 , "报名点");
+        Map<Integer, String> titleMap = new HashMap<>();
+        titleMap.put(0, "报名点");
         titleMap.put(1, "招生人数");
         titleMap.put(2, "A1");
         titleMap.put(3, "A2");
@@ -848,14 +859,14 @@ public class BizMainController {
         titleMap.put(6, "C1");
         titleMap.put(7, "C2");
         dataList.add(titleMap);
-        if(CollectionUtils.isNotEmpty(models)){
+        if (CollectionUtils.isNotEmpty(models)) {
             models.forEach(studentAllModel -> {
                 Map<Integer, String> dataMap = new HashMap<>();
                 dataMap.put(0, studentAllModel.getJgmc());
                 dataMap.put(1, studentAllModel.getAll() + "");
-                dataMap.put(2, studentAllModel.getA1()+"");
+                dataMap.put(2, studentAllModel.getA1() + "");
                 dataMap.put(3, studentAllModel.getA2() + "");
-                dataMap.put(4, studentAllModel.getA3()  + "");
+                dataMap.put(4, studentAllModel.getA3() + "");
                 dataMap.put(5, studentAllModel.getB2() + "");
                 dataMap.put(6, studentAllModel.getC1() + "");
                 dataMap.put(7, studentAllModel.getC2() + "");
@@ -865,14 +876,14 @@ public class BizMainController {
         response.setContentType("application/msexcel");
         request.setCharacterEncoding("UTF-8");
         response.setHeader("pragma", "no-cache");
-        response.addHeader("Content-Disposition", "attachment; filename=" + new String((startTime.substring(0,10) + "招生").getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xls");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String((startTime.substring(0, 10) + "招生").getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xls");
         OutputStream out = response.getOutputStream();
         ExcelUtil.createSheet(out, "今日招生", dataList);
     }
 
     @GetMapping("/exportXymx")
-    public void exportXymx(Page<BizLcJl> page, HttpServletRequest request , HttpServletResponse response) throws IOException {
-        jlService.exportXymx(page,request,response);
+    public void exportXymx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        jlService.exportXymx(page, request, response);
     }
 
 

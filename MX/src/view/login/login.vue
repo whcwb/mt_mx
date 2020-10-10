@@ -18,7 +18,7 @@
         © Copyright Reserved 版权所有
       </div>
       <div class="messItem" style="font-size: 16px">
-        武汉创伟博科技有限公司  V 2.2.8
+        武汉创伟博科技有限公司 V 3.1.2
       </div>
       <div class="messItem" style="font-size: 16px">
       </div>

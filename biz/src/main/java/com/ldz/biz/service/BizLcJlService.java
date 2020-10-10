@@ -80,5 +80,7 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
 
     void pagerExcelAll(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
-    ApiResponse<Integer> getKfDj(String jlId);
+    ApiResponse<String> getKfDj(String jlId);
+
+    void exportMx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws Exception;
 }

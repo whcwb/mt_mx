@@ -264,7 +264,7 @@
                       制单人
                     </div>
                     <div class="ItemMess2">
-                      :
+                      :{{hisPrintMess.name}}
                     </div>
                     <div class="messTit2">
                       收款人
@@ -308,10 +308,10 @@
 </template>
 
 <script>
-  import swal from 'sweetalert2'
   import mixin from '@/mixins'
   // import Print from 'print-js'
   import {Printd} from 'printd'
+
   export default {
     name: "mess",
     mixins: [mixin],
@@ -357,37 +357,6 @@
     methods: {
       getMess(arr,callback) {
         var v = this
-
-        // console.log(arr);
-
-        // console.log('推荐仁',this.tjr);
-        // arr.forEach((item, index) => {
-        //
-        //   if(this.payType.length == 0){
-        //     this.payType = v.dictUtil.getValByCode(v, 'ZDCLK1004', item.chargeRecord.chargeType)
-        //   }else {
-        //     if(this.payType.indexOf(v.dictUtil.getValByCode(v, 'ZDCLK1004', item.chargeRecord.chargeType))==-1){
-        //       this.payType = this.payType + ';' +v.dictUtil.getValByCode(v, 'ZDCLK1004', item.chargeRecord.chargeType)
-        //     }
-        //   }
-        //
-        //   this.studentIDS[index] = item.id
-        //   this.messIdList[index] = item.chargeRecord.id
-        //   this.money += item.realPay
-        //   let jgmcArr = ['']
-        //
-        //   if (index == arr.length - 1) {
-        //     this.bz += item.chargeRecord.remark
-        //     this.nameList = this.nameList + jgmcArr[0] + item.name + item.carType
-        //   } else {
-        //     this.bz += item.chargeRecord.remark + "、"
-        //     if(this.bz.length>30){
-        //       this.bz = this.bz.substring(0,30)
-        //     }
-        //     this.nameList = this.nameList + jgmcArr[0] + item.name + item.carType + "、"
-        //   }
-        //
-        // })
         callback && callback()
       },
       printClick(){

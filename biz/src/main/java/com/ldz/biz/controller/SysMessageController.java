@@ -35,6 +35,7 @@ public class SysMessageController {
     public ApiResponse<String> repeatSendMessage(SysMessage entity){
         return service.repeatSendMessage(entity);
     }
+
     /**
      * 测试接口后期需要拿掉 todo
      * @param entity

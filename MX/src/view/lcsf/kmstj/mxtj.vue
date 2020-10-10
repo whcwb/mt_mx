@@ -54,8 +54,9 @@
           kssj: ''
         },
         tableColumns: [
-          {type: 'index', align: 'center', minWidth: 60, title: '序号'},
-          {title: '驾校', key: 'jlJx', minWidth: 90, align: 'center',
+          {type: 'index', align: 'center', minWidth: 60, title: '序号', fixed: 'left'},
+          {
+            title: '驾校', key: 'jlJx', minWidth: 90, align: 'center',
             filters: [
               {
                 label: '本校',
@@ -215,10 +216,15 @@
           },
           {
             title: '备注',
-            minWidth: 250,
+            width: 250,
             align: 'center',
             render: (h, p) => {
-              return h('div', p.row.bz)
+              return h('div', {
+                style: {
+                  textAlign: 'left',
+                  whiteSpace: "pre-wrap"
+                }
+              }, p.row.bz)
             }
           }
         ],

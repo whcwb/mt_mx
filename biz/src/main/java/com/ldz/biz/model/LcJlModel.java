@@ -34,6 +34,11 @@ public class LcJlModel {
      */
     private Integer sc;
     /**
+     * 应收总金额
+     */
+    private Integer zje;
+
+    /**
      * 总价
      */
     private Integer zj;
@@ -41,4 +46,12 @@ public class LcJlModel {
      * 教练驾校
      */
     private String jlJx;
+
+    private Integer yfd;
+
+    private Integer dfd;
+
+    private Integer zfd;
+
+    private String dm;
 }

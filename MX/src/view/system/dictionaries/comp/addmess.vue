@@ -68,8 +68,8 @@
 						v.$Message.success('操作成功');
 						v.$parent.compName = ''
 					}else{
-						v.$Message.error('操作失败!');
-					}
+            v.$Message.error(res.message + ' !');
+          }
 				})
 			}
 		}

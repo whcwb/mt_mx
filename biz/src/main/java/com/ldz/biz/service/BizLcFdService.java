@@ -13,4 +13,6 @@ public interface BizLcFdService extends BaseService<BizLcFd, String> {
     ApiResponse<String> getPj(String id);
 
     ApiResponse<String> getPager(Page<BizLcFd> pager);
+
+
 }

@@ -21,9 +21,6 @@
               <Option v-for="(item,index) in JX" :key="index" :value="item.val">{{item.val}}-{{item.by1}}</Option>
             </Select>
           </Col>
-          <!--<Col span="4">-->
-          <!--<Input size="large" v-model="param.cardNo" @on-keyup.enter="getData" clearable placeholder="请输入卡号"/>-->
-          <!--</Col>-->
           <Col span="4">
             <Input size="large" v-model="param.jlXmLike" @on-keyup.enter="getData" clearable placeholder="请输入教练姓名"/>
           </Col>
@@ -68,61 +65,21 @@
         </Page>
       </div>
     </Row>
-
-    <!--<Row>-->
-    <!--<Table ref="table" size="small" :columns="columns1" :data="carList"></Table>-->
-    <!--</Row>-->
     <Modal
       title="添加教练"
       v-model="DrawerVal"
       :closable="false"
-      width="720"
+      width="800"
       :mask-closable="false">
 
       <Form :model="formData" label-position="top">
-        <!--<Row :gutter="32">-->
-        <!--<Col span="12">-->
-        <!--<div style="float: left">-->
-        <!--<FormItem label="教练员" style="width: 280px">-->
-        <!--<Select v-model="formData.jlId"-->
-        <!--filterable-->
-        <!--clearable-->
-        <!--remote-->
-        <!--loading-->
-        <!--loading-text="请输入关键字搜索"-->
-        <!--@on-query-change="searchJly"-->
-        <!--ref="jlySelect"-->
-        <!--&gt;-->
-        <!--<Option v-for="(it,index) in searchCoachList" :value="it.value" :key="index">{{it.label}}</Option>-->
-        <!--</Select>-->
-        <!--&lt;!&ndash;                <span style="color: red;font-size: 18px">*初始密码为123456</span>&ndash;&gt;-->
-        <!--</FormItem>-->
-        <!--</div>-->
-        <!--<div style="padding-top: 22px;">-->
-        <!--<Button type="primary" @click="compName ='addjl'">-->
-        <!--<Icon type="md-add"/>-->
-        <!--</Button>-->
-        <!--</div>-->
-        <!--</Col>-->
-
-        <!--</Row>-->
-
-
-        <!--<component :is="compName" :jxmc="jlJx"-->
-        <!--:showCloseBtn="false"-->
-        <!--@SaveOk="addjlSaveOk"-->
-        <!--@colse="clearYY"-->
-        <!--@remove="getCoachList('',true)"-->
-        <!--@JLRowClick="JLRowClick"-->
-        <!--@jxSeljxSel="(val)=>{getCoachList('',true)}"></component>-->
-
         <Row :gutter="32" style="display: flex;justify-content: space-between">
-          <Col span="6">
+          <Col span="4">
             <FormItem label="教练员姓名" label-position="top" style="width: 95%">
               <Input v-model="formDataJL.jlXm"/>
             </FormItem>
           </Col>
-          <Col span="6">
+          <Col span="5">
             <FormItem label="教练员联系方式" label-position="top" style="width: 95%">
               <Input v-model="formDataJL.jlLxdh"/>
             </FormItem>
@@ -135,13 +92,21 @@
               </Select>
             </FormItem>
           </Col>
-          <Col span="6">
+          <Col span="5">
             <FormItem label="驾校" label-position="top" style="width: 95%;">
-              <RadioGroup v-model="formDataJL.jlLx">
+              <RadioGroup v-model="formDataJL.jlLx" size="small">
                 <Radio label="00" @click="formDataJL.jlLx='00'"> 本校</Radio>
                 <Radio label="10" @click="formDataJL.jlLx='10'">外校</Radio>
               </RadioGroup>
             </FormItem>
+          </Col>
+          <Col span="4">
+            <FormItem v-if="formDataJL.jlLx=='00'" label="队号" label-position="top" style="width: 95%">
+              <Select v-model="formDataJL.dh" @on-change="selectDh" label-in-value>
+                <Option v-for="item in dhs" :value="item.dh">{{ item.dm }}</Option>
+              </Select>
+            </FormItem>
+            <div v-else style="min-height: 1px"></div>
           </Col>
         </Row>
 
@@ -151,10 +116,6 @@
         <Button type="primary" @click="wxjlSave">添加</Button>
       </div>
     </Modal>
-    <!--<yyModel ref="yyModel"-->
-    <!--@close="close"-->
-    <!--@getCarList='getCarList'-->
-    <!--&gt;</yyModel>-->
     <Modal
       title="充值"
       v-model="pay"
@@ -170,8 +131,6 @@
                 <FormItem label="姓名" label-position="top">
                   <span style="font-size: 15px">{{payItem.jlXm}}</span>
                 </FormItem>
-                <!--<span style="margin-right: 20px">持卡人</span>-->
-                <!--<span style="font-size: 15px">{{payItem.jlXm}}</span>-->
               </Col>
               <Col span="11">
                 <FormItem label="卡号" label-position="top">
@@ -206,23 +165,6 @@
                 </FormItem>
               </Col>
             </Row>
-
-            <!--<Row style="display: flex;justify-content: space-between">-->
-            <!--<Col span="11">-->
-            <!--<FormItem label="收款方式" label-position="bottom">-->
-            <!--<Select v-model="formData.zddm" style="width:200px" @on-change="lcFyChange">-->
-            <!--<Option value="">现金</Option>-->
-            <!--<Option value="">支付宝</Option>-->
-            <!--<Option value="">微信</Option>-->
-            <!--</Select>-->
-            <!--</FormItem>-->
-            <!--</Col>-->
-            <!--<Col span="23">-->
-            <!--<FormItem label="付款人" label-position="top">-->
-            <!--<Input v-model="formData.xyZjhm"/>-->
-            <!--</FormItem>-->
-            <!--</Col>-->
-            <!--</Row>-->
             <Row style="display: flex;justify-content: center">
               <Col span="6" style="padding-left: 20px">
                 <FormItem label="账户余额" label-position="top">
@@ -232,11 +174,6 @@
               <Col span="18">
                 <div></div>
               </Col>
-              <!--              <Col span="23">-->
-              <!--                <FormItem label="备注" label-position="top">-->
-              <!--                  <Input v-model="payItem.bz"/>-->
-              <!--                </FormItem>-->
-              <!--              </Col>-->
             </Row>
           </Col>
 
@@ -264,8 +201,6 @@
                 <FormItem label="教练姓名" label-position="top">
                   <Input v-model="infoItem.jlXm"/>
                 </FormItem>
-                <!--<span style="margin-right: 20px">持卡人</span>-->
-                <!--<span style="font-size: 15px">{{payItem.jlXm}}</span>-->
               </Col>
               <Col span="11">
                 <FormItem label="卡号" label-position="top">
@@ -291,22 +226,18 @@
                 </FormItem>
               </Col>
             </Row>
-
-            <!--            <Row style="display: flex;justify-content: space-between">-->
-            <!--              <Col span="11">-->
-            <!--                <FormItem label="旧密码" label-position="top">-->
-            <!--                  <Input v-model="infoItem.old"/>-->
-            <!--                </FormItem>-->
-            <!--              </Col>-->
-            <!--              <Col span="11">-->
-            <!--                <FormItem label="电话号码" label-position="top">-->
-            <!--                  <Input v-model="infoItem.jlLxdh"/>-->
-            <!--                </FormItem>-->
-            <!--              </Col>-->
-            <!--            </Row>-->
-
+            <Row style="display: flex;justify-content: space-between;">
+              <Col span="11">
+                <FormItem label="队号" labelposition="top" v-if="infoItem.jlLx=='00'">
+                  <Select v-model="infoItem.dh" @on-change="selectDhInfo" label-in-value>
+                    <Option v-for="item in dhs" :value="item.dh">{{ item.dm }}</Option>
+                  </Select>
+                </FormItem>
+              </Col>
+              <Col span="11">
+              </Col>
+            </Row>
           </Col>
-
         </Row>
 
       </Form>
@@ -318,75 +249,47 @@
       </div>
     </Modal>
 
-    <!--    <Modal-->
-    <!--      :title="passwordItem.jlXm+'修改密码'"-->
-    <!--      v-model="password"-->
-    <!--      :closable="false"-->
-    <!--      width="720"-->
-    <!--      :mask-closable="false">-->
-
-    <!--      <Form :model="formData" label-position="top">-->
-    <!--        <Row :gutter="32">-->
-    <!--          <Col span="12">-->
-    <!--            <div style="float: left">-->
-    <!--              <FormItem label="原密码" label-position="top">-->
-    <!--                <Input type="password" v-model="passwordItem.old"/>-->
-    <!--              </FormItem>-->
-    <!--              <FormItem label="新密码" label-position="top">-->
-    <!--                <Input type="password" v-model="passwordItem.newPwd"/>-->
-    <!--              </FormItem>-->
-    <!--              <FormItem label="确认密码" label-position="top">-->
-    <!--                <Input  type="password" v-model="passwordItem.newPwd1"/>-->
-    <!--              </FormItem>-->
-    <!--            </div>-->
-    <!--          </Col>-->
-
-    <!--        </Row>-->
-
-    <!--      </Form>-->
-    <!--      <div slot='footer'>-->
-    <!--        <Button style="margin-right: 8px" @click="closePw">取消</Button>-->
-    <!--        <Button type="primary" @click="updatePw">更改</Button>-->
-    <!--      </div>-->
-    <!--    </Modal>-->
-
     <mxb :itemObj="jlItem" :isMxb="isMxb" :lx="lx" @closemxb="closeMXB"></mxb>
     <component :is="componentName" @closeEmpty="closeEmpty" :QRmodal="componentName==='empty'" :printClose="printClose" :hisPrintMess="hisPrintMess"></component>
   </div>
 </template>
 
 <script>
-  import addjl from '../../lcsf/comp/addJL'
-  import mxb from '../jlcz/mxb'
-  import empty from '../jlcz/empty'
-  import {mapMutations} from 'vuex'
-  import printSignUp from '../../lcsf/comp/printSignUp'
-  import dictUtil from "../../../libs/dictUtil";
+import dhList from '../../../data/dhList'
+import addjl from '../../lcsf/comp/addJL'
+import mxb from '../jlcz/mxb'
+import empty from '../jlcz/empty'
+import {mapMutations} from 'vuex'
+import printSignUp from '../../lcsf/comp/printSignUp'
 
-  export default {
-    name: "index",
-    components: {
-      addjl,
-      mxb,
-      empty,
-      printSignUp
-    },
-    data() {
-      return {
-        bl: '',
-        zhye: 0,
-        blList: [],
-        zsje: null,
-        dataList: [],
-        isMxb: false,
-        lx: '',
-        jlItem: {},
-        pay: false,        //充值modal
-        payItem: {
+export default {
+  name: "index",
+  components: {
+    addjl,
+    mxb,
+    empty,
+    printSignUp
+  },
+  data() {
+    return {
+      QRmodal: false,
+      activeName: '',
+      JGList: [],
+      theme1: 'light',
+      dhs: dhList.dhs,
+      bl: '',
+      zhye: 0,
+      blList: [],
+      zsje: null,
+      dataList: [],
+      isMxb: false,
+      lx: '',
+      jlItem: {},
+      pay: false,        //充值modal
+      payItem: {
           je: null,
           sfje: null,
           id: ''
-          // no: ''
         },
         je: 0,   //充值金额+余额
         jxList: [],
@@ -402,7 +305,9 @@
           jlJx: '',
           jlXm: '',
           jlLxdh: '',
-          jlLx: '00'
+          jlLx: '00',
+          dh: '',
+          dm: ''
         },
         schoolList: [],
         compName: '',
@@ -492,6 +397,17 @@
               _self.param.jlLx = value[0] ? value[0] : ''
               _self.getData()
             },
+          },
+          {
+            title: '队号',
+            align: 'center',
+            render: (h, p) => {
+              if (p.row.dm) {
+                return h('div', p.row.dm)
+              } else {
+                return h('div', '-')
+              }
+            }
           },
           {
             title: '卡号',
@@ -594,84 +510,6 @@
             render: (h, p) => {
               let buttons = [];
               var v = this;
-
-              // buttons.push(
-              //   h('Tooltip',
-              //     {props: {placement: 'top', content: '明细',}},
-              //     [
-              //       h('Button', {
-              //         props: {
-              //           type: 'info',
-              //           size: 'small',
-              //         },
-              //         style: {margin: '0 10px 0 0'},
-              //         on: {
-              //           click: () => {
-              //             this.jlItem = p.row
-              //             this.isMxb = true
-              //           }
-              //         }
-              //       }, '明细')
-              //     ]
-              //   ),
-              // );
-
-
-              // buttons.push([
-              //   h('Dropdown',
-              //     {props: {trigger: "click"}},
-              //     [
-              //       h('Button', {
-              //         props: {
-              //           type: 'info',
-              //           size: 'small',
-              //         },
-              //         style: {margin: '0 10px 0 0'},
-              //         on: {
-              //           click: () => {
-              //           }
-              //         }
-              //       }, '操作'),
-              //       h('DropdownMenu',
-              //         {slot: "list"},
-              //         [
-              //           h('DropdownItem', {
-              //               nativeOn: {
-              //                 click(name) {
-              //                   v.payItem = JSON.parse(JSON.stringify(p.row))
-              //                   v.pay = true
-              //                 }
-              //               }
-              //             }, '充值'
-              //           ), h('DropdownItem', {
-              //             nativeOn: {
-              //               click(name) {
-              //                 v.infoItem = JSON.parse(JSON.stringify(p.row))
-              //                 v.info = true
-              //               }
-              //             }
-              //           }, '维护'
-              //         ),
-              //           // h('DropdownItem', {
-              //           //   nativeOn: {
-              //           //     click() {
-              //           //       v.password=true;
-              //           //       v.passwordItem=p.row
-              //           //     }
-              //           //   }
-              //           // }, '修改密码'),
-              //           // h('DropdownItem', {
-              //           //   nativeOn: {
-              //           //     click(name) {
-              //           //       v.resetPw(p.row)
-              //           //     }
-              //           //   }
-              //           // }, '重置密码')
-              //         ]
-              //       )
-              //     ])
-              // ])
-
               buttons.push(
                 h('Tooltip',
                   {props: {placement: 'top', content: '充值',}},
@@ -756,23 +594,13 @@
     },
     watch: {
       DrawerVal: function (n, o) {
-        var v = this
         if (n == false) {
           this.compName = ''
           this.formData = {}
           this.jlJx = ''
           this.je = 0
-        } else {
-          // if (this.formData.lcClId == '') {
-          //   this.showCAR = true
-          // }
         }
       },
-      //
-      // 'payItem.je': function (n, o) {
-      //   console.log(n)
-      //   this.je=n+Number(this.payItem.cardJe)
-      // }
     },
     mounted() {
     },
@@ -788,10 +616,33 @@
       clearInterval(this.IntervalKE)
     },
     methods: {
+      exportExcel() {
+        let p = '';
+        for (let k in this.param) {
+          p += '&' + k + '=' + this.param[k];
+        }
+        p = p.substr(1);
+        let accessToken = JSON.parse(Cookies.get('accessToken'));
+        let token = accessToken.token;
+        let userid = accessToken.userId;
+        window.open(this.apis.url + '/api/lcwxjl/exportWxjl?token=' + token + "&userid=" + userid + "&" + p);
+      },
       ...mapMutations([
         'set_LcTime',
         'Ch_LcTime'
       ]),
+      changeJxLx() {
+        this.formDataJL.dh = ''
+        this.formDataJL.dm = ''
+      },
+      selectDhInfo(val) {
+        this.infoItem.dh = val.value
+        this.infoItem.dm = val.label
+      },
+      selectDh(val) {
+        this.formDataJL.dh = val.value
+        this.formDataJL.dm = val.label
+      },
       changeJe() {
         let je = 0;
         if (this.payItem.sfje) {
@@ -801,7 +652,7 @@
         this.zsje = Math.ceil(je * parseFloat(this.bl))
         this.zhye = parseInt(this.zsje) + je + parseInt(this.payItem.cardJe)
       },
-      toEmpty(){
+      toEmpty() {
         this.componentName='empty'
       },
       closeEmpty(){
@@ -883,6 +734,10 @@
         this.infoItem = {}
       },
       updateInfo() {
+        if (this.infoItem.jlLx == '10') {
+          this.infoItem.dh = '';
+          this.infoItem.dm = '';
+        }
         this.$http.post('/api/lcwxjl/update', this.infoItem).then(res => {
           if (res.code == 200) {
             this.info = false
@@ -904,36 +759,6 @@
       },
       delInfo() {
         var v = this
-        // this.swal({
-        //   title: '确认删除' + this.infoItem.jlXm+'?',
-        //   type: 'warning',
-        //   confirmButtonText: '确认',
-        //   cancelButtonText: '关闭',
-        //   showCancelButton: true
-        // }).then((res) => {
-        //   if (res.value) {
-        //     v.$http.post('/api/lcwxjl/unbindCardNo', {id:v.infoItem.id}).then(res => {
-        //       if (res.code == 200) {
-        //         v.info = false
-        //         v.infoItem = {}
-        //         v.getData();
-        //         v.swal({
-        //           title: '作废成功',
-        //           type: 'success',
-        //           confirmButtonText: '确定',
-        //         })
-        //       } else {
-        //         v.swal({
-        //           title: res.message,
-        //           type: 'warning'
-        //         })
-        //       }
-        //     }).catch(err => {
-        //     })
-        //   } else {
-        //
-        //   }
-        // })
         this.swal({
           title: '确认删除' + this.infoItem.jlXm + '?',
           type: 'warning',

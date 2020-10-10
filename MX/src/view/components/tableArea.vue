@@ -22,6 +22,7 @@
 
 <script>
   import AF from '@/libs/comFun'
+
   export default {
     name: "tableArea",
     props: {

@@ -15,42 +15,6 @@
     <Row type="flex" style="padding: 10px 0" v-if="activeName=='1'">
       <Col span="24">
         <Row type="flex" style="justify-content: space-between;align-items: center" :gutter="8">
-          <!--          <Col  span="12" align="right" style="font-size: 24px;color: #2baee9">-->
-          <!--            <div @click="compName='keyypd'"> 当前排队中-->
-          <!--              <Button style="font-size: 20px;font-weight: 600" type="error">{{yyrs}}</Button>-->
-          <!--            </div>-->
-          <!--          </COl>-->
-          <!--          <Col span="2" align="center">-->
-          <!--            <Button type="success" style="border-radius: 35px;font-size: 20px" @click="yyClick">预</Button>-->
-          <!--          </Col>-->
-          <!--          <Col span="2" align="center">-->
-          <!--            <Button type="error" style="border-radius: 35px;font-size: 20px" @click="faCar">发</Button>-->
-          <!--          </Col>-->
-          <!--          <Col span="2" align="center">-->
-          <!--            <Button size="large" style="border-radius: 35px;font-size: 20px" type="warning" @click="giveCar.overCar(v,'2'),printClose=true">-->
-          <!--              还-->
-          <!--            </Button>-->
-          <!--          </Col>-->
-          <!--          <Col span="3">-->
-          <!--            <Input size="large" v-model="formData.clBh" clearable  placeholder="请输入车辆编号"/>-->
-          <!--          </Col>-->
-          <!--          <Col span="3">-->
-          <!--            <Select v-model="formData.clCx" clearable @on-change="getCarList">-->
-          <!--              <Option  v-for="item in dictUtil.getByCode(v,'ZDCLK0040')" :value="item.key" :key="item.index">{{ item.val }}</Option>-->
-          <!--            </Select>-->
-          <!--          </Col>-->
-          <!--          <Col span="3">-->
-          <!--            <Select v-model="formData.clZt" clearable @on-change="getCarList">-->
-          <!--              <Option v-if="item.key!='02' && item.key!='03'" v-for="item in dictUtil.getByCode(v,'ZDCLK1044')" :value="item.key" :key="item.index">{{ item.val }}</Option>-->
-          <!--            </Select>-->
-          <!--          </Col>-->
-          <!--          <Col span="1" align="center">-->
-          <!--            <Button type="primary" @click="getCarList">-->
-          <!--              <Icon type="md-search"></Icon>-->
-          <!--              &lt;!&ndash;查询&ndash;&gt;-->
-          <!--            </Button>-->
-          <!--          </Col>-->
-          <!--        <pager-tit title="科二模训" style="float: left"></pager-tit>-->
           <div style="float: left;cursor: pointer;margin-right: 12px">
     <span
       style="width: 60px;height: 80px;border:1px solid #30bff5;color:black;padding:6px;border-radius: 4px;margin-left: 16px;"
@@ -75,7 +39,6 @@
               <!--查询-->
             </Button>
           </div>
-
         </Row>
       </Col>
     </Row>
@@ -87,12 +50,6 @@
 
     <div class="boxbackborder box_col" v-if="activeName=='2'">
       <Row type="flex" justify="end" :gutter="8" style="margin:8px 0;">
-        <!--        <Col span="6" style="padding: 10px 20px">-->
-        <!--          <Button type="warning" @click="plzf">批量结算</Button>-->
-        <!--        </Col>-->
-
-
-        <!--<Col span="5" style="margin-right: -40px">-->
         <DatePicker v-model="dateRange.jssj"
                     style="margin-right: 5px"
                     @on-change="param.jssjInRange = v.util.dateRangeChange(dateRange.jssj)"
@@ -100,7 +57,6 @@
                     format="yyyy-MM-dd"
                     split-panels
                     type="daterange" :placeholder="'请输入时间'"></DatePicker>
-        <!--</Col>-->
         <Col span="3">
           <Input size="large" v-model="param.clBh" clearable placeholder="请输入车辆编号"
                  @on-enter="pageSizeChange(param.pageSize)"/>
@@ -129,7 +85,6 @@
              @on-select-all="tabcheck"
              @on-select-all-cancel="tabcheck"
              :columns="tableColumns" :data="pageData"></Table>
-      <!--      <table-area :parent="v"></table-area>-->
       <Row class="margin-top-10 pageSty">
         <div style="text-align: right;padding: 6px 0">
           <Page :total=param.total
@@ -211,7 +166,6 @@
                  v-if="formData.zddm!=undefined && !formData.zddm.includes('K3PY')">
               <Col span="12">
                 <FormItem :label="'人数'" label-position="top">
-                  <!--<Input v-model="formData.xySl"></Input>-->
                   <InputNumber style="width:280px" :min="1" v-model="formData.xySl"></InputNumber>
                 </FormItem>
               </Col>
@@ -221,7 +175,6 @@
                 <FormItem :label="'安全员'" label-position="top">
                   <Select v-model="formData.zgId" filterable ref="se" @on-query-change="searchJlyaq"
                           style="width: 280px"
-
                   >
                     <Option v-for="(item) in sfaemanlist" :value="item.value" :key="item.value">{{item.label}}</Option>
                   </Select>
@@ -239,77 +192,12 @@
             </Col>
           </Col>
         </Row>
-
-
-        <!--<Row :gutter="32">-->
-        <!--<Col span="12">-->
-        <!--<div style="float: left">-->
-        <!--<FormItem label="计费套餐" label-position="top">-->
-        <!--<Select v-model="formData.zddm" style="width:280px" placeholder="计时500/小时" @on-change="lcFyChange">-->
-        <!--<Option v-for="(it,index) in fylist" :value="it.zddm" :key="index"-->
-        <!--v-if="it.zddm!='K2KF'&&!it.zddm.includes('K3PY')">-->
-        <!--{{it.by9}}-{{it.zdmc}}元-->
-        <!--</Option>-->
-        <!--</Select>-->
-        <!--</FormItem>-->
-        <!--</div>-->
-        <!--</Col>-->
-        <!--</Row>-->
-        <!--<Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && !formData.zddm.includes('K3PY')">-->
-        <!--<Col span="12">-->
-        <!--<FormItem :label="'人数'" label-position="top">-->
-        <!--&lt;!&ndash;<Input v-model="formData.xySl"></Input>&ndash;&gt;-->
-        <!--<InputNumber style="width:280px" :min="1" v-model="formData.xySl"></InputNumber>-->
-        <!--</FormItem>-->
-        <!--</Col>-->
-        <!--</Row>-->
-        <!--<Row :gutter="32" style="padding-top: 5px" v-if="formData.zddm!=undefined && formData.zddm.includes('K3PY')">-->
-        <!--<Card>-->
-        <!--<p slot="title">学员信息</p>-->
-        <!--<p>-->
-        <!--<Row v-for="(item,index) in AMess" :key="index">-->
-        <!--<Col span="5" :class-name="'colsty'">-->
-        <!--<Input type="text" size="default" v-model="item.xyXm" placeholder="学员姓名"/>-->
-        <!--</Col>-->
-        <!--<Col span="5" :class-name="'colsty'">-->
-        <!--<Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"-->
-        <!--size="default" v-model="item.xyDh" placeholder="学员联系电话"/>-->
-        <!--</Col>-->
-        <!--<Col span="8" :class-name="'colsty'">-->
-        <!--<Input type="textarea" :autosize="{minRows: 1,maxRows: 1}"-->
-        <!--size="default" v-model="item.bz" placeholder="身份证号码"/>-->
-        <!--</Col>-->
-        <!--<Col span="2" v-if="AMess.length>1">-->
-        <!--<Button size="default" type="warning" @click="remove(index)">删除</Button>-->
-        <!--</Col>-->
-        <!--<Col span="2" align="center">-->
-
-        <!--<Button type="info" icon="md-add"-->
-        <!--@click="pushmess"-->
-        <!--&gt;-->
-        <!--</Button>-->
-        <!--</Col>-->
-        <!--</Row>-->
-        <!--</p>-->
-        <!--</Card>-->
-        <!--</Row>-->
-
-
-        <!--        <radio-car v-if="carMess == null"-->
-        <!--                   clKm="2"-->
-        <!--                   @getCarItemMess="getCarItemMess"-->
-        <!--        ></radio-car>-->
-
         <component :is="compName" :jxmc="jlJx"
                    @SaveOk="addjlSaveOk"
                    @colse="clearYY"
                    @remove="getCoachList('',true)"
                    @JLRowClick="JLRowClick"
                    @jxSeljxSel="(val)=>{getCoachList('',true)}"></component>
-
-        <!--<FormItem label="备注" label-position="top">-->
-        <!--<Input type="textarea" v-model="formData.bz" :rows="4"/>-->
-        <!--</FormItem>-->
       </Form>
       <div slot='footer'>
         <Button style="margin-right: 8px" @click="close">取消</Button>
@@ -335,10 +223,6 @@
         <Row>
           <Col>
             <Table size="small" :columns="columns2" :data="QRmess.jls"></Table>
-            <!--                        <Card>-->
-            <!--                          <p slot="title" style="font-size: 20px;font-weight: 600">未支付订单</p>-->
-            <!--                          <p v-for="(item,index) in QRmess.jls" :key="index" style="font-size: 18px;font-weight: 500;padding: 10px">{{item.clBh}}号车,时长{{item.sc}}分钟,费用{{item.lcFy}}元</p>-->
-            <!--                        </Card>-->
           </Col>
         </Row>
         <Row>
@@ -350,48 +234,18 @@
               <p style="font-size: 18px;font-weight: 500;padding: 10px;color: red">总费用 : {{QRmess.lcFy}}元</p>
             </Card>
           </Col>
-          <!--<Col span="12">-->
-          <!--<Card>-->
-          <!--<p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>-->
-          <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
-          <!--<Checkbox disabled v-model="ls.ls3">{{ls.ls6}}</Checkbox>-->
-          <!--现金支付-->
-          <!--</p>-->
-          <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
-          <!--<Checkbox disabled v-model="ls.ls2">{{ls.ls6}}</Checkbox>-->
-          <!--充卡支付(余额:{{QRmess.cardje}}元)-->
-          <!--</p>-->
-          <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
-          <!--<Checkbox disabled v-model="ls.ls1">{{ls.ls6}}</Checkbox>-->
-          <!--抵扣支付(余额:{{QRmess.kfje}}元)-->
-          <!--</p>-->
-          <!--</Card>-->
-          <!--</Col>-->
-
           <Col span="12">
             <Card>
               <p slot="title" style="font-size: 20px;font-weight: 600">支付方式</p>
-              <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
-              <!--<Checkbox v-model="ls.ls3">{{ls.ls6}}</Checkbox>-->
-              <!--现金支付-->
-              <!--</p>-->
-              <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
-              <!--<Checkbox v-model="ls.ls2">{{ls.ls6}}</Checkbox>-->
-              <!--充卡支付(余额:{{QRmess.cardje}}元)-->
-              <!--</p>-->
-              <!--<p style="font-size: 18px;font-weight: 500;padding: 10px">-->
-              <!--<Checkbox v-model="ls.ls1">{{ls.ls6}}</Checkbox>-->
-              <!--抵扣支付(余额:{{QRmess.kfje}}元)-->
-              <!--</p>-->
               <RadioGroup v-model="QRmess.zf" vertical @on-change="getRs">
                 <p style="font-size: 18px;font-weight: 500;padding: 10px">
-                  <Radio label="1">
+                  <Radio label="1" value="1">
                     <Icon type="1"></Icon>
                     <span style="font-size: 18px;">现金支付</span>
                   </Radio>
                 </p>
                 <p style="font-size: 18px;font-weight: 500;padding: 10px">
-                  <Radio label="2" :disabled="QRmess.cardje<=0">
+                  <Radio label="2" value="2" :disabled="QRmess.cardje<=0">
                     <Icon type="social-android"></Icon>
                     <span style="font-size: 18px;">充卡支付(余额:{{QRmess.cardje}}元)</span>
                   </Radio>
@@ -402,7 +256,6 @@
 
         </Row>
         <Row style="text-align: left;padding-left: 10px">
-          <!--<p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">{{QRmess.bz}}</p>-->
           <p style="font-size: 20px;font-weight: 600;padding: 10px;color: red">应收现金{{this.ysxzA}}元</p>
         </Row>
       </div>
@@ -805,30 +658,6 @@
                   this.componentName = 'printNew'
                 }));
               }
-              // if(p.row.zfzt == '00'){
-              //     buttons.push(this.util.buildButton(this, h, 'error', 'logo-yen', '结算', () => {
-              //         this.$http.post('/api/lcjl/getBatchPay',{ids:p.row.id}).then((res)=>{
-              //             if (res.code == 200){
-              //                 let a = true
-              //                 this.QRmess = res.result
-              //                 this.QRmess.kssj = this.QRmess.kssj.substring(11,16)
-              //                 this.QRmess.jssj = this.QRmess.jssj.substring(11,16)
-              //                 if (this.QRmess.fdr.indexOf('1')!=-1){
-              //                     this.ls.ls1 = true
-              //                 }
-              //                 if (this.QRmess.fdr.indexOf('2')!=-1){
-              //                     this.ls.ls2 = true
-              //                 }
-              //                 if (this.QRmess.fdr.indexOf('3')!=-1){
-              //                     this.ls.ls3 = true
-              //                 }
-              //                 this.QRmess.a = a
-              //                 this.QRmodal = true
-              //             }
-              //         })
-              //     }));
-              // }
-
               return h('div', buttons);
             }
           },
@@ -856,7 +685,7 @@
           ls3: false,
         },
         QRmodal: false,
-        QRmess: {jls: [], zf: ''},
+        QRmess: {jls: [], zf: '1'},
         fylist: [],
         ysxzA: 0,
         giveCar: giveCar,
@@ -1061,30 +890,15 @@
                           showCancelButton: true
                         }).then((res) => {
                           if (res.value) {
-
                             var ifCard = p.row.zdxm.by2 === '0' ? false : true
-
-
                             var cardNo = ''
                             console.log(ifCard)
                             if (!ifCard) {
-
                               this.$http.post('/api/lcjl/updateJssj', {id: p.row.lcJl.id}).then((res) => {
                                 if (res.code == 200) {
-                                  // this.$Message.success(res.message)
                                   this.QRmess = res.result
+                                  this.QRmess.fdr = '1'
                                   this.QRmess.zf = this.QRmess.fdr
-                                  // this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
-                                  // this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
-                                  // if (this.QRmess.fdr.indexOf('1') != -1) {
-                                  //   this.ls.ls1 = true
-                                  // }
-                                  // if (this.QRmess.fdr.indexOf('2') != -1) {
-                                  //   this.ls.ls2 = true
-                                  // }
-                                  // if (this.QRmess.fdr.indexOf('3') != -1) {
-                                  //   this.ls.ls3 = true
-                                  // }
                                   if (p.row.lcJl.lcLx == '00') {
                                     this.ifFinish = true
                                     if (this.QRmess.fdr == '1') {     //如果是现金支付，应收现金为总费用
@@ -1097,7 +911,6 @@
                                   } else {
                                     this.print(res.result, true)
                                   }
-                                  // this.print(res.result)
                                   this.getCarList()
                                   this.getSafemanList()
                                 } else {
@@ -1117,16 +930,6 @@
                                     type: 'error',
                                     confirmButtonText: '确定',
                                   })
-                                  // .then((res) => {
-                                  // if (res.value) {
-                                  //   v.showFQfzkp = false;
-                                  //   v.save()
-                                  // } else {
-                                  //   v.showFQfzkp = false;
-                                  //   v.showQfshowFQfzkpzkp = false;
-                                  //   v.DrawerVal = false
-                                  // }
-                                  // })
                                 } else {
                                   cardNo = mess;
                                   this.$http.post('/api/lcjl/updateJssj', {
@@ -1138,19 +941,10 @@
                                       this.QRmess = res.result
                                       this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
                                       this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
-                                      // if (this.QRmess.fdr.indexOf('1') != -1) {
-                                      //   this.ls.ls1 = true
-                                      // }
-                                      // if (this.QRmess.fdr.indexOf('2') != -1) {
-                                      //   this.ls.ls2 = true
-                                      // }
-
+                                      this.QRmess.fdr = '1'
                                       this.QRmess.zf = this.QRmess.fdr
-
-
                                       if (p.row.lcJl.lcLx == '00') {
                                         this.ifFinish = true
-
                                         if (this.QRmess.fdr == '1') {     //如果是现金支付，应收现金为总费用
                                           this.ysxzA = this.QRmess.lcFy
                                         }
@@ -1162,7 +956,6 @@
                                       } else {
                                         this.print(res.result, true)
                                       }
-                                      // this.print(res.result)
                                       this.getCarList()
                                       this.getSafemanList()
                                     } else {
@@ -1186,72 +979,9 @@
                 );
               }
 
-              //
-              // buttons.push(
-              //     h('Tooltip',
-              //         {props: {placement: 'top', content: '训练记录',}},
-              //         [
-              //             h('Button', {
-              //                 props: {
-              //                     type: 'warning',
-              //                     size: 'small',
-              //                 },
-              //                 style: {margin: '0 10px 0 0'},
-              //                 on: {
-              //                     click: () => {
-              //                        this.his(p.row)
-              //                     }
-              //                 }
-              //             }, '记录')
-              //         ]
-              //     ),
-              // );
-              // buttons.push(
-              //     h('Tooltip',
-              //         {props: {placement: 'top', content: '打印票据',}},
-              //         [
-              //             h('Button', {
-              //                 props: {
-              //                     size: 'small',
-              //                     icon:"ios-print"
-              //                 },
-              //                 style: {margin: '0 10px 0 0'},
-              //                 on: {
-              //                     click: () => {
-              //                         if(p.row.lcJl == ''){
-              //                             this.$http.post('/api/lcjl/getLatestJl',{clId:p.row.id}).then((res)=>{
-              //                                 if (res.code == 200){
-              //                                     if(res.result){
-              //                                         this.print(res.result)
-              //                                     }else {
-              //                                         this.$Message.error('暂无练车记录！')
-              //                                     }
-              //
-              //                                 }else {
-              //                                     this.$Message.error(res.message)
-              //                                 }
-              //                             })
-              //                         }else {
-              //                             this.print(p.row.lcJl)
-              //                         }
-              //                     }
-              //                 }
-              //             }, '')
-              //         ]
-              //     ),
-              // );
               return h('div', buttons);
             }
           },
-          // {
-          //     title: '安全员',
-          //     key: 'zgXm',
-          //     width:120,
-          //     align:'center',
-          //     render:(h,p)=>{
-          //             return h('div',p.row.lcJl.zgXm)
-          //     }
-          // },
           {
             title: '驾校',
             key: 'jlJx',
@@ -1270,14 +1000,6 @@
               return h('div', p.row.lcJl.jlXm)
             }
           },
-          // {
-          //   title: '教练员电话',
-          //   key: 'jlDh',
-          //   align: 'center',
-          //   render: (h, p) => {
-          //     return h('div', p.row.lcJl.jlDh)
-          //   }
-          // },
           {
             title: '人数',
             key: 'xySl',
@@ -1343,26 +1065,6 @@
                 return h('div', p.row.zdxm.by9 + ' ' + p.row.zdxm.zdmc)
               }
             },
-            // filters: [
-            //   {
-            //     label: '计时',
-            //     value: 'JS'
-            //   },
-            //   {
-            //     label: '培优',
-            //     value: 'PY'
-            //   },
-            //   {
-            //     label: '开放日',
-            //     value: 'KF'
-            //   },
-            // ],
-            // filterMultiple: false,
-            // filterRemote(value, row) {
-            //   this.param.zddmLike = value;
-            //   // var _self = this
-            //   this.util.getPageData(this);
-            // },
           },
         ],
         ZFmodal: false,
@@ -1516,11 +1218,7 @@
         this.$http.post('/api/lcjl/getBatchPay', {ids: this.qrids}).then((res) => {
           if (res.code == 200) {
             this.QRmess = res.result
-            // this.QRmess.kssj = this.QRmess.kssj.substring(11, 16)
-            // this.QRmess.jssj = this.QRmess.jssj.substring(11, 16)
-            // if (this.QRmess.fdr.indexOf('1') != -1) {
-            //
-            // }
+            this.QRmess.fdr = '1'
             this.QRmess.zf = this.QRmess.fdr
             if (this.QRmess.fdr == '1') {     //如果是现金支付，应收现金为总费用
               this.ysxzA = this.QRmess.lcFy
@@ -1636,35 +1334,6 @@
         }
       },
       QRok() {
-        // if (this.QRmess.xjje == 0 && this.QRmess.fdr.indexOf("1") != -1) {
-        // 如果此时不需要支付现金 并且是抵扣支付 则需要弹出是否继续确认支付
-        // this.swal({
-        // title: '开放日预存训练费(' + this.QRmess.kfje + ")元,需一次性使用完,是否强制结算!",
-        // type: 'question',
-        // showCancelButton: true,
-        // confirmButtonText: '确定',
-        // cancelButtonText: '取消'
-        // }).then(p => {
-        // if (p.value) {
-        //   this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id}).then((res) => {
-        //     if (res.code == 200) {
-        //       // this.$Message.success(res.message)
-        //       this.QRmess.id = res.message
-        //       if (this.ifFinish)
-        //         this.print(this.QRmess, true)
-        //       else this.print(this.QRmess, false)
-        //       this.qrids = ''
-        //       this.util.getPageData(this)
-        //     } else {
-        //       this.$Message.error(res.message)
-        //     }
-        //   })
-        // } else {
-        //   this.QRmodal = true
-        // }
-        // })
-        // }
-        // else {
         this.$http.post('/api/lcjl/batchPay', {ids: this.QRmess.id, zf: this.QRmess.zf}).then((res) => {
           if (res.code == 200) {
             // this.$Message.success(res.message)
@@ -1678,45 +1347,19 @@
             this.$Message.error(res.message)
           }
         })
-        // }
-
       },
       lcFyChange(v) {
         this.formData.zddm = v
-        console.log(v)
-        console.log(this.formData.zddm);
-
-        // var ifCard = false;
-        // this.fylist.map((val, index, arr) => {
-        //   if (val.zddm === v) {
-        //     ifCard = val.by2 === '0' ? false : true
-        //   }
-        // })
-        //
-        // if (ifCard) {
-        //   if (!!window.ActiveXObject || "ActiveXObject" in window) {
-        //   } else {
-        //     this.swal({
-        //       title: '该套餐已启用刷卡模式，请使用IE10以上的浏览器',
-        //       type: 'warning',
-        //       confirmButtonText: '关闭'
-        //     })
-        //     return
-        //   }
-        // }
-
       },
       getzdlist() {
         let a = sessionStorage.getItem('dictMap')
         a = JSON.parse(a)
         this.fylist = a[67].zdxmList
-        console.log(this.fylist);
       },
       getCarItemMess(it, index) {
         this.formData.lcClId = it.id
       },
       searchJlyaq(query) {
-        console.log(query);
       },
       searchJly(query) {
         if (query !== '') {
@@ -1727,8 +1370,6 @@
               return item.label.indexOf(query.toUpperCase()) != -1
             });
           }, 200);
-        } else {
-          this.searchCoachList = [];
         }
       },
       clzt(zt) {

@@ -5,6 +5,10 @@ import com.ldz.biz.model.BizLcWxjl;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 public interface BizLcWxjlService extends BaseService<BizLcWxjl, String> {
 
     ApiResponse<String> saveEntity(BizLcWxjl entity);
@@ -28,4 +32,8 @@ public interface BizLcWxjlService extends BaseService<BizLcWxjl, String> {
     ApiResponse<String> removeEntity(String id);
 
     ApiResponse<String> unbindCardNo(String id);
+
+    void exportWxjl(HttpServletRequest request, HttpServletResponse response) throws IOException;
+
+    ApiResponse<String> updateZhye(String id);
 }

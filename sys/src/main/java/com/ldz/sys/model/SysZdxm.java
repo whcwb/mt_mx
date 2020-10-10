@@ -1,7 +1,6 @@
 package com.ldz.sys.model;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -57,7 +56,17 @@ public class SysZdxm implements Serializable {
 
     private String by9;
 
+    private String by10;
+
     private static final long serialVersionUID = 1L;
+
+    public String getBy10() {
+        return by10;
+    }
+
+    public void setBy10(String by10) {
+        this.by10 = by10;
+    }
 
     public String getBy4() {
         return by4;
@@ -260,7 +269,11 @@ public class SysZdxm implements Serializable {
         by3("BY3"),
         by4("BY4"),
         by5("BY5"),
-        by6("BY6");
+        by6("BY6"),
+        by7("BY7"),
+        by8("BY8"),
+        by9("BY9"),
+        by10("BY10");
 
         private final String column;
 

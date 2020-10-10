@@ -58,7 +58,6 @@ public class OperateLogAop {
             SysYh userInfo = (SysYh)request.getAttribute("userInfo");
             log.setFf(joinPoint.getTarget().getClass().getSimpleName() +"." + joinPoint.getSignature().getName());
             log.setCzsj(new Date());
-   //         log.setCzr(userInfo.getYhid()+"-"+userInfo.getXm());
             log.setZxsj(elapseTime);
             log.setCs(getArgsAsString(joinPoint));
             log.setRzId(""+idGenerator.nextId());
@@ -104,10 +103,12 @@ public class OperateLogAop {
      * @throws IllegalAccessException
      */
     private Object getPK(Object obj) throws IllegalAccessException {
-        if (obj == null)return null;
+        if (obj == null) {
+            return null;
+        }
         Field[] fields = obj.getClass().getDeclaredFields();
         for (Field field : fields) {
-            if (field.isAnnotationPresent(Id.class)){
+            if (field.isAnnotationPresent(Id.class)) {
                 field.setAccessible(true);
                 return field.get(obj);
             }
@@ -123,14 +124,16 @@ public class OperateLogAop {
     private BaseService getBaseService(ProceedingJoinPoint joinPoint){
         try {
             String className = joinPoint.getTarget().getClass().getSimpleName();
-            if (serviceMap.containsKey(className)){
+            if (serviceMap.containsKey(className)) {
                 return serviceMap.get(className);
             }
             Method method = joinPoint.getTarget().getClass().getDeclaredMethod("getBaseService");
-            if (method == null)return null;
+            if (method == null) {
+                return null;
+            }
             method.setAccessible(true);
             BaseService baseService = (BaseService) method.invoke(joinPoint.getTarget());
-            serviceMap.put(className,baseService);
+            serviceMap.put(className, baseService);
             return baseService;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
@@ -138,7 +141,9 @@ public class OperateLogAop {
         return null;
     }
     private Object getById(BaseService baseService,Object pk) throws IllegalAccessException {
-        if (baseService == null || pk == null)return null;
+        if (baseService == null || pk == null) {
+            return null;
+        }
         return baseService.findById((Serializable) pk);
     }
 }

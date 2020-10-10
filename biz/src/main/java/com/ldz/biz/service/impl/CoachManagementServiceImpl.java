@@ -139,16 +139,16 @@ public class CoachManagementServiceImpl extends BaseServiceImpl<CoachManagement,
 		condition.eq(Zgjbxx.InnerColumn.jlId, byId.getId());
 		List<Zgjbxx> zgjbxxes = zgjbxxService.findByCondition(condition);
 		if(CollectionUtils.isNotEmpty(zgjbxxes)){
-			Zgjbxx zgjbxx = zgjbxxes.get(0);
-			zgjbxx.setXm(entity.getCoachName());
-			zgjbxx.setXb(entity.getGender().equalsIgnoreCase("10")?"男":"女");
-			zgjbxx.setSjhm(entity.getPhone());
-			zgjbxx.setSfzh(entity.getIdCardNo());
-			zgjbxx.setJlzh(entity.getCoachNum());
-			zgjbxx.setZjcx1(entity.getDrivingType());
-			zgjbxxService.update(zgjbxx);
+            Zgjbxx zgjbxx = zgjbxxes.get(0);
+            zgjbxx.setXm(entity.getCoachName());
+            zgjbxx.setXb("10".equalsIgnoreCase(entity.getGender()) ? "男" : "女");
+            zgjbxx.setSjhm(entity.getPhone());
+            zgjbxx.setSfzh(entity.getIdCardNo());
+            zgjbxx.setJlzh(entity.getCoachNum());
+            zgjbxx.setZjcx1(entity.getDrivingType());
+            zgjbxxService.update(zgjbxx);
 
-		}
+        }
 		entity.setOperater(currentUser.getZh()+"-"+currentUser.getXm());
 		entity.setOperateTime(DateUtils.getNowTime());
 		update(entity);

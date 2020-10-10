@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 练车学员接口（已废弃）
+ */
 @RestController
 @RequestMapping("/api/lcjlxy")
 public class BizLcJlXyController extends BaseController<BizLcJlXy, String> {
