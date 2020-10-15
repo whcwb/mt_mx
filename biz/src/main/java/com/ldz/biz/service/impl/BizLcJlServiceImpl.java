@@ -2824,7 +2824,11 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     dataMap.put(1, jl.getKssj().substring(0, 10).replaceAll("-", "."));
                     dataMap.put(2, split[i1].split("-")[0]);
                     dataMap.put(3, zjhms[i1]);
-                    dataMap.put(4, dhs[i1]);
+                    if(dhs.length > i1){
+                        dataMap.put(4, dhs[i1]);
+                    }else{
+                        dataMap.put(4, "");
+                    }
                     dataMap.put(5, split[i1].split("-")[1]);
                     dataMap.put(6, "");
                     dataMap.put(7, "");
