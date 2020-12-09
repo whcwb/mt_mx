@@ -3,8 +3,8 @@
     <Row style="position: relative;margin-top: 10px;">
       <Table
         ref="table"
-        :stripe="true"
-        :border="false"
+        stripe
+        :border="true"
         :size='sizeTyp'
         :height="TabHeight"
         :columns="parent.tableColumns"

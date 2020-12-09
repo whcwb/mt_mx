@@ -10,6 +10,7 @@ import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.sys.model.SysZdxm;
 import com.ldz.util.bean.ApiResponse;
+import jxl.write.WriteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -277,6 +278,22 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
     @GetMapping("/exportMx")
     public void exportMx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws Exception {
         service.exportMx(page, request, response);
+    }
+
+    /**
+     * 新驾校统计接口
+     */
+    @PostMapping("/newJxtj")
+    public ApiResponse<List<Map<String,Object>>> newJxtj(){
+        return service.newJxtj();
+    }
+
+    /**
+     * 新驾校统计下载接口
+     */
+    @GetMapping("/downloadNewJxtj")
+    public void downloadNewJxtj(HttpServletRequest request, HttpServletResponse response) throws IOException, WriteException {
+        service.downloadNewJxtj(request,response);
     }
 
 

@@ -3,6 +3,7 @@ package com.ldz.biz.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Maps;
 import com.ldz.biz.mapper.BizJlCzMapper;
 import com.ldz.biz.mapper.BizLcJlMapper;
 import com.ldz.biz.model.*;
@@ -2848,5 +2849,258 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         ExcelUtil.createSheet(out, "今日招生", data);
     }
 
+    @Override
+    public ApiResponse<List<Map<String, Object>>> newJxtj() {
+        List<Map<String,Object>> result = new ArrayList<>();
+        // 参数处理
+        String tjsj = getRequestParamterAsString("tjsj");
+        if (StringUtils.isEmpty(tjsj)) {
+            tjsj = DateUtils.getToday() + " 00:00:00," + DateUtils.getToday() + " 23:59:59";
+        }
+        String[] sj = tjsj.split(",");
+        String kssj = sj[0];
+        String jssj = sj[1];
 
+        String lx = getRequestParamterAsString("lx");
+
+        SimpleCondition cond = new SimpleCondition(BizLcJl.class);
+        if (StringUtils.isNotBlank(lx)) {
+            cond.eq(BizLcJl.InnerColumn.jlLx, lx);
+        }
+        cond.eq(BizLcJl.InnerColumn.zfzt, "10");
+        cond.gte(BizLcJl.InnerColumn.kssj, kssj);
+        cond.lte(BizLcJl.InnerColumn.jssj, jssj);
+        //  新驾校统计接口需要根据驾校分组
+      // 1. 根据时间查询出所有的练车记录
+        List<BizLcJl> lcJls = findByCondition(cond);
+        if (CollectionUtils.isEmpty(lcJls)) {
+            return ApiResponse.success(result);
+        }
+        // 2. 根据驾校开始分组
+        Map<String, List<BizLcJl>> map = lcJls.stream().collect(Collectors.groupingBy(BizLcJl::getJlJx));
+
+        // 3.根据凭证号查询出返点内容
+        Set<String> set = lcJls.stream().map(BizLcJl::getPz).collect(Collectors.toSet());
+        List<BizLcFd> fds = fdService.findByIds(set);
+        for (Map.Entry<String, List<BizLcJl>> entry : map.entrySet()) {
+            Map<String,Object> dataMap = new HashMap<>();
+            List<BizLcJl> jls = entry.getValue();
+            // 计算 科二计时培训收入
+            int k2js = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "00")&&StringUtils.equals(bizLcJl.getLcKm(),"2")).mapToInt(BizLcJl::getXjje).sum();
+            // 计算 科二计时培训已返点金额 ①拿到科二计时培训 Pz
+            Set<String> pzs = jls.stream().filter(jl -> StringUtils.equals(jl.getLcKm(), "2") && StringUtils.equals(jl.getLcLx(), "00")).map(BizLcJl::getPz).collect(Collectors.toSet());
+            // ② 根据凭证过滤记录 并计算已返点金额
+            int k2Yfd = CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && pzs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            // 计算科二计时待返点金额
+            int k2Dfd =  CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && pzs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            // 计算科二培优收入
+            int k2py = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "20")&&StringUtils.equals(bizLcJl.getLcKm(),"2")).mapToInt(BizLcJl::getXjje).sum();
+            // 计算科二培优已返点
+            Set<String> pys = jls.stream().filter(jl -> StringUtils.equals(jl.getLcKm(), "2") && StringUtils.equals(jl.getLcLx(), "20")).map(BizLcJl::getPz).collect(Collectors.toSet());
+            int k2pyYfd =  CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && pys.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            // 计算科二培优待返点
+            int k2pyDfd = CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && pys.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            // 计算科二开放日收入
+            int k2Kf = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "30")&&StringUtils.equals(bizLcJl.getLcKm(),"2")).mapToInt(BizLcJl::getXjje).sum();
+            // 计算科二开放日已返点金额
+            Set<String> kfs = jls.stream().filter(jl -> StringUtils.equals(jl.getLcKm(), "2") && StringUtils.equals(jl.getLcLx(), "30")).map(BizLcJl::getPz).collect(Collectors.toSet());
+            int k2KfYfd =  CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && kfs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            // 计算科二开放日待返点金额
+            int k2KfDfd = CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && kfs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            // 科目二小计
+            int k2Xj = k2js + k2py + k2Kf;
+            int k2YfdXj = k2Yfd + k2KfYfd + k2pyYfd;
+            int k2DfdXj = k2Dfd + k2KfDfd + k2pyDfd;
+
+            // --------------------计算科三-----------------------------
+            // 计算 科三计时培训收入
+            int k3js = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "00")&&StringUtils.equals(bizLcJl.getLcKm(),"3")).mapToInt(BizLcJl::getXjje).sum();
+            // 计算 科三计时培训已返点金额 ①拿到科三计时培训 Pz
+            Set<String> k3pzs = jls.stream().filter(jl -> StringUtils.equals(jl.getLcKm(), "3") && StringUtils.equals(jl.getLcLx(), "00")).map(BizLcJl::getPz).collect(Collectors.toSet());
+            // ② 根据凭证过滤记录 并计算已返点金额
+            int k3Yfd = CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && k3pzs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            // 计算科三计时待返点金额
+            int k3Dfd = CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && k3pzs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            // 计算科三培优收入
+            int k3py = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "20")&&StringUtils.equals(bizLcJl.getLcKm(),"3")).mapToInt(BizLcJl::getXjje).sum();
+            // 计算科二培优已返点
+            Set<String> k3pys = jls.stream().filter(jl -> StringUtils.equals(jl.getLcKm(), "3") && StringUtils.equals(jl.getLcLx(), "20")).map(BizLcJl::getPz).collect(Collectors.toSet());
+            int k3pyYfd =  CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && k3pys.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            // 计算科三培优待返点
+            int k3pyDfd =CollectionUtils.isEmpty(fds)?0: fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && k3pys.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            // 计算科三按把收入
+            int k3Ab = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "10")&&StringUtils.equals(bizLcJl.getLcKm(),"3")).mapToInt(BizLcJl::getXjje).sum();
+            // 计算科三按把已返点金额
+            Set<String> k3abs = jls.stream().filter(jl -> StringUtils.equals(jl.getLcKm(), "3") && StringUtils.equals(jl.getLcLx(), "10")).map(BizLcJl::getPz).collect(Collectors.toSet());
+            int k3AbYfd =  CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && k3abs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            // 计算科三按把待返点金额
+            int k3AbDfd = CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && k3abs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            // 科目三小计
+            int k3Xj = k3js + k3py + k3Ab;
+            int k3YfdXj = k3Yfd + k3AbYfd + k3pyYfd;
+            int k3DfdXj = k3Dfd + k3AbDfd + k3pyDfd;
+
+            // 总计
+            int zj = k2Xj + k3Xj;
+            int yfdZj = k2YfdXj + k3YfdXj;
+            int dfdZj = k2DfdXj + k3DfdXj;
+            dataMap.put("jx",entry.getKey());
+            dataMap.put("k2js",k2js==0?"-":k2js);
+            dataMap.put("k2Yfd",k2Yfd==0?"-":k2Yfd);
+            dataMap.put("k2Dfd",k2Dfd==0?"-":k2Dfd);
+            dataMap.put("k2py",k2py==0?"-":k2py);
+            dataMap.put("k2pyYfd",k2pyYfd==0?"-":k2pyYfd);
+            dataMap.put("k2pyDfd",k2pyDfd==0?"-":k2pyDfd);
+            dataMap.put("k2Kf",k2Kf==0?"-":k2Kf);
+            dataMap.put("k2KfYfd",k2KfYfd==0?"-":k2KfYfd);
+            dataMap.put("k2KfDfd",k2KfDfd==0?"-":k2KfDfd);
+            dataMap.put("k2Xj",k2Xj==0?"-":k2Xj);
+            dataMap.put("k2YfdXj",k2YfdXj==0?"-":k2YfdXj);
+            dataMap.put("k2DfdXj",k2DfdXj==0?"-":k2DfdXj);
+
+            dataMap.put("k3js",k3js==0?"-":k3js);
+            dataMap.put("k3Yfd",k3Yfd==0?"-":k3Yfd);
+            dataMap.put("k3Dfd",k3Dfd==0?"-":k3Dfd);
+            dataMap.put("k3py",k3py==0?"-":k3py);
+            dataMap.put("k3pyYfd",k3pyYfd==0?"-":k3pyYfd);
+            dataMap.put("k3pyDfd",k3pyDfd==0?"-":k3pyDfd);
+            dataMap.put("k3Ab",k3Ab==0?"-":k3Ab);
+            dataMap.put("k3AbYfd",k3AbYfd==0?"-":k3AbYfd);
+            dataMap.put("k3AbDfd",k3AbDfd==0?"-":k3AbDfd);
+            dataMap.put("k3Xj",k3Xj==0?"-":k3Xj);
+            dataMap.put("k3YfdXj",k3YfdXj==0?"-":k3YfdXj);
+            dataMap.put("k3DfdXj",k3DfdXj==0?"-":k3DfdXj);
+
+            dataMap.put("zj",zj);
+            dataMap.put("yfdZj",yfdZj==0?"-":yfdZj);
+            dataMap.put("dfdZj",dfdZj==0?"-":dfdZj);
+
+            result.add(dataMap);
+        }
+        return ApiResponse.success(result);
+
+    }
+
+    @Override
+    public void downloadNewJxtj(HttpServletRequest request, HttpServletResponse response) throws IOException, WriteException {
+
+        ApiResponse<List<Map<String, Object>>> jxtj = newJxtj();
+        List<Map<String, Object>> mapList = jxtj.getResult();
+        // 参数处理
+        String tjsj = getRequestParamterAsString("tjsj");
+        if (StringUtils.isEmpty(tjsj)) {
+            tjsj = DateUtils.getToday() + " 00:00:00," + DateUtils.getToday() + " 23:59:59";
+        }
+        String[] sj = tjsj.split(",");
+        org.joda.time.format.DateTimeFormatter pattern = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        DateTime time = DateTime.parse(sj[0], pattern);
+        int year = time.getYear();
+        int mon = time.getMonthOfYear();
+        int day = time.getDayOfMonth();
+        DateTime parse = DateTime.parse(sj[1], pattern);
+        String timeString = year+"年"+mon + "月" +day+"日-" +  parse.getYear() +  "年"+ parse.getMonthOfYear() + "月" + parse.getDayOfMonth()+"日";
+        String fileName = "知音考场练车统计（按驾校）";
+
+        WritableCellFormat cellFormat = new WritableCellFormat();
+        cellFormat.setAlignment(Alignment.CENTRE);
+        cellFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+        cellFormat.setBorder(jxl.format.Border.ALL, BorderLineStyle.THIN);
+        response.setContentType("application/msexcel");
+        request.setCharacterEncoding("UTF-8");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1") + ".xls");
+        OutputStream out = response.getOutputStream();
+
+
+        WritableWorkbook workbook = Workbook.createWorkbook(out);
+        WritableSheet sheet = workbook.createSheet("驾校统计", 0);
+
+        sheet.mergeCells(0, 0, 27, 0);
+        sheet.mergeCells(0, 1, 27, 1);
+        sheet.mergeCells(0, 2, 0, 3);
+        sheet.mergeCells(1, 2, 12, 2);
+        sheet.mergeCells(13, 2, 24, 2);
+        sheet.mergeCells(25, 2, 25, 3);
+        sheet.mergeCells(26, 2, 26, 3);
+        sheet.mergeCells(27, 2, 27, 3);
+//        sheet.mergeCells(13, 0, 14, 0);
+//        sheet.mergeCells(15, 0, 15, 1);
+        sheet.addCell(new Label(0, 0, "知音考场练车统计（按驾校）", cellFormat));
+        sheet.addCell(new Label(0, 1, "时间段：" +timeString, cellFormat));
+        sheet.addCell(new Label(0, 2, "驾校", cellFormat));
+        sheet.addCell(new Label(1, 2, "科二", cellFormat));
+        sheet.addCell(new Label(13, 2, "科三", cellFormat));
+        sheet.addCell(new Label(25, 2, "总计", cellFormat));
+        sheet.addCell(new Label(26, 2, "已返", cellFormat));
+        sheet.addCell(new Label(27, 2, "待返", cellFormat));
+        sheet.addCell(new Label(1, 3, "计时", cellFormat));
+        sheet.addCell(new Label(2, 3, "已返", cellFormat));
+        sheet.addCell(new Label(3, 3, "待返", cellFormat));
+        sheet.addCell(new Label(4, 3, "培优", cellFormat));
+        sheet.addCell(new Label(5, 3, "已返", cellFormat));
+        sheet.addCell(new Label(6, 3, "待返", cellFormat));
+        sheet.addCell(new Label(7, 3, "开放日", cellFormat));
+        sheet.addCell(new Label(8, 3, "已返", cellFormat));
+        sheet.addCell(new Label(9, 3, "待返", cellFormat));
+        sheet.addCell(new Label(10, 3, "小计2", cellFormat));
+        sheet.addCell(new Label(11, 3, "已返", cellFormat));
+        sheet.addCell(new Label(12, 3, "待返", cellFormat));
+
+        sheet.addCell(new Label(13, 3, "计时", cellFormat));
+        sheet.addCell(new Label(14, 3, "已返", cellFormat));
+        sheet.addCell(new Label(15, 3, "待返", cellFormat));
+        sheet.addCell(new Label(16, 3, "培优", cellFormat));
+        sheet.addCell(new Label(17, 3, "已返", cellFormat));
+        sheet.addCell(new Label(18, 3, "待返", cellFormat));
+        sheet.addCell(new Label(19, 3, "按把", cellFormat));
+        sheet.addCell(new Label(20, 3, "已返", cellFormat));
+        sheet.addCell(new Label(21, 3, "待返", cellFormat));
+        sheet.addCell(new Label(22, 3, "小计3", cellFormat));
+        sheet.addCell(new Label(23, 3, "已返", cellFormat));
+        sheet.addCell(new Label(24, 3, "待返", cellFormat));
+
+        sheet.addCell(new Label(25, 3, "总计", cellFormat));
+        sheet.addCell(new Label(26, 3, "已返", cellFormat));
+        sheet.addCell(new Label(27, 3, "待返", cellFormat));
+
+        for (int i = 0; i < mapList.size(); i++) {
+            Map<String, Object> map = mapList.get(i);
+            sheet.addCell(new Label(0, i + 4, map.get("jx")+"", cellFormat));
+            sheet.addCell(new Label(1, i + 4, map.get("k2js")+"", cellFormat));
+            sheet.addCell(new Label(2, i + 4, map.get("k2Yfd")+"", cellFormat));
+            sheet.addCell(new Label(3, i + 4, map.get("k2Dfd")+"", cellFormat));
+            sheet.addCell(new Label(4, i + 4, map.get("k2py")+"", cellFormat));
+            sheet.addCell(new Label(5, i + 4, map.get("k2pyYfd")+"", cellFormat));
+            sheet.addCell(new Label(6, i + 4, map.get("k2pyDfd")+"", cellFormat));
+            sheet.addCell(new Label(7, i + 4, map.get("k2Kf")+"", cellFormat));
+            sheet.addCell(new Label(8, i + 4, map.get("k2KfYfd")+"", cellFormat));
+            sheet.addCell(new Label(9, i + 4, map.get("k2KfDfd")+"", cellFormat));
+            sheet.addCell(new Label(10, i + 4, map.get("k2Xj")+"", cellFormat));
+            sheet.addCell(new Label(11, i + 4, map.get("k2YfdXj")+"", cellFormat));
+            sheet.addCell(new Label(12, i + 4, map.get("k2DfdXj")+"", cellFormat));
+
+            sheet.addCell(new Label(13, i + 4, map.get("k3js")+"", cellFormat));
+            sheet.addCell(new Label(14, i + 4, map.get("k3Yfd")+"", cellFormat));
+            sheet.addCell(new Label(15, i + 4, map.get("k3Dfd")+"", cellFormat));
+            sheet.addCell(new Label(16, i + 4, map.get("k3py")+"", cellFormat));
+            sheet.addCell(new Label(17, i + 4, map.get("k3pyYfd")+"", cellFormat));
+            sheet.addCell(new Label(18, i + 4, map.get("k3pyDfd")+"", cellFormat));
+            sheet.addCell(new Label(19, i + 4, map.get("k3Ab")+"", cellFormat));
+            sheet.addCell(new Label(20, i + 4, map.get("k3AbYfd")+"", cellFormat));
+            sheet.addCell(new Label(21, i + 4, map.get("k3AbDfd")+"", cellFormat));
+            sheet.addCell(new Label(22, i + 4, map.get("k3Xj")+"", cellFormat));
+            sheet.addCell(new Label(23, i + 4, map.get("k3YfdXj")+"", cellFormat));
+            sheet.addCell(new Label(24, i + 4, map.get("k3DfdXj")+"", cellFormat));
+
+            sheet.addCell(new Label(25, i + 4, map.get("zj")+"", cellFormat));
+            sheet.addCell(new Label(26, i + 4, map.get("yfdZj")+"", cellFormat));
+            sheet.addCell(new Label(27, i + 4, map.get("dfdZj")+"", cellFormat));
+        }
+        sheet.mergeCells(1, mapList.size() + 4, 27, mapList.size() + 4);
+        sheet.addCell(new Label(0, mapList.size() + 4, "合计", cellFormat));
+        sheet.addCell(new Label(15, mapList.size() + 4, mapList.size() == 0 ? (0 + "") : (mapList.stream().mapToInt(m->(Integer)m.get("zj")).sum() + ""), cellFormat));
+        workbook.write();
+        workbook.close();
+
+    }
 }

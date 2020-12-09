@@ -1,5 +1,5 @@
-let ajaxUrl = 'http://127.0.0.1:8080';
-// let ajaxUrl = 'http://192.168.1.156:8080';
+// let ajaxUrl = 'http://127.0.0.1:8080';
+let ajaxUrl = 'http://192.168.1.156:8080';
 export default {
   NETWORK_ERR_STR: '网络加载异常!',
   url: ajaxUrl,
@@ -282,7 +282,7 @@ export default {
     getFdZt: '/api/lcjl/getFdZt',
     getOneLog: '/api/lcjl/getOneLog',
     jlTj: '/api/lcjl/jlTj',
-    jxtj: '/api/lcjl/jxtj',
+    jxtj: '/api/lcjl/newJxtj',
     getAllLog: '/api/lcjl/getAllLog',
   },
   zgjbxx: { //练车历史

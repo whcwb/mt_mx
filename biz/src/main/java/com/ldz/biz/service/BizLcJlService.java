@@ -83,4 +83,8 @@ public interface BizLcJlService extends BaseService<BizLcJl, String> {
     ApiResponse<String> getKfDj(String jlId);
 
     void exportMx(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+    ApiResponse<List<Map<String, Object>>> newJxtj();
+
+    void downloadNewJxtj(HttpServletRequest request, HttpServletResponse response) throws IOException, WriteException;
 }
