@@ -5,7 +5,7 @@
       <DatePicker v-model="dateRange['tjsj']"
                   @on-ok="v.util.getPageData(v)"
                   @on-change="param['tjsj'] = v.util.dateRangeChange(dateRange['tjsj'])" confirm format="yyyy-MM-dd"
-                  type="daterange" :placeholder="'请输入'" style="width: 200px"></DatePicker>
+                  type="daterange" split-panels :placeholder="'请输入'" style="width: 200px"></DatePicker>
       <Button type="primary" @click="v.util.getPageData(v)" style="margin-left: 10px;">
         <Icon type="md-search"></Icon>
         <!--查询-->
@@ -18,13 +18,13 @@
       </Button>
     </div>
     <table-area :parent="v" :TabHeight="AF.getPageHeight()-240" :pager="false"></table-area>
-    <Row>
-      <Col span="24" align="right">
-        <div style="font-size: 15px;font-weight: 600">
-          合计：<span style="color: #ed3f14"> {{ addmoney }} </span> 元
-        </div>
-      </Col>
-    </Row>
+    <!--    <Row>-->
+    <!--      <Col span="24" align="right">-->
+    <!--        <div style="font-size: 15px;font-weight: 600">-->
+    <!--          合计：<span style="color: #ed3f14"> {{ addmoney }} </span> 元-->
+    <!--        </div>-->
+    <!--      </Col>-->
+    <!--    </Row>-->
     <component :is="componentName"></component>
   </div>
 </template>
