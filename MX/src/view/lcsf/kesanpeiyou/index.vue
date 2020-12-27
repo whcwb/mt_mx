@@ -160,7 +160,7 @@
           <Card>
             <p slot="title">学员信息</p>
             <p>
-              <Row v-for="(item,index) in AMess" :key="index" style="display: flex;align-items: center;">
+              <Row v-for="(item,index) in AMess" :key="index" style="display: flex;align-items: center; margin-top: 10px">
                 <Col>
                   <RadioGroup v-model="item.cartype">
                     <Radio v-for="item in cxlist" :label="item.key" v-if="item.key.includes(cx)"></Radio>
@@ -180,13 +180,19 @@
                          @on-focus="getInputFocus(index*3+3)" size="default" v-model="item.xyDh" placeholder="学员联系电话"/>
                 </Col>
                 <Col span="2" v-if="AMess.length>1">
-                  <Button size="default" type="warning" tabIndex="-1" @click="remove(index)">删除</Button>
+                  <Button size="default" type="warning" style="margin-left: 10px" tabIndex="-1" @click="remove(index)">删除</Button>
                 </Col>
                 <Col span="2" align="center">
-
-                  <Button type="info" icon="md-add" tabIndex="-1"
+                  <Button type="info" style="margin-left: 10px" icon="md-add" tabIndex="-1"
                           @click="pushmess"
                   >
+                  </Button>
+                </Col>
+                <Col span="2" align="center">
+                  <Button type="info" style = "margin-left: 10px"
+                          @click="readCardByIndex(item,index)"
+                  >
+                    读卡
                   </Button>
                 </Col>
               </Row>
@@ -296,6 +302,7 @@ import moment from 'moment'
 import Cookies from 'js-cookie'
 import printNew from '../../../components/printNew'
 import mixin from '@/mixins'
+import readIdCard from "@/view/lcsf/comp/readIdCard";
 
 export default {
   name: "index",
@@ -623,6 +630,14 @@ export default {
     clearInterval(this.IntervalKE)
   },
   methods: {
+    readCardByIndex(item,index) {
+      var _this = this;
+      readIdCard.readCardByHand((key, res) => {
+        console.log(res , "res");
+        _this.$refs['input'+(index*3+1)][0].value = res.Name.trim();
+        _this.$refs['input'+(index*3+2)][0].value = res.IDCardNo.trim();
+      }, _this)
+    },
     findByXyXm(e) {
       if (e.data) {
         let jxJx = ''
