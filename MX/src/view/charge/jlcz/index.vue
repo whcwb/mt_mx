@@ -25,7 +25,7 @@
             <Input size="large" v-model="param.jlXmLike" @on-keyup.enter="getData" clearable placeholder="请输入教练姓名"/>
           </Col>
           <Col span="1" align="center" style="margin-right: 16px">
-            <Button type="primary" @click="getData">
+            <Button type="primary" @click="() => { this.param.pageNum = 1 ;getData()}">
               <Icon type="md-search"></Icon>
               <!--查询-->
             </Button>
@@ -660,6 +660,7 @@ export default {
         this.getData()
       },
       getData() {
+        // this.param.pageNum = 1;
         this.$http.get('/api/lcwxjl/pager', {
           params: this.param
         }).then(res => {

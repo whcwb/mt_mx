@@ -18,6 +18,9 @@
         <Input v-model="param.cjrLike" placeholder="操作人"
                @on-enter="getOldData()"/>
       </Col>
+      <Col span="3">
+        <Input v-model="param.lcIdLike" placeholder="凭证号" @on-enter="getOldData"></Input>
+      </Col>
       <Col span="1" style="margin-right: 10px">
         <span>
           <Button type="primary" @click="getOldData">
@@ -47,10 +50,10 @@
       <Col span="21" align="right" style="display: flex;justify-content: flex-end;">
           <span style="font-size: 12px;padding-top: 7px" v-if="switch1">
             <span style="font-size: 15px;font-weight: 600">笔数:&nbsp; </span>
-          <span style="color: #ed3f14;font-size: 15px;">{{totalS }}</span>
+          <span style="color: #ed3f14;font-size: 15px;">{{ totalS }}</span>
             <span style="font-size: 15px;font-weight: 600"> &nbsp;笔&nbsp;&nbsp;</span>
           <span style="font-size: 15px;font-weight: 600">合计:&nbsp</span>
-          <span style="color: #ed3f14;font-size: 15px;">{{hj|GS}}</span>
+          <span style="color: #ed3f14;font-size: 15px;">{{ hj|GS }}</span>
           <span style="font-size: 15px;font-weight: 600"> &nbsp;元&nbsp;&nbsp;</span>
        </span>
         <Page :total=totalS
@@ -72,148 +75,151 @@
 </template>
 
 <script>
-  import fdms from './comp/fdms'
-  import printSignUp from './comp/printSignUp'
-  import Cookies from 'js-cookie'
-  import mixin from '@/mixins'
+import fdms from './comp/fdms'
+import printSignUp from './comp/printSignUp'
+import Cookies from 'js-cookie'
+import mixin from '@/mixins'
 
-  export default {
-    name: "okBack",
-    components: {fdms, printSignUp},
-    mixins: [mixin],
-    data() {
-      return {
-        v: this,
-        hisPrintMess: {},
-        componentName: '',
-        compName: '',
-        MSList: [],
-        tableData: [],
-        tableColumns: [
-          {title: '序号', type: 'index', fixed: 'left', align: 'center', minWidth: 80},
-          {title: '操作人', key: 'cjr', align: 'center', minWidth: 120},
-          {title: '驾校', key: 'jx', align: 'center', minWidth: 120},
-          {title: '教练员', key: 'jlXm', align: 'center', minWidth: 120},
-          {
-            title: '返点时间', key: 'cjsj', align: 'center', minWidth: 120, render: (h, p) => {
-              let a = p.row.cjsj.substring(0, 16)
-              return h('div', a)
-            }
-          },
-          {title: '返点笔数', key: 'fdsl', align: 'center', minWidth: 120},
-          {title: '返点金额', key: 'fdje', align: 'center', minWidth: 120},
-          {
-            title: '操作', minWidth: 120, align: 'center', render: (h, p) => {
-              return h('Tooltip',
-                {props: {placement: 'top', transfer: true, content: '明细',}},
-                [
-                  h('Button', {
-                    props: {type: 'success', size: 'small',},
-                    style: {marginRight: '10px'},
-                    on: {
-                      click: () => {
-                        this.showMS(p.row.fds)
-                      }
-                    }
-                  }, '明细'),
-                  h('Button', {
-                    props: {type: 'success', size: 'small',},
-                    style: {marginRight: '10px'},
-                    on: {
-                      click: () => {
-                        this.hisPrintMess = p.row
-                        this.componentName = 'printSignUp'
-                      }
-                    }
-                  }, '打印')
-                ]
-              )
-            }
+export default {
+  name: "okBack",
+  components: {fdms, printSignUp},
+  mixins: [mixin],
+  data() {
+    return {
+      v: this,
+      hisPrintMess: {},
+      componentName: '',
+      compName: '',
+      MSList: [],
+      tableData: [],
+      tableColumns: [
+        {title: '序号', type: 'index', fixed: 'left', align: 'center', minWidth: 80},
+        {title: '操作人', key: 'cjr', align: 'center', minWidth: 120},
+        {title: '驾校', key: 'jx', align: 'center', minWidth: 120},
+        {title: '教练员', key: 'jlXm', align: 'center', minWidth: 120},
+        {
+          title: '返点时间', key: 'cjsj', align: 'center', minWidth: 120, render: (h, p) => {
+            let a = p.row.cjsj.substring(0, 16)
+            return h('div', a)
           }
-        ],
-        total: 0,
-        totalS: 0,
-        dateRange: {
-          cjsj: ''
         },
-        hj: 0,
-        switch1: true,
-        param: {
-          qrsjIsNotNull: '1',
-          orderBy: 'qrsj desc',
-          cjrLike: '',
-          fdZt: '10',
-          pageNum: 1,
-          pageSize: 15,
-          cjsjInRange: '',
-          lcKm: ''
-        }
-      }
-    },
-    watch: {
-      switch1: function (val) {
-        Cookies.set('showMessFD', val)
-      }
-    },
-    mounted() {
-      this.switch1 = Cookies.get('showMessFD') === 'true' ? true : false
-    },
-    created() {
-      // const end = new Date();
-      // const start = new Date();
-      // start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-      // this.dateRange.cjsj = [start, end]
-      // var d = start;
-      // var c = end;
-      // var datetimed = this.AF.trimDate(start) + ' ' + '00:00:00';
-      // var datetimec = this.AF.trimDate() + ' 23:59:59';
-      // this.param.cjsjInRange = datetimed + ',' + datetimec
-      this.dateRange.cjsj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
-      this.param.cjsjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
-      this.getOldData()
-    },
-    methods: {
-      downLoadExcel() {
-        if (this.param.lcKm == undefined || this.param.lcKm == "") {
-          this.swal({
-            title: '导出文件时请选择科目',
-            type: 'warning',
-          })
-          return
-        }
-
-        let accessToken = JSON.parse(Cookies.get('accessToken'));
-        let token = accessToken.token;
-        let userid = accessToken.userId;
-        window.open(this.apis.url + "/api/fds/fdExcel?token=" + token + "&userid=" + userid + "&qrsjIsNotNull=1&orderBy=qrsj desc&cjrLike=" + this.param.cjrLike + "&fdZt=10&" +
-          "cjsjInRange=" + this.param.cjsjInRange + "&lcKm=" + this.param.lcKm)
-
-      },
-      pageChange(val) {
-        this.param.pageNum = val
-        this.getOldData();
-      },
-      pageSizeChange(val) {
-        this.param.pageSize = val
-        this.getOldData();
-      },
-      showMS(list) {
-        this.MSList = list
-        console.log(list)
-        this.compName = fdms
-      },
-      getOldData() {
-        this.hj = 0
-        this.$http.post('/api/fds/getPager', this.param).then((res) => {
-          if (res.code == 200 && res.page.list) {
-            this.hj = res.result
-            this.totalS = res.page.total
-            this.tableData = res.page.list;
+        {title: '返点笔数', key: 'fdsl', align: 'center', minWidth: 120},
+        {title: '返点金额', key: 'fdje', align: 'center', minWidth: 120},
+        {
+          title: '操作', minWidth: 120, align: 'center', render: (h, p) => {
+            return h('Tooltip',
+              {props: {placement: 'top', transfer: true, content: '明细',}},
+              [
+                h('Button', {
+                  props: {type: 'success', size: 'small',},
+                  style: {marginRight: '10px'},
+                  on: {
+                    click: () => {
+                      this.showMS(p.row.fds)
+                    }
+                  }
+                }, '明细'),
+                h('Button', {
+                  props: {type: 'success', size: 'small',},
+                  style: {marginRight: '10px'},
+                  on: {
+                    click: () => {
+                      this.hisPrintMess = p.row
+                      this.componentName = 'printSignUp'
+                    }
+                  }
+                }, '打印')
+              ]
+            )
           }
-        })
+        }
+      ],
+      total: 0,
+      totalS: 0,
+      dateRange: {
+        cjsj: ''
+      },
+      hj: 0,
+      switch1: true,
+      param: {
+        qrsjIsNotNull: '1',
+        orderBy: 'qrsj desc',
+        cjrLike: '',
+        fdZt: '10',
+        pageNum: 1,
+        pageSize: 15,
+        cjsjInRange: '',
+        lcKm: ''
       }
     }
+  },
+  watch: {
+    switch1: function (val) {
+      Cookies.set('showMessFD', val)
+    }
+  },
+  mounted() {
+    this.switch1 = Cookies.get('showMessFD') === 'true' ? true : false
+  },
+  created() {
+    // const end = new Date();
+    // const start = new Date();
+    // start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+    // this.dateRange.cjsj = [start, end]
+    // var d = start;
+    // var c = end;
+    // var datetimed = this.AF.trimDate(start) + ' ' + '00:00:00';
+    // var datetimec = this.AF.trimDate() + ' 23:59:59';
+    // this.param.cjsjInRange = datetimed + ',' + datetimec
+    this.dateRange.cjsj = [this.AF.trimDate() + ' 00:00:00', this.AF.trimDate() + ' 23:59:59']
+    this.param.cjsjInRange = this.AF.trimDate() + ' 00:00:00' + ',' + this.AF.trimDate() + ' 23:59:59';
+    this.getOldData()
+  },
+  methods: {
+    downLoadExcel() {
+      if (this.param.lcKm == undefined || this.param.lcKm == "") {
+        this.swal({
+          title: '导出文件时请选择科目',
+          type: 'warning',
+        })
+        return
+      }
+
+      let accessToken = JSON.parse(Cookies.get('accessToken'));
+      let token = accessToken.token;
+      let userid = accessToken.userId;
+      window.open(this.apis.url + "/api/fds/fdExcel?token=" + token + "&userid=" + userid + "&qrsjIsNotNull=1&orderBy=qrsj desc&cjrLike=" + this.param.cjrLike + "&fdZt=10&" +
+        "cjsjInRange=" + this.param.cjsjInRange + "&lcKm=" + this.param.lcKm)
+
+    },
+    pageChange(val) {
+      this.param.pageNum = val
+      this.getOldData();
+    },
+    pageSizeChange(val) {
+      this.param.pageSize = val
+      this.getOldData();
+    },
+    showMS(list) {
+      this.MSList = list
+      this.compName = fdms
+    },
+    getOldData() {
+      this.hj = 0
+      this.$http.post('/api/fds/getPager', this.param).then((res) => {
+        if (res.code == 200 && res.page.list) {
+          this.hj = res.result
+          this.totalS = res.page.total
+          this.tableData = res.page.list;
+        }else{
+          this.tableData = []
+          this.hj = 0
+          this.totalS = 0
+        }
+      })
+    }
   }
+}
 </script>
 
 <style scoped>

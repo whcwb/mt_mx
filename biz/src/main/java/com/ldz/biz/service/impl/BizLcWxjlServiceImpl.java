@@ -190,10 +190,10 @@ public class BizLcWxjlServiceImpl extends BaseServiceImpl<BizLcWxjl, String> imp
     @Override
     public ApiResponse<String> updateEntity(BizLcWxjl entity) {
         List<BizLcWxjl> wxjls = findEq(BizLcWxjl.InnerColumn.jlLxdh, entity.getJlLxdh());
-        if (CollectionUtils.isNotEmpty(wxjls)) {
-            BizLcWxjl lcWxjl = wxjls.get(0);
-            RuntimeCheck.ifTrue(!StringUtils.equals(lcWxjl.getId(), entity.getId()), "手机号码已绑定" + lcWxjl.getJlJx() + "-" + lcWxjl.getJlXm());
-        }
+//        if (CollectionUtils.isNotEmpty(wxjls)) {
+//            BizLcWxjl lcWxjl = wxjls.get(0);
+//            RuntimeCheck.ifTrue(!StringUtils.equals(lcWxjl.getId(), entity.getId()), "手机号码已绑定" + lcWxjl.getJlJx() + "-" + lcWxjl.getJlXm());
+//        }
         BizLcWxjl wxjl = findById(entity.getId());
         if(!StringUtils.equals(wxjl.getJlLx(), entity.getJlLx())){
             baseMapper.updateAllJl(entity.getId(), entity.getJlLx());

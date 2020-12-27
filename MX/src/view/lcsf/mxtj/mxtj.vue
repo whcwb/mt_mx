@@ -6,8 +6,13 @@
       @click="toPrint">收款凭证</span>
       <search-bar :parent="v" :showSearchButton="true" :showDownLoadButton="true" :show-create-button="false"
                   :buttons="searchBarButtons" @print="componentName = 'print'"
-                  @exportExcel="exportExcel"></search-bar>
+                  @exportExcel="exportExcel" style="position: absolute;right: 0; margin-right: 80px"></search-bar>
+
+      <Tooltip content="本校明细下载" placement="top" >
+        <Button type="success" style="margin-right: 20px" @click="downLoadLocalSchool" icon="ios-cloud-download"></Button>
+      </Tooltip>
     </div>
+
     <Table :columns="tableColumns" :height="40"></Table>
     <div>
       <virtual-list style="height: 660px; overflow-y: auto;"
@@ -155,18 +160,19 @@ export default {
           ],
           filterMultiple: false,
           filterRemote(value, row) {
-
             var _self = this
+            console.log("aa", value[0])
             if (value[0]) {
-              _self.param.zddmLike = value;
-            } else _self.param.zddmLike = ''
-            _self.getPageData()
+              _self.param.zddmLike = value[0];
+            } else {
+              _self.param.zddmLike = ''
+            }
+            _self.getPageData();
           },
           render: (h, p) => {
             if (p.row.zdxm != '') {
               return h('div', p.row.zdxm.by9 + ' ' + p.row.zdxm.zdmc)
             }
-
           }
         },
         {title: '人数', align: 'center', key: 'xySl', minWidth: 70},
@@ -243,6 +249,17 @@ export default {
     this.getPageData();
   },
   methods: {
+    downLoadLocalSchool(){
+      let p = '';
+      for (let k in this.param) {
+        p += '&' + k + '=' + this.param[k];
+      }
+      p = p.substr(1);
+      let accessToken = JSON.parse(Cookies.get('accessToken'));
+      let token = accessToken.token;
+      let userid = accessToken.userId;
+      window.open(this.apis.url + '/api/lcjl/downloadLocalSchool?token=' + token + "&userid=" + userid + "&" + p);
+    },
     getPageData() {
       this.$http.get('/api/lcjl/pager', {params: this.param}).then(res => {
         if (res.code == 200) {
@@ -267,7 +284,6 @@ export default {
         p += '&' + k + '=' + this.param[k];
       }
       p = p.substr(1);
-      // console.log(this.apis.url + '/pub/pagerExcelK3?'+p)
       window.open(this.apis.url + '/pub/pagerExcelAll?' + p);
     },
     parseTime(s) {

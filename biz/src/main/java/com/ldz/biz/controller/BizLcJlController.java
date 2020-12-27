@@ -296,5 +296,13 @@ public class BizLcJlController extends BaseController<BizLcJl, String> {
         service.downloadNewJxtj(request,response);
     }
 
+    /**
+     * 明细统计导出 分队号统计科二科三
+     */
+    @GetMapping("/downloadLocalSchool")
+    public void exportLocalSchool(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws Exception{
+        service.exportLocalSchool(page,request, response);
+    }
+
 
 }

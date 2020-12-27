@@ -93,6 +93,7 @@ public class BizLcFd implements Serializable {
     @Transient
     private String jlLx;
 
+
     private static final long serialVersionUID = 1L;
 
     public enum InnerColumn {

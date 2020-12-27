@@ -51,6 +51,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> implements BizLcJlService {
@@ -2826,9 +2827,9 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                     dataMap.put(1, jl.getKssj().substring(0, 10).replaceAll("-", "."));
                     dataMap.put(2, split[i1].split("-")[0]);
                     dataMap.put(3, zjhms[i1]);
-                    if(dhs.length > i1){
+                    if (dhs.length > i1) {
                         dataMap.put(4, dhs[i1]);
-                    }else{
+                    } else {
                         dataMap.put(4, "");
                     }
                     dataMap.put(5, split[i1].split("-")[1]);
@@ -2852,7 +2853,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
     @Override
     public ApiResponse<List<Map<String, Object>>> newJxtj() {
-        List<Map<String,Object>> result = new ArrayList<>();
+        List<Map<String, Object>> result = new ArrayList<>();
         // 参数处理
         String tjsj = getRequestParamterAsString("tjsj");
         if (StringUtils.isEmpty(tjsj)) {
@@ -2872,7 +2873,7 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         cond.gte(BizLcJl.InnerColumn.kssj, kssj);
         cond.lte(BizLcJl.InnerColumn.jssj, jssj);
         //  新驾校统计接口需要根据驾校分组
-      // 1. 根据时间查询出所有的练车记录
+        // 1. 根据时间查询出所有的练车记录
         List<BizLcJl> lcJls = findByCondition(cond);
         if (CollectionUtils.isEmpty(lcJls)) {
             return ApiResponse.success(result);
@@ -2921,30 +2922,30 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             // 计算 科二计时培训已返点金额 ①拿到科二计时培训 Pz
             Set<String> pzs = jls.stream().filter(jl -> StringUtils.equals(jl.getLcKm(), "2") && StringUtils.equals(jl.getLcLx(), "00")).map(BizLcJl::getPz).collect(Collectors.toSet());
             // ② 根据凭证过滤记录 并计算已返点金额
-            int k2Yfd = CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && pzs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            int k2Yfd = CollectionUtils.isEmpty(fds) ? 0 : fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && pzs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
             k2YfdZj += k2Yfd;
             // 计算科二计时待返点金额
-            int k2Dfd =  CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && pzs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            int k2Dfd = CollectionUtils.isEmpty(fds) ? 0 : fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && pzs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
             k2DfdZj += k2Dfd;
             // 计算科二培优收入
-            int k2py = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "20")&&StringUtils.equals(bizLcJl.getLcKm(),"2")).mapToInt(BizLcJl::getXjje).sum();
+            int k2py = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "20") && StringUtils.equals(bizLcJl.getLcKm(), "2")).mapToInt(BizLcJl::getXjje).sum();
             k2pyZj += k2py;
             // 计算科二培优已返点
             Set<String> pys = jls.stream().filter(jl -> StringUtils.equals(jl.getLcKm(), "2") && StringUtils.equals(jl.getLcLx(), "20")).map(BizLcJl::getPz).collect(Collectors.toSet());
-            int k2pyYfd =  CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && pys.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            int k2pyYfd = CollectionUtils.isEmpty(fds) ? 0 : fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && pys.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
             k2pyYfdZj += k2pyYfd;
             // 计算科二培优待返点
-            int k2pyDfd = CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && pys.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            int k2pyDfd = CollectionUtils.isEmpty(fds) ? 0 : fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && pys.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
             k2pyDfdZj += k2pyDfd;
             // 计算科二开放日收入
-            int k2Kf = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "30")&&StringUtils.equals(bizLcJl.getLcKm(),"2")).mapToInt(BizLcJl::getXjje).sum();
+            int k2Kf = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "30") && StringUtils.equals(bizLcJl.getLcKm(), "2")).mapToInt(BizLcJl::getXjje).sum();
             k2KfZj += k2Kf;
             // 计算科二开放日已返点金额
             Set<String> kfs = jls.stream().filter(jl -> StringUtils.equals(jl.getLcKm(), "2") && StringUtils.equals(jl.getLcLx(), "30")).map(BizLcJl::getPz).collect(Collectors.toSet());
-            int k2KfYfd =  CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && kfs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            int k2KfYfd = CollectionUtils.isEmpty(fds) ? 0 : fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && kfs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
             k2KfYfdZj += k2KfYfd;
             // 计算科二开放日待返点金额
-            int k2KfDfd = CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && kfs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            int k2KfDfd = CollectionUtils.isEmpty(fds) ? 0 : fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && kfs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
             k2KfDfdZJ += k2KfDfd;
             // 科目二小计
             int k2Xj = k2js + k2py + k2Kf;
@@ -2956,35 +2957,35 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
 
             // --------------------计算科三-----------------------------
             // 计算 科三计时培训收入
-            int k3js = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "00")&&StringUtils.equals(bizLcJl.getLcKm(),"3")).mapToInt(BizLcJl::getXjje).sum();
+            int k3js = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "00") && StringUtils.equals(bizLcJl.getLcKm(), "3")).mapToInt(BizLcJl::getXjje).sum();
             k3jsZj += k3js;
             // 计算 科三计时培训已返点金额 ①拿到科三计时培训 Pz
             Set<String> k3pzs = jls.stream().filter(jl -> StringUtils.equals(jl.getLcKm(), "3") && StringUtils.equals(jl.getLcLx(), "00")).map(BizLcJl::getPz).collect(Collectors.toSet());
             // ② 根据凭证过滤记录 并计算已返点金额
-            int k3Yfd = CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && k3pzs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            int k3Yfd = CollectionUtils.isEmpty(fds) ? 0 : fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && k3pzs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
             k3YfdZj += k3Yfd;
             // 计算科三计时待返点金额
-            int k3Dfd = CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && k3pzs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            int k3Dfd = CollectionUtils.isEmpty(fds) ? 0 : fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && k3pzs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
             k3DfdZj += k3Dfd;
             // 计算科三培优收入
-            int k3py = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "20")&&StringUtils.equals(bizLcJl.getLcKm(),"3")).mapToInt(BizLcJl::getXjje).sum();
+            int k3py = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "20") && StringUtils.equals(bizLcJl.getLcKm(), "3")).mapToInt(BizLcJl::getXjje).sum();
             k3pyZj += k3py;
             // 计算科二培优已返点
             Set<String> k3pys = jls.stream().filter(jl -> StringUtils.equals(jl.getLcKm(), "3") && StringUtils.equals(jl.getLcLx(), "20")).map(BizLcJl::getPz).collect(Collectors.toSet());
-            int k3pyYfd =  CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && k3pys.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            int k3pyYfd = CollectionUtils.isEmpty(fds) ? 0 : fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && k3pys.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
             k3pyYfdZj += k3pyYfd;
             // 计算科三培优待返点
-            int k3pyDfd =CollectionUtils.isEmpty(fds)?0: fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && k3pys.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            int k3pyDfd = CollectionUtils.isEmpty(fds) ? 0 : fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && k3pys.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
             k3pyDfdZj += k3pyDfd;
             // 计算科三按把收入
-            int k3Ab = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "10")&&StringUtils.equals(bizLcJl.getLcKm(),"3")).mapToInt(BizLcJl::getXjje).sum();
+            int k3Ab = jls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcLx(), "10") && StringUtils.equals(bizLcJl.getLcKm(), "3")).mapToInt(BizLcJl::getXjje).sum();
             k3AbZj += k3Ab;
             // 计算科三按把已返点金额
             Set<String> k3abs = jls.stream().filter(jl -> StringUtils.equals(jl.getLcKm(), "3") && StringUtils.equals(jl.getLcLx(), "10")).map(BizLcJl::getPz).collect(Collectors.toSet());
-            int k3AbYfd =  CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && k3abs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            int k3AbYfd = CollectionUtils.isEmpty(fds) ? 0 : fds.stream().filter(fd -> StringUtils.isNotBlank(fd.getQrsj()) && k3abs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
             k3AbYfdZj += k3AbYfd;
             // 计算科三按把待返点金额
-            int k3AbDfd = CollectionUtils.isEmpty(fds)?0:fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && k3abs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
+            int k3AbDfd = CollectionUtils.isEmpty(fds) ? 0 : fds.stream().filter(fd -> StringUtils.isBlank(fd.getQrsj()) && k3abs.contains(fd.getId())).mapToInt(BizLcFd::getFdje).sum();
             k3AbDfdZj += k3AbDfd;
             // 科目三小计
             int k3Xj = k3js + k3py + k3Ab;
@@ -3001,28 +3002,28 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
             int dfdZj = k2DfdXj + k3DfdXj;
             dfdZjZj += dfdZj;
             dataMap.put("jx", entry.getKey());
-            dataMap.put("k2js",k2js==0?"-":k2js);
-            dataMap.put("k2Yfd",k2Yfd==0?"-":k2Yfd);
-            dataMap.put("k2Dfd",k2Dfd==0?"-":k2Dfd);
-            dataMap.put("k2py",k2py==0?"-":k2py);
-            dataMap.put("k2pyYfd",k2pyYfd==0?"-":k2pyYfd);
-            dataMap.put("k2pyDfd",k2pyDfd==0?"-":k2pyDfd);
-            dataMap.put("k2Kf",k2Kf==0?"-":k2Kf);
-            dataMap.put("k2KfYfd",k2KfYfd==0?"-":k2KfYfd);
-            dataMap.put("k2KfDfd",k2KfDfd==0?"-":k2KfDfd);
-            dataMap.put("k2Xj",k2Xj==0?"-":k2Xj);
-            dataMap.put("k2YfdXj",k2YfdXj==0?"-":k2YfdXj);
-            dataMap.put("k2DfdXj",k2DfdXj==0?"-":k2DfdXj);
+            dataMap.put("k2js", k2js == 0 ? "-" : k2js);
+            dataMap.put("k2Yfd", k2Yfd == 0 ? "-" : k2Yfd);
+            dataMap.put("k2Dfd", k2Dfd == 0 ? "-" : k2Dfd);
+            dataMap.put("k2py", k2py == 0 ? "-" : k2py);
+            dataMap.put("k2pyYfd", k2pyYfd == 0 ? "-" : k2pyYfd);
+            dataMap.put("k2pyDfd", k2pyDfd == 0 ? "-" : k2pyDfd);
+            dataMap.put("k2Kf", k2Kf == 0 ? "-" : k2Kf);
+            dataMap.put("k2KfYfd", k2KfYfd == 0 ? "-" : k2KfYfd);
+            dataMap.put("k2KfDfd", k2KfDfd == 0 ? "-" : k2KfDfd);
+            dataMap.put("k2Xj", k2Xj == 0 ? "-" : k2Xj);
+            dataMap.put("k2YfdXj", k2YfdXj == 0 ? "-" : k2YfdXj);
+            dataMap.put("k2DfdXj", k2DfdXj == 0 ? "-" : k2DfdXj);
 
-            dataMap.put("k3js",k3js==0?"-":k3js);
-            dataMap.put("k3Yfd",k3Yfd==0?"-":k3Yfd);
-            dataMap.put("k3Dfd",k3Dfd==0?"-":k3Dfd);
-            dataMap.put("k3py",k3py==0?"-":k3py);
-            dataMap.put("k3pyYfd",k3pyYfd==0?"-":k3pyYfd);
-            dataMap.put("k3pyDfd",k3pyDfd==0?"-":k3pyDfd);
-            dataMap.put("k3Ab",k3Ab==0?"-":k3Ab);
-            dataMap.put("k3AbYfd",k3AbYfd==0?"-":k3AbYfd);
-            dataMap.put("k3AbDfd",k3AbDfd==0?"-":k3AbDfd);
+            dataMap.put("k3js", k3js == 0 ? "-" : k3js);
+            dataMap.put("k3Yfd", k3Yfd == 0 ? "-" : k3Yfd);
+            dataMap.put("k3Dfd", k3Dfd == 0 ? "-" : k3Dfd);
+            dataMap.put("k3py", k3py == 0 ? "-" : k3py);
+            dataMap.put("k3pyYfd", k3pyYfd == 0 ? "-" : k3pyYfd);
+            dataMap.put("k3pyDfd", k3pyDfd == 0 ? "-" : k3pyDfd);
+            dataMap.put("k3Ab", k3Ab == 0 ? "-" : k3Ab);
+            dataMap.put("k3AbYfd", k3AbYfd == 0 ? "-" : k3AbYfd);
+            dataMap.put("k3AbDfd", k3AbDfd == 0 ? "-" : k3AbDfd);
             dataMap.put("k3Xj", k3Xj == 0 ? "-" : k3Xj);
             dataMap.put("k3YfdXj", k3YfdXj == 0 ? "-" : k3YfdXj);
             dataMap.put("k3DfdXj", k3DfdXj == 0 ? "-" : k3DfdXj);
@@ -3200,5 +3201,132 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         workbook.write();
         workbook.close();
 
+    }
+
+    @Override
+    public void exportLocalSchool(Page<BizLcJl> page, HttpServletRequest request, HttpServletResponse response) throws IOException, WriteException {
+//        kssjInRange
+        String range = getRequestParamterAsString("kssjInRange");
+        String[] split = range.split(",");
+        String[] start = split[0].substring(0, 10).split("-");
+        String[] end = split[1].substring(0, 10).split("-");
+        String timeString = start[0] + "年" + start[1] + "月" + start[2] + "日-" + end[0] + "年" + end[1] + "月" + end[2] + "日";
+        String time = DateUtils.getDateStr(new Date(), "yyyy-MM-dd");
+        String fileName = time + "-明细统计";
+        LimitedCondition condition = getQueryCondition();
+        condition.eq(BizLcJl.InnerColumn.jlLx, "00");
+        condition.and().andCondition(" jssj is not null and jssj != ''");
+        PageInfo<BizLcJl> info = findPage(page, condition);
+
+        WritableCellFormat cellFormat = new WritableCellFormat();
+        cellFormat.setAlignment(Alignment.CENTRE);
+        cellFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+        cellFormat.setBorder(jxl.format.Border.ALL, BorderLineStyle.THIN);
+        response.setContentType("application/msexcel");
+        request.setCharacterEncoding("UTF-8");
+        response.setHeader("pragma", "no-cache");
+        response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1") + ".xls");
+        ServletOutputStream out = response.getOutputStream();
+
+        WritableWorkbook workbook = Workbook.createWorkbook(out);
+        WritableSheet sheet = workbook.createSheet("本校队号统计", 0);
+
+
+        sheet.mergeCells(0, 0, 9, 0);
+        sheet.mergeCells(0, 1, 9, 1);
+        sheet.mergeCells(0, 2, 0, 3);
+        sheet.mergeCells(1, 2, 4, 2);
+        sheet.mergeCells(5, 2, 8, 2);
+        sheet.mergeCells(9,2,9,3);
+//        sheet.mergeCells(13, 0, 14, 0);
+//        sheet.mergeCells(15, 0, 15, 1);
+        sheet.addCell(new Label(0, 0, "知音考场练车统计（本校）", cellFormat));
+        sheet.addCell(new Label(0, 1, "时间段：" + timeString, cellFormat));
+
+        sheet.addCell(new Label(0, 2, "队号", cellFormat));
+        sheet.addCell(new Label(1, 2, "科二", cellFormat));
+        sheet.addCell(new Label(5, 2, "科三", cellFormat));
+        sheet.addCell(new Label(9, 2, "总计", cellFormat));
+        sheet.addCell(new Label(1, 3, "计时", cellFormat));
+        sheet.addCell(new Label(2, 3, "培优", cellFormat));
+        sheet.addCell(new Label(3, 3, "开放日", cellFormat));
+        sheet.addCell(new Label(4, 3, "小计2", cellFormat));
+
+        sheet.addCell(new Label(5, 3, "计时", cellFormat));
+        sheet.addCell(new Label(6, 3, "培优", cellFormat));
+        sheet.addCell(new Label(7, 3, "按把", cellFormat));
+        sheet.addCell(new Label(8, 3, "小计3", cellFormat));
+
+        sheet.addCell(new Label(9, 3, "总计", cellFormat));
+
+        List<BizLcJl> list = info.getList();
+        if (CollectionUtils.isNotEmpty(list)) {
+            Set<String> jlids = list.stream().map(BizLcJl::getJlId).collect(Collectors.toSet());
+            List<BizLcWxjl> wxjls = wxjlService.findIn(BizLcWxjl.InnerColumn.id, jlids);
+            Map<String, List<String>> dmIdMap = wxjls.stream().filter(bizLcWxjl -> StringUtils.isNotBlank(bizLcWxjl.getDh())).collect(Collectors.groupingBy(BizLcWxjl::getDm, Collectors.mapping(BizLcWxjl::getId, Collectors.toList())));
+            Map<String, List<BizLcJl>> dataMap = new HashMap<>();
+            dmIdMap.forEach((s, strings) -> {
+                List<BizLcJl> jls = list.stream().filter(bizLcJl -> strings.contains(bizLcJl.getJlId())).collect(Collectors.toList());
+                dataMap.put(s, jls);
+            });
+            Map<String, List<String>> dmIdMapError = wxjls.stream().filter(bizLcWxjl -> StringUtils.isBlank(bizLcWxjl.getDh())).collect(Collectors.groupingBy(BizLcWxjl::getJlXm, Collectors.mapping(BizLcWxjl::getId, Collectors.toList())));
+            Map<String, List<BizLcJl>> errorMap = new HashMap<>();
+            dmIdMapError.forEach((s, strings) -> {
+                List<BizLcJl> jls = list.stream().filter(bizLcJl -> strings.contains(bizLcJl.getJlId())).collect(Collectors.toList());
+                errorMap.put(s, jls);
+            });
+            int i = 4;
+            List<String> collect = dataMap.keySet().stream().sorted(Comparator.comparingInt(o -> Integer.parseInt(o.replace("队", "").replace("A","-3").replace("B","-4")))).collect(Collectors.toList());
+            for (String s : collect) {
+                List<BizLcJl> bizLcJls = dataMap.get(s);
+                Map<String, Integer> sumMap = bizLcJls.stream().collect(Collectors.groupingBy(bizLcJl -> bizLcJl.getLcLx() + bizLcJl.getLcKm(), Collectors.summingInt(BizLcJl::getXjje)));
+                sheet.addCell(new Label(0, i, s, cellFormat));
+                sheet.addCell(new Label(1, i,  sumMap.get("002")==null?"0": sumMap.get("002") +"", cellFormat));
+                sheet.addCell(new Label(2, i, sumMap.get("202")==null?"0": sumMap.get("202") +"", cellFormat));
+                sheet.addCell(new Label(3, i, sumMap.get("302")==null?"0": sumMap.get("302") +"", cellFormat));
+                sheet.addCell(new Label(4, i,  bizLcJls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcKm(), "2")).mapToInt(BizLcJl::getXjje).sum()+ "", cellFormat));
+
+                sheet.addCell(new Label(5, i, sumMap.get("003")==null? "0":sumMap.get("003") + "", cellFormat));
+                sheet.addCell(new Label(6, i, sumMap.get("203")==null? "0":sumMap.get("203") + "", cellFormat));
+                sheet.addCell(new Label(7, i, sumMap.get("103") ==null? "0":sumMap.get("103") + "", cellFormat));
+                sheet.addCell(new Label(8, i, bizLcJls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcKm(), "3")).mapToInt(BizLcJl::getXjje).sum()+ "", cellFormat));
+
+                sheet.addCell(new Label(9, i, bizLcJls.stream().mapToInt(BizLcJl::getXjje).sum()+ "", cellFormat));
+                i++;
+            }
+            for (Map.Entry<String, List<BizLcJl>> entry : errorMap.entrySet()) {
+                String s = entry.getKey();
+                List<BizLcJl> bizLcJls = entry.getValue();
+                Map<String, Integer> sumMap = bizLcJls.stream().collect(Collectors.groupingBy(bizLcJl -> bizLcJl.getLcLx() + bizLcJl.getLcKm(), Collectors.summingInt(BizLcJl::getXjje)));
+                sheet.addCell(new Label(0, i, s, cellFormat));
+                sheet.addCell(new Label(1, i, sumMap.get("002") == null ? "0" : sumMap.get("002") + "", cellFormat));
+                sheet.addCell(new Label(2, i, sumMap.get("202") == null ? "0" : sumMap.get("202") + "", cellFormat));
+                sheet.addCell(new Label(3, i, sumMap.get("302") == null ? "0" : sumMap.get("302") + "", cellFormat));
+                sheet.addCell(new Label(4, i, bizLcJls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcKm(), "2")).mapToInt(BizLcJl::getXjje).sum() + "", cellFormat));
+
+                sheet.addCell(new Label(5, i, sumMap.get("003") == null ? "0" : sumMap.get("003") + "", cellFormat));
+                sheet.addCell(new Label(6, i, sumMap.get("203") == null ? "0" : sumMap.get("203") + "", cellFormat));
+                sheet.addCell(new Label(7, i, sumMap.get("103") == null ? "0" : sumMap.get("103") + "", cellFormat));
+                sheet.addCell(new Label(8, i, bizLcJls.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcKm(), "3")).mapToInt(BizLcJl::getXjje).sum() + "", cellFormat));
+
+                sheet.addCell(new Label(9, i, bizLcJls.stream().mapToInt(BizLcJl::getXjje).sum() + "", cellFormat));
+                i++;
+            }
+            Map<String, Integer> sumMap = list.stream().collect(Collectors.groupingBy(bizLcJl -> bizLcJl.getLcLx() + bizLcJl.getLcKm(), Collectors.summingInt(BizLcJl::getXjje)));
+            sheet.addCell(new Label(0, i, "总计", cellFormat));
+            sheet.addCell(new Label(1, i,  sumMap.get("002")==null?"0": sumMap.get("002") +"", cellFormat));
+            sheet.addCell(new Label(2, i, sumMap.get("202")==null?"0": sumMap.get("202") +"", cellFormat));
+            sheet.addCell(new Label(3, i, sumMap.get("302")==null?"0": sumMap.get("202") +"", cellFormat));
+            sheet.addCell(new Label(4, i,  list.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcKm(), "2")).mapToInt(BizLcJl::getXjje).sum()+ "", cellFormat));
+
+            sheet.addCell(new Label(5, i, sumMap.get("003")==null? "0":sumMap.get("003") + "", cellFormat));
+            sheet.addCell(new Label(6, i, sumMap.get("103")==null? "0":sumMap.get("203") + "", cellFormat));
+            sheet.addCell(new Label(7, i, sumMap.get("203")==null? "0":sumMap.get("103") + "", cellFormat));
+            sheet.addCell(new Label(8, i, list.stream().filter(bizLcJl -> StringUtils.equals(bizLcJl.getLcKm(), "3")).mapToInt(BizLcJl::getXjje).sum()+ "", cellFormat));
+
+            sheet.addCell(new Label(9, i, list.stream().mapToInt(BizLcJl::getXjje).sum()+ "", cellFormat));
+        }
+        workbook.write();
+        workbook.close();
     }
 }

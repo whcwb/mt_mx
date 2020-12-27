@@ -43,12 +43,10 @@ import 'babel-polyfill'
 
 Vue.use(iView, {
   i18n: (key, value) => i18n.t(key, value),
-  transfer:true,
-  size:"large",
-  'split-panels':true
+  transfer: true,
+  size: "large",
+  'split-panels': true
 })
-
-
 
 
 Vue.config.productionTip = false
@@ -83,43 +81,47 @@ Vue.prototype.$http = http;
 
 Vue.prototype.session = session
 
-Vue.component('pagerTit',pagerTit)
-Vue.component('NoData',NoData)
-Vue.component('newTree',newTree)
+Vue.component('pagerTit', pagerTit)
+Vue.component('NoData', NoData)
+Vue.component('newTree', newTree)
 
 import searchBar from './view/components/searchBar'
-Vue.component('searchBar',searchBar)
+
+Vue.component('searchBar', searchBar)
 import tableArea from './view/components/tableArea'
-Vue.component('tableArea',tableArea)
+
+Vue.component('tableArea', tableArea)
 import formItems from './view/components/formItems'
-Vue.component('formItems',formItems)
+
+Vue.component('formItems', formItems)
 
 Date.prototype.format = function (format) {
-    var o = {
-        "M+": this.getMonth() + 1, //month
-        "d+": this.getDate(),    //day
-        "h+": this.getHours(),   //hour
-        "m+": this.getMinutes(), //minute
-        "s+": this.getSeconds(), //second
-        "q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
-        "S": this.getMilliseconds() //millisecond
-    }
-    if (/(y+)/.test(format)) format = format.replace(RegExp.$1,
-        (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (var k in o) if (new RegExp("(" + k + ")").test(format))
-        format = format.replace(RegExp.$1,
-            RegExp.$1.length == 1 ? o[k] :
-                ("00" + o[k]).substr(("" + o[k]).length));
-    return format;
+  var o = {
+    "M+": this.getMonth() + 1, //month
+    "d+": this.getDate(),    //day
+    "h+": this.getHours(),   //hour
+    "m+": this.getMinutes(), //minute
+    "s+": this.getSeconds(), //second
+    "q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
+    "S": this.getMilliseconds() //millisecond
+  }
+  if (/(y+)/.test(format)) format = format.replace(RegExp.$1,
+    (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+  for (var k in o) if (new RegExp("(" + k + ")").test(format))
+    format = format.replace(RegExp.$1,
+      RegExp.$1.length == 1 ? o[k] :
+        ("00" + o[k]).substr(("" + o[k]).length));
+  return format;
 }
 
 
 import table from './components/table'
-Vue.component('tab',table)
+
+Vue.component('tab', table)
 /* eslint-disable no-new */
 window.vueObject = new Vue({
-  data:{
-    card:{}
+  data: {
+    card: {}
   },
   el: '#app',
   router,

@@ -97,10 +97,34 @@ public class BizLcFdsServiceImpl extends BaseServiceImpl<BizLcFds, String> imple
         }
         PageInfo<BizLcFds> pageInfo = findPage(pager, condition);
         List<BizLcFds> list = pageInfo.getList();
+        List<String> lcids = new ArrayList<>();
+         list.stream().map(BizLcFds::getLcId).forEach(s -> {
+             String[] split = s.split(",");
+             lcids.addAll(Arrays.asList(split));
+         });
+         if(CollectionUtils.isEmpty(lcids)) {
+             res.setPage(new PageInfo());
+             return res;
+         }
+        List<BizLcFd> lcFds = fdService.findByIds(lcids);
+
+        List<String> jlids = new ArrayList<>();
+        lcFds.stream().map(BizLcFd::getLcId).forEach(s -> {
+            String[] split = s.split(",");
+            jlids.addAll(Arrays.asList(split));
+        });
+        List<BizLcJl> jls = lcJlService.findByIds(jlids);
         list.forEach(bizLcFds -> {
             String lcId = bizLcFds.getLcId();
-            List<BizLcFd> fds = fdService.findByIds(Arrays.asList(lcId.split(",")));
+            List<BizLcFd> fds = lcFds.stream().filter(lcFd ->
+                    Arrays.asList(lcId.split(",")).contains(lcFd.getId())
+            ).collect(Collectors.toList());
             bizLcFds.setFds(fds);
+
+            fds.stream().forEach(lcFd -> {
+                List<BizLcJl> jlList = jls.stream().filter(bizLcJl -> Arrays.asList(lcFd.getLcId().split(",")).contains(bizLcJl.getId())).collect(Collectors.toList());
+                lcFd.setJlList(jlList);
+            });
         });
         List<BizLcFds> fds = findByCondition(condition);
         int sum = fds.stream().mapToInt(BizLcFds::getFdje).sum();

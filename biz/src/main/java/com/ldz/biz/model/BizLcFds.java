@@ -48,6 +48,9 @@ public class BizLcFds {
 
     private String qrr;
 
+    /**
+     * 返点记录id
+     */
     @Column(name = "lc_id")
     private String lcId;
 
