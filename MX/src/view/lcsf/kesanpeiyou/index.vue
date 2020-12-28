@@ -1172,8 +1172,6 @@ export default {
 
       if (this.mxlx == 'py') {
         this.formData.lcLx = '20'
-
-
       }
       this.formData.jlCx = this.cx
       this.formData.lcKm = 3
