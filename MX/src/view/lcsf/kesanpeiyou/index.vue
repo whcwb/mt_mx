@@ -160,7 +160,8 @@
           <Card>
             <p slot="title">学员信息</p>
             <p>
-              <Row v-for="(item,index) in AMess" :key="index" style="display: flex;align-items: center; margin-top: 10px">
+              <Row v-for="(item,index) in AMess" :key="index"
+                   style="display: flex;align-items: center; margin-top: 10px">
                 <Col>
                   <RadioGroup v-model="item.cartype">
                     <Radio v-for="item in cxlist" :label="item.key" v-if="item.key.includes(cx)"></Radio>
@@ -180,7 +181,9 @@
                          @on-focus="getInputFocus(index*3+3)" size="default" v-model="item.xyDh" placeholder="学员联系电话"/>
                 </Col>
                 <Col span="2" v-if="AMess.length>1">
-                  <Button size="default" type="warning" style="margin-left: 10px" tabIndex="-1" @click="remove(index)">删除</Button>
+                  <Button size="default" type="warning" style="margin-left: 10px" tabIndex="-1" @click="remove(index)">
+                    删除
+                  </Button>
                 </Col>
                 <Col span="2" align="center">
                   <Button type="info" style="margin-left: 10px" icon="md-add" tabIndex="-1"
@@ -189,7 +192,7 @@
                   </Button>
                 </Col>
                 <Col span="2" align="center">
-                  <Button type="info" style = "margin-left: 10px"
+                  <Button type="info" style="margin-left: 10px"
                           @click="readCardByIndex(item,index)"
                   >
                     读卡
@@ -630,12 +633,16 @@ export default {
     clearInterval(this.IntervalKE)
   },
   methods: {
-    readCardByIndex(item,index) {
+    readCardByIndex(item, index) {
       var _this = this;
       readIdCard.readCardByHand((key, res) => {
-        console.log(res , "res");
-        _this.$refs['input'+(index*3+1)][0].value = res.Name.trim();
-        _this.$refs['input'+(index*3+2)][0].value = res.IDCardNo.trim();
+        console.log(res, "res");
+        _this.$refs['input' + (index * 3 + 1)][0].value = res.Name.trim();
+        _this.$refs['input' + (index * 3 + 2)][0].value = res.IDCardNo.trim();
+        item.xyXm = res.Name.trim();
+        item.bz = res.IDCardNo.trim();
+        console.log(item, "item")
+        _this.AMess[index] = item
       }, _this)
     },
     findByXyXm(e) {
@@ -718,10 +725,18 @@ export default {
       let dxarr = [];
       let sfzarr = [];
       let a = true
+      console.log(AMess, "AMess");
       for (let i = 0; i < AMess.length; i++) {
         if (AMess[i].xyXm == undefined || AMess[i].xyXm == '' || AMess[i].xyXm == null) {
           this.swal({
             title: '请填写学员姓名',
+            type: 'error'
+          })
+          a = false
+          break
+        } else if (AMess[i].cartype == undefined || AMess[i].cartype == '' || AMess[i].cartype == null) {
+          this.swal({
+            title: '请选择车型',
             type: 'error'
           })
           a = false
@@ -1184,7 +1199,7 @@ export default {
             this.DrawerVal = false;
             this.util.initTable(this);
             this.carMess = null
-            this.AMess = [{cartype: 'C1'}];
+            this.AMess = [{cartype: ''}];
             // console.log(res.message, 'resmessage')
             if (this.mxlx == 'py' || this.mxlx == 'kf') {
               //打印票据
