@@ -103,6 +103,16 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
                 return false;
             }
         }
+        String orgcode = getRequestParamterAsString("orgcode");
+        if(StringUtils.isNotBlank(orgcode)) {
+            // 根据队号查出教练员id
+            List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.dh, orgcode);
+            if(CollectionUtils.isEmpty(wxjls)) {
+                return false;
+            }
+            Set<String> set = wxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toSet());
+            condition.in(BizLcJl.InnerColumn.jlId, set);
+        }
         condition.setOrderByClause("  jssj  desc, jl_id asc , kssj desc");
         return true;
     }
@@ -2673,6 +2683,15 @@ public class BizLcJlServiceImpl extends BaseServiceImpl<BizLcJl, String> impleme
         LimitedCondition condition = getQueryCondition();
         if (StringUtils.isNotBlank(lx)) {
             condition.eq(BizLcJl.InnerColumn.jlLx, lx);
+        }
+        String orgcode = getRequestParamterAsString("orgcode");
+        // 根据队号查出教练员id
+        List<BizLcWxjl> wxjls = wxjlService.findEq(BizLcWxjl.InnerColumn.dh, orgcode);
+        if(CollectionUtils.isNotEmpty(wxjls)) {
+            Set<String> set = wxjls.stream().map(BizLcWxjl::getId).collect(Collectors.toSet());
+            condition.in(BizLcJl.InnerColumn.jlId, set);
+        }else {
+            condition.eq(BizLcJl.InnerColumn.id, "1");
         }
         condition.and().andCondition(" jssj is not null and jssj != ''");
         PageInfo<BizLcJl> info = findPage(page, condition);

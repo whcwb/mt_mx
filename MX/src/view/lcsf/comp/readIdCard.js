@@ -86,21 +86,13 @@ export default {
           return callback && callback(true, res);
         } else  {
             v.swal({
-              title: '未检测到监听服务,请重启监听服务后重试',
+              title: res.ResultInfo?res.ResultInfo:res.resultInfo,
               showCancelButton:false,
               type: "error"
             })
         }
       },
       error: (data) => {
-        // let res = JSON.parse(JSON.stringify(data))
-        // res.ResultCode = 0
-        // res.IDCardNo = "421281199411024154"
-        // res.Name = "宋凌云"
-        // console.log(res, "res");
-        // if (res.ResultCode == 0) {
-        //   return callback && callback(true, res);
-        // }
         v.swal({
           title: '未检测到监听服务,请重启监听服务后重试',
           showCancelButton:false,

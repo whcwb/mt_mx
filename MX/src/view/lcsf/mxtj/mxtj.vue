@@ -7,7 +7,11 @@
       <search-bar :parent="v" :showSearchButton="true" :showDownLoadButton="true" :show-create-button="false"
                   :buttons="searchBarButtons" @print="componentName = 'print'"
                   @exportExcel="exportExcel" style="position: absolute;right: 0; margin-right: 80px"></search-bar>
-
+      <Select style="width: 150px;position: absolute;margin-left: 57.5%" clearable @on-change="getPageData" v-model="param.orgcode"  placeholder="请选择队号">
+        <Option v-for="item in dhs" :value="item.dh">
+          {{item.dm}}
+        </Option>
+      </Select>
       <Tooltip content="本校明细下载" placement="top" >
         <Button type="success" style="margin-right: 20px" @click="downLoadLocalSchool" icon="ios-cloud-download"></Button>
       </Tooltip>
@@ -44,6 +48,7 @@ import jxtj from '../jxtj'
 import printSignUp from './comp/printSignUp'
 import virtualList from 'vue-virtual-scroll-list'
 import Item from './comp/Item'
+import dhList from '../../../data/dhList'
 
 export default {
   name: 'char',
@@ -53,6 +58,7 @@ export default {
     return {
       v: this,
       itemComponent: Item,
+      dhs:dhList.dhs,
       addmoney: 0,
       apiRoot: this.apis.lcjl,
       choosedItem: null,
@@ -234,7 +240,8 @@ export default {
         pageNum: 1,
         pageSize: 99999,
         zfzt: '10',
-        lcKm: ''
+        lcKm: '',
+        orgcode:''
       },
     }
   },
