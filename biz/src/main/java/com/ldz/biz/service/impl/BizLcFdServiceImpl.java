@@ -168,7 +168,7 @@ public class BizLcFdServiceImpl extends BaseServiceImpl<BizLcFd, String> impleme
 		lcFds.setLcFy(lcFy);
 		lcFds.setLcKm(fds.get(0).getLcKm());
 		lcFds.setSc(sc);
-		lcFds.setLcId(fds.stream().map(BizLcFd::getLcId).collect(Collectors.joining(",")));
+		lcFds.setLcId(fds.stream().map(BizLcFd::getId).collect(Collectors.joining(",")));
 		lcFds.setBz(bz);
 		lcFds.setQrr(lcFds.getCjr());
 		lcFds.setQrsj(lcFds.getCjsj());
